@@ -1,0 +1,24 @@
+plugins {
+  id("java")
+  id("application")
+  id("com.github.johnrengelman.shadow") version "6.0.0"
+}
+apply plugin: "eclipse"
+mainClassName = "com.group3.racingbot.RacingBot"
+
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+  maven { // on kotlin dsl use `maven("https://m2.dv8tion.net/releases")` instead
+      url "https://m2.dv8tion.net/releases"
+  }
+}
+
+dependencies {
+  implementation("net.dv8tion:JDA:4.3.0_277")
+}
+
+compileJava.options.encoding = "UTF-8"
