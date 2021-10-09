@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+  compile 'org.mongodb:mongodb-driver-sync:4.3.3'
   implementation("net.dv8tion:JDA:4.3.0_277")
 }
 
