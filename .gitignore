@@ -1,3 +1,8 @@
+# Group-3 Custom .ignore
+
+#Don't include config file, here be API keys and Passwords! Make sure you make your own!
+/lib/src/main/resources 
+
 # Gradle
 # ------
 .gradle

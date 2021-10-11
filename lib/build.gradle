@@ -10,6 +10,17 @@ version '1.0'
 
 sourceCompatibility = 1.8
 
+shadowJar {
+    archiveBaseName = 'racingBot'
+    archiveVersion =  '0.1.0'
+    
+    manifest {
+        attributes(
+                'Main-Class': 'com.group3.racingbot.RacingBot'
+        )
+    }
+}
+
 repositories {
   mavenCentral()
   maven { // on kotlin dsl use `maven("https://m2.dv8tion.net/releases")` instead
@@ -18,6 +29,7 @@ repositories {
 }
 
 dependencies {
+  compile "org.slf4j:slf4j-simple:1.7.9" 
   compile 'org.mongodb:mongodb-driver-sync:4.3.3'
   implementation("net.dv8tion:JDA:4.3.0_277")
 }
