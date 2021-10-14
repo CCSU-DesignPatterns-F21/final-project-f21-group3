@@ -16,7 +16,9 @@ public class DBHandler {
 	public DBHandler() {
 		
 		configProperties = ConfigPropertiesHandler.getInstance();
-		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+		String uri = "mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority";
+		System.out.println(uri);
+		connectionString = new ConnectionString(uri);
 		settings = MongoClientSettings.builder()
 		        .applyConnectionString(connectionString)
 		        .build();
@@ -24,6 +26,26 @@ public class DBHandler {
 				userDatabase = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase"));
 		
 				System.out.println(userDatabase.getCollection("User").countDocuments());
+	}
+
+	public static ConnectionString getConnectionString() {
+		return connectionString;
+	}
+
+	public static MongoClientSettings getSettings() {
+		return settings;
+	}
+
+	public MongoClient getMongoClient() {
+		return mongoClient;
+	}
+
+	public MongoDatabase getUserDatabase() {
+		return userDatabase;
+	}
+
+	public static ConfigPropertiesHandler getConfigProperties() {
+		return configProperties;
 	}
 
 }

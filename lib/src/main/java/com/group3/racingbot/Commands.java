@@ -1,8 +1,13 @@
 package com.group3.racingbot;
 
 
-import java.util.concurrent.ThreadLocalRandom;
 import java.awt.Color;
+import java.util.concurrent.ThreadLocalRandom;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -14,17 +19,23 @@ public class Commands extends ListenerAdapter {
 	
 	
 	private DBHandler dbh;
+	private EmbedBuilder eb;
 	public Commands(DBHandler db) {
+		eb = new EmbedBuilder();
 		dbh = db;
 		
 	}
 
 	 @Override
 	  public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+		 
 	    String[] args = event.getMessage().getContentRaw().split(" ");
-	    EmbedBuilder eb = new EmbedBuilder();
 	    Member user = event.getMember(); //Gets the id of the user who called the command.
 	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
+
+	    
+	    MongoDatabase userDB =dbh.getUserDatabase();
+	    MongoCollection<CustomUser> users = userDB.getCollection("Users",CustomUser.class);
 	    
 	    if(args[0].equalsIgnoreCase(RacingBot.prefix+"iracer"))
 	    {
@@ -46,6 +57,10 @@ public class Commands extends ListenerAdapter {
 	    	{
 	    		//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
 	    		event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
+	    		
+	    		CustomUser cUser = new CustomUser(user.getId().toString(),500,0,0);
+	    		users.insertOne(cUser);
+	    		
 	    		System.out.println(user.getId());
 	    		
 	    	}
@@ -65,8 +80,7 @@ public class Commands extends ListenerAdapter {
 	    			event.getChannel().sendMessage("No bet amount parameter specified!").queue();
 	    		}
 		    	
-	    	}
-	    	
+	    	}	
 	    }
 	  }
 }
