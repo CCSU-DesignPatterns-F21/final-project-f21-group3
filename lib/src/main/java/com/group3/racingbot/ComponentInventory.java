@@ -21,6 +21,10 @@ public class ComponentInventory implements Inventory<Component>{
 		return new ComponentIterator();
 	}
 	
+	public void add(Component component) {
+		this.items.add(component);
+	}
+	
 	private class ComponentIterator implements InventoryIterator<Component> {
 		private int current = 0;
 		

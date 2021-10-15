@@ -6,7 +6,7 @@ import java.util.List;
  * @author Nick Sabia
  *
  */
-public class CarInventory {
+public class CarInventory implements Inventory<Car>{
 	private List<Car> items;
 	
 	public CarInventory(List<Car> carList) {
@@ -18,8 +18,16 @@ public class CarInventory {
 		return new CarIterator();
 	}
 	
+	public void add(Car car) {
+		items.add(car);
+	}
+	
 	private class CarIterator implements InventoryIterator<Car> {
-		private int current = 0;
+		private int current;
+		
+		private CarIterator() {
+			this.current = 0;
+		}
 		
 		public boolean hasNext() {
 			if (this.current < CarInventory.this.items.size() + 1) {
@@ -32,11 +40,11 @@ public class CarInventory {
 			Car item = null;
 			try {
 				item = CarInventory.this.items.get(this.current);
-				this.current++;
 			}
 			catch (IndexOutOfBoundsException e) {
 				System.out.println("End of the list has been reached.");
 			}
+			this.current++;
 			return item;
 		}
 		

@@ -35,4 +35,8 @@ public class Car implements Quantifiable{
 	public int getWeight() {
 		return this.weight;
 	}
+	
+	public String toString() {
+		return "Durability: " + this.durability + " | Price: " + this.price + " | Quality: " + this.quality + " | Weight: " + this.weight;
+	}
 }

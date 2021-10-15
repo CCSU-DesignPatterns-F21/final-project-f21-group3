@@ -5,5 +5,6 @@ package com.group3.racingbot;
  * Ensures that an inventory can iterate and filter through its components.
  */
 public interface Inventory<T> {
-	public Iterator<T> iterator();
+	public InventoryIterator<T> iterator();
+	public void add(T item);
 }
