@@ -19,7 +19,7 @@ public class CarInventory implements Inventory<Car>{
 	}
 	
 	public void add(Car car) {
-		items.add(car);
+		this.items.add(car);
 	}
 	
 	private class CarIterator implements InventoryIterator<Car> {

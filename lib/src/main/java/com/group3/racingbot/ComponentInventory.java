@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.group3.racingbot;
 
 import java.util.List;
@@ -26,7 +23,11 @@ public class ComponentInventory implements Inventory<Component>{
 	}
 	
 	private class ComponentIterator implements InventoryIterator<Component> {
-		private int current = 0;
+		private int current;
+		
+		private ComponentIterator() {
+			this.current = 0;
+		}
 		
 		public boolean hasNext() {
 			if (this.current < ComponentInventory.this.items.size() + 1) {
