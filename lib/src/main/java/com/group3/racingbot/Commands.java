@@ -45,7 +45,15 @@ public class Commands extends ListenerAdapter {
 	    	if(args[1].equalsIgnoreCase("register"))
 	    	{
 	    		//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
-	    		event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
+	    		
+	    		if(dbh.userExists(user.getId())){
+	    			event.getChannel().sendMessage("You are already registered!");
+	    			
+	    		}else {
+	    			event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
+	    			dbh.insertUser(new Player(user.getId(),user.getUser().getName()));
+	    		}
+	    		
 	    		System.out.println(user.getId());
 	    		
 	    	}

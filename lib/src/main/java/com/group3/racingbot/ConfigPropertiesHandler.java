@@ -15,7 +15,7 @@ public class ConfigPropertiesHandler {
 		prop =new Properties();
 		
 		try {
-			ip= new FileInputStream("/config.properties");
+			ip= new FileInputStream("./src/main/resources/config.properties");
 			try {
 				prop.load(ip);
 			} catch (IOException e) {
