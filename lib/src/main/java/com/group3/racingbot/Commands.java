@@ -2,6 +2,8 @@ package com.group3.racingbot;
 
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.mongodb.client.MongoClient;
@@ -80,7 +82,38 @@ public class Commands extends ListenerAdapter {
 	    			event.getChannel().sendMessage("No bet amount parameter specified!").queue();
 	    		}
 		    	
-	    	}	
+	    	}
+	    	// A test for filtering an inventory of cars.
+	    	if(args[1].equalsIgnoreCase("inventory")) {
+	    		int randomNum = ThreadLocalRandom.current().nextInt(0, 49);
+	    		
+	    		Car carA = new Car(randomNum, randomNum*2, "OEM", randomNum*3);
+	    		Car carB = new Car(randomNum*2, randomNum, "Junkyard", randomNum*4);
+	    		Car carC = new Car(randomNum/2, randomNum, "Lemon", randomNum*2);
+	    		Car carD = new Car(randomNum*4, randomNum*5, "Racing", randomNum/3);
+	    		
+	    		List<Car> cars = new ArrayList<Car>();
+	    		cars.add(carA);
+	    		cars.add(carB);
+	    		cars.add(carC);
+	    		cars.add(carD);
+	    		
+	    		Inventory<Car> inventory = new CarInventory(cars);
+	    		InventoryIterator<Car> carIterator = inventory.iterator();
+	    		QualityFilter<Car> qualityFilter = new QualityFilter<Car>(carIterator, "Junkyard");
+	    		
+	    		// Print all items with "Junkyard" quality
+	    		String result = "";
+	    		int carCount = 1;
+	    		while (qualityFilter.hasNext()) {
+	    			Car car = qualityFilter.next();
+	    			if (car != null) {
+	    				result += "Car " + carCount + ": " + car + "\n";
+	    			}
+	    		}
+	    		eb.setDescription(result);
+	    		event.getChannel().sendMessage(eb.build()).queue();
+	    	}
 	    }
 	  }
 }
