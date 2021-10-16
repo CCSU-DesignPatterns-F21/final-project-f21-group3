@@ -1,8 +1,15 @@
 package com.group3.racingbot;
 
 
-import java.util.concurrent.ThreadLocalRandom;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -20,17 +27,23 @@ public class Commands extends ListenerAdapter {
 	
 	
 	private DBHandler dbh;
+	private EmbedBuilder eb;
 	public Commands(DBHandler db) {
+		eb = new EmbedBuilder();
 		dbh = db;
 		
 	}
 
 	 @Override
 	  public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+		 
 	    String[] args = event.getMessage().getContentRaw().split(" ");
-	    EmbedBuilder eb = new EmbedBuilder();
 	    Member user = event.getMember(); //Gets the id of the user who called the command.
 	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
+
+	    
+	    MongoDatabase userDB =dbh.getUserDatabase();
+	    MongoCollection<CustomUser> users = userDB.getCollection("Users",CustomUser.class);
 	    
 	    if(args[0].equalsIgnoreCase(RacingBot.prefix+"iracer"))
 	    {
@@ -77,7 +90,37 @@ public class Commands extends ListenerAdapter {
 	    		}
 		    	
 	    	}
-	    	
+	    	// A test for filtering an inventory of cars.
+	    	if(args[1].equalsIgnoreCase("inventory")) {
+	    		int randomNum = ThreadLocalRandom.current().nextInt(0, 49);
+	    		
+	    		Car carA = new Car(randomNum, randomNum*2, "OEM", randomNum*3);
+	    		Car carB = new Car(randomNum*2, randomNum, "Junkyard", randomNum*4);
+	    		Car carC = new Car(randomNum/2, randomNum, "Lemon", randomNum*2);
+	    		Car carD = new Car(randomNum*4, randomNum*5, "Racing", randomNum/3);
+	    		
+	    		List<Car> cars = new ArrayList<Car>();
+	    		cars.add(carA);
+	    		cars.add(carB);
+	    		cars.add(carC);
+	    		cars.add(carD);
+	    		
+	    		Inventory<Car> inventory = new CarInventory(cars);
+	    		InventoryIterator<Car> carIterator = inventory.iterator();
+	    		QualityFilter<Car> qualityFilter = new QualityFilter<Car>(carIterator, "Junkyard");
+	    		
+	    		// Print all items with "Junkyard" quality
+	    		String result = "";
+	    		int carCount = 1;
+	    		while (qualityFilter.hasNext()) {
+	    			Car car = qualityFilter.next();
+	    			if (car != null) {
+	    				result += "Car " + carCount + ": " + car + "\n";
+	    			}
+	    		}
+	    		eb.setDescription(result);
+	    		event.getChannel().sendMessage(eb.build()).queue();
+	    	}
 	    }
 	  }
 }

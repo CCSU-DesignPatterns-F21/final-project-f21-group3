@@ -16,6 +16,7 @@ public class ConfigPropertiesHandler {
 	private Properties prop;
 	private FileInputStream ip;
 	
+	
 	private ConfigPropertiesHandler() {
 		
 		prop =new Properties();

@@ -1,7 +1,9 @@
 # Group-3 Custom .ignore
+config.properties
 
 #Don't include config file, here be API keys and Passwords! Make sure you make your own!
 /lib/src/main/resources 
+
 
 # Gradle
 # ------

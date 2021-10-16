@@ -33,8 +33,10 @@ public class DBHandler {
 		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
 	        CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
 		configProperties = ConfigPropertiesHandler.getInstance();
+    
 		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
+
 				mongoClient = MongoClients.create(settings);
 				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(pojoCodecRegistry);
 				userCollection = database.getCollection("Users",Player.class);
@@ -68,6 +70,26 @@ public class DBHandler {
 		Player player = (Player) userCollection.find(eq("_id",id)).first();
 		return player;
 		
+	}
+
+	public static ConnectionString getConnectionString() {
+		return connectionString;
+	}
+
+	public static MongoClientSettings getSettings() {
+		return settings;
+	}
+
+	public MongoClient getMongoClient() {
+		return mongoClient;
+	}
+
+	public MongoDatabase getUserDatabase() {
+		return userDatabase;
+	}
+
+	public static ConfigPropertiesHandler getConfigProperties() {
+		return configProperties;
 	}
 
 }
