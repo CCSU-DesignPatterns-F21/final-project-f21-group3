@@ -10,6 +10,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+/**
+ * 
+ * @author Maciej Bregisz
+ *
+ */
+
 public class Commands extends ListenerAdapter {
 	
 	
@@ -45,17 +51,14 @@ public class Commands extends ListenerAdapter {
 	    	if(args[1].equalsIgnoreCase("register"))
 	    	{
 	    		//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
-	    		
 	    		if(dbh.userExists(user.getId())){
+	    			System.out.println(dbh.getPlayer(user.getId()).toString());
 	    			event.getChannel().sendMessage("You are already registered!");
 	    			
 	    		}else {
 	    			event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
 	    			dbh.insertUser(new Player(user.getId(),user.getUser().getName()));
-	    		}
-	    		
-	    		System.out.println(user.getId());
-	    		
+	    		}	    		
 	    	}
 	    	//Example command, simple guessing command
 	    	if(args[1].equalsIgnoreCase("guess"))

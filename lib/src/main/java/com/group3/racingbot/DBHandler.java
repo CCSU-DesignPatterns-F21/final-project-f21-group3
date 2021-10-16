@@ -16,7 +16,11 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-
+/**
+ * Handles the requests and connections to the database.
+ * @author Maciej Bregisz
+ *
+ */
 public class DBHandler {
 	private static ConnectionString connectionString;
 	private static MongoClientSettings settings;
@@ -38,17 +42,31 @@ public class DBHandler {
 				System.out.println(userCollection.countDocuments());
 	}
 	
-	
+	/**
+	 * Gets a User record from the database by specified id. ID is the Discord User id.  
+	 * @param id the Discord user ID
+	 * @return whether or not the User with the given ID exists.
+	 */
 	public boolean userExists(String id) {
-		if(userCollection.find(eq("id",id)).first() != null) {
+		if(userCollection.find(eq("_id",id)) != null) {
 			return true;
 		}else {
 			return false;
 		}
 	}
 	
+	/**
+	 * Inserts the Player object into the database collection.
+	 * @param p Player Object being stored in database collection.
+	 */
 	public void insertUser(Player p) {
 		userCollection.insertOne(p);
+		
+	}
+	
+	public Player getPlayer(String id) {
+		Player player = (Player) userCollection.find(eq("_id",id)).first();
+		return player;
 		
 	}
 

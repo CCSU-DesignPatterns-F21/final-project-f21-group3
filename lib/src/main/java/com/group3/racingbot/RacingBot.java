@@ -23,5 +23,4 @@ public class RacingBot {
 		jda.getPresence().setActivity(Activity.watching("for participants!"));
 		jda.addEventListener(new Commands(db));
 	}
-
 }

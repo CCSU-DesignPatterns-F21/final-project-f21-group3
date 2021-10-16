@@ -5,6 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Responsible for opening and parsing the Config.Properties file.
+ * @author Maciej Bregisz
+ *
+ */
+
 public class ConfigPropertiesHandler {
 	private static ConfigPropertiesHandler configPropertiesHandler = null;
 	private Properties prop;
@@ -28,6 +34,9 @@ public class ConfigPropertiesHandler {
 		}
 	}
 	
+	/*
+	 * Returns the instance of the ConfigPropertiesHandler, it's created if no instance exists.
+	 */
 	public static ConfigPropertiesHandler getInstance()
     {
         if (configPropertiesHandler == null)
@@ -35,6 +44,11 @@ public class ConfigPropertiesHandler {
  
         return configPropertiesHandler;
     }
+	
+	/**
+	 * @param propReq Properties 
+	 * @return returns property value parsed out of the config.properties file.
+	 */
 	public String getProperty(String propReq) {
 		return prop.getProperty(propReq);
 		
