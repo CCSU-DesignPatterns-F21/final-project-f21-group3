@@ -3,11 +3,16 @@ package com.group3.racingbot;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.group3.racingbot.inventory.CarInventory;
+import com.group3.racingbot.inventory.Inventory;
+import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.QualityFilter;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -40,10 +45,6 @@ public class Commands extends ListenerAdapter {
 	    String[] args = event.getMessage().getContentRaw().split(" ");
 	    Member user = event.getMember(); //Gets the id of the user who called the command.
 	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
-
-	    
-	    MongoDatabase userDB =dbh.getUserDatabase();
-	    MongoCollection<CustomUser> users = userDB.getCollection("Users",CustomUser.class);
 	    
 	    if(args[0].equalsIgnoreCase(RacingBot.prefix+"iracer"))
 	    {
@@ -65,12 +66,32 @@ public class Commands extends ListenerAdapter {
 	    	{
 	    		//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
 	    		if(dbh.userExists(user.getId())){
-	    			System.out.println(dbh.getPlayer(user.getId()).toString());
-	    			event.getChannel().sendMessage("You are already registered!");
+	    			Player p = dbh.getPlayer(user.getId());
+	    			eb.setImage(user.getUser().getAvatarUrl());
+	    			eb.setTitle("User Already Exists!");
+	    			eb.setColor(Color.green);
+	    			eb.setThumbnail(user.getUser().getAvatarUrl());
+	    			
+		    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+		    				+ "\n Total Losses: " + p.getTotalLosses()
+		    				+ "\n Credits: " + p.getCredits());
+		    		//eb.addField("Title of field", "test of field", false);
+		    		event.getChannel().sendMessage(eb.build()).queue();
 	    			
 	    		}else {
 	    			event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
-	    			dbh.insertUser(new Player(user.getId(),user.getUser().getName()));
+	    			Player p = new Player();
+	    			p.setId(user.getId());
+	    			p.setUsername(user.getUser().getName());
+	    			p.setLastWorked(new Date(100));
+	    			dbh.insertUser(p);
+	    			eb.setThumbnail(user.getUser().getAvatarUrl());
+	    			eb.setTitle("User Already Exists!");
+	    			eb.setColor(Color.green);
+		    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+		    				+ "\n Total Losses: " + p.getTotalLosses()
+		    				+ "\n Credits: " + p.getCredits());
+		    		//eb.addField("Title of field", "test of field", false);
 	    		}	    		
 	    	}
 	    	//Example command, simple guessing command
@@ -90,6 +111,34 @@ public class Commands extends ListenerAdapter {
 	    		}
 		    	
 	    	}
+	    	if(args[1].equalsIgnoreCase("work")){
+	    		Player p = dbh.getPlayer(user.getId());
+	    		System.out.println(p.getLastWorked());
+	    		Calendar nextWork = Calendar.getInstance(); 
+	    		nextWork.setTime(p.getLastWorked());               
+	    		nextWork.add(Calendar.HOUR_OF_DAY, 1);      
+	    		nextWork.getTime();    
+	    		
+	    		if(p.getLastWorked() != null) {
+	    			if(p.getLastWorked().after(nextWork.getTime()))
+		    		{
+		    			p.setCredits(p.getCredits() + 500);
+		    			p.setLastWorked(new Date(System.currentTimeMillis()));
+		    		
+		    			dbh.updateUser(p);
+		    		}else {
+		    			long remaining = System.currentTimeMillis() - nextWork.getTimeInMillis();
+		    			event.getChannel().sendMessage(String.format("You can work again in:  %d Hours, %d Minutes, %d Seconds", 
+		    					TimeUnit.MILLISECONDS.toHours(remaining),
+		    					TimeUnit.MILLISECONDS.toMinutes(remaining),
+		    					TimeUnit.MILLISECONDS.toSeconds(remaining)));
+		    		}
+	    			
+	    		}
+	    		
+	    	}
+	    	
+	    	
 	    	// A test for filtering an inventory of cars.
 	    	if(args[1].equalsIgnoreCase("inventory")) {
 	    		int randomNum = ThreadLocalRandom.current().nextInt(0, 49);

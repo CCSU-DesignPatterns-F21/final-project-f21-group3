@@ -1,6 +1,8 @@
-package com.group3.racingbot;
+package com.group3.racingbot.inventory;
 
 import java.util.List;
+
+import com.group3.racingbot.components.Component;
 
 /**
  * @author Nick Sabia

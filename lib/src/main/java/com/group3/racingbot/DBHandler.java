@@ -33,8 +33,8 @@ public class DBHandler {
 		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
 	        CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
 		configProperties = ConfigPropertiesHandler.getInstance();
-    
-		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+		connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
+		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
 
 				mongoClient = MongoClients.create(settings);
@@ -50,7 +50,7 @@ public class DBHandler {
 	 * @return whether or not the User with the given ID exists.
 	 */
 	public boolean userExists(String id) {
-		if(userCollection.find(eq("_id",id)) != null) {
+		if(userCollection.find(eq("_id",id)).first() != null) {
 			return true;
 		}else {
 			return false;
@@ -64,6 +64,10 @@ public class DBHandler {
 	public void insertUser(Player p) {
 		userCollection.insertOne(p);
 		
+	}
+	
+	public void updateUser(Player p) {
+		userCollection.findOneAndReplace(eq("_id",p.getId()), p);
 	}
 	
 	public Player getPlayer(String id) {
@@ -85,7 +89,7 @@ public class DBHandler {
 	}
 
 	public MongoDatabase getUserDatabase() {
-		return userDatabase;
+		return database;
 	}
 
 	public static ConfigPropertiesHandler getConfigProperties() {

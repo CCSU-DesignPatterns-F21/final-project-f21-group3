@@ -1,4 +1,4 @@
-package com.group3.racingbot;
+package com.group3.racingbot.inventory;
 
 /**
  * @author Nick Sabia
@@ -8,7 +8,7 @@ public class QualityFilter<T extends Quantifiable> extends InventoryIteratorDeco
 	
 	private String quality;
 	
-	QualityFilter(InventoryIterator<T> iterator, String label) {
+	public QualityFilter(InventoryIterator<T> iterator, String label) {
 		super(iterator);
 		this.quality = label;
 	}

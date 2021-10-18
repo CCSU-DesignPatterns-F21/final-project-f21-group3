@@ -3,6 +3,8 @@
  */
 package com.group3.racingbot;
 
+import com.group3.racingbot.inventory.Quantifiable;
+
 /**
  * @author Nick Sabia
  *

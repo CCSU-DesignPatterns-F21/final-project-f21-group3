@@ -1,6 +1,11 @@
 package com.group3.racingbot;
 
+import java.util.Date;
 import java.util.Objects;
+
+import com.group3.racingbot.components.Component;
+import com.group3.racingbot.inventory.CarInventory;
+import com.group3.racingbot.inventory.ComponentInventory;
 
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
@@ -17,22 +22,20 @@ public class Player {
 	private int famepoints;
 	private int totalWins;
 	private int totalLosses;
+	private Date lastWorked;
+	private ComponentInventory ownedComponents;
+	private CarInventory ownedCars;
 	
 	/**
 	 * Player class constructor.
 	 */
 	public Player() {
-		
+		credits = 2000;
+		famepoints = 0;
+		totalLosses = 0;
+		totalWins = 0;
 	}
 	
-	public Player(String i, String u) {
-		id = i;
-		username = u;
-	}
-	
-	/**
-	 * @return the id
-	 */
 	public String getId() {
 		return id;
 	}
@@ -114,6 +117,20 @@ public class Player {
 		this.totalLosses = totalLosses;
 	}
 	
+
+	/**
+	 * @return the lastWorked
+	 */
+	public Date getLastWorked() {
+		return lastWorked;
+	}
+
+	/**
+	 * @param lastWorked the lastWorked to set
+	 */
+	public void setLastWorked(Date lastWorked) {
+		this.lastWorked = lastWorked;
+	}
 
 	public String toString() {
 		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;

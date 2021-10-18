@@ -1,4 +1,4 @@
-package com.group3.racingbot;
+package com.group3.racingbot.inventory;
 
 /**
  * @author Nick Sabia
