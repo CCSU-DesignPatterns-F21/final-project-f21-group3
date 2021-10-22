@@ -11,10 +11,15 @@ import com.group3.racingbot.components.Component;
 public class ComponentInventory implements Inventory<Component>{
 	private List<Component> items;
 	
-	public ComponentInventory(List<Component> componentList) {
+	public ComponentInventory() {
 		// TODO: Get this list of components from the database upon class creation.
 		// For now, stores the list that the user passes in.
-		this.items = componentList;
+		//this.items = componentList;
+	}
+	
+	public List<Component> getItems() {
+		return items;
+		
 	}
 	public InventoryIterator<Component> iterator() {
 		return new ComponentIterator();

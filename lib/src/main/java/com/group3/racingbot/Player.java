@@ -18,11 +18,11 @@ public class Player {
 	
 	private String id;
 	private String username;
-	private int credits;
-	private int famepoints;
-	private int totalWins;
-	private int totalLosses;
-	private Date lastWorked;
+	private int credits = 2000;
+	private int famepoints = 0;
+	private int totalWins = 0;
+	private int totalLosses = 0;
+	private long lastWorked = 0;
 	private ComponentInventory ownedComponents;
 	private CarInventory ownedCars;
 	
@@ -30,10 +30,9 @@ public class Player {
 	 * Player class constructor.
 	 */
 	public Player() {
-		credits = 2000;
-		famepoints = 0;
-		totalLosses = 0;
-		totalWins = 0;
+	
+		setOwnedComponents(new ComponentInventory());
+		setOwnedCars(new CarInventory());
 	}
 	
 	public String getId() {
@@ -121,19 +120,47 @@ public class Player {
 	/**
 	 * @return the lastWorked
 	 */
-	public Date getLastWorked() {
+	public long getLastWorked() {
 		return lastWorked;
 	}
 
 	/**
 	 * @param lastWorked the lastWorked to set
 	 */
-	public void setLastWorked(Date lastWorked) {
+	public void setLastWorked(long lastWorked) {
 		this.lastWorked = lastWorked;
 	}
-
+	
 	public String toString() {
 		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;
+	}
+	
+	/**
+	 * @return the ownedCars
+	 */
+	public CarInventory getOwnedCars() {
+		return ownedCars;
+	}
+
+	/**
+	 * @param ownedCars the ownedCars to set
+	 */
+	public void setOwnedCars(CarInventory ownedCars) {
+		this.ownedCars = ownedCars;
+	}
+
+	/**
+	 * @return the ownedComponents
+	 */
+	public ComponentInventory getOwnedComponents() {
+		return ownedComponents;
+	}
+
+	/**
+	 * @param ownedComponents the ownedComponents to set
+	 */
+	public void setOwnedComponents(ComponentInventory ownedComponents) {
+		this.ownedComponents = ownedComponents;
 	}
 	
 	@Override
@@ -161,6 +188,8 @@ public class Player {
 				&& totalLosses == other.totalLosses && totalWins == other.totalWins
 				&& Objects.equals(username, other.username);
 	}
+
+	
 
 	
 	

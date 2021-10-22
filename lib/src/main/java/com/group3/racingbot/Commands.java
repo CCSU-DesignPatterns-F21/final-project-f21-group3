@@ -30,13 +30,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class Commands extends ListenerAdapter {
 	
-	
 	private DBHandler dbh;
 	private EmbedBuilder eb;
 	public Commands(DBHandler db) {
 		eb = new EmbedBuilder();
 		dbh = db;
-		
 	}
 
 	 @Override
@@ -83,7 +81,7 @@ public class Commands extends ListenerAdapter {
 	    			Player p = new Player();
 	    			p.setId(user.getId());
 	    			p.setUsername(user.getUser().getName());
-	    			p.setLastWorked(new Date(100));
+	    			p.setLastWorked(0);
 	    			dbh.insertUser(p);
 	    			eb.setThumbnail(user.getUser().getAvatarUrl());
 	    			eb.setTitle("User Already Exists!");
@@ -112,30 +110,43 @@ public class Commands extends ListenerAdapter {
 		    	
 	    	}
 	    	if(args[1].equalsIgnoreCase("work")){
-	    		Player p = dbh.getPlayer(user.getId());
-	    		System.out.println(p.getLastWorked());
-	    		Calendar nextWork = Calendar.getInstance(); 
-	    		nextWork.setTime(p.getLastWorked());               
-	    		nextWork.add(Calendar.HOUR_OF_DAY, 1);      
-	    		nextWork.getTime();    
+	    			Player p = dbh.getPlayer(user.getId());
+	    			//System.out.println(p.toString());
 	    		
-	    		if(p.getLastWorked() != null) {
-	    			if(p.getLastWorked().after(nextWork.getTime()))
+	    			Date lastWorked = new Date(p.getLastWorked());
+	    			Calendar nextWork = Calendar.getInstance(); 
+	    			Calendar timeNow = Calendar.getInstance();
+	    			Calendar lastWorkedDate = Calendar.getInstance();
+	    			lastWorkedDate.setTime(lastWorked);
+	    			timeNow.setTime(new Date(System.currentTimeMillis()));
+		    		nextWork.setTime(lastWorked);               
+		    		nextWork.add(Calendar.HOUR_OF_DAY, 1);      
+		    		nextWork.getTime();    
+		    		System.out.println("Last work: " + lastWorkedDate.getTime());
+		    		System.out.println("Next work: " + nextWork.getTime());
+		    		
+		    		//Allow Player t
+		    		if(p.getLastWorked() == 0)
 		    		{
 		    			p.setCredits(p.getCredits() + 500);
-		    			p.setLastWorked(new Date(System.currentTimeMillis()));
+		    			p.setLastWorked(System.currentTimeMillis());
+		    			System.out.println(p.toString());
+		    			dbh.updateUser(p);
+		    		}
+	    			if(timeNow.after(nextWork))
+		    		{
+		    			p.setCredits(p.getCredits() + 500);
+		    			p.setLastWorked(System.currentTimeMillis());
+		    			System.out.println(p.toString());
 		    		
 		    			dbh.updateUser(p);
-		    		}else {
-		    			long remaining = System.currentTimeMillis() - nextWork.getTimeInMillis();
-		    			event.getChannel().sendMessage(String.format("You can work again in:  %d Hours, %d Minutes, %d Seconds", 
-		    					TimeUnit.MILLISECONDS.toHours(remaining),
-		    					TimeUnit.MILLISECONDS.toMinutes(remaining),
-		    					TimeUnit.MILLISECONDS.toSeconds(remaining)));
 		    		}
-	    			
-	    		}
-	    		
+	    			if(timeNow.before(nextWork)){
+		    			long remaining = nextWork.getTimeInMillis() - System.currentTimeMillis();
+		    			event.getChannel().sendMessage(String.format("You can work again in:  %d Hours, %d Minutes", 
+		    				TimeUnit.MILLISECONDS.toHours(remaining),
+		    				TimeUnit.MILLISECONDS.toMinutes(remaining))).queue();
+		    		}
 	    	}
 	    	
 	    	
@@ -154,21 +165,21 @@ public class Commands extends ListenerAdapter {
 	    		cars.add(carC);
 	    		cars.add(carD);
 	    		
-	    		Inventory<Car> inventory = new CarInventory(cars);
-	    		InventoryIterator<Car> carIterator = inventory.iterator();
-	    		QualityFilter<Car> qualityFilter = new QualityFilter<Car>(carIterator, "Junkyard");
+	    		//Inventory<Car> inventory = new CarInventory(cars);
+	    		//InventoryIterator<Car> carIterator = inventory.iterator();
+	    		//QualityFilter<Car> qualityFilter = new QualityFilter<Car>(carIterator, "Junkyard");
 	    		
 	    		// Print all items with "Junkyard" quality
-	    		String result = "";
-	    		int carCount = 1;
-	    		while (qualityFilter.hasNext()) {
-	    			Car car = qualityFilter.next();
-	    			if (car != null) {
-	    				result += "Car " + carCount + ": " + car + "\n";
-	    			}
-	    		}
-	    		eb.setDescription(result);
-	    		event.getChannel().sendMessage(eb.build()).queue();
+//	    		String result = "";
+//	    		int carCount = 1;
+//	    		while (qualityFilter.hasNext()) {
+//	    			Car car = qualityFilter.next();
+//	    			if (car != null) {
+//	    				result += "Car " + carCount + ": " + car + "\n";
+//	    			}
+//	    		}
+//	    		eb.setDescription(result);
+//	    		event.getChannel().sendMessage(eb.build()).queue();
 	    	}
 	    }
 	  }

@@ -6,6 +6,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
@@ -31,15 +32,17 @@ public class DBHandler {
 	
 	public DBHandler() {
 		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
-	        CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
+		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+		            MongoClientSettings.getDefaultCodecRegistry(),
+		            CodecRegistries.fromProviders(pojoCodecProvider)
+		    );
 		configProperties = ConfigPropertiesHandler.getInstance();
 		connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
 		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
-
 				mongoClient = MongoClients.create(settings);
-				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(pojoCodecRegistry);
-				userCollection = database.getCollection("Users",Player.class);
+				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
+				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
 		
 				System.out.println(userCollection.countDocuments());
 	}
@@ -63,7 +66,6 @@ public class DBHandler {
 	 */
 	public void insertUser(Player p) {
 		userCollection.insertOne(p);
-		
 	}
 	
 	public void updateUser(Player p) {
