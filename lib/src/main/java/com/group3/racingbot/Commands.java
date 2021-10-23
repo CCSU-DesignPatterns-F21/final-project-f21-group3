@@ -9,12 +9,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.Inventory;
-import com.group3.racingbot.inventory.InventoryIterator;
-import com.group3.racingbot.inventory.QualityFilter;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -23,7 +18,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /**
- * 
+ * Handles Discord user command inputs and 
  * @author Maciej Bregisz
  *
  */
@@ -36,7 +31,7 @@ public class Commands extends ListenerAdapter {
 		eb = new EmbedBuilder();
 		dbh = db;
 	}
-
+	
 	 @Override
 	  public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		 
@@ -62,35 +57,42 @@ public class Commands extends ListenerAdapter {
 	    	//Handle User registering
 	    	if(args[1].equalsIgnoreCase("register"))
 	    	{
-	    		//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
-	    		if(dbh.userExists(user.getId())){
-	    			Player p = dbh.getPlayer(user.getId());
-	    			eb.setImage(user.getUser().getAvatarUrl());
-	    			eb.setTitle("User Already Exists!");
-	    			eb.setColor(Color.green);
-	    			eb.setThumbnail(user.getUser().getAvatarUrl());
+	    		try {
+	    			//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
+		    		if(dbh.userExists(user.getId())){
+		    			Player p = dbh.getPlayer(user.getId());
+		    			eb.setImage(user.getUser().getAvatarUrl());
+		    			eb.setTitle("User Already Exists!");
+		    			eb.setColor(Color.green);
+		    			eb.setThumbnail(user.getUser().getAvatarUrl());
+		    			
+			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+			    				+ "\n Total Losses: " + p.getTotalLosses()
+			    				+ "\n Credits: " + p.getCredits());
+			    		//eb.addField("Title of field", "test of field", false);
+			    		event.getChannel().sendMessage(eb.build()).queue();
+		    			
+		    		}else {
+		    			event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
+		    			Player p = new Player();
+		    			p.setId(user.getId());
+		    			p.setUsername(user.getUser().getName());
+		    			p.setLastWorked(0);
+		    			dbh.insertUser(p);
+		    			eb.setThumbnail(user.getUser().getAvatarUrl());
+		    			eb.setTitle("User Already Exists!");
+		    			eb.setColor(Color.green);
+			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+			    				+ "\n Total Losses: " + p.getTotalLosses()
+			    				+ "\n Credits: " + p.getCredits());
+			    		//eb.addField("Title of field", "test of field", false);
+		    		}	    	
 	    			
-		    		eb.setDescription("Total Wins: "+ p.getTotalWins()
-		    				+ "\n Total Losses: " + p.getTotalLosses()
-		    				+ "\n Credits: " + p.getCredits());
-		    		//eb.addField("Title of field", "test of field", false);
-		    		event.getChannel().sendMessage(eb.build()).queue();
+	    		}catch(Exception e) {
 	    			
-	    		}else {
-	    			event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
-	    			Player p = new Player();
-	    			p.setId(user.getId());
-	    			p.setUsername(user.getUser().getName());
-	    			p.setLastWorked(0);
-	    			dbh.insertUser(p);
-	    			eb.setThumbnail(user.getUser().getAvatarUrl());
-	    			eb.setTitle("User Already Exists!");
-	    			eb.setColor(Color.green);
-		    		eb.setDescription("Total Wins: "+ p.getTotalWins()
-		    				+ "\n Total Losses: " + p.getTotalLosses()
-		    				+ "\n Credits: " + p.getCredits());
-		    		//eb.addField("Title of field", "test of field", false);
-	    		}	    		
+	    			event.getChannel().sendMessage("Unexpected error when registering User, try again!");
+	    		}
+	    			
 	    	}
 	    	//Example command, simple guessing command
 	    	if(args[1].equalsIgnoreCase("guess"))
@@ -109,7 +111,9 @@ public class Commands extends ListenerAdapter {
 	    		}
 		    	
 	    	}
-	    	if(args[1].equalsIgnoreCase("work")){
+	    	if(args[1].equalsIgnoreCase("work"))
+	    	{
+	    		try {
 	    			Player p = dbh.getPlayer(user.getId());
 	    			//System.out.println(p.toString());
 	    		
@@ -147,6 +151,11 @@ public class Commands extends ListenerAdapter {
 		    				TimeUnit.MILLISECONDS.toHours(remaining),
 		    				TimeUnit.MILLISECONDS.toMinutes(remaining))).queue();
 		    		}
+	    		}catch(Exception e)
+	    		{
+	    			event.getChannel().sendMessage("Unexpected error when attempting Work command, try again!");
+	    		}
+	    			
 	    	}
 	    	
 	    	

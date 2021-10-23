@@ -5,6 +5,8 @@ import static com.mongodb.client.model.Filters.eq;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
+import java.util.Objects;
+
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -65,17 +67,34 @@ public class DBHandler {
 	 * @param p Player Object being stored in database collection.
 	 */
 	public void insertUser(Player p) {
-		userCollection.insertOne(p);
+		userCollection.insertOne(p);			
 	}
 	
+	/**
+	 * Find and replace a Player object in the Database with a modified Player object
+	 * @param p Player object, will replace a Player database record with the one passed in. 
+	 */
 	public void updateUser(Player p) {
 		userCollection.findOneAndReplace(eq("_id",p.getId()), p);
 	}
 	
+	/**
+	 * Returns a Player object from the Database based on the Discord ID.
+	 * @param id Discord User ID, used for identifying and retrieving of stored Player objects.
+	 * @return Parsed Player object from the database.
+	 */
 	public Player getPlayer(String id) {
 		Player player = (Player) userCollection.find(eq("_id",id)).first();
 		return player;
 		
+	}
+	
+	public MongoClient getMongoClient() {
+		return mongoClient;
+	}
+
+	public MongoDatabase getUserDatabase() {
+		return database;
 	}
 
 	public static ConnectionString getConnectionString() {
@@ -86,16 +105,28 @@ public class DBHandler {
 		return settings;
 	}
 
-	public MongoClient getMongoClient() {
-		return mongoClient;
-	}
-
-	public MongoDatabase getUserDatabase() {
-		return database;
-	}
+	
 
 	public static ConfigPropertiesHandler getConfigProperties() {
 		return configProperties;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(database, mongoClient, userCollection);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DBHandler other = (DBHandler) obj;
+		return Objects.equals(database, other.database) && Objects.equals(mongoClient, other.mongoClient)
+				&& Objects.equals(userCollection, other.userCollection);
 	}
 
 }
