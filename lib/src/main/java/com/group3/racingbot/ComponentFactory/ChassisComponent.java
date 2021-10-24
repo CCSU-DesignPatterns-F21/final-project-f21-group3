@@ -1,4 +1,4 @@
-package com.group3.racingbot;
+package com.group3.racingbot.ComponentFactory;
 
 /**
  * @author Jack Gola
@@ -10,7 +10,20 @@ public class ChassisComponent extends Component {
 	
 	private float popularityModifier, accelerationModifier, speedModifier, handlingModifier, brakingModifier;
 	
+	/**
+	 * Constructor for chassis component
+	 * @param quality
+	 * @param value
+	 * @param durability
+	 * @param popularityModifier
+	 * @param accelerationModifier
+	 * @param speedModifier
+	 * @param handlingModifier
+	 * @param brakingModifier
+	 */
+	
 	public ChassisComponent(String quality, int value, int durability, float popularityModifier, float accelerationModifier, float speedModifier, float handlingModifier, float brakingModifier) {
+		this.setName("Chassis");
 		this.setQuality(quality);
 		this.setValue(value);
 		this.setDurability(durability);
@@ -89,6 +102,14 @@ public class ChassisComponent extends Component {
 	 */
 	public void setHandlingModifier(float handlingModifier) {
 		this.handlingModifier = handlingModifier;
+	}
+	/**
+	 * returns toString() for chassis component
+	 */
+	@Override
+	public String toString() {
+		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nPopularity: " + this.getPopularityModifier()
+		+ "\nAcceleration Modifier: " + getAccelerationModifier() + "\nSpeed Modifier: " + getSpeedModifier() + "\nHandling Modifier: " + getHandlingModifier() + "\nBraking Modifier: " + getBrakingModifier() + "\n\n";
 	}
 	
 	

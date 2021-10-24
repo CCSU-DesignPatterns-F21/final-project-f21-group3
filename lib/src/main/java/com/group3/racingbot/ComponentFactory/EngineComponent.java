@@ -1,4 +1,4 @@
-package com.group3.racingbot;
+package com.group3.racingbot.ComponentFactory;
 
 /**
  * @author Jack Gola
@@ -9,9 +9,19 @@ package com.group3.racingbot;
 public class EngineComponent extends Component{
 	
 	private float speed;
+	
 	//TODO: tunedFor
 	
+	/**
+	 * Constructor for engine component
+	 * @param quality
+	 * @param value
+	 * @param durability
+	 * @param speed
+	 */
+	
 	public EngineComponent(String quality, int value, int durability, float speed) {
+		this.setName("Engine");
 		this.setQuality(quality);
 		this.setValue(value);
 		this.setDurability(durability);
@@ -30,6 +40,16 @@ public class EngineComponent extends Component{
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
+	
+	/**
+	 * returns toString() for engine component
+	 */
+
+	@Override
+	public String toString() {
+		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nSpeed: " + this.getSpeed() + "\n\n";
+	}
+	
 	
 }
 

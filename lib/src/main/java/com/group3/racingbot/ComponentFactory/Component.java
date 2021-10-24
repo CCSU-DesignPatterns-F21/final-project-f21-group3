@@ -1,4 +1,4 @@
-package com.group3.racingbot;
+package com.group3.racingbot.ComponentFactory;
 
 /**
  * @author Jack Gola
@@ -6,7 +6,7 @@ package com.group3.racingbot;
  * alongside common functionality
  */
 public abstract class Component {
-	private String quality;
+	private String quality, name;
 	private int weight, value, durability, rating;
 	private int maxDurability = 100;				
 	
@@ -16,6 +16,20 @@ public abstract class Component {
 	 */
 	public int getRating() {
 		return rating;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -31,15 +45,6 @@ public abstract class Component {
 	public void setQuality(String quality) {
 		this.quality = quality;
 	}
-
-	//price commented out for now	
-	
-	/**
-	 * @param price the price to set
-	 */
-	//public void setPrice(int price) {
-		//this.price = price;
-	//}
 
 	/**
 	 * @param weight the weight to set
@@ -69,38 +74,65 @@ public abstract class Component {
 		durability = 100;
 	}
 	
+	/**
+	 * @param sets maxDurability
+	 */
+	
 	public void setMaxDurability(int maxDurability) {
 		this.maxDurability = maxDurability;
 	}
+	
+	/**
+	 * @param returns Quality
+	 */
 	
 	public String getQuality() {
 		return quality;
 	}
 	
+	/**
+	 * @param returns weight
+	 */
+	
 	public int getWeight() {
 		return weight;
 	}
+	
+	/**
+	 * @param returns value
+	 */
 	
 	public int getValue() {
 		return value;
 	}
 	
+	/**
+	 * @param returns durability
+	 */
+	
 	public int getDurability() {
 		return durability;
 	}
 	
+	/**
+	 * @param returns max durability
+	 */
+	
 	public int getMaxDurability() {
 		return durability;
 	}
+	/**
+	 * @param returns rating
+	 */
 	
 	public int computeRating() {
 		return rating;
 	}
 	
+	/**
+	 * @param returns durability ratio
+	 */
 	public int getDurabilityRatio() {
 		return  durability / maxDurability;
 	}
-	
-	
-	
 }

@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.ComponentFactory.ComponentFactory;
+import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
@@ -19,6 +20,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 /**
  * 
  * @author Maciej Bregisz
+ * @author Jack Gola - "factorymethod" command
  *
  */
 
@@ -26,14 +28,16 @@ public class Commands extends ListenerAdapter {
 
 	private DBHandler dbh;
 	private EmbedBuilder eb;
+	private EmbedBuilder factoryEB;
+	private ComponentFactory component;
 
 	public Commands(DBHandler db) {
 		eb = new EmbedBuilder();
+		factoryEB = new EmbedBuilder();
 		dbh = db;
-		//Component createdComponent;
-
+		component = new ConcreteComponentFactory();
 	}
-
+	
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 
@@ -116,8 +120,30 @@ public class Commands extends ListenerAdapter {
 				eb.setDescription(result);
 				event.getChannel().sendMessage(eb.build()).queue();
 			}
-			if (args[1].equalsIgnoreCase("createpart")) {
-				event.getChannel().sendMessage("Your part has been created!").queue();
+			
+			
+			//TODO: for debugging only
+			
+			//Lemon: 0-150
+			//Junkyard: 151 - 300
+			//OEM: 301 - 750
+			//Sports: 751 - 3000
+			//Racing: 3001 - 20000
+			
+			if (args[1].equalsIgnoreCase("factorymethod")) {
+				factoryEB.setColor(Color.green);
+				factoryEB.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
+				factoryEB.setTitle("Your components have been successfully generated based on preset parameters");
+				
+				Component testComp1 = component.createComponent("engine", 5000);
+				Component testComp2 = component.createComponent("suspension", 2999);
+				Component testComp3 = component.createComponent("wheel", 700);
+				Component testComp4 = component.createComponent("transmission", 299);
+				Component testComp5 = component.createComponent("chassis", 99);
+					
+				factoryEB.setDescription(testComp1.toString() + testComp2.toString() + testComp3.toString() + testComp4.toString() + testComp5.toString());		
+
+				event.getChannel().sendMessage(factoryEB.build()).queue();
 			}
 		}
 	}

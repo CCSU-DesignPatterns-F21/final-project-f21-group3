@@ -1,4 +1,4 @@
-package com.group3.racingbot;
+package com.group3.racingbot.ComponentFactory;
 
 /**
  * @author Jack Gola
@@ -11,7 +11,16 @@ public class SuspensionComponent extends Component {
 	private float handling;
 	//TODO: tunedFor
 	
+	/**
+	 * Constructor for suspension component
+	 * @param quality
+	 * @param value
+	 * @param durability
+	 * @param handling
+	 */
+	
 	public SuspensionComponent(String quality, int value, int durability, float handling) {
+		this.setName("Suspension");
 		this.setQuality(quality);
 		this.setValue(value);
 		this.setDurability(durability);
@@ -30,6 +39,15 @@ public class SuspensionComponent extends Component {
 	 */
 	public void setHandling(float handling) {
 		this.handling = handling;
+	}
+	
+	/**
+	 * returns toString() for suspension component
+	 */
+	
+	@Override
+	public String toString() {
+		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nHandling: " + this.getHandling() + "\n\n";
 	}
 	
 }
