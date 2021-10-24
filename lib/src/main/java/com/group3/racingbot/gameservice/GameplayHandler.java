@@ -37,5 +37,4 @@ public class GameplayHandler {
 		timer.schedule(hourlyTask, firstScheduledTask, 1000*60*60);
 		
 	}
-
 }
