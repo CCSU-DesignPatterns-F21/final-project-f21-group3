@@ -8,6 +8,7 @@ package com.group3.racingbot.ComponentFactory;
 
 public class ChassisComponent extends Component {
 	
+	private int popularity;
 	private float popularityModifier, accelerationModifier, speedModifier, handlingModifier, brakingModifier;
 	
 	/**
@@ -22,7 +23,7 @@ public class ChassisComponent extends Component {
 	 * @param brakingModifier
 	 */
 	
-	public ChassisComponent(String quality, int value, int durability, float popularityModifier, float accelerationModifier, float speedModifier, float handlingModifier, float brakingModifier) {
+	public ChassisComponent(String quality, int value, int durability, int popularity, float popularityModifier, float accelerationModifier, float speedModifier, float handlingModifier, float brakingModifier) {
 		this.setName("Chassis");
 		this.setQuality(quality);
 		this.setValue(value);
@@ -46,6 +47,20 @@ public class ChassisComponent extends Component {
 	 */
 	public void setBrakingModifier(float brakingModifier) {
 		this.brakingModifier = brakingModifier;
+	}
+	
+	/**
+	 * @return base popularity value
+	 */
+	public int getPopularity() {
+		return popularity;
+	}
+	
+	/**
+	 * @param popularity the popularity value to set
+	 */
+	public void setPopularity(int popularity) {
+		this.popularity = popularity;
 	}
 
 	/**
@@ -103,6 +118,14 @@ public class ChassisComponent extends Component {
 	public void setHandlingModifier(float handlingModifier) {
 		this.handlingModifier = handlingModifier;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = prime * this.popularity;
+		return result;
+	}
+	
 	/**
 	 * returns toString() for chassis component
 	 */

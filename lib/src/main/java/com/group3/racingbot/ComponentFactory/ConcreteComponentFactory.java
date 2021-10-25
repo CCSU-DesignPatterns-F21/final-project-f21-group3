@@ -72,15 +72,15 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		//quality, value, durability, popularity, accelerationModifier, speedModifier, handlingModifier, brakingModifier
 		
 		if(type == "chassis" && (cost >= 0 && cost <= 150))
-			createdComponent = new ChassisComponent("Lemon",100, 100, 0, 1, 1, 1, 1);
+			createdComponent = new ChassisComponent("Lemon",100, 100, 0, 0, 1, 1, 1, 1);
 		else if(type == "chassis" && (cost >= 151 && cost <= 300)) 
-			createdComponent = new ChassisComponent("Junkyard",500, 100, 2, 2, 2, 2, 2);
+			createdComponent = new ChassisComponent("Junkyard",500, 100, 0, 2, 2, 2, 2, 2);
 		else if(type == "chassis" && (cost >= 301 && cost <= 750)) 
-			createdComponent = new ChassisComponent("OEM",2500, 100, 3, 3, 3, 3, 3);
+			createdComponent = new ChassisComponent("OEM",2500, 100, 0, 3, 3, 3, 3, 3);
 		else if(type == "chassis" && (cost >= 751 && cost <= 3000)) 
-			createdComponent = new ChassisComponent("Sports",5000, 100, 4, 4, 4, 4, 4);
+			createdComponent = new ChassisComponent("Sports",5000, 100, 0, 4, 4, 4, 4, 4);
 		else if(type == "chassis" && cost >= 3001) 
-			createdComponent = new ChassisComponent("Racing",10000, 100, 5, 5, 5, 5, 5);
+			createdComponent = new ChassisComponent("Racing",10000, 100, 0, 5, 5, 5, 5, 5);
 		
 		//returns Transmission with placeholder stats depending on cost
 		//quality, value, durability, acceleration
