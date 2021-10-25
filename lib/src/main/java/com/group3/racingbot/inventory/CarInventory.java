@@ -6,33 +6,57 @@ import java.util.List;
 import com.group3.racingbot.Car;
 
 /**
+ * Store and access cars
  * @author Nick Sabia
  *
  */
 public class CarInventory implements Inventory<Car>{
 	private List<Car> items;
 	
+	/**
+	 * Creates a list to store the cars into.
+	 */
 	public CarInventory() {
 		// TODO: Get this list of components from the database upon class creation.
 		// For now, stores the list that the user passes in.
 		this.items = new ArrayList<Car>();
 	}
+	
+	/**
+	 * Creates an instance of an iterator which can be used to traverse the inventory of cars.
+	 */
 	public InventoryIterator<Car> iterator() {
 		return new CarIterator();
 	}
 	
+	/**
+	 * Add a car to the inventory.
+	 */
 	public void add(Car car) {
 		this.items.add(car);
 	}
 	
+	/**
+	 * Grab the entire list of items. This is necessary for MongoDB to work properly.
+	 * @return List<Car>
+	 */
 	public List<Car> getItems() {
 		return items;
 	}
 	
+	/**
+	 * Set the list of items. This is necessary for MongoDB to work properly.
+	 * @param newList
+	 */
 	public void setItems(List<Car> newList) {
 		this.items = newList;
 	}
 	
+	/**
+	 * Provides a way to traverse the inventory.
+	 * @author Nick Sabia
+	 *
+	 */
 	private class CarIterator implements InventoryIterator<Car> {
 		private int current;
 		
@@ -40,6 +64,9 @@ public class CarInventory implements Inventory<Car>{
 			this.current = 0;
 		}
 		
+		/**
+		 * Verifies that there is another car ahead of the current one.
+		 */
 		public boolean hasNext() {
 			if (this.current < CarInventory.this.items.size() + 1) {
 				return true;
@@ -47,6 +74,9 @@ public class CarInventory implements Inventory<Car>{
 			return false;
 		}
 		
+		/**
+		 * Grab the next car.
+		 */
 		public Car next() {
 			Car item = null;
 			try {
@@ -59,6 +89,9 @@ public class CarInventory implements Inventory<Car>{
 			return item;
 		}
 		
+		/**
+		 * Print the entire inventory regardless of filter.
+		 */
 		public void printInventory() {
 			int tempCurrent = this.current;
 			this.current = 0;

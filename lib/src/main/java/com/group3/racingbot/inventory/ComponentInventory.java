@@ -6,12 +6,16 @@ import java.util.List;
 import com.group3.racingbot.components.Component;
 
 /**
+ * Store and access components which are used for cars.
  * @author Nick Sabia
  *
  */
 public class ComponentInventory implements Inventory<Component>{
 	private List<Component> items;
 	
+	/**
+	 * Creates a list to store the components into.
+	 */
 	public ComponentInventory() {
 		// TODO: Get this list of components from the database upon class creation.
 		// For now, stores the list that the user passes in.
@@ -19,22 +23,41 @@ public class ComponentInventory implements Inventory<Component>{
 		this.items = new ArrayList<Component>();
 	}
 	
+	/**
+	 * Creates an instance of an iterator which can be used to traverse the inventory of components.
+	 */
 	public InventoryIterator<Component> iterator() {
 		return new ComponentIterator();
 	}
 	
+	/**
+	 * Add a component to the inventory.
+	 */
 	public void add(Component component) {
 		this.items.add(component);
 	}
 	
+	/**
+	 * Grab the entire list of items. This is necessary for MongoDB to work properly.
+	 * @return List<Component>
+	 */
 	public List<Component> getItems() {
 		return items;
 	}
 	
+	/**
+	 * Set the list of items. This is necessary for MongoDB to work properly.
+	 * @param newList
+	 */
 	public void setItems(List<Component> newList) {
 		this.items = newList;
 	}
 	
+	/**
+	 * Provides a way to traverse the inventory.
+	 * @author Nick Sabia
+	 *
+	 */
 	private class ComponentIterator implements InventoryIterator<Component> {
 		private int current;
 		
@@ -42,6 +65,9 @@ public class ComponentInventory implements Inventory<Component>{
 			this.current = 0;
 		}
 		
+		/**
+		 * Verifies that there is another component ahead of the current one.
+		 */
 		public boolean hasNext() {
 			if (this.current < ComponentInventory.this.items.size() + 1) {
 				return true;
@@ -49,6 +75,9 @@ public class ComponentInventory implements Inventory<Component>{
 			return false;
 		}
 		
+		/**
+		 * Grab the next component.
+		 */
 		public Component next() {
 			Component item = null;
 			try {
@@ -61,6 +90,9 @@ public class ComponentInventory implements Inventory<Component>{
 			return item;
 		}
 		
+		/**
+		 * Print the entire inventory regardless of filter.
+		 */
 		public void printInventory() {
 			int tempCurrent = this.current;
 			this.current = 0;
