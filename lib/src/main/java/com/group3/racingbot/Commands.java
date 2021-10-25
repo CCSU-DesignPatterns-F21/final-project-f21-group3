@@ -1,6 +1,5 @@
 package com.group3.racingbot;
 
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,7 +8,10 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import com.group3.racingbot.gameservice.GameplayHandler;
+import com.group3.racingbot.inventory.CarInventory;
+import com.group3.racingbot.inventory.Inventory;
+import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.QualityFilter;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -18,19 +20,27 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /**
- * Handles Discord user command inputs and 
+ * Handles Discord user command inputs and interacts with the gameplay handler and DB Handler
  * @author Maciej Bregisz
  *
  */
-
 public class Commands extends ListenerAdapter {
 	
 	private DBHandler dbh;
 	private EmbedBuilder eb;
+	
+	/**
+	 * Sets up the DBHandler with JDA embed builder and database handler
+	 * @param db DBHandler object reference
+	 */
 	public Commands(DBHandler db) {
 		eb = new EmbedBuilder();
 		dbh = db;
 	}
+	
+	/**
+	 * Handles the commands sent by the Discord User. Player command is parsed by spaces, ex. !iracer help. !iracer is required followed by a desired command.
+	 */
 	
 	 @Override
 	  public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
@@ -174,21 +184,21 @@ public class Commands extends ListenerAdapter {
 	    		cars.add(carC);
 	    		cars.add(carD);
 	    		
-	    		//Inventory<Car> inventory = new CarInventory(cars);
-	    		//InventoryIterator<Car> carIterator = inventory.iterator();
-	    		//QualityFilter<Car> qualityFilter = new QualityFilter<Car>(carIterator, "Junkyard");
+	    		Inventory<Car> inventory = new CarInventory();
+	    		InventoryIterator<Car> carIterator = inventory.iterator();
+	    		QualityFilter<Car> qualityFilter = new QualityFilter<Car>(carIterator, "Junkyard");
 	    		
 	    		// Print all items with "Junkyard" quality
-//	    		String result = "";
-//	    		int carCount = 1;
-//	    		while (qualityFilter.hasNext()) {
-//	    			Car car = qualityFilter.next();
-//	    			if (car != null) {
-//	    				result += "Car " + carCount + ": " + car + "\n";
-//	    			}
-//	    		}
-//	    		eb.setDescription(result);
-//	    		event.getChannel().sendMessage(eb.build()).queue();
+	    		String result = "";
+	    		int carCount = 1;
+	    		while (qualityFilter.hasNext()) {
+	    			Car car = qualityFilter.next();
+	    			if (car != null) {
+	    				result += "Car " + carCount + ": " + car + "\n";
+	    			}
+	    		}
+	    		eb.setDescription(result);
+	    		event.getChannel().sendMessage(eb.build()).queue();
 	    	}
 	    }
 	  }

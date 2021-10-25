@@ -27,11 +27,14 @@ import com.mongodb.client.MongoDatabase;
 public class DBHandler {
 	private static ConnectionString connectionString;
 	private static MongoClientSettings settings;
+	private static ConfigPropertiesHandler configProperties;
 	private MongoClient mongoClient;
 	private MongoDatabase database;
 	private MongoCollection<Player> userCollection;
-	private static ConfigPropertiesHandler configProperties;
 	
+	/**
+	 * Constructor initializes the necessary settings required for connecting to the MongoDB.
+	 */
 	public DBHandler() {
 		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
@@ -89,33 +92,107 @@ public class DBHandler {
 		
 	}
 	
-	public MongoClient getMongoClient() {
-		return mongoClient;
-	}
-
-	public MongoDatabase getUserDatabase() {
+	/**
+	 * @return the database reference
+	 */
+	public MongoDatabase getDatabase() {
 		return database;
 	}
 
+	/**
+	 * @param database the database to set for MongoClient to connect to
+	 */
+	public void setDatabase(MongoDatabase database) {
+		this.database = database;
+	}
+
+	/**
+	 * @return the MongoDB UserCollection
+	 */
+	public MongoCollection<Player> getUserCollection() {
+		return userCollection;
+	}
+
+	/**
+	 * @param userCollection the userCollection to set
+	 */
+	public void setUserCollection(MongoCollection<Player> userCollection) {
+		this.userCollection = userCollection;
+	}
+
+	/**
+	 * @param connectionString the connectionString to set
+	 */
+	public static void setConnectionString(ConnectionString connectionString) {
+		DBHandler.connectionString = connectionString;
+	}
+	
+	/**
+	 * 
+	 * @return returns the connection string of the server
+	 */
 	public static ConnectionString getConnectionString() {
 		return connectionString;
 	}
-
+	/**
+	 * 
+	 * @return the MongoDB client settings
+	 */
 	public static MongoClientSettings getSettings() {
 		return settings;
 	}
 
 	
+	/**
+	 * @param settings the settings to set
+	 */
+	public static void setSettings(MongoClientSettings settings) {
+		DBHandler.settings = settings;
+	}
+	/**
+	 * 
+	 * @return the MongoDB Client
+	 */
+	public MongoClient getMongoClient() {
+		return mongoClient;
+	}
 
+	/**
+	 * @param mongoClient the mongoClient to set
+	 */
+	public void setMongoClient(MongoClient mongoClient) {
+		this.mongoClient = mongoClient;
+	}
+
+	/**
+	 * @param configProperties the configProperties to set
+	 */
+	public static void setConfigProperties(ConfigPropertiesHandler configProperties) {
+		DBHandler.configProperties = configProperties;
+	}
+	
+	
+
+	
+	/**
+	 * 
+	 * @return the ConfigPropertiesHandler instance.
+	 */
 	public static ConfigPropertiesHandler getConfigProperties() {
 		return configProperties;
 	}
-
+	
+	/**
+	 * Custom hashCode method for DBHandler
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(database, mongoClient, userCollection);
 	}
 
+	/**
+	 * Custom equals method foor DBHandler
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
