@@ -9,6 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import com.group3.racingbot.inventory.CarInventory;
+import com.group3.racingbot.inventory.DurabilityFilter;
+import com.group3.racingbot.inventory.FilterOperation;
 import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.QualityFilter;
@@ -186,30 +188,33 @@ public class Commands extends ListenerAdapter {
 	    	
 	    	// A test for filtering an inventory of cars.
 	    	if(args[1].equalsIgnoreCase("inventory")) {
+	    		Player somePlayer = new Player();
+	    		
 	    		int randomNum = ThreadLocalRandom.current().nextInt(0, 49);
 	    		
-	    		Car carA = new Car(randomNum, randomNum*2, "OEM", randomNum*3);
-	    		Car carB = new Car(randomNum*2, randomNum, "Junkyard", randomNum*4);
-	    		Car carC = new Car(randomNum/2, randomNum, "Lemon", randomNum*2);
-	    		Car carD = new Car(randomNum*4, randomNum*5, "Racing", randomNum/3);
+	    		Car carA = new Car(20, randomNum*2, "OEM", randomNum*3);
+	    		Car carB = new Car(40, randomNum, "Junkyard", randomNum*4);
+	    		Car carC = new Car(60, randomNum, "Lemon", randomNum*2);
+	    		Car carD = new Car(80, randomNum*5, "Racing", randomNum/3);
 	    		
-	    		List<Car> cars = new ArrayList<Car>();
-	    		cars.add(carA);
-	    		cars.add(carB);
-	    		cars.add(carC);
-	    		cars.add(carD);
+	    		somePlayer.getOwnedCars().add(carA);
+	    		somePlayer.getOwnedCars().add(carB);
+	    		somePlayer.getOwnedCars().add(carC);
+	    		somePlayer.getOwnedCars().add(carD);
 	    		
-	    		Inventory<Car> inventory = new CarInventory();
-	    		InventoryIterator<Car> carIterator = inventory.iterator();
-	    		QualityFilter<Car> qualityFilter = new QualityFilter<Car>(carIterator, "Junkyard");
+	    		//Inventory<Car> inventory = new CarInventory();
+	    		InventoryIterator<Car> carIterator = somePlayer.getOwnedCars().iterator();
 	    		
+	    		QualityFilter<Car> filterA = new QualityFilter<Car>(carIterator, "Lemon");
+	    		DurabilityFilter<Car> filterB = new DurabilityFilter<Car>(filterA, FilterOperation.IS_GREATER_THAN, 40);
 	    		// Print all items with "Junkyard" quality
-	    		String result = "";
+	    		String result = "Filtered search results:\n";
 	    		int carCount = 1;
-	    		while (qualityFilter.hasNext()) {
-	    			Car car = qualityFilter.next();
+	    		while (filterB.hasNext()) {
+	    			Car car = filterB.next();
 	    			if (car != null) {
 	    				result += "Car " + carCount + ": " + car + "\n";
+	    				carCount++;
 	    			}
 	    		}
 	    		eb.setDescription(result);

@@ -1,7 +1,7 @@
 package com.group3.racingbot.inventory;
 
+import java.util.ArrayList;
 import java.util.List;
-
 
 import com.group3.racingbot.components.Component;
 
@@ -16,18 +16,23 @@ public class ComponentInventory implements Inventory<Component>{
 		// TODO: Get this list of components from the database upon class creation.
 		// For now, stores the list that the user passes in.
 		//this.items = componentList;
+		this.items = new ArrayList<Component>();
 	}
 	
-	public List<Component> getItems() {
-		return items;
-		
-	}
 	public InventoryIterator<Component> iterator() {
 		return new ComponentIterator();
 	}
 	
 	public void add(Component component) {
 		this.items.add(component);
+	}
+	
+	public List<Component> getItems() {
+		return items;
+	}
+	
+	public void setItems(List<Component> newList) {
+		this.items = newList;
 	}
 	
 	private class ComponentIterator implements InventoryIterator<Component> {
