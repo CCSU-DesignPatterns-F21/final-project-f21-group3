@@ -42,14 +42,15 @@ public class DBHandler {
 		            CodecRegistries.fromProviders(pojoCodecProvider)
 		    );
 		configProperties = ConfigPropertiesHandler.getInstance();
-		connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
+
 		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+		connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
 				mongoClient = MongoClients.create(settings);
 				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
 				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
 		
-				System.out.println(userCollection.countDocuments());
+				//System.out.println(userCollection.countDocuments());
 	}
 	
 	/**
@@ -157,11 +158,13 @@ public class DBHandler {
 		return mongoClient;
 	}
 
+
 	/**
 	 * @param mongoClient the mongoClient to set
 	 */
 	public void setMongoClient(MongoClient mongoClient) {
 		this.mongoClient = mongoClient;
+
 	}
 
 	/**
