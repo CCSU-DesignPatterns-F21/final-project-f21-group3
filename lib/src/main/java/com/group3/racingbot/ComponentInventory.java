@@ -2,6 +2,8 @@ package com.group3.racingbot;
 
 import java.util.List;
 
+import com.group3.racingbot.ComponentFactory.Component;
+
 /**
  * @author Nick Sabia
  *
