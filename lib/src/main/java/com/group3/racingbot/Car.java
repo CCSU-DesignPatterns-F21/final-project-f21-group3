@@ -3,13 +3,13 @@
  */
 package com.group3.racingbot;
 
-import com.group3.racingbot.inventory.Quantifiable;
+import com.group3.racingbot.inventory.Filterable;
 
 /**
  * @author Nick Sabia
  *
  */
-public class Car implements Quantifiable{
+public class Car implements Filterable {
 	private int durability;
 	private int price;
 	private String quality;
