@@ -1,19 +1,37 @@
 package com.group3.racingbot.inventory;
 
+/**
+ * Returns results which match the given durability criteria.
+ * @author Nick Sabia
+ *
+ * @param <T>
+ */
 public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDecorator<T> {
 	private float durability;
 	private FilterOperation operation;
 	
+	/**
+	 * Applies the durability filter to whatever iterator is passed into it.
+	 * @param iterator
+	 * @param op
+	 * @param durability
+	 */
 	public DurabilityFilter(InventoryIterator<T> iterator, FilterOperation op, float durability) {
 		super(iterator);
 		this.durability = durability;
 		this.operation = op;
 	}
 	
+	/**
+	 * Verifies that there is another item ahead of the current one.
+	 */
 	public boolean hasNext() {
 		return this.inventoryIterator.hasNext();
 	}
 	
+	/**
+	 * Grab the next item in the list.
+	 */
 	public T next() {
 		T item = this.inventoryIterator.next();
 		boolean itemMatchesContraints = false;
@@ -39,6 +57,9 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 		return item;
 	}
 	
+	/**
+	 * Print the entire inventory
+	 */
 	public void printInventory() {
 		
 	}
