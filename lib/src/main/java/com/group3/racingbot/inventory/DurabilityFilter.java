@@ -11,7 +11,7 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 	private FilterOperation operation;
 	
 	/**
-	 * Applies the durability filter to whatever iterator is passed into it.
+	 * Applies the durability filter to whatever inventory iterator is passed into it.
 	 * @param iterator
 	 * @param op
 	 * @param durability
@@ -30,7 +30,7 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 	}
 	
 	/**
-	 * Grab the next item in the list.
+	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified durability.
 	 */
 	public T next() {
 		T item = this.inventoryIterator.next();
@@ -58,7 +58,7 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 	}
 	
 	/**
-	 * Print the entire inventory
+	 * Print the entire inventory regardless of filter.
 	 */
 	public void printInventory() {
 		
