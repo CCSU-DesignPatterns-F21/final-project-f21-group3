@@ -17,10 +17,16 @@ import net.dv8tion.jda.api.entities.Activity;
  */
 
 public class RacingBot {
-	//
+
 	private static JDA jda;
+	/**
+	 * Reference to the command prefix.
+	 */
 	public static String prefix = "!";	
 	
+	/**
+	 * Reference to the Gameplay Handler object, responsible for all gameplay related functionality.
+	 */
 	public static GameplayHandler gameHandler;
 	
 	private static ConfigPropertiesHandler configProperties;
@@ -30,8 +36,6 @@ public class RacingBot {
 		configProperties = ConfigPropertiesHandler.getInstance();
 		db = new DBHandler();
 		
-		
-		//dbController.hashCode();
 		jda = JDABuilder.createDefault(configProperties.getProperty("discordChannelToken")).build();
 		jda.getPresence().setStatus(OnlineStatus.IDLE);
 		jda.getPresence().setActivity(Activity.watching("for participants!"));

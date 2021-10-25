@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Responsible for opening and parsing the Config.Properties file.
+ * Responsible for opening and parsing the Config.Properties file. Singleton design.
  * @author Maciej Bregisz
  *
  */
@@ -36,7 +36,7 @@ public class ConfigPropertiesHandler {
 	}
 	
 	/*
-	 * Returns the instance of the ConfigPropertiesHandler, it's created if no instance exists.
+	 *@return Returns the instance of the ConfigPropertiesHandler, it's created if no instance exists.
 	 */
 	public static ConfigPropertiesHandler getInstance()
     {

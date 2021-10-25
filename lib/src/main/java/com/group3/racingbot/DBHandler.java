@@ -184,6 +184,14 @@ public class DBHandler {
 	public static ConfigPropertiesHandler getConfigProperties() {
 		return configProperties;
 	}
+	/**
+	 * @return Object parsed to string.
+	 */
+	@Override 
+	public String toString() {
+		return connectionString.toString();
+		
+	}
 	
 	/**
 	 * Custom hashCode method for DBHandler
