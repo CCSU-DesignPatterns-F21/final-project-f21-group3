@@ -39,6 +39,40 @@ public class QualityFilter<T extends Filterable> extends InventoryIteratorDecora
 	}
 	
 	/**
+	 * Returns what this filter is filtering for.
+	 * @return String
+	 */
+	public String getCriteria() {
+		return this.quality;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.quality.hashCode();
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof QualityFilter) {
+			QualityFilter<?> otherObj = (QualityFilter<?>) other;
+			if (this.getCriteria().equals(otherObj.getCriteria())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return "QualityFilter which filters for " + this.quality;
+	}
+	
+	/**
 	 * Print the entire inventory regardless of filter.
 	 */
 	public void printInventory() {

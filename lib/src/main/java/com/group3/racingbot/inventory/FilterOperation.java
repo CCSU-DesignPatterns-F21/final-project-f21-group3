@@ -16,11 +16,28 @@ public enum FilterOperation {
 		this.operation = operation;
 	}
 	
+	/**
+	 * Returns the integer representation of the operation
+	 * @return int
+	 */
+	public int getIntOperation() {
+		return this.operation;
+	}
+	
 	@Override
 	/**
-	 * Display the numeric representation of the enumeration
+	 * Display the textual representation of the enumeration
 	 */
 	public String toString() {
-		return operation + "";
+		switch (this.operation) {
+			case 1:
+				return "GREATER THAN";
+			case 0:
+				return "EQUAL TO";
+			case -1:
+				return "LESS THAN";
+			default:
+				return "INVALID OPERATOR";
+		}
 	}
 }

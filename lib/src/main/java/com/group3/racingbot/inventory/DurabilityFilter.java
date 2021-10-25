@@ -7,7 +7,7 @@ package com.group3.racingbot.inventory;
  * @param <T>
  */
 public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDecorator<T> {
-	private float durability;
+	private int durability;
 	private FilterOperation operation;
 	
 	/**
@@ -16,7 +16,7 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 	 * @param op
 	 * @param durability
 	 */
-	public DurabilityFilter(InventoryIterator<T> iterator, FilterOperation op, float durability) {
+	public DurabilityFilter(InventoryIterator<T> iterator, FilterOperation op, int durability) {
 		super(iterator);
 		this.durability = durability;
 		this.operation = op;
@@ -55,6 +55,40 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 			item = null;
 		}
 		return item;
+	}
+	
+	/**
+	 * Returns what this filter is filtering for.
+	 * @return String
+	 */
+	public String getCriteria() {
+		return this.operation.toString() + " " + this.durability;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.durability + this.operation.getIntOperation();
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof DurabilityFilter) {
+			DurabilityFilter<?> otherObj = (DurabilityFilter<?>) other;
+			if (this.getCriteria().equals(otherObj.getCriteria())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return "DurabilityFilter which filters for items that are " + this.getCriteria();
 	}
 	
 	/**

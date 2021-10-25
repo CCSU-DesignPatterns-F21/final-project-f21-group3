@@ -24,4 +24,10 @@ public abstract class InventoryIteratorDecorator<T> implements InventoryIterator
 	 * Grab the next item in the list. This will filter out items which don't match the given criteria.
 	 */
 	abstract public T next();
+	
+	/**
+	 * Returns what this filter is filtering for.
+	 * @return String
+	 */
+	abstract public String getCriteria();
 }

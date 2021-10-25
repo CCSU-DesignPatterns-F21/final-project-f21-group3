@@ -18,8 +18,7 @@ public class ComponentInventory implements Inventory<Component>{
 	 */
 	public ComponentInventory() {
 		// TODO: Get this list of components from the database upon class creation.
-		// For now, stores the list that the user passes in.
-		//this.items = componentList;
+		// For now, creates a list that the user can add to.
 		this.items = new ArrayList<Component>();
 	}
 	

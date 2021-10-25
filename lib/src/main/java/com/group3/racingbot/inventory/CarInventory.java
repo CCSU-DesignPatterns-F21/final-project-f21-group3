@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.group3.racingbot.Car;
-import com.group3.racingbot.components.Component;
 
 /**
  * Store and access cars
@@ -19,7 +18,7 @@ public class CarInventory implements Inventory<Car>{
 	 */
 	public CarInventory() {
 		// TODO: Get this list of components from the database upon class creation.
-		// For now, stores the list that the user passes in.
+		// For now, creates a list that the user can add to.
 		this.items = new ArrayList<Car>();
 	}
 	
