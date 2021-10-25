@@ -1,6 +1,6 @@
 package com.group3.racingbot.inventory;
 
-public class DurabilityFilter<T extends Quantifiable> extends InventoryIteratorDecorator<T> {
+public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDecorator<T> {
 	private float durability;
 	private FilterOperation operation;
 	

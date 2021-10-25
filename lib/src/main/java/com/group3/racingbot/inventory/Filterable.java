@@ -1,6 +1,6 @@
 package com.group3.racingbot.inventory;
 
-public interface Quantifiable {
+public interface Filterable {
 	public int getDurability();
 	public int getPrice();
 	public String getQuality();
