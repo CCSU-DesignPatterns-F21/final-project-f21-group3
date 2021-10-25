@@ -54,6 +54,13 @@ public class ComponentInventory implements Inventory<Component>{
 	}
 	
 	/**
+	 * Display the total amount of components in the inventory.
+	 */
+	public String toString() {
+		return "Total Components: " + getItems().size();
+	}
+	
+	/**
 	 * Provides a way to traverse the inventory.
 	 * @author Nick Sabia
 	 *
