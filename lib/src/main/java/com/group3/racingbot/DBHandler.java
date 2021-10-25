@@ -5,7 +5,10 @@ import static com.mongodb.client.model.Filters.eq;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
+import java.util.Objects;
+
 import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
@@ -24,24 +27,28 @@ import com.mongodb.client.MongoDatabase;
 public class DBHandler {
 	private static ConnectionString connectionString;
 	private static MongoClientSettings settings;
+	private static ConfigPropertiesHandler configProperties;
 	private MongoClient mongoClient;
 	private MongoDatabase database;
 	private MongoCollection<Player> userCollection;
-	private static ConfigPropertiesHandler configProperties;
 	
+	/**
+	 * Constructor initializes the necessary settings required for connecting to the MongoDB.
+	 */
 	public DBHandler() {
 		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
-	        CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
+		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+		            MongoClientSettings.getDefaultCodecRegistry(),
+		            CodecRegistries.fromProviders(pojoCodecProvider)
+		    );
 		configProperties = ConfigPropertiesHandler.getInstance();
-		
-		
+
 		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
 		connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
-
 				mongoClient = MongoClients.create(settings);
-				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(pojoCodecRegistry);
-				userCollection = database.getCollection("Users",Player.class);
+				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
+				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
 		
 				//System.out.println(userCollection.countDocuments());
 	}
@@ -52,7 +59,7 @@ public class DBHandler {
 	 * @return whether or not the User with the given ID exists.
 	 */
 	public boolean userExists(String id) {
-		if(userCollection.find(eq("_id",id)) != null) {
+		if(userCollection.find(eq("_id",id)).first() != null) {
 			return true;
 		}else {
 			return false;
@@ -64,34 +71,142 @@ public class DBHandler {
 	 * @param p Player Object being stored in database collection.
 	 */
 	public void insertUser(Player p) {
-		userCollection.insertOne(p);
-		
+		userCollection.insertOne(p);			
 	}
 	
+	/**
+	 * Find and replace a Player object in the Database with a modified Player object
+	 * @param p Player object, will replace a Player database record with the one passed in. 
+	 */
+	public void updateUser(Player p) {
+		userCollection.findOneAndReplace(eq("_id",p.getId()), p);
+	}
+	
+	/**
+	 * Returns a Player object from the Database based on the Discord ID.
+	 * @param id Discord User ID, used for identifying and retrieving of stored Player objects.
+	 * @return Parsed Player object from the database.
+	 */
 	public Player getPlayer(String id) {
 		Player player = (Player) userCollection.find(eq("_id",id)).first();
 		return player;
 		
 	}
+	
+	/**
+	 * @return the database reference
+	 */
+	public MongoDatabase getDatabase() {
+		return database;
+	}
 
+	/**
+	 * @param database the database to set for MongoClient to connect to
+	 */
+	public void setDatabase(MongoDatabase database) {
+		this.database = database;
+	}
+
+	/**
+	 * @return the MongoDB UserCollection
+	 */
+	public MongoCollection<Player> getUserCollection() {
+		return userCollection;
+	}
+
+	/**
+	 * @param userCollection the userCollection to set
+	 */
+	public void setUserCollection(MongoCollection<Player> userCollection) {
+		this.userCollection = userCollection;
+	}
+
+	/**
+	 * @param connectionString the connectionString to set
+	 */
+	public static void setConnectionString(ConnectionString connectionString) {
+		DBHandler.connectionString = connectionString;
+	}
+	
+	/**
+	 * 
+	 * @return returns the connection string of the server
+	 */
 	public static ConnectionString getConnectionString() {
 		return connectionString;
 	}
-
+	/**
+	 * 
+	 * @return the MongoDB client settings
+	 */
 	public static MongoClientSettings getSettings() {
 		return settings;
 	}
 
+	
+	/**
+	 * @param settings the settings to set
+	 */
+	public static void setSettings(MongoClientSettings settings) {
+		DBHandler.settings = settings;
+	}
+	/**
+	 * 
+	 * @return the MongoDB Client
+	 */
 	public MongoClient getMongoClient() {
 		return mongoClient;
 	}
 
-	public MongoDatabase getUserDatabase() {
-		return database;
+
+	/**
+	 * @param mongoClient the mongoClient to set
+	 */
+	public void setMongoClient(MongoClient mongoClient) {
+		this.mongoClient = mongoClient;
+
 	}
 
+	/**
+	 * @param configProperties the configProperties to set
+	 */
+	public static void setConfigProperties(ConfigPropertiesHandler configProperties) {
+		DBHandler.configProperties = configProperties;
+	}
+	
+	
+
+	
+	/**
+	 * 
+	 * @return the ConfigPropertiesHandler instance.
+	 */
 	public static ConfigPropertiesHandler getConfigProperties() {
 		return configProperties;
+	}
+	
+	/**
+	 * Custom hashCode method for DBHandler
+	 */
+	@Override
+	public int hashCode() {
+		return Objects.hash(database, mongoClient, userCollection);
+	}
+
+	/**
+	 * Custom equals method foor DBHandler
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DBHandler other = (DBHandler) obj;
+		return Objects.equals(database, other.database) && Objects.equals(mongoClient, other.mongoClient)
+				&& Objects.equals(userCollection, other.userCollection);
 	}
 
 }

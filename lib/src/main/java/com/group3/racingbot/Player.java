@@ -1,6 +1,11 @@
 package com.group3.racingbot;
 
+import java.util.Date;
 import java.util.Objects;
+
+import com.group3.racingbot.components.Component;
+import com.group3.racingbot.inventory.CarInventory;
+import com.group3.racingbot.inventory.ComponentInventory;
 
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
@@ -13,26 +18,23 @@ public class Player {
 	
 	private String id;
 	private String username;
-	private int credits;
-	private int famepoints;
-	private int totalWins;
-	private int totalLosses;
+	private int credits = 2000;
+	private int famepoints = 0;
+	private int totalWins = 0;
+	private int totalLosses = 0;
+	private long lastWorked = 0;
+	private ComponentInventory ownedComponents;
+	private CarInventory ownedCars;
 	
 	/**
 	 * Player class constructor.
 	 */
 	public Player() {
-		
+	
+		setOwnedComponents(new ComponentInventory());
+		setOwnedCars(new CarInventory());
 	}
 	
-	public Player(String i, String u) {
-		id = i;
-		username = u;
-	}
-	
-	/**
-	 * @return the id
-	 */
 	public String getId() {
 		return id;
 	}
@@ -115,8 +117,50 @@ public class Player {
 	}
 	
 
+	/**
+	 * @return the lastWorked
+	 */
+	public long getLastWorked() {
+		return lastWorked;
+	}
+
+	/**
+	 * @param lastWorked the lastWorked to set
+	 */
+	public void setLastWorked(long lastWorked) {
+		this.lastWorked = lastWorked;
+	}
+	
 	public String toString() {
 		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;
+	}
+	
+	/**
+	 * @return the ownedCars
+	 */
+	public CarInventory getOwnedCars() {
+		return ownedCars;
+	}
+
+	/**
+	 * @param ownedCars the ownedCars to set
+	 */
+	public void setOwnedCars(CarInventory ownedCars) {
+		this.ownedCars = ownedCars;
+	}
+
+	/**
+	 * @return the ownedComponents
+	 */
+	public ComponentInventory getOwnedComponents() {
+		return ownedComponents;
+	}
+
+	/**
+	 * @param ownedComponents the ownedComponents to set
+	 */
+	public void setOwnedComponents(ComponentInventory ownedComponents) {
+		this.ownedComponents = ownedComponents;
 	}
 	
 	@Override
@@ -144,6 +188,8 @@ public class Player {
 				&& totalLosses == other.totalLosses && totalWins == other.totalWins
 				&& Objects.equals(username, other.username);
 	}
+
+	
 
 	
 	
