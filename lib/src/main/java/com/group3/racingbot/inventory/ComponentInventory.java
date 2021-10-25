@@ -53,6 +53,43 @@ public class ComponentInventory implements Inventory<Component>{
 		this.items = newList;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((items == null) ? 0 : items.hashCode());
+		return result;
+	}
+
+	@Override
+	/**
+	 * Check if two lists of items are the same.
+	 */
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof ComponentInventory) {
+			ComponentInventory otherObj = (ComponentInventory) other;
+			InventoryIterator<Component> thisIterator = this.iterator();
+			InventoryIterator<Component> otherObjIterator = otherObj.iterator();
+			
+			// Compare each item for equality.
+			while (thisIterator.hasNext() && otherObjIterator.hasNext()) {
+				if (!thisIterator.next().equals(otherObjIterator.next())) {
+					return false;
+				}
+			}
+			
+			// Check if one iterator has any more items than the other
+			if (thisIterator.hasNext() || otherObjIterator.hasNext()) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	/**
 	 * Display the total amount of components in the inventory.
 	 */
