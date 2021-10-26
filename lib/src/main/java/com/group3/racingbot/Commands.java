@@ -52,11 +52,13 @@ public class Commands extends ListenerAdapter {
 		eb = new EmbedBuilder();
 		factoryEB = new EmbedBuilder();
 		dbh = db;
+		component = new ConcreteComponentFactory();
 
 	}
 
 	/**
-	 * Handles the commands sent by the Discord User. Player command is parsed by spaces, ex. !iracer help. !iracer is required followed by a desired command.
+	 * Handles the commands sent by the Discord User. Player command is parsed by
+	 * spaces, ex. !iracer help. !iracer is required followed by a desired command.
 	 */
 	
 	 @Override
@@ -220,7 +222,6 @@ public class Commands extends ListenerAdapter {
 	    		eb.setDescription(result);
 	    		event.getChannel().sendMessage(eb.build()).queue();*/
 
-			component = new ConcreteComponentFactory();
 			//TODO: for debugging only
 			
 			//Lemon: 0-150
@@ -228,23 +229,23 @@ public class Commands extends ListenerAdapter {
 			//OEM: 301 - 750
 			//Sports: 751 - 3000
 			//Racing: 3001 - 20000
-			
-			if (args[1].equalsIgnoreCase("factorymethod")) {
+		}
+    if (args[1].equalsIgnoreCase("factorymethod")) {
 				factoryEB.setColor(Color.green);
 				factoryEB.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
 				factoryEB.setTitle("Your components have been successfully generated based on preset parameters");
-				
+
 				Component testComp1 = component.createComponent("engine", 5000);
 				Component testComp2 = component.createComponent("suspension", 2999);
 				Component testComp3 = component.createComponent("wheel", 700);
 				Component testComp4 = component.createComponent("transmission", 299);
 				Component testComp5 = component.createComponent("chassis", 99);
-					
-				factoryEB.setDescription(testComp1.toString() + testComp2.toString() + testComp3.toString() + testComp4.toString() + testComp5.toString());		
-	
+
+				factoryEB.setDescription(testComp1.toString() + testComp2.toString() + testComp3.toString()
+						+ testComp4.toString() + testComp5.toString() + "hashcode for testComp1: " + testComp1.hashCode()
+						+ "\nequals() for testComp1 and testComp2: " + testComp1.equals(testComp2));
+
 				event.getChannel().sendMessage(factoryEB.build()).queue();
-			}
-	    }
-	 }
+		}
 	}
 }

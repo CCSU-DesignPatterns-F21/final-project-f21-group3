@@ -1,5 +1,7 @@
 package com.group3.racingbot.ComponentFactory;
 
+import java.util.Objects;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -119,13 +121,36 @@ public class ChassisComponent extends Component {
 		this.handlingModifier = handlingModifier;
 	}
 	
+	/**
+	 * returns hashCode() for chassis component
+	 */
+	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = prime * this.popularity;
-		return result;
+		return Objects.hash(accelerationModifier, brakingModifier, handlingModifier, popularity, popularityModifier, speedModifier);
 	}
 	
+	/**
+	 * returns equals() for chassis component
+	 */
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ChassisComponent other = (ChassisComponent) obj;
+		return Float.floatToIntBits(accelerationModifier) == Float.floatToIntBits(other.accelerationModifier)
+				&& Float.floatToIntBits(brakingModifier) == Float.floatToIntBits(other.brakingModifier)
+				&& Float.floatToIntBits(handlingModifier) == Float.floatToIntBits(other.handlingModifier)
+				&& popularity == other.popularity
+				&& Float.floatToIntBits(popularityModifier) == Float.floatToIntBits(other.popularityModifier)
+				&& Float.floatToIntBits(speedModifier) == Float.floatToIntBits(other.speedModifier);
+	}
+
 	/**
 	 * returns toString() for chassis component
 	 */
