@@ -132,10 +132,6 @@ public class Player {
 		this.lastWorked = lastWorked;
 	}
 	
-	public String toString() {
-		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;
-	}
-	
 	/**
 	 * @return the ownedCars
 	 */

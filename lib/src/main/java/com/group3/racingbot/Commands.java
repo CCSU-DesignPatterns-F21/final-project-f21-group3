@@ -222,9 +222,9 @@ public class Commands extends ListenerAdapter {
 			//Racing: 3001 - 20000
 			
 			if (args[1].equalsIgnoreCase("factorymethod")) {
-				factoryEB.setColor(Color.green);
-				factoryEB.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
-				factoryEB.setTitle("Your components have been successfully generated based on preset parameters");
+				eb.setColor(Color.green);
+				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
+				eb.setTitle("Your components have been successfully generated based on preset parameters");
 				
 				Component testComp1 = component.createComponent("engine", 5000);
 				Component testComp2 = component.createComponent("suspension", 2999);
@@ -232,9 +232,9 @@ public class Commands extends ListenerAdapter {
 				Component testComp4 = component.createComponent("transmission", 299);
 				Component testComp5 = component.createComponent("chassis", 99);
 					
-				factoryEB.setDescription(testComp1.toString() + testComp2.toString() + testComp3.toString() + testComp4.toString() + testComp5.toString());		
+				eb.setDescription(testComp1.toString() + testComp2.toString() + testComp3.toString() + testComp4.toString() + testComp5.toString());		
 	
-				event.getChannel().sendMessage(factoryEB.build()).queue();
+				event.getChannel().sendMessage(eb.build()).queue();
 			}
 	    }
 	 }

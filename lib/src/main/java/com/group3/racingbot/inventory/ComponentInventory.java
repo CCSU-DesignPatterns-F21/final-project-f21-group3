@@ -3,7 +3,7 @@ package com.group3.racingbot.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.group3.racingbot.components.Component;
+import com.group3.racingbot.ComponentFactory.Component;
 
 /**
  * Store and access components which are used for cars.
