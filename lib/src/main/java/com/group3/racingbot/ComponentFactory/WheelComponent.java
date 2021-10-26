@@ -1,5 +1,7 @@
 package com.group3.racingbot.ComponentFactory;
 
+import java.util.Objects;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -41,9 +43,32 @@ public class WheelComponent extends Component {
 	}
 	
 	/**
-	 * returns toString() for wheel component
+	 * returns hashCode() for wheel component
 	 */
 	
+	@Override
+	public int hashCode() {
+		return Objects.hash(braking);
+	}
+	
+	/**
+	 * returns equals() for wheel component
+	 */
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WheelComponent other = (WheelComponent) obj;
+		return Float.floatToIntBits(braking) == Float.floatToIntBits(other.braking);
+	}
+	/**
+	 * returns toString() for wheel component
+	 */
 	@Override
 	public String toString() {
 		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nBraking: " + this.getBraking() + "\n\n";

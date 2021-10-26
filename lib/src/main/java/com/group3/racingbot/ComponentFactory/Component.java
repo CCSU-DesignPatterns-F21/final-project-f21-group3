@@ -1,5 +1,7 @@
 package com.group3.racingbot.ComponentFactory;
 
+import java.util.Objects;
+
 /**
  * @author Jack Gola
  * Defines the abstract class of component, defines getters and setters for common variables
@@ -134,5 +136,23 @@ public abstract class Component {
 	 */
 	public int getDurabilityRatio() {
 		return  durability / maxDurability;
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(durability, maxDurability, name, quality, rating, value, weight);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Component other = (Component) obj;
+		return durability == other.durability && maxDurability == other.maxDurability
+				&& Objects.equals(name, other.name) && Objects.equals(quality, other.quality) && rating == other.rating
+				&& value == other.value && weight == other.weight;
 	}
 }
