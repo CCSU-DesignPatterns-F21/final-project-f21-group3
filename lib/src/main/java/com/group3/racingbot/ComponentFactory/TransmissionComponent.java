@@ -1,5 +1,7 @@
 package com.group3.racingbot.ComponentFactory;
 
+import java.util.Objects;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -41,6 +43,34 @@ public class TransmissionComponent extends Component {
 		this.acceleration = acceleration;
 	}
 	
+	/**
+	 * returns hashCode() for transmission component
+	 */
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(acceleration);
+		return result;
+	}
+	
+	/**
+	 * returns equals() for transmission component
+	 */
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TransmissionComponent other = (TransmissionComponent) obj;
+		return Float.floatToIntBits(acceleration) == Float.floatToIntBits(other.acceleration);
+	}
+
 	/**
 	 * returns toString() for transmission component
 	 */

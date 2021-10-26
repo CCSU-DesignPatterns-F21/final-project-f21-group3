@@ -1,5 +1,7 @@
 package com.group3.racingbot.ComponentFactory;
 
+import java.util.Objects;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -8,6 +10,7 @@ package com.group3.racingbot.ComponentFactory;
 
 public class ChassisComponent extends Component {
 	
+	private int popularity;
 	private float popularityModifier, accelerationModifier, speedModifier, handlingModifier, brakingModifier;
 	
 	/**
@@ -22,7 +25,7 @@ public class ChassisComponent extends Component {
 	 * @param brakingModifier
 	 */
 	
-	public ChassisComponent(String quality, int value, int durability, float popularityModifier, float accelerationModifier, float speedModifier, float handlingModifier, float brakingModifier) {
+	public ChassisComponent(String quality, int value, int durability, int popularity, float popularityModifier, float accelerationModifier, float speedModifier, float handlingModifier, float brakingModifier) {
 		this.setName("Chassis");
 		this.setQuality(quality);
 		this.setValue(value);
@@ -46,6 +49,20 @@ public class ChassisComponent extends Component {
 	 */
 	public void setBrakingModifier(float brakingModifier) {
 		this.brakingModifier = brakingModifier;
+	}
+	
+	/**
+	 * @return base popularity value
+	 */
+	public int getPopularity() {
+		return popularity;
+	}
+	
+	/**
+	 * @param popularity the popularity value to set
+	 */
+	public void setPopularity(int popularity) {
+		this.popularity = popularity;
 	}
 
 	/**
@@ -103,6 +120,37 @@ public class ChassisComponent extends Component {
 	public void setHandlingModifier(float handlingModifier) {
 		this.handlingModifier = handlingModifier;
 	}
+	
+	/**
+	 * returns hashCode() for chassis component
+	 */
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(accelerationModifier, brakingModifier, handlingModifier, popularity, popularityModifier, speedModifier);
+	}
+	
+	/**
+	 * returns equals() for chassis component
+	 */
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ChassisComponent other = (ChassisComponent) obj;
+		return Float.floatToIntBits(accelerationModifier) == Float.floatToIntBits(other.accelerationModifier)
+				&& Float.floatToIntBits(brakingModifier) == Float.floatToIntBits(other.brakingModifier)
+				&& Float.floatToIntBits(handlingModifier) == Float.floatToIntBits(other.handlingModifier)
+				&& popularity == other.popularity
+				&& Float.floatToIntBits(popularityModifier) == Float.floatToIntBits(other.popularityModifier)
+				&& Float.floatToIntBits(speedModifier) == Float.floatToIntBits(other.speedModifier);
+	}
+
 	/**
 	 * returns toString() for chassis component
 	 */

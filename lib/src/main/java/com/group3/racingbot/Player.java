@@ -132,7 +132,9 @@ public class Player {
 		this.lastWorked = lastWorked;
 	}
 	
-	
+	public String toString() {
+		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;
+	}
 	
 	/**
 	 * @return the ownedCars
@@ -162,10 +164,17 @@ public class Player {
 		this.ownedComponents = ownedComponents;
 	}
 	
+	/**
+	 * @return details about Player Object.
+	 */
+	@Override
 	public String toString() {
 		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;
 	}
 	
+	/**
+	 * @return the hashCode value of the Player Object
+	 */
 	@Override
     public int hashCode() {
 		int prime = 31;
@@ -178,6 +187,9 @@ public class Player {
 		return result;
     }
 
+	/**
+	 * @return returns whether or not a two objects of type Player are actually the same object.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

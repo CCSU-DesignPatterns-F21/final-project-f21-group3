@@ -1,5 +1,7 @@
 package com.group3.racingbot.ComponentFactory;
 
+import java.util.Objects;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -39,6 +41,31 @@ public class EngineComponent extends Component{
 	 */
 	public void setSpeed(float speed) {
 		this.speed = speed;
+	}
+	
+	/**
+	 * returns hashCode() for engine component
+	 */
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(speed);
+	}
+	
+	/**
+	 * returns equals() for engine component
+	 */
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EngineComponent other = (EngineComponent) obj;
+		return Float.floatToIntBits(speed) == Float.floatToIntBits(other.speed);
 	}
 	
 	/**
