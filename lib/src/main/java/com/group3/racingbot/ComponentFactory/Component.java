@@ -137,10 +137,19 @@ public abstract class Component {
 	public int getDurabilityRatio() {
 		return  durability / maxDurability;
 	}
+	
+	/**
+	 * @param returns hashCode for component
+	 */
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(durability, maxDurability, name, quality, rating, value, weight);
 	}
+	
+	/**
+	 * @param returns boolean for component
+	 */
 
 	@Override
 	public boolean equals(Object obj) {
@@ -154,5 +163,15 @@ public abstract class Component {
 		return durability == other.durability && maxDurability == other.maxDurability
 				&& Objects.equals(name, other.name) && Objects.equals(quality, other.quality) && rating == other.rating
 				&& value == other.value && weight == other.weight;
+	}
+	
+	/**
+	 * @param returns toString for component
+	 */
+
+	@Override
+	public String toString() {
+		return "Component [quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
+				+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
 	}
 }
