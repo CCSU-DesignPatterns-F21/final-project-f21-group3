@@ -39,4 +39,37 @@ public class GameplayHandler {
 		timer.schedule(hourlyTask, firstScheduledTask, 1000*60*60);
 		
 	}
+	
+	/**
+	 * Custom hashCode method for GameplayHandler object
+	 * @return calculated hashcode
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((jda == null) ? 0 : jda.hashCode());
+		return result;
+	}
+	
+	/**
+	 * Custom equals method for DBHandler
+	 * @return whether or not 
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GameplayHandler other = (GameplayHandler) obj;
+		if (jda == null) {
+			if (other.jda != null)
+				return false;
+		} else if (!jda.equals(other.jda))
+			return false;
+		return true;
+	}
 }

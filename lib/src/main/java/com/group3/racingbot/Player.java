@@ -1,9 +1,7 @@
 package com.group3.racingbot;
 
-import java.util.Date;
 import java.util.Objects;
 
-import com.group3.racingbot.components.Component;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 
@@ -14,7 +12,6 @@ import com.group3.racingbot.inventory.ComponentInventory;
  */
 
 public class Player {
-	
 	
 	private String id;
 	private String username;
@@ -35,6 +32,10 @@ public class Player {
 		setOwnedCars(new CarInventory());
 	}
 	
+	/**
+	 * 
+	 * @return Player id
+	 */
 	public String getId() {
 		return id;
 	}
@@ -131,9 +132,7 @@ public class Player {
 		this.lastWorked = lastWorked;
 	}
 	
-	public String toString() {
-		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;
-	}
+	
 	
 	/**
 	 * @return the ownedCars
@@ -161,6 +160,10 @@ public class Player {
 	 */
 	public void setOwnedComponents(ComponentInventory ownedComponents) {
 		this.ownedComponents = ownedComponents;
+	}
+	
+	public String toString() {
+		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;
 	}
 	
 	@Override

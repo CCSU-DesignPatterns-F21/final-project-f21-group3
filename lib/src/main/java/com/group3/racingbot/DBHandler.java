@@ -1,9 +1,7 @@
 package com.group3.racingbot;
 
-import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
+
 import static com.mongodb.client.model.Filters.eq;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import java.util.Objects;
 
@@ -174,9 +172,6 @@ public class DBHandler {
 		DBHandler.configProperties = configProperties;
 	}
 	
-	
-
-	
 	/**
 	 * 
 	 * @return the ConfigPropertiesHandler instance.
@@ -187,14 +182,21 @@ public class DBHandler {
 	
 	/**
 	 * Custom hashCode method for DBHandler
+	 * @return calculated hashcode
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.hash(database, mongoClient, userCollection);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((database == null) ? 0 : database.hashCode());
+		result = prime * result + ((mongoClient == null) ? 0 : mongoClient.hashCode());
+		result = prime * result + ((userCollection == null) ? 0 : userCollection.hashCode());
+		return result;
 	}
-
+	
 	/**
-	 * Custom equals method foor DBHandler
+	 * Checks whether two objects are the same or equal instances.
+	 * @return whether or not two instances of objects are the same.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -205,8 +207,21 @@ public class DBHandler {
 		if (getClass() != obj.getClass())
 			return false;
 		DBHandler other = (DBHandler) obj;
-		return Objects.equals(database, other.database) && Objects.equals(mongoClient, other.mongoClient)
-				&& Objects.equals(userCollection, other.userCollection);
+		if (database == null) {
+			if (other.database != null)
+				return false;
+		} else if (!database.equals(other.database))
+			return false;
+		if (mongoClient == null) {
+			if (other.mongoClient != null)
+				return false;
+		} else if (!mongoClient.equals(other.mongoClient))
+			return false;
+		if (userCollection == null) {
+			if (other.userCollection != null)
+				return false;
+		} else if (!userCollection.equals(other.userCollection))
+			return false;
+		return true;
 	}
-
 }
