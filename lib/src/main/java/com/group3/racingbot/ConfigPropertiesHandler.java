@@ -52,7 +52,13 @@ public class ConfigPropertiesHandler {
 	 */
 	public String getProperty(String propReq) {
 		return prop.getProperty(propReq);
-		
+	}
+	
+	@Override
+	public String toString() {
+		if (configPropertiesHandler == null)
+			return "Singleton not present";
+		return "Singleton present";
 	}
 
 }
