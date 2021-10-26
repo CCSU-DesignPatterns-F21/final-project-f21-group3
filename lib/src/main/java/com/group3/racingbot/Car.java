@@ -5,7 +5,6 @@ import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
 import com.group3.racingbot.ComponentFactory.WheelComponent;
-import com.group3.racingbot.inventory.DurabilityFilter;
 import com.group3.racingbot.inventory.Filterable;
 
 /**
@@ -33,6 +32,76 @@ public class Car implements Filterable {
 		this.wheels = null;
 	}
 	
+	/**
+	 * @return the chassis
+	 */
+	public ChassisComponent getChassis() {
+		return chassis;
+	}
+
+	/**
+	 * @return the engine
+	 */
+	public EngineComponent getEngine() {
+		return engine;
+	}
+
+	/**
+	 * @return the suspension
+	 */
+	public SuspensionComponent getSuspension() {
+		return suspension;
+	}
+
+	/**
+	 * @return the transmission
+	 */
+	public TransmissionComponent getTransmission() {
+		return transmission;
+	}
+
+	/**
+	 * @return the wheels
+	 */
+	public WheelComponent getWheels() {
+		return wheels;
+	}
+
+	/**
+	 * @param chassis the chassis to set
+	 */
+	public void setChassis(ChassisComponent chassis) {
+		this.chassis = chassis;
+	}
+
+	/**
+	 * @param engine the engine to set
+	 */
+	public void setEngine(EngineComponent engine) {
+		this.engine = engine;
+	}
+
+	/**
+	 * @param suspension the suspension to set
+	 */
+	public void setSuspension(SuspensionComponent suspension) {
+		this.suspension = suspension;
+	}
+
+	/**
+	 * @param transmission the transmission to set
+	 */
+	public void setTransmission(TransmissionComponent transmission) {
+		this.transmission = transmission;
+	}
+
+	/**
+	 * @param wheels the wheels to set
+	 */
+	public void setWheels(WheelComponent wheels) {
+		this.wheels = wheels;
+	}
+
 	/**
 	 * 
 	 * @return boolean based on if the car contains all parts.
