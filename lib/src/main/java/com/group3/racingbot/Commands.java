@@ -188,7 +188,7 @@ public class Commands extends ListenerAdapter {
 	    	
 	    	// A test for filtering an inventory of cars.
 	    	if(args[1].equalsIgnoreCase("inventory")) {
-	    		Player somePlayer = new Player();
+	    		/*Player somePlayer = new Player();
 	    		
 	    		int randomNum = ThreadLocalRandom.current().nextInt(0, 49);
 	    		
@@ -218,7 +218,7 @@ public class Commands extends ListenerAdapter {
 	    			}
 	    		}
 	    		eb.setDescription(result);
-	    		event.getChannel().sendMessage(eb.build()).queue();
+	    		event.getChannel().sendMessage(eb.build()).queue();*/
 
 			component = new ConcreteComponentFactory();
 			//TODO: for debugging only

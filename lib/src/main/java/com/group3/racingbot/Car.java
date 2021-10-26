@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.group3.racingbot;
 
 import com.group3.racingbot.ComponentFactory.ChassisComponent;
@@ -18,54 +15,45 @@ import com.group3.racingbot.inventory.Filterable;
  *
  */
 public class Car implements Filterable {
-	/*
-	- chassis : ChassisComponent
-	- engine : EngineComponent
-	- suspension : SuspensionComponent
-	- transmission : TransmissionComponent
-	- wheels : WheelComponent
-	- rating: int
-	- durability : int
-	- price : int
-	- quality : String
-	- weight : int
-	- popularity : float
-	- acceleration : float
-	- speed : float
-	- handling : float
-	- braking : float 
-	 */
 	private ChassisComponent chassis;
 	private EngineComponent engine;
 	private SuspensionComponent suspension;
 	private TransmissionComponent transmission;
 	private WheelComponent wheels;
-	private int durability; // Calculated.
-	private int price; // Calculated.
-	private String quality; // Calculated based on overall rating.
-	private int weight; // Calculated.
-	private float popularityRating;
-	private float accelerationRating;
-	private float speedRating;
-	private float handlingRating;
-	private float brakingRating;
 	
-	public Car(int durability, int price, String quality, int weight) {
-		this.durability = durability;
-		this.price = price;
-		this.quality = quality;
-		this.weight = weight;
+	/**
+	 * Creates a car which can be equipped with different components.
+	 */
+	public Car() {
+		this.chassis = null;
+		this.engine = null;
+		this.suspension = null;
+		this.transmission = null;
+		this.wheels = null;
+	}
+	
+	/**
+	 * 
+	 * @return boolean based on if the car contains all parts.
+	 */
+	public boolean hasAllComponents() {
+		if (this.chassis != null && this.engine != null && this.suspension != null && this.transmission != null && this.wheels != null)
+			return true;
+		return false;
 	}
 	
 	/**
 	 * Gets the minimum durability value amongst the five car components.
 	 */
 	public int getDurability() {
-		int minDurability = Math.min(this.chassis.getDurability(), this.engine.getDurability());
-		minDurability = Math.min(minDurability, this.suspension.getDurability());
-		minDurability = Math.min(minDurability, this.transmission.getDurability());
-		minDurability = Math.min(minDurability, this.wheels.getDurability());
-		return minDurability;
+		if (this.hasAllComponents()) {
+			int minDurability = Math.min(this.chassis.getDurability(), this.engine.getDurability());
+			minDurability = Math.min(minDurability, this.suspension.getDurability());
+			minDurability = Math.min(minDurability, this.transmission.getDurability());
+			minDurability = Math.min(minDurability, this.wheels.getDurability());
+			return minDurability;
+		}
+		return 0;
 	}
 	
 	/**
@@ -74,11 +62,14 @@ public class Car implements Filterable {
 	 * Values the car based on the value of all car components combined.
 	 */
 	public int getPrice() {
-		return this.chassis.getValue()
-			 + this.engine.getValue()
-			 + this.suspension.getValue()
-			 + this.transmission.getValue()
-			 + this.wheels.getValue();
+		if (this.hasAllComponents()) {
+			return this.chassis.getValue()
+					 + this.engine.getValue()
+					 + this.suspension.getValue()
+					 + this.transmission.getValue()
+					 + this.wheels.getValue();
+		}
+		return 0;
 	}
 	
 	/**
@@ -87,11 +78,14 @@ public class Car implements Filterable {
 	 * Rates the car based on the rating of all car components combined.
 	 */
 	public int getRating() {
-		return this.chassis.getRating()
-			 + this.engine.getRating()
-			 + this.suspension.getRating()
-			 + this.transmission.getRating()
-			 + this.wheels.getRating();
+		if (this.hasAllComponents()) {
+			return this.chassis.getRating()
+				 + this.engine.getRating()
+				 + this.suspension.getRating()
+				 + this.transmission.getRating()
+				 + this.wheels.getRating();
+		}
+		return 0;
 	}
 	
 	/**
@@ -120,11 +114,14 @@ public class Car implements Filterable {
 	 * Weighs the car based on the weight of all car components combined.
 	 */
 	public int getWeight() {
-		return this.chassis.getWeight()
-			 + this.engine.getWeight()
-			 + this.suspension.getWeight()
-			 + this.transmission.getWeight()
-			 + this.wheels.getWeight();
+		if (this.hasAllComponents()) {
+			return this.chassis.getWeight()
+				 + this.engine.getWeight()
+				 + this.suspension.getWeight()
+				 + this.transmission.getWeight()
+				 + this.wheels.getWeight();
+		}
+		return 0;
 	}
 	
 	/**
@@ -133,7 +130,9 @@ public class Car implements Filterable {
 	 * @return the popularity rating of the car.
 	 */
 	public float getPopularityRating() {
-		return this.chassis.getPopularity() * this.chassis.getPopularityModifier();
+		if (this.chassis != null)
+			return this.chassis.getPopularity() * this.chassis.getPopularityModifier();
+		return 0;
 	}
 	
 	/**
@@ -142,7 +141,9 @@ public class Car implements Filterable {
 	 * @return the speed rating of the car.
 	 */
 	public float getSpeedRating() {
-		return this.engine.getSpeed() * this.chassis.getSpeedModifier();
+		if (this.chassis != null && this.engine != null)
+			return this.engine.getSpeed() * this.chassis.getSpeedModifier();
+		return 0;
 	}
 	
 	/**
@@ -151,7 +152,9 @@ public class Car implements Filterable {
 	 * @return the handling rating of the car.
 	 */
 	public float getHandlingRating() {
-		return this.suspension.getHandling() * this.chassis.getHandlingModifier();
+		if (this.chassis != null && this.suspension != null)
+			return this.suspension.getHandling() * this.chassis.getHandlingModifier();
+		return 0;
 	}
 	
 	/**
@@ -160,7 +163,9 @@ public class Car implements Filterable {
 	 * @return the acceleration rating of the car.
 	 */
 	public float getAccelerationRating() {
-		return this.transmission.getAcceleration() * this.chassis.getAccelerationModifier();
+		if (this.chassis != null && this.transmission != null)
+			return this.transmission.getAcceleration() * this.chassis.getAccelerationModifier();
+		return 0;
 	}
 	
 	/**
@@ -169,11 +174,13 @@ public class Car implements Filterable {
 	 * @return the braking rating of the car.
 	 */
 	public float getBrakingRating() {
-		return this.wheels.getBraking() * this.chassis.getBrakingModifier();
+		if (this.chassis != null && this.wheels != null)
+			return this.wheels.getBraking() * this.chassis.getBrakingModifier();
+		return 0;
 	}
 	
 	@Override
 	public String toString() {
-		return "Durability: " + this.durability + " | Price: " + this.price + " | Quality: " + this.quality + " | Weight: " + this.weight;
+		return "Durability: " + this.getDurability() + " | Price: " + this.getPrice() + " | Quality: " + this.getQuality() + " | Weight: " + this.getWeight();
 	}
 }
