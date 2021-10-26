@@ -5,6 +5,7 @@ import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
 import com.group3.racingbot.ComponentFactory.WheelComponent;
+import com.group3.racingbot.inventory.DurabilityFilter;
 import com.group3.racingbot.inventory.Filterable;
 
 /**
@@ -177,6 +178,44 @@ public class Car implements Filterable {
 		if (this.chassis != null && this.wheels != null)
 			return this.wheels.getBraking() * this.chassis.getBrakingModifier();
 		return 0;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.getDurability() + this.getPrice() + this.getRating() + this.getWeight() + ((int) this.getPopularityRating()) + ((int) this.getSpeedRating()) + ((int) this.getHandlingRating()) + ((int) this.getBrakingRating()) + ((int) this.getAccelerationRating());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Car) {
+			Car otherObj = (Car) other;
+			
+			if (this.getDurability() != otherObj.getDurability())
+				return false;
+			if (this.getPrice() != otherObj.getPrice())
+				return false;
+			if (this.getRating() != otherObj.getRating())
+				return false;
+			if (this.getWeight() != otherObj.getWeight())
+				return false;
+			if (((int) this.getPopularityRating()) != ((int) otherObj.getPopularityRating()))
+				return false;
+			if (((int) this.getSpeedRating()) != ((int) otherObj.getSpeedRating()))
+				return false;
+			if (((int) this.getHandlingRating()) != ((int) otherObj.getHandlingRating()))
+				return false;
+			if (((int) this.getBrakingRating()) != ((int) otherObj.getBrakingRating()))
+				return false;
+			if (((int) this.getAccelerationRating()) != ((int) otherObj.getAccelerationRating()))
+				return false;
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
