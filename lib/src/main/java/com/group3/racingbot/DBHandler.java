@@ -3,7 +3,7 @@ package com.group3.racingbot;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import java.util.Objects;
+
 
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
