@@ -1,8 +1,10 @@
 package com.group3.racingbot.shop;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 
@@ -13,6 +15,8 @@ import com.group3.racingbot.inventory.ComponentInventory;
  */
 
 public class Dealership extends Shop  {
+
+	
 	@BsonCreator
 	public Dealership() {
 		setCarsForSale(new CarInventory());
@@ -33,5 +37,4 @@ public class Dealership extends Shop  {
 		System.out.println("Updating Dealership Store");
 		
 	}
-
 }

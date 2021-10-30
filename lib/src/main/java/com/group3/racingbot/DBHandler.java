@@ -11,6 +11,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.ClassModel;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.shop.Shop;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -38,8 +39,9 @@ public class DBHandler {
 	 */
 	public DBHandler() {
 		ClassModel<Shop> shopModel = ClassModel.builder(Shop.class).enableDiscriminator(true).build();
+		ClassModel<ComponentFactory> componentFactoryModel = ClassModel.builder(ComponentFactory.class).enableDiscriminator(true).build();
 		
-		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(shopModel).automatic(true).build();
+		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(shopModel).register(componentFactoryModel).automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),
 		            CodecRegistries.fromProviders(pojoCodecProvider)

@@ -12,9 +12,7 @@ import com.group3.racingbot.inventory.ComponentInventory;
  */
 public class Junkyard extends Shop {
 
-	/**
-	 * 
-	 */
+	
 	@BsonCreator
 	public Junkyard() {
 		setCarsForSale(new CarInventory());
@@ -34,5 +32,6 @@ public class Junkyard extends Shop {
 	public void update() {
 		System.out.println("Updating Junkyard Store");
 	}
+	
 
 }

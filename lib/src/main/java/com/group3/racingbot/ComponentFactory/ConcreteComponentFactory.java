@@ -1,5 +1,8 @@
 package com.group3.racingbot.ComponentFactory;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 /**
  * @author Jack Gola
  * Defines the ConcreteComponentFactory
@@ -12,8 +15,8 @@ public class ConcreteComponentFactory extends ComponentFactory{
 	/**
 	 * Creates actual components based on specified parameters
 	 */
-	
-	public Component createComponent(String type, int cost) {
+	@BsonCreator
+	public Component createComponent(@BsonProperty("type") String type,@BsonProperty("cost") int cost) {
 	
 		Component createdComponent = null;
 		

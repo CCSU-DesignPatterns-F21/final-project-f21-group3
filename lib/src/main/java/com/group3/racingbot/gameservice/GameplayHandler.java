@@ -3,12 +3,15 @@ package com.group3.racingbot.gameservice;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.group3.racingbot.DBHandler;
+import com.group3.racingbot.ComponentFactory.ComponentFactory;
+import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
 import com.group3.racingbot.shop.ChopShop;
 import com.group3.racingbot.shop.CustomObserver;
 import com.group3.racingbot.shop.Dealership;
@@ -26,10 +29,14 @@ import net.dv8tion.jda.api.JDA;
 public class GameplayHandler {
 
 	private JDA jda;
-	private List<CustomObserver> listeners;
+	//TODO: Might need to be canged into generics
+	private List<CustomObserver> listeners = new ArrayList<CustomObserver>();
 	//private List<Shop> shops;
+	private ComponentFactory componentFactory;
 	
 	public GameplayHandler(JDA j, DBHandler dbh) {
+		componentFactory = new ConcreteComponentFactory();
+		Shop junkyard,chopshop,dealership,importer;
 		
 			//System.out.println(dbh.getShop(0));
 			
@@ -37,26 +44,63 @@ public class GameplayHandler {
 //				subscribe(shops.get(i));
 //				shops.get(i).toString();
 //			}
-
-			Shop junkyard = new Junkyard();
-			Shop chopshop = new ChopShop();
-			Shop dealership = new Dealership();
-			Shop importer = new Importer();
-			
-			dbh.insertShop(junkyard);
-			this.subscribe((CustomObserver)junkyard);
-			
+		
+		//Check if shop is in DB, if not create, store and subscribe it to the listeners list.
+		if(dbh.getShop(0) != null) {
+			junkyard = dbh.getShop(0);
+			junkyard.setFactory(componentFactory);
+			this.subscribe(junkyard);
+		}else {
+			 junkyard = new Junkyard();
+			 junkyard.setFactory(componentFactory);
+			 junkyard.update();
+			 dbh.insertShop(junkyard);
+			 this.subscribe(junkyard);
+		}
+		
+		if(dbh.getShop(1) != null) {
+			chopshop = dbh.getShop(1);
+			chopshop.setFactory(componentFactory);
+			this.subscribe(chopshop);
+		}else {
+			chopshop = new ChopShop();
+			chopshop.setFactory(componentFactory);
+			chopshop.update();
 			dbh.insertShop(chopshop);
-			this.subscribe((CustomObserver)chopshop);
-			
+			this.subscribe(chopshop);
+		}
+		
+		if(dbh.getShop(2) != null) {
+			dealership = dbh.getShop(2);
+			dealership.setFactory(componentFactory);
+			this.subscribe(dealership);
+		}else {
+			dealership = new Dealership();
+			dealership.setFactory(componentFactory);
+			dealership.update();
 			dbh.insertShop(dealership);
-			this.subscribe((CustomObserver)dealership);
-			
+			this.subscribe(dealership);
+		}
+		
+		if(dbh.getShop(3) != null) {
+			importer = dbh.getShop(3);
+			importer.setFactory(componentFactory);
+			this.subscribe(importer);
+		}else {
+			importer = new Importer();
+			importer.setFactory(componentFactory);
+			importer.update();
 			dbh.insertShop(importer);
-			this.subscribe((CustomObserver)importer);
+			this.subscribe(importer);
+		}
 
 		
-		
+		 
+		System.out.println(junkyard);
+		System.out.println(chopshop);
+		System.out.println(dealership);
+		System.out.println(importer);
+			
 		
 		notifyObservers();
 		
@@ -65,6 +109,7 @@ public class GameplayHandler {
 		//Instanciate the stores, racetrack generator, etc. This is responsible for handling gameplay related tasks.
 		jda = j;
 		Timer timer = new Timer ();
+		
 		TimerTask hourlyTask = new TimerTask () {
 		    @Override
 		    public void run () {
@@ -84,6 +129,7 @@ public class GameplayHandler {
 	}
 	
 	public void subscribe(CustomObserver o) {
+		System.out.println(o);
 		listeners.add(o);
 	}
 	
@@ -92,10 +138,12 @@ public class GameplayHandler {
 	}
 	public void notifyObservers() {
 		System.out.println("Notifying observers...");
-		for(int i = 0; i < listeners.size(); i++)
+		if(listeners.size() != 0)
 		{
-			listeners.get(i).update();
-			
+			for(int i = 0; i < listeners.size(); i++)
+			{
+				listeners.get(i).update();
+			}
 		}
 	}
 	

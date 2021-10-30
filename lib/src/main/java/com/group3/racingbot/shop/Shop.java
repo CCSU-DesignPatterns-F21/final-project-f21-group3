@@ -6,6 +6,7 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 
@@ -23,6 +24,7 @@ public abstract class Shop implements CustomObserver{
 	private int id;
 	private CarInventory carsForSale;
 	private ComponentInventory componentsForSale;
+	private ComponentFactory factory;
 
 	public abstract Component createComponent();
 
@@ -91,5 +93,19 @@ public abstract class Shop implements CustomObserver{
 	 */
 	public void setComponentsForSale(ComponentInventory componentsForSale) {
 		this.componentsForSale = componentsForSale;
+	}
+	
+	/**
+	 * @return the factory
+	 */
+	public ComponentFactory getFactory() {
+		return factory;
+	}
+
+	/**
+	 * @param factory the factory to set
+	 */
+	public void setFactory(ComponentFactory factory) {
+		this.factory = factory;
 	}
 }
