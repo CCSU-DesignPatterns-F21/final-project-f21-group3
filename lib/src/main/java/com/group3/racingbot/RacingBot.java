@@ -18,7 +18,7 @@ import net.dv8tion.jda.api.entities.Activity;
 
 public class RacingBot {
 
-	private static JDA jda;
+	
 	/**
 	 * Reference to the command prefix.
 	 */
@@ -29,17 +29,22 @@ public class RacingBot {
 	 */
 	public static GameplayHandler gameHandler;
 	
+	private static JDA jda;
 	private static ConfigPropertiesHandler configProperties;
 	private static DBHandler db;
 	
 	public static void main(String[] args) throws Exception{
 		configProperties = ConfigPropertiesHandler.getInstance();
-		db = new DBHandler();
 		
 		jda = JDABuilder.createDefault(configProperties.getProperty("discordChannelToken")).build();
 		jda.getPresence().setStatus(OnlineStatus.IDLE);
 		jda.getPresence().setActivity(Activity.watching("for participants!"));
+	
+		db = new DBHandler();
+
+		
 		jda.addEventListener(new Commands(db));
-		gameHandler = new GameplayHandler(jda);
+		Thread.sleep(3000); //TODO: find a better way to do this, this is temporary. Making sure the DB connection is established before passing it to GameplayHandler
+		gameHandler = new GameplayHandler(jda,db);
 	}
 }

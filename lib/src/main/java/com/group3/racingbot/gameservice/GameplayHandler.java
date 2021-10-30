@@ -4,8 +4,17 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import com.group3.racingbot.DBHandler;
+import com.group3.racingbot.shop.ChopShop;
+import com.group3.racingbot.shop.Dealership;
+import com.group3.racingbot.shop.Importer;
+import com.group3.racingbot.shop.Junkyard;
+import com.group3.racingbot.shop.Observer;
+import com.group3.racingbot.shop.Shop;
 
 import net.dv8tion.jda.api.JDA;
 
@@ -17,7 +26,40 @@ import net.dv8tion.jda.api.JDA;
 public class GameplayHandler {
 
 	private JDA jda;
-	public GameplayHandler(JDA j) {
+	private List<Observer> listeners;
+	//private List<Shop> shops;
+	
+	public GameplayHandler(JDA j, DBHandler dbh) {
+		
+			System.out.println(dbh.getShop(0));
+			
+//			for(int i =0; i<shops.size(); i++) {
+//				subscribe(shops.get(i));
+//				shops.get(i).toString();
+//			}
+
+			Shop junkyard = new Junkyard();
+			Shop chopshop = new ChopShop();
+			Shop dealership = new Dealership();
+			Shop importer = new Importer();
+			
+			dbh.insertShop(junkyard);
+			dbh.insertShop(chopshop);
+			dbh.insertShop(dealership);
+			dbh.insertShop(importer);
+			
+			this.subscribe(junkyard);
+			this.subscribe(chopshop);
+			this.subscribe(dealership);
+			this.subscribe(importer);
+
+		
+		
+		
+		notifyObservers();
+		
+		//listeners.addAll(shops);
+		
 		//Instanciate the stores, racetrack generator, etc. This is responsible for handling gameplay related tasks.
 		jda = j;
 		Timer timer = new Timer ();
@@ -25,7 +67,7 @@ public class GameplayHandler {
 		    @Override
 		    public void run () {
 		        System.out.println("Running Hourly scheduled task...");
-		       
+		        notifyObservers();
 		    }
 		};
 		
@@ -37,7 +79,22 @@ public class GameplayHandler {
 		System.out.println("Next Hour (Date Converted): "+firstScheduledTask);
 		
 		timer.schedule(hourlyTask, firstScheduledTask, 1000*60*60);
-		
+	}
+	
+	public void subscribe(Observer o) {
+		listeners.add(o);
+	}
+	
+	public void unsubscribe(Observer observer) {
+		listeners.remove(observer);
+	}
+	public void notifyObservers() {
+		System.out.println("Notifying observers...");
+		for(int i = 0; i < listeners.size(); i++)
+		{
+			listeners.get(i).update();
+			
+		}
 	}
 	
 	/**

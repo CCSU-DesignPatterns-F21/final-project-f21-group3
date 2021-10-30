@@ -3,13 +3,16 @@ package com.group3.racingbot;
 
 import static com.mongodb.client.model.Filters.eq;
 
-
+import java.util.List;
+import java.util.function.Consumer;
 
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import com.group3.racingbot.shop.Shop;
+import com.mongodb.Block;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -29,6 +32,7 @@ public class DBHandler {
 	private MongoClient mongoClient;
 	private MongoDatabase database;
 	private MongoCollection<Player> userCollection;
+	private MongoCollection<Shop> shopCollection;
 	
 	/**
 	 * Constructor initializes the necessary settings required for connecting to the MongoDB.
@@ -47,7 +51,7 @@ public class DBHandler {
 				mongoClient = MongoClients.create(settings);
 				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
 				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
-		
+				shopCollection = database.getCollection("Shops",Shop.class).withCodecRegistry(codecRegistry);
 				//System.out.println(userCollection.countDocuments());
 	}
 	
@@ -91,6 +95,20 @@ public class DBHandler {
 		
 	}
 	
+	public void insertShop(Shop shop)
+	{
+		shopCollection.insertOne(shop);
+	}
+	
+	public Shop getShop(int id) {
+		return (Shop)shopCollection.find(eq("_id",id)).first();
+	}
+	
+	public List<Shop> getShops(){
+		System.out.println(shopCollection.find().first());
+		return null;
+	}
+	
 	/**
 	 * @return the database reference
 	 */
@@ -110,6 +128,13 @@ public class DBHandler {
 	 */
 	public MongoCollection<Player> getUserCollection() {
 		return userCollection;
+	}
+	
+	/**
+	 * @return the MongoDB ShopCollection
+	 */
+	public MongoCollection<Shop> getShopCollection() {
+		return shopCollection;
 	}
 
 	/**
