@@ -1,18 +1,26 @@
 package com.group3.racingbot.shop;
 
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonId;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 
+@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Junkyard.class),
+        @JsonSubTypes.Type(value = ChopShop.class),
+        @JsonSubTypes.Type(value = Dealership.class),
+        @JsonSubTypes.Type(value = Importer.class)})
 @BsonDiscriminator
-public abstract class Shop implements Observer{
+public abstract class Shop implements CustomObserver{
 	
 	private String name;
 	private String description;
 	private int id;
-	
 	private CarInventory carsForSale;
 	private ComponentInventory componentsForSale;
 
@@ -50,6 +58,7 @@ public abstract class Shop implements Observer{
 	/**
 	 * @return the id
 	 */
+	 @BsonId
 	public int getId() {
 		return id;
 	}

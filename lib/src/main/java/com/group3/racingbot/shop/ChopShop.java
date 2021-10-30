@@ -1,5 +1,7 @@
 package com.group3.racingbot.shop;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
@@ -11,7 +13,7 @@ import com.group3.racingbot.inventory.ComponentInventory;
  */
 
 public class ChopShop extends Shop  {
-
+	@BsonCreator
 	public ChopShop() {
 		setCarsForSale(new CarInventory());
 		setComponentsForSale(new ComponentInventory());

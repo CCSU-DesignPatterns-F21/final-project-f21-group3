@@ -4,15 +4,14 @@ package com.group3.racingbot;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.ClassModel;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import com.group3.racingbot.shop.Shop;
-import com.mongodb.Block;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -38,7 +37,9 @@ public class DBHandler {
 	 * Constructor initializes the necessary settings required for connecting to the MongoDB.
 	 */
 	public DBHandler() {
-		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+		ClassModel<Shop> shopModel = ClassModel.builder(Shop.class).enableDiscriminator(true).build();
+		
+		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(shopModel).automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),
 		            CodecRegistries.fromProviders(pojoCodecProvider)
@@ -97,7 +98,14 @@ public class DBHandler {
 	
 	public void insertShop(Shop shop)
 	{
-		shopCollection.insertOne(shop);
+		Shop s = shopCollection.find(eq("_id",shop.getId())).first();
+		if(s != null)
+		{
+			System.out.println("Shop already in DB: " + s.getName());
+		}else {
+			shopCollection.insertOne(shop);
+		}
+		
 	}
 	
 	public Shop getShop(int id) {
