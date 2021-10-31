@@ -11,7 +11,10 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.ClassModel;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
+import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
+import com.group3.racingbot.inventory.ComponentInventory;
 import com.group3.racingbot.shop.Shop;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -40,8 +43,15 @@ public class DBHandler {
 	public DBHandler() {
 		ClassModel<Shop> shopModel = ClassModel.builder(Shop.class).enableDiscriminator(true).build();
 		ClassModel<ComponentFactory> componentFactoryModel = ClassModel.builder(ComponentFactory.class).enableDiscriminator(true).build();
-		
-		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(shopModel).register(componentFactoryModel).automatic(true).build();
+		ClassModel<ConcreteComponentFactory> concreteComponentFactoryModel = ClassModel.builder(ConcreteComponentFactory.class).enableDiscriminator(true).build();
+		ClassModel<ComponentInventory> componenInventorytModel = ClassModel.builder(ComponentInventory.class).enableDiscriminator(true).build();
+		ClassModel<Component> componentModel = ClassModel.builder(Component.class).enableDiscriminator(true).build();
+		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(shopModel)
+				 .register(componentFactoryModel)
+				 .register(concreteComponentFactoryModel)
+				 .register(componenInventorytModel)
+				 .register(componentModel)
+				 .automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),
 		            CodecRegistries.fromProviders(pojoCodecProvider)
@@ -115,7 +125,7 @@ public class DBHandler {
 	}
 	
 	public List<Shop> getShops(){
-		System.out.println(shopCollection.find().first());
+		//System.out.println(shopCollection.find().first());
 		return null;
 	}
 	

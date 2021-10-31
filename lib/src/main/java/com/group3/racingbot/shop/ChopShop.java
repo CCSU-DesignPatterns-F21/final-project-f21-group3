@@ -18,9 +18,9 @@ public class ChopShop extends Shop  {
 	
 	@BsonCreator
 	public ChopShop() {
+		setId(0);
 		setCarsForSale(new CarInventory());
 		setComponentsForSale(new ComponentInventory());
-		setId(0);
 		setName("Chop Shop");
 		setDescription("You never know what you will find at the Chop Shop, stolen catalytic converters, wheels, rims and more! No questions asked, no refunds!");
 	}

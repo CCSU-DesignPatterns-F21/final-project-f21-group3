@@ -16,7 +16,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 	 * Creates actual components based on specified parameters
 	 */
 	@BsonCreator
-	public Component createComponent(@BsonProperty("type") String type,@BsonProperty("cost") int cost) {
+	public Component createComponent(String type,int cost) {
 	
 		Component createdComponent = null;
 		

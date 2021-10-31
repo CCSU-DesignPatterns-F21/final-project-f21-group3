@@ -31,6 +31,7 @@ public class Junkyard extends Shop {
 	@Override
 	public void update() {
 		System.out.println("Updating Junkyard Store");
+		getComponentsForSale().add(getFactory().createComponent("engine", 100));
 	}
 	
 

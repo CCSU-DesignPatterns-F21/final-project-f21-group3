@@ -46,8 +46,23 @@ public class GameplayHandler {
 //			}
 		
 		//Check if shop is in DB, if not create, store and subscribe it to the listeners list.
+		
+		
 		if(dbh.getShop(0) != null) {
-			junkyard = dbh.getShop(0);
+			chopshop = dbh.getShop(0);
+			chopshop.setFactory(componentFactory);
+			//System.out.println(chopshop);
+			this.subscribe(chopshop);
+		}else {
+			chopshop = new ChopShop();
+			chopshop.setFactory(componentFactory);
+			chopshop.update();
+			dbh.insertShop(chopshop);
+			this.subscribe(chopshop);
+		}
+		
+		if(dbh.getShop(1) != null) {
+			junkyard = dbh.getShop(1);
 			junkyard.setFactory(componentFactory);
 			this.subscribe(junkyard);
 		}else {
@@ -56,18 +71,6 @@ public class GameplayHandler {
 			 junkyard.update();
 			 dbh.insertShop(junkyard);
 			 this.subscribe(junkyard);
-		}
-		
-		if(dbh.getShop(1) != null) {
-			chopshop = dbh.getShop(1);
-			chopshop.setFactory(componentFactory);
-			this.subscribe(chopshop);
-		}else {
-			chopshop = new ChopShop();
-			chopshop.setFactory(componentFactory);
-			chopshop.update();
-			dbh.insertShop(chopshop);
-			this.subscribe(chopshop);
 		}
 		
 		if(dbh.getShop(2) != null) {
@@ -96,13 +99,13 @@ public class GameplayHandler {
 
 		
 		 
-		System.out.println(junkyard);
-		System.out.println(chopshop);
-		System.out.println(dealership);
-		System.out.println(importer);
+		//System.out.println(junkyard);
+		//System.out.println(chopshop);
+		//System.out.println(dealership);
+		//System.out.println(importer);
 			
 		
-		notifyObservers();
+		//notifyObservers();
 		
 		//listeners.addAll(shops);
 		
@@ -129,7 +132,7 @@ public class GameplayHandler {
 	}
 	
 	public void subscribe(CustomObserver o) {
-		System.out.println(o);
+		//System.out.println(o);
 		listeners.add(o);
 	}
 	
