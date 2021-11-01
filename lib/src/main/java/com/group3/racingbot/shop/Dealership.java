@@ -34,6 +34,7 @@ public class Dealership extends Shop  {
 
 	@Override
 	public void update() {
+		getComponentsForSale().getItems().clear();
 		System.out.println("Updating Dealership Store");
 		
 	}

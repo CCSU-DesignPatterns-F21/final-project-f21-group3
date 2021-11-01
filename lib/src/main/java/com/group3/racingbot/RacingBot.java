@@ -42,9 +42,13 @@ public class RacingBot {
 	
 		db = new DBHandler();
 
-		
-		jda.addEventListener(new Commands(db));
+		Commands commandHandler = new Commands(db);
+		jda.addEventListener(commandHandler);
 		Thread.sleep(3000); //TODO: find a better way to do this, this is temporary. Making sure the DB connection is established before passing it to GameplayHandler
 		gameHandler = new GameplayHandler(jda,db);
+		
+		commandHandler.setGameplayHandler(gameHandler);
+		
+		
 	}
 }

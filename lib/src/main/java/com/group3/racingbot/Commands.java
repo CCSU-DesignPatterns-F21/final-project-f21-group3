@@ -1,27 +1,23 @@
 package com.group3.racingbot;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.DurabilityFilter;
-import com.group3.racingbot.inventory.FilterOperation;
-import com.group3.racingbot.inventory.Inventory;
-import com.group3.racingbot.inventory.InventoryIterator;
-import com.group3.racingbot.inventory.QualityFilter;
+import com.group3.racingbot.gameservice.GameplayHandler;
+import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.shop.Shop;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -38,6 +34,7 @@ public class Commands extends ListenerAdapter {
 	private DBHandler dbh;
 	private EmbedBuilder eb;
 	private ComponentFactory component;
+	private GameplayHandler gph;
 
 	public Commands(DBHandler db) {
 		eb = new EmbedBuilder();
@@ -62,6 +59,7 @@ public class Commands extends ListenerAdapter {
 	    {
 	    	if(args[1].equalsIgnoreCase("help"))
 	    	{
+	    		eb.clear();
 	    		//Embed example
 	    		eb.setColor(Color.red);
 	    		eb.setDescription("RacingBot commands: \n"
@@ -76,6 +74,7 @@ public class Commands extends ListenerAdapter {
 	    	//Handle User registering
 	    	if(args[1].equalsIgnoreCase("register"))
 	    	{
+	    		eb.clear();
 	    		try {
 	    			//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
 		    		if(dbh.userExists(user.getId())){
@@ -178,6 +177,56 @@ public class Commands extends ListenerAdapter {
 	    	}
 	    	
 	    	
+	    	if(args[1].equalsIgnoreCase("shops"))
+    		{
+	    		
+	    		List<Shop> shops = dbh.getShops();
+	    		System.out.println(shops.size());
+	    			
+	    			for(int i=0; i<shops.size();i++)
+	    			{
+	    				eb.clear();
+	    				eb.setColor(Color.green);
+	    				//TODO: use the iterator function instead?
+	    				List<Component> components = shops.get(i).getComponentsForSale().getItems();
+	    				System.out.println(components.size());
+	    				
+	    				
+	    				eb.setTitle(shops.get(i).getName());
+	    				eb.setDescription(shops.get(i).getDescription());
+	    				
+	    				
+	    				for(int c=0; c<components.size();c++)
+	    				{
+	    					Field field = new Field(components.get(c).getName(), components.get(c).toString(), false);
+	    					eb.addField(field);
+	    					
+	    					//event.getChannel().sendMessage(components.get(c).toString()).queue();
+	    					
+	    				}
+	    				event.getChannel().sendMessage(eb.build()).queue();
+	    			}
+	    			
+	    		
+    			
+    		}
+	    	
+	    	//TODO: Remove before final release, DEBUG ONLY FUNCTIONS
+	    	if(args[1].equalsIgnoreCase("debug"))
+	    	{
+	    		if(args[2].equalsIgnoreCase("shop"))
+	    		{
+	    			if(args[3].equalsIgnoreCase("update"))
+	    			{
+	    				
+	    			}
+	    			
+	    		}
+	    	}
+	    	
+	    	
+	    	
+	    	
 		    	// A test for filtering an inventory of cars.
 		    	/*if(args[1].equalsIgnoreCase("inventory")) {
 		    		/*Player somePlayer = new Player();
@@ -222,6 +271,7 @@ public class Commands extends ListenerAdapter {
 				//Racing: 3001 - 20000
 			
 			if (args[1].equalsIgnoreCase("factorymethod")) {
+				eb.clear();
 				eb.setColor(Color.green);
 				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
 				eb.setTitle("Your components have been successfully generated based on preset parameters");
@@ -240,6 +290,20 @@ public class Commands extends ListenerAdapter {
 	 }
 	}
 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 public void setGameplayHandler(GameplayHandler gp)
+	 {
+		 gph = gp;
+	 }
+	 
+	 
+	 
 	@Override
 	public String toString() {
 		return "Handles the input Commands";

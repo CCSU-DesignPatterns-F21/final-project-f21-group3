@@ -34,13 +34,12 @@ public class ChopShop extends Shop  {
 	@Override
 	public void update() {
 		System.out.println("Updating ChopShop Store");
-		
+		getComponentsForSale().getItems().clear();
 		getComponentsForSale().add(getFactory().createComponent("engine", 100));
 		getComponentsForSale().add(getFactory().createComponent("wheel", 100));
 		getComponentsForSale().add(getFactory().createComponent("suspension", 100));
 		getComponentsForSale().add(getFactory().createComponent("chassis", 100));
 		getComponentsForSale().add(getFactory().createComponent("transmission", 100));
-		
 	}
 
 }

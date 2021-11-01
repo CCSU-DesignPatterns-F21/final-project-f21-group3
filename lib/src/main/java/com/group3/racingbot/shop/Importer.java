@@ -33,6 +33,7 @@ public class Importer extends Shop  {
 
 	@Override
 	public void update() {
+		getComponentsForSale().getItems().clear();
 		System.out.println("Updating Importer Store");
 		
 	}

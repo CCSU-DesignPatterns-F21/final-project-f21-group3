@@ -29,12 +29,14 @@ import net.dv8tion.jda.api.JDA;
 public class GameplayHandler {
 
 	private JDA jda;
+	private DBHandler db;
 	//TODO: Might need to be canged into generics
 	private List<CustomObserver> listeners = new ArrayList<CustomObserver>();
 	//private List<Shop> shops;
 	private ComponentFactory componentFactory;
 	
 	public GameplayHandler(JDA j, DBHandler dbh) {
+		db = dbh;
 		componentFactory = new ConcreteComponentFactory();
 		Shop junkyard,chopshop,dealership,importer;
 		
@@ -134,6 +136,7 @@ public class GameplayHandler {
 	public void subscribe(CustomObserver o) {
 		//System.out.println(o);
 		listeners.add(o);
+		
 	}
 	
 	public void unsubscribe(CustomObserver observer) {
@@ -146,8 +149,14 @@ public class GameplayHandler {
 			for(int i = 0; i < listeners.size(); i++)
 			{
 				listeners.get(i).update();
+				db.updateShop((Shop) listeners.get(i));
 			}
 		}
+	}
+	
+	public List<CustomObserver> getObservers(){
+		return listeners;
+		
 	}
 	
 	/**

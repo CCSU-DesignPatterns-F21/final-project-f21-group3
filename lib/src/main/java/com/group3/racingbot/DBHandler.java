@@ -3,6 +3,7 @@ package com.group3.racingbot;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.codecs.configuration.CodecProvider;
@@ -18,6 +19,7 @@ import com.group3.racingbot.inventory.ComponentInventory;
 import com.group3.racingbot.shop.Shop;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -124,9 +126,19 @@ public class DBHandler {
 		return (Shop)shopCollection.find(eq("_id",id)).first();
 	}
 	
+	/**
+	 * Finds and replaces the Shop stored in DB with a new one
+	 * @param shop new Shop object replacing the one in the DB
+	 */
+	public void updateShop(Shop shop) {
+		shopCollection.findOneAndReplace(eq("_id",shop.getId()),shop);
+		
+	}
 	public List<Shop> getShops(){
 		//System.out.println(shopCollection.find().first());
-		return null;
+		List<Shop> iterablelist = shopCollection.find().into(new ArrayList<Shop>());
+		
+		return iterablelist;
 	}
 	
 	/**
