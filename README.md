@@ -11,8 +11,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-A Racing themed Discord Bot written in Java using MongoDB and JDA wrapper. Earn Credits, Buy Car Components, Build Your Custom Race Car and Race Against Other Channel Members! 
-Hourly randomly generated racetracks with unique prizes, 
+A Racing themed Discord Bot written in Java using MongoDB and JDA wrapper. Earn Credits, buy car components, build your custom race car and race against other members! 
+Challenge other members for an impromtu drag race, register for the hourly tournaments with randomly generated racetracks, or test your car against the best of the best with adaily Grand Prix tournament with premium prizes. 
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
