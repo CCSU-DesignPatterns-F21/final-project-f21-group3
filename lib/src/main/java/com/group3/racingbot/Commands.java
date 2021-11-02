@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -40,11 +41,62 @@ public class Commands extends ListenerAdapter {
 		dbh = db;
 		component = new ConcreteComponentFactory();
 
+	} 
+	
+	/**
+	 * Handles the event when a new User joins the Discord Channel, in this case it will register the user to the database it that user isn't in the database.
+	 * @param event The event which is triggered when a new User joins the Discord Channel
+	*/
+	@Override
+	public void onGuildMemberJoin(GuildMemberJoinEvent event)
+	{
+		Member user = event.getMember(); //Gets the id of the user who called the command.
+	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
+		eb.clear();
+		try {
+			//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
+    		if(dbh.userExists(user.getId())){
+    			Player p = dbh.getPlayer(user.getId());
+    			eb.setTitle("User Already Exists!");
+    			eb.setColor(Color.green);
+    			eb.setThumbnail(user.getUser().getAvatarUrl());
+    			
+	    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+	    				+ "\n Total Losses: " + p.getTotalLosses()
+	    				+ "\n Credits: " + p.getCredits()
+	    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
+	    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
+	    		//eb.addField("Title of field", "test of field", false);
+	    		event.getGuild().getSystemChannel().sendMessage(eb.build()).queue();
+    			
+    		}else {
+    			event.getGuild().getSystemChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
+    			Player p = new Player();
+    			p.setId(user.getId());
+    			p.setUsername(user.getUser().getName());
+    			p.setLastWorked(0);
+    			dbh.insertUser(p);
+    			eb.setThumbnail(user.getUser().getAvatarUrl());
+    			eb.setTitle("User Already Exists!");
+    			eb.setColor(Color.green);
+	    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+	    				+ "\n Total Losses: " + p.getTotalLosses()
+	    				+ "\n Credits: " + p.getCredits());
+	    		event.getGuild().getSystemChannel().sendMessage(eb.build()).queue();
+	    		//eb.addField("Title of field", "test of field", false);
+    		}
+		}catch(Exception e) {
+			
+			event.getGuild().getSystemChannel().sendMessage("Unexpected error when registering User, try again!");
+		}
+		
 	}
-
+	
+	
 	/**
 	 * Handles the commands sent by the Discord User. Player command is parsed by
 	 * spaces, ex. !iracer help. !iracer is required followed by a desired command.
+	 * @param event The event which is triggered when a User sends a message in any text channel.
 	 */
 	
 	 @Override
@@ -61,16 +113,21 @@ public class Commands extends ListenerAdapter {
 	    		eb.clear();
 	    		//Embed example
 	    		eb.setColor(Color.red);
-	    		eb.setDescription("RacingBot commands: \n"
-	    				+ "iracer help \n"
-	    				+ "iracer register | Register with the bot \n"
-	    				+ "iracer guess <number 0-50> | See if you can guess the number!");
+	    		eb.setDescription("**RacingBot commands:** \n"
+	    				+ "**!iracer help OR !r ?**\n"
+	    				+ "**!iracer register OR !r r** | Register with the bot, should be done automaticaly.\n"
+	    				+ "**!iracer guess <number 1-50> OR !r g <number 1-50** | Bet a certain amount of your Credits, if you win, you double your bet!\n"
+	    				+ "**!iracer work OR !r w** | Earn credits by performing work every hour! \n"
+	    				+ "**!iracer profile *<Optional @mention>* OR !r p** | Display your profile or someone elses profile by using @ mentions \n"
+	    				+ "**!iracer shops** | Lists the items for sale of all stores. \n"
+	    				+ "**!iracer shop (chopshop, junkyard, dealership, importer) OR !r s (c,j,d,i)** | Lists the items for sale of a specific store.\n"
+	    				+ "**!iracer race register OR !r r r** | Register for the upcoming race");
 	    		eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
 	    		
 	    	event.getChannel().sendMessage(eb.build()).queue();
 	    		
 	    	}
-	    	//Handle User registering
+	    	//Handle User registering for bot and other 
 	    	if(args[1].equalsIgnoreCase("register") || args[1].equalsIgnoreCase("r"))
 	    	{
 	    		eb.clear();
@@ -220,7 +277,11 @@ public class Commands extends ListenerAdapter {
 	    	
 	    	if(args[1].equalsIgnoreCase("shop") || args[1].equalsIgnoreCase("s"))
     		{
-	    		if(args[2].equalsIgnoreCase("chopshop") || args[1].equalsIgnoreCase("c"))
+	    		
+	    		System.out.println("Shop");
+	    		
+	    		
+	    		if(args[2].equalsIgnoreCase("chopshop") || args[2].equalsIgnoreCase("c"))
 	    		{
 	    			Shop shop = dbh.getShop(0);
 		    		//System.out.println(shop.size());
@@ -243,7 +304,7 @@ public class Commands extends ListenerAdapter {
 		    		event.getChannel().sendMessage(eb.build()).queue();
 	    		}
 	    		
-	    		if(args[2].equalsIgnoreCase("junkyard") || args[1].equalsIgnoreCase("j"))
+	    		if(args[2].equalsIgnoreCase("junkyard") || args[2].equalsIgnoreCase("j"))
 	    		{
 	    			Shop shop = dbh.getShop(1);
 		    		//System.out.println(shop.size());
@@ -265,7 +326,7 @@ public class Commands extends ListenerAdapter {
 		    		}
 		    		event.getChannel().sendMessage(eb.build()).queue();
 	    		}
-	    		if(args[2].equalsIgnoreCase("dealership") || args[1].equalsIgnoreCase("d"))
+	    		if(args[2].equalsIgnoreCase("dealership") || args[2].equalsIgnoreCase("d"))
 	    		{
 	    			Shop shop = dbh.getShop(2);
 		    		//System.out.println(shop.size());
@@ -287,7 +348,7 @@ public class Commands extends ListenerAdapter {
 		    		}
 		    		event.getChannel().sendMessage(eb.build()).queue();
 	    		}
-	    		if(args[2].equalsIgnoreCase("importer") || args[1].equalsIgnoreCase("i"))
+	    		if(args[2].equalsIgnoreCase("importer") || args[2].equalsIgnoreCase("i"))
 	    		{
 	    			Shop shop = dbh.getShop(3);
 		    		//System.out.println(shop.size());
