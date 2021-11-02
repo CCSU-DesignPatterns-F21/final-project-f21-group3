@@ -1,4 +1,6 @@
-package com.group3.racingbot.inventory;
+package com.group3.racingbot.inventory.filter;
+
+import com.group3.racingbot.inventory.InventoryIterator;
 
 /**
  * Returns results which match the given durability criteria.

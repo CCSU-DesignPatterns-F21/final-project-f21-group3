@@ -5,7 +5,7 @@ import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
 import com.group3.racingbot.ComponentFactory.WheelComponent;
-import com.group3.racingbot.inventory.MaterialFilterable;
+import com.group3.racingbot.inventory.filter.MaterialFilterable;
 
 /**
  * A car which contains five car components: A chassis, engine, suspension, transmission, and wheels.
