@@ -1,4 +1,4 @@
-package driverstate;
+package com.group3.racingbot.driverstate;
 
 import com.group3.racingbot.Driver;
 

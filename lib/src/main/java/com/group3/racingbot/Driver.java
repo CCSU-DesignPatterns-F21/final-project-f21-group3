@@ -1,6 +1,6 @@
 package com.group3.racingbot;
 
-import driverstate.DriverState;
+import com.group3.racingbot.driverstate.DriverState;
 
 /**
  * Drives cars in races. A driver has their own stats that govern how well they do on the track.
