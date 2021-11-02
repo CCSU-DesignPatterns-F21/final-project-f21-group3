@@ -6,7 +6,7 @@ package com.group3.racingbot.inventory;
  *
  * @param <T>
  */
-public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDecorator<T> {
+public class DurabilityFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
 	private int durability;
 	private FilterOperation operation;
 	

@@ -1,11 +1,11 @@
 package com.group3.racingbot.inventory;
 
 /**
- * An class which implements Filterable is able to be filtered by an InventoryIterator
+ * Classes which implement this can be filtered by a concrete InventoryIteratorDecorator which filters by some physical property.
  * @author Nick Sabia
  *
  */
-public interface Filterable {
+public interface MaterialFilterable {
 	/**
 	 * Retrieves the durability value.
 	 * @return int

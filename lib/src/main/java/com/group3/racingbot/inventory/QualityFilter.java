@@ -6,7 +6,7 @@ package com.group3.racingbot.inventory;
  *
  * @param <T>
  */
-public class QualityFilter<T extends Filterable> extends InventoryIteratorDecorator<T> {
+public class QualityFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
 	
 	private String quality;
 	/**
