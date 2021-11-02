@@ -2,9 +2,6 @@ package com.group3.racingbot.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.bson.codecs.pojo.annotations.BsonCreator;
-
 import com.group3.racingbot.ComponentFactory.Component;
 
 /**

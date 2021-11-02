@@ -20,6 +20,7 @@ import com.group3.racingbot.shop.Junkyard;
 import com.group3.racingbot.shop.Shop;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 
 /**
  *  Repsponsible for handling the game simulation itself and any underlying features. Keeps track of the Store, Car and Component creation.
@@ -30,7 +31,7 @@ public class GameplayHandler {
 
 	private JDA jda;
 	private DBHandler db;
-	//TODO: Might need to be canged into generics
+	//TODO: Might need to be changed into generic?
 	private List<CustomObserver> listeners = new ArrayList<CustomObserver>();
 	//private List<Shop> shops;
 	private ComponentFactory componentFactory;
@@ -120,6 +121,10 @@ public class GameplayHandler {
 		    public void run () {
 		        System.out.println("Running Hourly scheduled task...");
 		        notifyObservers();
+		        
+		        sendTextChannelMessage("Hourly Update! \n"
+		        		+ "Stores updated \n"
+		        		+ "New Race available!");
 		    }
 		};
 		
@@ -133,6 +138,16 @@ public class GameplayHandler {
 		timer.schedule(hourlyTask, firstScheduledTask, 1000*60*60);
 	}
 	
+	//TODO: Only for DEBUGGING, Remove before final release
+	public void debug() {
+		notifyObservers();
+        
+        sendTextChannelMessage("Hourly Update! \n"
+        		+ "Stores updated \n"
+        		+ "New Race available!");
+		
+	}
+	
 	public void subscribe(CustomObserver o) {
 		//System.out.println(o);
 		listeners.add(o);
@@ -144,6 +159,7 @@ public class GameplayHandler {
 	}
 	public void notifyObservers() {
 		System.out.println("Notifying observers...");
+		
 		if(listeners.size() != 0)
 		{
 			for(int i = 0; i < listeners.size(); i++)
@@ -156,7 +172,16 @@ public class GameplayHandler {
 	
 	public List<CustomObserver> getObservers(){
 		return listeners;
-		
+	}
+	
+	public void sendTextChannelMessage(String str) {
+		List<Guild> guilds = jda.getGuilds();
+		for(int i =0; i<guilds.size();i++)
+		{
+			Guild guild = guilds.get(i);
+			guild.getSystemChannel().sendMessage(str).queue();
+			
+		}
 	}
 	
 	/**

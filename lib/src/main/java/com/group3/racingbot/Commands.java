@@ -11,7 +11,6 @@ import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
 import com.group3.racingbot.gameservice.GameplayHandler;
-import com.group3.racingbot.inventory.ComponentInventory;
 import com.group3.racingbot.shop.Shop;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -55,9 +54,9 @@ public class Commands extends ListenerAdapter {
 	    Member user = event.getMember(); //Gets the id of the user who called the command.
 	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
 	    
-	    if(args[0].equalsIgnoreCase(RacingBot.prefix+"iracer"))
+	    if(args[0].equalsIgnoreCase(RacingBot.prefix+"iracer") || args[0].equalsIgnoreCase(RacingBot.prefix+"r"))
 	    {
-	    	if(args[1].equalsIgnoreCase("help"))
+	    	if(args[1].equalsIgnoreCase("help") || args[1].equalsIgnoreCase("?"))
 	    	{
 	    		eb.clear();
 	    		//Embed example
@@ -72,21 +71,23 @@ public class Commands extends ListenerAdapter {
 	    		
 	    	}
 	    	//Handle User registering
-	    	if(args[1].equalsIgnoreCase("register"))
+	    	if(args[1].equalsIgnoreCase("register") || args[1].equalsIgnoreCase("r"))
 	    	{
 	    		eb.clear();
 	    		try {
 	    			//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
 		    		if(dbh.userExists(user.getId())){
 		    			Player p = dbh.getPlayer(user.getId());
-		    			eb.setImage(user.getUser().getAvatarUrl());
+		    			//eb.setImage(user.getUser().getAvatarUrl());
 		    			eb.setTitle("User Already Exists!");
 		    			eb.setColor(Color.green);
 		    			eb.setThumbnail(user.getUser().getAvatarUrl());
 		    			
 			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
 			    				+ "\n Total Losses: " + p.getTotalLosses()
-			    				+ "\n Credits: " + p.getCredits());
+			    				+ "\n Credits: " + p.getCredits()
+			    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
+			    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
 			    		//eb.addField("Title of field", "test of field", false);
 			    		event.getChannel().sendMessage(eb.build()).queue();
 		    			
@@ -113,7 +114,8 @@ public class Commands extends ListenerAdapter {
 	    			
 	    	}
 	    	//Example command, simple guessing command
-	    	if(args[1].equalsIgnoreCase("guess"))
+	    	//TODO: Rewrite to actually use the player's credits as currency for betting.
+	    	if(args[1].equalsIgnoreCase("guess") || args[1].equalsIgnoreCase("g"))
 	    	{
 	    		if(args[2]!=null)
 	    		{
@@ -129,7 +131,7 @@ public class Commands extends ListenerAdapter {
 	    		}
 		    	
 	    	}
-	    	if(args[1].equalsIgnoreCase("work"))
+	    	if(args[1].equalsIgnoreCase("work") || args[1].equalsIgnoreCase("w"))
 	    	{
 	    		try {
 	    			Player p = dbh.getPlayer(user.getId());
@@ -146,28 +148,31 @@ public class Commands extends ListenerAdapter {
 		    		nextWork.getTime();    
 		    		System.out.println("Last work: " + lastWorkedDate.getTime());
 		    		System.out.println("Next work: " + nextWork.getTime());
+		    		int randomWage = ThreadLocalRandom.current().nextInt(250, 500 + 1);
 		    		
-		    		//Allow Player t
+		    		
+		    		//Work for the firt time regardless of time.
 		    		if(p.getLastWorked() == 0)
 		    		{
-		    			p.setCredits(p.getCredits() + 500);
+		    			p.setCredits(p.getCredits() + randomWage);
 		    			p.setLastWorked(System.currentTimeMillis());
 		    			System.out.println(p.toString());
 		    			dbh.updateUser(p);
 		    		}
 	    			if(timeNow.after(nextWork))
 		    		{
-		    			p.setCredits(p.getCredits() + 500);
+		    			p.setCredits(p.getCredits() + randomWage);
 		    			p.setLastWorked(System.currentTimeMillis());
 		    			System.out.println(p.toString());
+		    			event.getChannel().sendMessage("You earned: **"+randomWage + "** Your new credit balance: **" + p.getCredits()+"**").queue();
 		    		
 		    			dbh.updateUser(p);
 		    		}
 	    			if(timeNow.before(nextWork)){
 		    			long remaining = nextWork.getTimeInMillis() - System.currentTimeMillis();
-		    			event.getChannel().sendMessage(String.format("You can work again in:  %d Hours, %d Minutes", 
+		    			event.getChannel().sendMessage(String.format(event.getAuthor().getAsMention() + " You can work again in: \n**%d Hours, %d Minutes** \n Your Balance: **%d**", 
 		    				TimeUnit.MILLISECONDS.toHours(remaining),
-		    				TimeUnit.MILLISECONDS.toMinutes(remaining))).queue();
+		    				TimeUnit.MILLISECONDS.toMinutes(remaining),p.getCredits())).queue();
 		    		}
 	    		}catch(Exception e)
 	    		{
@@ -176,6 +181,11 @@ public class Commands extends ListenerAdapter {
 	    			
 	    	}
 	    	
+	    	if(args[1].equalsIgnoreCase("profile") || args[1].equalsIgnoreCase("p"))
+	    	{
+	    		
+	    		
+	    	}
 	    	
 	    	if(args[1].equalsIgnoreCase("shops"))
     		{
@@ -206,9 +216,100 @@ public class Commands extends ListenerAdapter {
 	    				}
 	    				event.getChannel().sendMessage(eb.build()).queue();
 	    			}
+    		}
+	    	
+	    	if(args[1].equalsIgnoreCase("shop") || args[1].equalsIgnoreCase("s"))
+    		{
+	    		if(args[2].equalsIgnoreCase("chopshop") || args[1].equalsIgnoreCase("c"))
+	    		{
+	    			Shop shop = dbh.getShop(0);
+		    		//System.out.println(shop.size());
+		    		eb.clear();
+	    			eb.setColor(Color.green);
+	    			List<Component> components = shop.getComponentsForSale().getItems();
+	    			eb.setTitle(shop.getName());
+	    			eb.setDescription(shop.getDescription());
 	    			
+		    		for(int i=0; i<components.size();i++)
+		    		{
+		    			
+		    			//TODO: use the iterator function instead?
+		    			System.out.println(components.size());
+		    					
+		    			Field field = new Field(components.get(i).getName(), components.get(i).toString(), true);
+    					eb.addField(field);
+		    					
+		    		}
+		    		event.getChannel().sendMessage(eb.build()).queue();
+	    		}
 	    		
-    			
+	    		if(args[2].equalsIgnoreCase("junkyard") || args[1].equalsIgnoreCase("j"))
+	    		{
+	    			Shop shop = dbh.getShop(1);
+		    		//System.out.println(shop.size());
+		    		eb.clear();
+	    			eb.setColor(Color.green);
+	    			List<Component> components = shop.getComponentsForSale().getItems();
+	    			eb.setTitle(shop.getName());
+	    			eb.setDescription(shop.getDescription());
+	    			
+		    		for(int i=0; i<components.size();i++)
+		    		{
+		    			
+		    			//TODO: use the iterator function instead?
+		    			System.out.println(components.size());
+		    					
+		    			Field field = new Field(components.get(i).getName(), components.get(i).toString(), true);
+    					eb.addField(field);
+		    					
+		    		}
+		    		event.getChannel().sendMessage(eb.build()).queue();
+	    		}
+	    		if(args[2].equalsIgnoreCase("dealership") || args[1].equalsIgnoreCase("d"))
+	    		{
+	    			Shop shop = dbh.getShop(2);
+		    		//System.out.println(shop.size());
+		    		eb.clear();
+	    			eb.setColor(Color.green);
+	    			List<Component> components = shop.getComponentsForSale().getItems();
+	    			eb.setTitle(shop.getName());
+	    			eb.setDescription(shop.getDescription());
+	    			
+		    		for(int i=0; i<components.size();i++)
+		    		{
+		    			
+		    			//TODO: use the iterator function instead?
+		    			System.out.println(components.size());
+		    					
+		    			Field field = new Field(components.get(i).getName(), components.get(i).toString(), true);
+    					eb.addField(field);
+		    					
+		    		}
+		    		event.getChannel().sendMessage(eb.build()).queue();
+	    		}
+	    		if(args[2].equalsIgnoreCase("importer") || args[1].equalsIgnoreCase("i"))
+	    		{
+	    			Shop shop = dbh.getShop(3);
+		    		//System.out.println(shop.size());
+		    		eb.clear();
+	    			eb.setColor(Color.green);
+	    			List<Component> components = shop.getComponentsForSale().getItems();
+	    			eb.setTitle(shop.getName());
+	    			eb.setDescription(shop.getDescription());
+	    			
+		    		for(int i=0; i<components.size();i++)
+		    		{
+		    			
+		    			//TODO: use the iterator function instead?
+		    			System.out.println(components.size());
+		    					
+		    			Field field = new Field(components.get(i).getName(), components.get(i).toString(), true);
+    					eb.addField(field);
+		    					
+		    		}
+		    		event.getChannel().sendMessage(eb.build()).queue();
+	    		}
+	    		
     		}
 	    	
 	    	//TODO: Remove before final release, DEBUG ONLY FUNCTIONS
@@ -218,7 +319,7 @@ public class Commands extends ListenerAdapter {
 	    		{
 	    			if(args[3].equalsIgnoreCase("update"))
 	    			{
-	    				
+	    				gph.debug();
 	    			}
 	    			
 	    		}
