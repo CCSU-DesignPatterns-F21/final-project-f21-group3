@@ -3,24 +3,24 @@ package com.group3.racingbot.inventory.filter;
 import com.group3.racingbot.inventory.InventoryIterator;
 
 /**
- * Returns results which match the given price criteria.
+ * Returns results which match the given composure attribute criteria.
  * @author Nick Sabia
  *
  * @param <T>
  */
-public class PriceFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
-	private int price;
+public class ComposureFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
+	private int composure;
 	private FilterOperation operation;
 	
 	/**
-	 * Applies the price filter to whatever inventory iterator is passed into it.
+	 * Applies the composure filter to whatever inventory iterator is passed into it.
 	 * @param iterator
 	 * @param op
-	 * @param price
+	 * @param composure
 	 */
-	public PriceFilter(InventoryIterator<T> iterator, FilterOperation op, int price) {
+	public ComposureFilter(InventoryIterator<T> iterator, FilterOperation op, int composure) {
 		super(iterator);
-		this.price = price;
+		this.composure = composure;
 		this.operation = op;
 	}
 	
@@ -32,7 +32,7 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 	}
 	
 	/**
-	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified price.
+	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified composure skill.
 	 */
 	public T next() {
 		T item = this.inventoryIterator.next();
@@ -40,15 +40,15 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 		switch (this.operation) {
 			case IS_GREATER_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() > this.price;
+					&& item.getComposure() > this.composure;
 				break;
 			case IS_LESS_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() < this.price;
+					&& item.getComposure() < this.composure;
 				break;
 			case IS_EQUAL: default:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() == this.price;
+					&& item.getComposure() == this.composure;
 				break;
 		}
 		if (!itemMatchesContraints) {
@@ -64,14 +64,14 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.price;
+		return this.operation.toString() + " " + this.composure;
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.price + this.operation.getIntOperation();
+		result = prime * result + this.composure + this.operation.getIntOperation();
 		return result;
 	}
 	
@@ -79,8 +79,8 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 	public boolean equals(Object other) {
 		if (other == null) { return false; }
 		if (this == other) { return true; } // Same instance 
-		else if (other instanceof PriceFilter) {
-			PriceFilter<?> otherObj = (PriceFilter<?>) other;
+		else if (other instanceof ComposureFilter) {
+			ComposureFilter<?> otherObj = (ComposureFilter<?>) other;
 			if (this.getCriteria().equals(otherObj.getCriteria())) {
 				return true;
 			}
@@ -90,7 +90,7 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 	
 	@Override
 	public String toString() {
-		return "PriceFilter which filters for items that are " + this.getCriteria();
+		return "ComposureFilter which filters for items that are " + this.getCriteria();
 	}
 	
 	/**
