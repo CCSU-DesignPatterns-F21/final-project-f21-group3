@@ -1,24 +1,26 @@
-package com.group3.racingbot.inventory;
+package com.group3.racingbot.inventory.filter;
+
+import com.group3.racingbot.inventory.InventoryIterator;
 
 /**
- * Returns results which match the given durability criteria.
+ * Returns results which match the given cornering attribute criteria.
  * @author Nick Sabia
  *
  * @param <T>
  */
-public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDecorator<T> {
-	private int durability;
+public class CorneringFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
+	private int cornering;
 	private FilterOperation operation;
 	
 	/**
-	 * Applies the durability filter to whatever inventory iterator is passed into it.
+	 * Applies the cornering filter to whatever inventory iterator is passed into it.
 	 * @param iterator
 	 * @param op
-	 * @param durability
+	 * @param cornering
 	 */
-	public DurabilityFilter(InventoryIterator<T> iterator, FilterOperation op, int durability) {
+	public CorneringFilter(InventoryIterator<T> iterator, FilterOperation op, int cornering) {
 		super(iterator);
-		this.durability = durability;
+		this.cornering = cornering;
 		this.operation = op;
 	}
 	
@@ -30,7 +32,7 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 	}
 	
 	/**
-	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified durability.
+	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified cornering skill.
 	 */
 	public T next() {
 		T item = this.inventoryIterator.next();
@@ -38,15 +40,15 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 		switch (this.operation) {
 			case IS_GREATER_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getDurability() > this.durability;
+					&& item.getCornering() > this.cornering;
 				break;
 			case IS_LESS_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getDurability() < this.durability;
+					&& item.getCornering() < this.cornering;
 				break;
 			case IS_EQUAL: default:
 				itemMatchesContraints = item != null 
-					&& item.getDurability() == this.durability;
+					&& item.getCornering() == this.cornering;
 				break;
 		}
 		if (!itemMatchesContraints) {
@@ -62,14 +64,14 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.durability;
+		return this.operation.toString() + " " + this.cornering;
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.durability + this.operation.getIntOperation();
+		result = prime * result + this.cornering + this.operation.getIntOperation();
 		return result;
 	}
 	
@@ -77,8 +79,8 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 	public boolean equals(Object other) {
 		if (other == null) { return false; }
 		if (this == other) { return true; } // Same instance 
-		else if (other instanceof DurabilityFilter) {
-			DurabilityFilter<?> otherObj = (DurabilityFilter<?>) other;
+		else if (other instanceof CorneringFilter) {
+			CorneringFilter<?> otherObj = (CorneringFilter<?>) other;
 			if (this.getCriteria().equals(otherObj.getCriteria())) {
 				return true;
 			}
@@ -88,7 +90,7 @@ public class DurabilityFilter<T extends Filterable> extends InventoryIteratorDec
 	
 	@Override
 	public String toString() {
-		return "DurabilityFilter which filters for items that are " + this.getCriteria();
+		return "CorneringFilter which filters for items that are " + this.getCriteria();
 	}
 	
 	/**

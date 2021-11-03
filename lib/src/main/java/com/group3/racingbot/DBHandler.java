@@ -3,13 +3,20 @@ package com.group3.racingbot;
 
 import static com.mongodb.client.model.Filters.eq;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.ClassModel;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.ComponentFactory.ComponentFactory;
+import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
+import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.shop.Shop;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -29,12 +36,23 @@ public class DBHandler {
 	private MongoClient mongoClient;
 	private MongoDatabase database;
 	private MongoCollection<Player> userCollection;
+	private MongoCollection<Shop> shopCollection;
 	
 	/**
 	 * Constructor initializes the necessary settings required for connecting to the MongoDB.
 	 */
 	public DBHandler() {
-		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+		ClassModel<Shop> shopModel = ClassModel.builder(Shop.class).enableDiscriminator(true).build();
+		ClassModel<ComponentFactory> componentFactoryModel = ClassModel.builder(ComponentFactory.class).enableDiscriminator(true).build();
+		ClassModel<ConcreteComponentFactory> concreteComponentFactoryModel = ClassModel.builder(ConcreteComponentFactory.class).enableDiscriminator(true).build();
+		ClassModel<ComponentInventory> componenInventorytModel = ClassModel.builder(ComponentInventory.class).enableDiscriminator(true).build();
+		ClassModel<Component> componentModel = ClassModel.builder(Component.class).enableDiscriminator(true).build();
+		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(shopModel)
+				 .register(componentFactoryModel)
+				 .register(concreteComponentFactoryModel)
+				 .register(componenInventorytModel)
+				 .register(componentModel)
+				 .automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),
 		            CodecRegistries.fromProviders(pojoCodecProvider)
@@ -47,7 +65,7 @@ public class DBHandler {
 				mongoClient = MongoClients.create(settings);
 				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
 				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
-		
+				shopCollection = database.getCollection("Shops",Shop.class).withCodecRegistry(codecRegistry);
 				//System.out.println(userCollection.countDocuments());
 	}
 	
@@ -91,6 +109,37 @@ public class DBHandler {
 		
 	}
 	
+	public void insertShop(Shop shop)
+	{
+		Shop s = shopCollection.find(eq("_id",shop.getId())).first();
+		if(s != null)
+		{
+			System.out.println("Shop already in DB: " + s.getName());
+		}else {
+			shopCollection.insertOne(shop);
+		}
+		
+	}
+	
+	public Shop getShop(int id) {
+		return (Shop)shopCollection.find(eq("_id",id)).first();
+	}
+	
+	/**
+	 * Finds and replaces the Shop stored in DB with a new one
+	 * @param shop new Shop object replacing the one in the DB
+	 */
+	public void updateShop(Shop shop) {
+		shopCollection.findOneAndReplace(eq("_id",shop.getId()),shop);
+		
+	}
+	public List<Shop> getShops(){
+		//System.out.println(shopCollection.find().first());
+		List<Shop> iterablelist = shopCollection.find().into(new ArrayList<Shop>());
+		
+		return iterablelist;
+	}
+	
 	/**
 	 * @return the database reference
 	 */
@@ -110,6 +159,13 @@ public class DBHandler {
 	 */
 	public MongoCollection<Player> getUserCollection() {
 		return userCollection;
+	}
+	
+	/**
+	 * @return the MongoDB ShopCollection
+	 */
+	public MongoCollection<Shop> getShopCollection() {
+		return shopCollection;
 	}
 
 	/**

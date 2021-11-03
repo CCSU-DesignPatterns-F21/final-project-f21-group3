@@ -2,6 +2,9 @@ package com.group3.racingbot.ComponentFactory;
 
 import java.util.Objects;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -9,7 +12,6 @@ import java.util.Objects;
  */
 
 public class ChassisComponent extends Component {
-	
 	private int popularity;
 	private float popularityModifier, accelerationModifier, speedModifier, handlingModifier, brakingModifier;
 	
@@ -24,8 +26,18 @@ public class ChassisComponent extends Component {
 	 * @param handlingModifier
 	 * @param brakingModifier
 	 */
-	
-	public ChassisComponent(String quality, int value, int durability, int popularity, float popularityModifier, float accelerationModifier, float speedModifier, float handlingModifier, float brakingModifier) {
+	@BsonCreator
+	public ChassisComponent(@BsonProperty("quality") String quality,
+			@BsonProperty("value") int value,
+			@BsonProperty("durability") int durability,
+			@BsonProperty("popularity") int popularity, 
+			@BsonProperty("popularityModifier") float popularityModifier, 
+			@BsonProperty("accelerationModifier") float accelerationModifier, 
+			@BsonProperty("speedModifier") float speedModifier, 
+			@BsonProperty("handlingModifier") float handlingModifier, 
+			@BsonProperty("brakingModifier") float brakingModifier) {
+		
+		
 		this.setName("Chassis");
 		this.setQuality(quality);
 		this.setValue(value);

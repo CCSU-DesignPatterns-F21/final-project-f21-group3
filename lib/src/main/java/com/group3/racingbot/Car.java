@@ -5,7 +5,7 @@ import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
 import com.group3.racingbot.ComponentFactory.WheelComponent;
-import com.group3.racingbot.inventory.Filterable;
+import com.group3.racingbot.inventory.filter.MaterialFilterable;
 
 /**
  * A car which contains five car components: A chassis, engine, suspension, transmission, and wheels.
@@ -14,7 +14,7 @@ import com.group3.racingbot.inventory.Filterable;
  * @author Nick Sabia
  *
  */
-public class Car implements Filterable {
+public class Car implements MaterialFilterable {
 	private ChassisComponent chassis;
 	private EngineComponent engine;
 	private SuspensionComponent suspension;

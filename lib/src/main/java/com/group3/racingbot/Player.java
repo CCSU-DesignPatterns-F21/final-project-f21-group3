@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.DriverInventory;
 
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
@@ -22,6 +23,9 @@ public class Player {
 	private long lastWorked = 0;
 	private ComponentInventory ownedComponents;
 	private CarInventory ownedCars;
+	private DriverInventory ownedDrivers;
+	private Driver activeDriver;
+	private Car activeCar;
 	
 	/**
 	 * Player class constructor.
@@ -36,6 +40,7 @@ public class Player {
 	 * 
 	 * @return Player id
 	 */
+	
 	public String getId() {
 		return id;
 	}
@@ -161,48 +166,94 @@ public class Player {
 	}
 	
 	/**
+	 * @return the ownedDrivers
+	 */
+	public DriverInventory getOwnedDrivers() {
+		return ownedDrivers;
+	}
+
+	/**
+	 * @param ownedDrivers the ownedDrivers to set
+	 */
+	public void setOwnedDrivers(DriverInventory ownedDrivers) {
+		this.ownedDrivers = ownedDrivers;
+	}
+
+	/**
+	 * Retrieve the driver which the player is currently using. 
+	 * 
+	 * This is what will be used in a race if the player decides to race.
+	 * @return the activeDriver
+	 */
+	public Driver getActiveDriver() {
+		return activeDriver;
+	}
+
+	/**
+	 * Set the driver which the player is currently using. 
+	 * 
+	 * This is what will be used in a race if the player decides to race.
+	 * @param activeDriver the activeDriver to set
+	 */
+	public void setActiveDriver(Driver activeDriver) {
+		this.activeDriver = activeDriver;
+	}
+
+	/**
+	 * Retrieve the car which the player is currently using. 
+	 * 
+	 * This is what will be used in a race if the player decides to race.
+	 * @return the activeCar
+	 */
+	public Car getActiveCar() {
+		return activeCar;
+	}
+
+	/**
+	 * Set the car which the player is currently using. 
+	 * 
+	 * This is what will be used in a race if the player decides to race.
+	 * @param activeCar the activeCar to set
+	 */
+	public void setActiveCar(Car activeCar) {
+		this.activeCar = activeCar;
+	}
+
+	/**
 	 * @return details about Player Object.
 	 */
 	@Override
 	public String toString() {
 		return "User: " + id + " Credits: " + credits +" Famepoints: " + " Wins: " + totalWins + " Losses: " + totalLosses;
 	}
-	
-	/**
-	 * @return the hashCode value of the Player Object
-	 */
+
 	@Override
-    public int hashCode() {
-		int prime = 31;
+	public int hashCode() {
+		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + credits;
 		result = prime * result + famepoints;
-		result = prime * result + totalWins;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + totalLosses;
+		result = prime * result + totalWins;
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
-    }
-
-	/**
-	 * @return returns whether or not a two objects of type Player are actually the same object.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Player other = (Player) obj;
-		return credits == other.credits && famepoints == other.famepoints && Objects.equals(id, other.id)
-				&& totalLosses == other.totalLosses && totalWins == other.totalWins
-				&& Objects.equals(username, other.username);
 	}
-
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Player) {
+			Player otherObj = (Player) other;
+			// Since the Player's ID is unique, we can use this to determine Player equality.
+			if (this.getId().equals(otherObj.getId()))
+				return false;
+			return true;
+		}
+		return false;
+	}
 	
 
-	
-	
 	
 }

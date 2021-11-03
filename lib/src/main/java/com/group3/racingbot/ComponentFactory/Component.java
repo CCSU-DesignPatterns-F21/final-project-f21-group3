@@ -2,11 +2,25 @@ package com.group3.racingbot.ComponentFactory;
 
 import java.util.Objects;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * @author Jack Gola
  * Defines the abstract class of component, defines getters and setters for common variables
  * alongside common functionality
  */
+
+@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = EngineComponent.class),
+        @JsonSubTypes.Type(value = SuspensionComponent.class),
+        @JsonSubTypes.Type(value = TransmissionComponent.class),
+        @JsonSubTypes.Type(value = ChassisComponent.class),
+        @JsonSubTypes.Type(value = WheelComponent.class)})
+@BsonDiscriminator
 public abstract class Component {
 	private String quality, name;
 	private int weight, value, durability, rating;

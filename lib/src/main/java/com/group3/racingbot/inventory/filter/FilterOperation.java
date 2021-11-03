@@ -1,4 +1,4 @@
-package com.group3.racingbot.inventory;
+package com.group3.racingbot.inventory.filter;
 
 /**
  * Represents logical operations which can be performed.
