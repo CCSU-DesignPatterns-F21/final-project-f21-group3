@@ -4,6 +4,7 @@
 package com.group3.racingbot;
 
 import com.group3.racingbot.inventory.DriverInventory;
+import com.group3.racingbot.racetrack.RaceTrack;
 
 /**
  * @author Nick Sabia
