@@ -33,7 +33,6 @@ public class GameplayHandler {
 	private DBHandler db;
 	//TODO: Might need to be changed into generic?
 	private List<CustomObserver> listeners = new ArrayList<CustomObserver>();
-	//private List<Shop> shops;
 	private ComponentFactory componentFactory;
 	
 	public GameplayHandler(JDA j, DBHandler dbh) {
@@ -100,18 +99,6 @@ public class GameplayHandler {
 			this.subscribe(importer);
 		}
 
-		
-		 
-		//System.out.println(junkyard);
-		//System.out.println(chopshop);
-		//System.out.println(dealership);
-		//System.out.println(importer);
-			
-		
-		//notifyObservers();
-		
-		//listeners.addAll(shops);
-		
 		//Instanciate the stores, racetrack generator, etc. This is responsible for handling gameplay related tasks.
 		jda = j;
 		Timer timer = new Timer ();
@@ -148,15 +135,26 @@ public class GameplayHandler {
 		
 	}
 	
+	/**
+	 * Adds observer to a list which will be notified when specified event takes place.
+	 * @param o observer which is subscribing.
+	 */
 	public void subscribe(CustomObserver o) {
 		//System.out.println(o);
 		listeners.add(o);
 		
 	}
-	
+	/**
+	 * Removes observer from the list of subscribers.
+	 * @param o observer which is being ubsubscribed.
+	 */
 	public void unsubscribe(CustomObserver observer) {
 		listeners.remove(observer);
 	}
+	
+	/**
+	 * Loops through each subscribed observer and call it's update function.
+	 */
 	public void notifyObservers() {
 		System.out.println("Notifying observers...");
 		
@@ -170,6 +168,10 @@ public class GameplayHandler {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public List<CustomObserver> getObservers(){
 		return listeners;
 	}
