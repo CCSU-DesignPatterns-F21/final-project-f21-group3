@@ -36,4 +36,24 @@ public class Importer extends Shop  {
 		
 	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+	/**
+	 * Compare and determine whether or not the two objects are identical or the same object.
+	 * @param obj the Object being compared to
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		return true;
+	}
+	//TODO: add a toString with just a quick description
+
 }

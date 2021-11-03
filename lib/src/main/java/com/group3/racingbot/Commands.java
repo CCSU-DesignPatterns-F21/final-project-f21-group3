@@ -40,7 +40,6 @@ public class Commands extends ListenerAdapter {
 		eb = new EmbedBuilder();
 		dbh = db;
 		component = new ConcreteComponentFactory();
-
 	} 
 	
 	/**
@@ -86,7 +85,6 @@ public class Commands extends ListenerAdapter {
 	    		//eb.addField("Title of field", "test of field", false);
     		}
 		}catch(Exception e) {
-			
 			event.getGuild().getSystemChannel().sendMessage("Unexpected error when registering User, try again!");
 		}
 		
@@ -98,7 +96,6 @@ public class Commands extends ListenerAdapter {
 	 * spaces, ex. !iracer help. !iracer is required followed by a desired command.
 	 * @param event The event which is triggered when a User sends a message in any text channel.
 	 */
-	
 	 @Override
 	  public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		 
@@ -114,14 +111,14 @@ public class Commands extends ListenerAdapter {
 	    		//Embed example
 	    		eb.setColor(Color.red);
 	    		eb.setDescription("**RacingBot commands:** \n"
-	    				+ "**!iracer help OR !r ?**\n"
-	    				+ "**!iracer register OR !r r** | Register with the bot, should be done automaticaly.\n"
-	    				+ "**!iracer guess <number 1-50> OR !r g <number 1-50** | Bet a certain amount of your Credits, if you win, you double your bet!\n"
-	    				+ "**!iracer work OR !r w** | Earn credits by performing work every hour! \n"
-	    				+ "**!iracer profile *<Optional @mention>* OR !r p** | Display your profile or someone elses profile by using @ mentions \n"
+	    				+ "**!iracer help or !r ?**\n"
+	    				+ "**!iracer register or !r r** | Register with the bot, should be done automaticaly.\n"
+	    				+ "**!iracer guess <number 1-50> or !r g <number 1-50** | Bet a certain amount of your Credits, if you win, you double your bet!\n"
+	    				+ "**!iracer work or !r w** | Earn credits by performing work every hour! \n"
+	    				+ "**!iracer profile *<Optional @mention>* or !r p** | Display your profile or someone elses profile by using @ mentions \n"
 	    				+ "**!iracer shops** | Lists the items for sale of all stores. \n"
-	    				+ "**!iracer shop (chopshop, junkyard, dealership, importer) OR !r s (c,j,d,i)** | Lists the items for sale of a specific store.\n"
-	    				+ "**!iracer race register OR !r r r** | Register for the upcoming race");
+	    				+ "**!iracer shop (chopshop, junkyard, dealership, importer) or !r s (c,j,d,i)** | Lists the items for sale of a specific store.\n"
+	    				+ "**!iracer race register or !r r r** | Register for the upcoming race");
 	    		eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
 	    		
 	    	event.getChannel().sendMessage(eb.build()).queue();
@@ -386,9 +383,6 @@ public class Commands extends ListenerAdapter {
 	    		}
 	    	}
 	    	
-	    	
-	    	
-	    	
 		    	// A test for filtering an inventory of cars.
 		    	/*if(args[1].equalsIgnoreCase("inventory")) {
 		    		/*Player somePlayer = new Player();
@@ -452,20 +446,17 @@ public class Commands extends ListenerAdapter {
 	 }
 	}
 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
+	 /**
+	  * 
+	  * @param gp sets the GameplayHandler object reference
+	  */
 	 public void setGameplayHandler(GameplayHandler gp)
 	 {
 		 gph = gp;
 	 }
-	 
-	 
-	 
+	 /**
+	  * @return returns a short description of the object.
+	  */
 	@Override
 	public String toString() {
 		return "Handles the input Commands";

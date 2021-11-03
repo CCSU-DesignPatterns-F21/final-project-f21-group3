@@ -1,6 +1,6 @@
 
 /**
- * Package containing necessary classes for the Shop functionality
+ * Package containing necessary classes for the Shop functionality and Observer pattern behavior.
  * @author Maciej Bregisz
  *
  */

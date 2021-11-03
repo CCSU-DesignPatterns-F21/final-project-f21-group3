@@ -26,6 +26,7 @@ public class RacingBot {
 	
 	/**
 	 * Reference to the Gameplay Handler object, responsible for all gameplay related functionality.
+	 * 
 	 */
 	public static GameplayHandler gameHandler;
 	
@@ -48,7 +49,6 @@ public class RacingBot {
 		gameHandler = new GameplayHandler(jda,db);
 		
 		commandHandler.setGameplayHandler(gameHandler);
-		
 		
 	}
 }
