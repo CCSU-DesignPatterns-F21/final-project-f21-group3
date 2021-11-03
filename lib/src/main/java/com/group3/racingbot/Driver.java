@@ -276,7 +276,7 @@ public class Driver {
 				return false;
 			if (this.getPayPercentage() != otherObj.getPayPercentage())
 				return false;
-			if (this.getName().equals(otherObj.getName()))
+			if (!this.getName().equals(otherObj.getName()))
 				return false;
 			return true;
 		}

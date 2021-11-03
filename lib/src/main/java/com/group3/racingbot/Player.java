@@ -247,7 +247,7 @@ public class Player {
 		else if (other instanceof Player) {
 			Player otherObj = (Player) other;
 			// Since the Player's ID is unique, we can use this to determine Player equality.
-			if (this.getId().equals(otherObj.getId()))
+			if (!this.getId().equals(otherObj.getId()))
 				return false;
 			return true;
 		}
