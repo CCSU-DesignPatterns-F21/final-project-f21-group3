@@ -1,6 +1,9 @@
 package com.group3.racingbot;
 
 import com.group3.racingbot.driverstate.DriverState;
+import com.group3.racingbot.driverstate.Intensity;
+import com.group3.racingbot.driverstate.Resting;
+import com.group3.racingbot.driverstate.Skill;
 
 /**
  * Drives cars in races. A driver has their own stats that govern how well they do on the track.
@@ -8,7 +11,7 @@ import com.group3.racingbot.driverstate.DriverState;
  *
  */
 public class Driver {
-	private final Player player;
+	private Player player;
 	private DriverState state;
 	private String name;
 	private int composure;
@@ -21,11 +24,13 @@ public class Driver {
 	private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
 	
 	/**
-	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
-	 * @param player
+	 * Creates a Driver and assigns it to a player. Base stats all start off at 10 and the pay percentage starts at 0.15.
+	 * @param player the Player who owns this Driver
+	 * @param name the name of the Driver
 	 */
 	public Driver(Player player, String name) {
 		this.player = player;
+		this.state = new Resting();
 		this.name = name;
 		this.composure = 10;
 		this.awareness = 10;
@@ -36,13 +41,22 @@ public class Driver {
 		this.payPercentage = (float) 0.15;
 		this.cooldown = 0;
 	}
-
+	
 	/**
-	 * Retrieve the Player who uses this Driver.
-	 * @return the player
+	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
+	 * @param name the name of the Driver
 	 */
-	public Player getPlayer() {
-		return player;
+	public Driver(String name) {
+		this.player = null;
+		this.name = name;
+		this.composure = 10;
+		this.awareness = 10;
+		this.drafting = 10;
+		this.straights = 10;
+		this.cornering = 10;
+		this.recovery = 10;
+		this.payPercentage = (float) 0.15;
+		this.cooldown = 0;
 	}
 	
 	/**
@@ -235,6 +249,46 @@ public class Driver {
 	 */
 	public void setCooldown(long cooldown) {
 		this.cooldown = cooldown;
+	}
+	
+	/**
+	 * Retrieve the Player who uses this Driver.
+	 * @return the player
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+	
+	/**
+	 * Set the Player who uses this Driver.
+	 * @param player the player to set
+	 */
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+	
+	/**
+	 * Puts the Driver into a training state to improve a skill.
+	 * @param driver
+	 * @param skillToTrain
+	 * @param intensity
+	 */
+	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
+		
+	}
+	
+	/**
+	 * Puts the Driver into a Resting state.
+	 */
+	public void rest() {
+		this.state = new Resting();
+	}
+	
+	/**
+	 * Switch to the RacePending state.
+	 */
+	public void signUpForRace(RaceEvent raceEvent) {
+		
 	}
 	
 	@Override
