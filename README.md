@@ -7,6 +7,23 @@
 [![MIT License][license-shield]][license-url]
 
 
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+   <a href="https://github.com/othneildrew/Best-README-Template">
+       <img src="images/DRBLogo1.jpg" alt="Logo">
+     </a>
+  <p align="center">
+    Discord Racing Bot: Earn, Race, Win...
+    <br />
+    <a href="https://discord.gg/FFSJPJJgcr">Join the Demo Discord Channel</a>
+    ·
+    <a href="https://github.com/CCSU-DesignPatterns-F21/final-project-f21-group3/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/CCSU-DesignPatterns-F21/final-project-f21-group3/issues">Request Feature</a>
+  </p>
+</div>
+
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
