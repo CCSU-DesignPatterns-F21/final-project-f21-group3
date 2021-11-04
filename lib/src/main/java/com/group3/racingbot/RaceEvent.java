@@ -3,6 +3,7 @@
  */
 package com.group3.racingbot;
 
+import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.racetrack.RaceTrack;
