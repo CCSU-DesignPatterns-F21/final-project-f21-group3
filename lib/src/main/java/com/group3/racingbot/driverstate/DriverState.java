@@ -1,5 +1,6 @@
 package com.group3.racingbot.driverstate;
 
+import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 
@@ -15,6 +16,11 @@ public interface DriverState {
 	void rest();
 	
 	/**
+	 * The driver begins the race they've signed up for. 
+	 */
+	void beginRace();
+	
+	/**
 	 * Puts the Driver into a training state to improve a skill.
 	 * @param driver
 	 * @param skillToTrain
@@ -23,17 +29,17 @@ public interface DriverState {
 	void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity);
 	
 	/**
-	 * Registers this driver for a racing event.
+	 * Registers this driver and their car for a racing event.
 	 * @param driver
+	 * @param car
 	 * @param raceEvent
 	 */
-	void signUpForRace(Driver driver, RaceEvent raceEvent);
+	void signUpForRace(Driver driver, Car car, RaceEvent raceEvent);
 	
 	/**
 	 * Upon completion of training or a race, collect your reward (whether it's stat points or credits).
-	 * @param driver
 	 */
-	void collectReward(Driver driver);
+	void collectReward();
 	
 	/**
 	 * Lets the Driver withdraw from a race if they are in a race pending state.
@@ -43,7 +49,7 @@ public interface DriverState {
 	boolean withdrawFromRace(Driver driver);
 	
 	/**
-	 * Allow the Driver to perform a move on the track in a race.
+	 * Allow the Driver to perform their turn to move on the track during a race.
 	 * @param driver
 	 */
 	void raceRoll(Driver driver);
@@ -52,7 +58,7 @@ public interface DriverState {
 	 * Move to the finished race state upon race completion.
 	 * @param driver
 	 */
-	void completedRace(Driver driver);
+	void completedRace(Driver driver, RaceEvent raceEvent);
 	
 	/**
 	 * Move to the finished training state upon training completion.

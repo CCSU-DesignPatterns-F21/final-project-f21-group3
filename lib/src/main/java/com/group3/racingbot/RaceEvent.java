@@ -4,6 +4,7 @@
 package com.group3.racingbot;
 
 import com.group3.racingbot.inventory.DriverInventory;
+import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.racetrack.RaceTrack;
 
 /**
@@ -124,6 +125,24 @@ public class RaceEvent {
 	 */
 	public void rollAllDrivers() {
 		// roll every driver in the list.
+	}
+	
+	/**
+	 * Indicate whether or not there are still Drivers racing on the track.
+	 * @return boolean
+	 */
+	public boolean isFinished() {
+		// Loop through each driver and check their states. 
+		// If any one Driver is still in a Racing state, then return false. 
+		// Otherwise, everyone is finished so return true.
+		InventoryIterator<Driver> driverIterator = this.getDrivers().iterator();
+		boolean isFinished = true;
+		while(driverIterator.hasNext() && isFinished) {
+			if (!(driverIterator.next().getState() instanceof Racing)) {
+				isFinished = false;
+			}
+		}
+		return isFinished;
 	}
 
 	@Override

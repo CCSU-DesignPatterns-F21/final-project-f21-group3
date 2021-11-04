@@ -13,6 +13,7 @@ import com.group3.racingbot.driverstate.Skill;
 public class Driver {
 	private Player player;
 	private DriverState state;
+	private RaceEvent lastRegisteredEvent;
 	private String name;
 	private int composure;
 	private int awareness;
@@ -89,6 +90,23 @@ public class Driver {
 	 */
 	public void setState(DriverState state) {
 		this.state = state;
+	}
+	
+
+	/**
+	 * Retrieve the last event that this Driver has registered for.
+	 * @return the lastRegisteredEvent
+	 */
+	public RaceEvent getLastRegisteredEvent() {
+		return lastRegisteredEvent;
+	}
+
+	/**
+	 * Set the last event that this Driver has registered for.
+	 * @param lastRegisteredEvent the lastRegisteredEvent to set
+	 */
+	public void setLastRegisteredEvent(RaceEvent lastRegisteredEvent) {
+		this.lastRegisteredEvent = lastRegisteredEvent;
 	}
 
 	/**
@@ -268,16 +286,6 @@ public class Driver {
 	}
 	
 	/**
-	 * Puts the Driver into a training state to improve a skill.
-	 * @param driver
-	 * @param skillToTrain
-	 * @param intensity
-	 */
-	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
-		
-	}
-	
-	/**
 	 * Puts the Driver into a Resting state.
 	 */
 	public void rest() {
@@ -285,10 +293,56 @@ public class Driver {
 	}
 	
 	/**
+	 * Puts the Driver into a training state to improve a skill.
+	 * @param driver
+	 * @param skillToTrain
+	 * @param intensity
+	 */
+	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
+		this.getState().beginTraining(driver, skillToTrain, intensity);
+	}
+	
+	/**
 	 * Switch to the RacePending state.
 	 */
-	public void signUpForRace(RaceEvent raceEvent) {
-		
+	public void signUpForRace(Car car, RaceEvent raceEvent) {
+		this.getState().signUpForRace(this, car, raceEvent);
+	}
+	
+	/**
+	 * When there is a reward to collect, the Driver will be in a Completed state. This will collect a reward and add the reward where it fits. For example, if the Driver finished training, then collecting the reward will add skill points to the Driver.
+	 */
+	public void collectReward() {
+		this.getState().collectReward();
+	}
+	
+	/**
+	 * If the Driver is currently registered for an event, this allows the Driver to back out of the event.
+	 * @return the success of race withdrawal
+	 */
+	public boolean withdrawFromRace() {
+		return this.getState().withdrawFromRace(this);
+	}
+	
+	/**
+	 * Allows the Driver to progress through the track.
+	 */
+	public void raceRoll() {
+		this.getState().raceRoll(this);
+	}
+	
+	/**
+	 * Once the Driver completes the race, this will move the Driver to a Completed state.
+	 */
+	public void completedRace() {
+		this.getState().completedRace(this, this.getLastRegisteredEvent());
+	}
+	
+	/**
+	 * Once the Driver completes a training session, this will move the Driver to a Completed state.
+	 */
+	public void completedTraining() {
+		this.getState().completedTraining(this);
 	}
 	
 	@Override
