@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.ComponentFactory.Component;
 
 /**
  * Store and access drivers
@@ -34,6 +35,15 @@ public class DriverInventory implements Inventory<Driver>{
 	 */
 	public void add(Driver driver) {
 		this.items.add(driver);
+	}
+	
+	/**
+	 * Remove a driver from the inventory.
+	 */
+	public boolean remove(Driver driver) {
+		if (this.items.remove(driver)) 
+			return true;
+		return false;
 	}
 	
 	/**

@@ -1,6 +1,9 @@
 package com.group3.racingbot;
 
 import com.group3.racingbot.driverstate.DriverState;
+import com.group3.racingbot.driverstate.Intensity;
+import com.group3.racingbot.driverstate.Resting;
+import com.group3.racingbot.driverstate.Skill;
 
 /**
  * Drives cars in races. A driver has their own stats that govern how well they do on the track.
@@ -8,8 +11,9 @@ import com.group3.racingbot.driverstate.DriverState;
  *
  */
 public class Driver {
-	private final Player player;
+	private Player player;
 	private DriverState state;
+	private RaceEvent lastRegisteredEvent;
 	private String name;
 	private int composure;
 	private int awareness;
@@ -21,11 +25,13 @@ public class Driver {
 	private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
 	
 	/**
-	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
-	 * @param player
+	 * Creates a Driver and assigns it to a player. Base stats all start off at 10 and the pay percentage starts at 0.15.
+	 * @param player the Player who owns this Driver
+	 * @param name the name of the Driver
 	 */
 	public Driver(Player player, String name) {
 		this.player = player;
+		this.state = new Resting();
 		this.name = name;
 		this.composure = 10;
 		this.awareness = 10;
@@ -36,13 +42,22 @@ public class Driver {
 		this.payPercentage = (float) 0.15;
 		this.cooldown = 0;
 	}
-
+	
 	/**
-	 * Retrieve the Player who uses this Driver.
-	 * @return the player
+	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
+	 * @param name the name of the Driver
 	 */
-	public Player getPlayer() {
-		return player;
+	public Driver(String name) {
+		this.player = null;
+		this.name = name;
+		this.composure = 10;
+		this.awareness = 10;
+		this.drafting = 10;
+		this.straights = 10;
+		this.cornering = 10;
+		this.recovery = 10;
+		this.payPercentage = (float) 0.15;
+		this.cooldown = 0;
 	}
 	
 	/**
@@ -75,6 +90,23 @@ public class Driver {
 	 */
 	public void setState(DriverState state) {
 		this.state = state;
+	}
+	
+
+	/**
+	 * Retrieve the last event that this Driver has registered for.
+	 * @return the lastRegisteredEvent
+	 */
+	public RaceEvent getLastRegisteredEvent() {
+		return lastRegisteredEvent;
+	}
+
+	/**
+	 * Set the last event that this Driver has registered for.
+	 * @param lastRegisteredEvent the lastRegisteredEvent to set
+	 */
+	public void setLastRegisteredEvent(RaceEvent lastRegisteredEvent) {
+		this.lastRegisteredEvent = lastRegisteredEvent;
 	}
 
 	/**
@@ -237,6 +269,82 @@ public class Driver {
 		this.cooldown = cooldown;
 	}
 	
+	/**
+	 * Retrieve the Player who uses this Driver.
+	 * @return the player
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+	
+	/**
+	 * Set the Player who uses this Driver.
+	 * @param player the player to set
+	 */
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+	
+	/**
+	 * Puts the Driver into a Resting state.
+	 */
+	public void rest() {
+		this.state = new Resting();
+	}
+	
+	/**
+	 * Puts the Driver into a training state to improve a skill.
+	 * @param driver
+	 * @param skillToTrain
+	 * @param intensity
+	 */
+	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
+		this.getState().beginTraining(driver, skillToTrain, intensity);
+	}
+	
+	/**
+	 * Switch to the RacePending state.
+	 */
+	public void signUpForRace(Car car, RaceEvent raceEvent) {
+		this.getState().signUpForRace(this, car, raceEvent);
+	}
+	
+	/**
+	 * When there is a reward to collect, the Driver will be in a Completed state. This will collect a reward and add the reward where it fits. For example, if the Driver finished training, then collecting the reward will add skill points to the Driver.
+	 */
+	public void collectReward() {
+		this.getState().collectReward();
+	}
+	
+	/**
+	 * If the Driver is currently registered for an event, this allows the Driver to back out of the event.
+	 * @return the success of race withdrawal
+	 */
+	public boolean withdrawFromRace() {
+		return this.getState().withdrawFromRace(this);
+	}
+	
+	/**
+	 * Allows the Driver to progress through the track.
+	 */
+	public void raceRoll() {
+		this.getState().raceRoll(this);
+	}
+	
+	/**
+	 * Once the Driver completes the race, this will move the Driver to a Completed state.
+	 */
+	public void completedRace() {
+		this.getState().completedRace(this, this.getLastRegisteredEvent());
+	}
+	
+	/**
+	 * Once the Driver completes a training session, this will move the Driver to a Completed state.
+	 */
+	public void completedTraining() {
+		this.getState().completedTraining(this);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -276,7 +384,7 @@ public class Driver {
 				return false;
 			if (this.getPayPercentage() != otherObj.getPayPercentage())
 				return false;
-			if (this.getName().equals(otherObj.getName()))
+			if (!this.getName().equals(otherObj.getName()))
 				return false;
 			return true;
 		}

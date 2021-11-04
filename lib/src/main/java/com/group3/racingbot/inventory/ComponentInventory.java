@@ -2,6 +2,8 @@ package com.group3.racingbot.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.group3.racingbot.Car;
 import com.group3.racingbot.ComponentFactory.Component;
 
 /**
@@ -33,6 +35,15 @@ public class ComponentInventory implements Inventory<Component>{
 	 */
 	public void add(Component component) {
 		this.items.add(component);
+	}
+	
+	/**
+	 * Remove a component from the inventory.
+	 */
+	public boolean remove(Component component) {
+		if (this.items.remove(component)) 
+			return true;
+		return false;
 	}
 	
 	/**

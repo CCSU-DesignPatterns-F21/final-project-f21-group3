@@ -15,4 +15,10 @@ public interface Inventory<T> {
 	 * @param item
 	 */
 	public void add(T item);
+	/**
+	 * Remove an item from the inventory of items.
+	 * @param item
+	 * @return success or failure of item removal
+	 */
+	public boolean remove (T item);
 }
