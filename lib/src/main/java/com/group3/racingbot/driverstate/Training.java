@@ -138,5 +138,38 @@ public class Training implements DriverState {
 			this.getDriver().setState(new FinishedTraining(this.getDriver(), this.getTrainingReward(), this.getSkillToTrain()));
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((driver == null) ? 0 : driver.hashCode());
+		result = prime * result + skillToTrain.getSkill();
+		result = prime * result + trainingReward;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Training) {
+			Training otherObj = (Training) other;
+			
+			if (!(this.getDriver().equals(otherObj.getDriver())))
+				return false;
+			if (this.getSkillToTrain() != otherObj.getSkillToTrain())
+				return false;
+			if (this.getTrainingReward() != otherObj.getTrainingReward())
+				return false;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "Training [driver=" + driver + ", skillToTrain=" + skillToTrain + ", trainingReward=" + trainingReward + "]";
+	}
 	
 }

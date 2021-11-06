@@ -46,15 +46,15 @@ public class Normal extends Racing {
 	}
 
 	@Override
-	public DriverState rollDriverState() {
+	public void rollDriverState() {
 		// TODO Auto-generated method stub
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			crash(this.getCar());
 			if (this.getCar().getDurability() > 0)
-				return new Crashed(this.getDriver(), this.getCar(), this.getRaceEvent());
+				this.getDriver().setState(new Crashed(this.getDriver(), this.getCar(), this.getRaceEvent()));
 			else 
-				return new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize());
+				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize()));
 		}
 		else if (roll < 60) {
 			int corneringDist = this.rollCornerDistance(this.getMultiplier());
@@ -70,7 +70,6 @@ public class Normal extends Racing {
 			}
 			this.getRaceTrack().progressForward(distanceToCover);
 		}
-		return this;
 	}
 
 	@Override
@@ -133,6 +132,32 @@ public class Normal extends Racing {
 					break;
 			}
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(multiplier);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Normal) {
+			Normal otherObj = (Normal) other;
+			
+			if (this.getMultiplier() != otherObj.getMultiplier())
+				return false;
+			if (!(this.getDriver().equals(otherObj.getDriver())))
+				return false;
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

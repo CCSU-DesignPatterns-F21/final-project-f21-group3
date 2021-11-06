@@ -362,6 +362,7 @@ public class Driver {
 		return result;
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if (other == null) { return false; }
 		if (this == other) { return true; } // Same instance 

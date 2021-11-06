@@ -168,7 +168,7 @@ public abstract class Racing implements DriverState {
 	/**
 	 * Determines which state the driver will be in for the current unit of time.
 	 */
-	abstract public DriverState rollDriverState();
+	abstract public void rollDriverState();
 	
 	/**
 	 * Determine how far the driver can go on straight nodes this turn based on the Driver's straights skill and the Car's speed and acceleration.
