@@ -1,4 +1,6 @@
-package com.group3.racingbot.inventory;
+package com.group3.racingbot.inventory.filter;
+
+import com.group3.racingbot.inventory.InventoryIterator;
 
 /**
  * Ensures that a filter made for an InventoryIterator will work.

@@ -1,4 +1,6 @@
-package com.group3.racingbot.inventory;
+package com.group3.racingbot.inventory.filter;
+
+import com.group3.racingbot.inventory.InventoryIterator;
 
 /**
  * Applies the quality filter to whatever inventory iterator is passed into it. This will filter out items which don't match the criteria for the specified quality.
@@ -6,7 +8,7 @@ package com.group3.racingbot.inventory;
  *
  * @param <T>
  */
-public class QualityFilter<T extends Filterable> extends InventoryIteratorDecorator<T> {
+public class QualityFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
 	
 	private String quality;
 	/**

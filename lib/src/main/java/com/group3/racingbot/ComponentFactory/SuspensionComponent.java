@@ -2,6 +2,9 @@ package com.group3.racingbot.ComponentFactory;
 
 import java.util.Objects;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -20,8 +23,12 @@ public class SuspensionComponent extends Component {
 	 * @param durability
 	 * @param handling
 	 */
-	
-	public SuspensionComponent(String quality, int value, int durability, float handling) {
+	@BsonCreator
+	public SuspensionComponent(@BsonProperty("quality") String quality, 
+			@BsonProperty("value") int value,
+			@BsonProperty("durability") int durability,
+			@BsonProperty("handling") float handling) {
+		
 		this.setName("Suspension");
 		this.setQuality(quality);
 		this.setValue(value);
