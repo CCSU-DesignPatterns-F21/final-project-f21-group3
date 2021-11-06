@@ -67,7 +67,7 @@ public class Defensive extends Racing {
 			else if (this.getCurrentNode() instanceof CornerNode) {
 				distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
 			}
-			this.getRaceTrack().progressForward(distanceToCover);
+			this.getRaceTrack().progressForward(super.getDriver(), distanceToCover);
 		}
 		return this;
 	}

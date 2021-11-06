@@ -83,7 +83,9 @@ public class CornerNode extends TrackNode {
 				else {
 					throw new RaceTrackEndException("The driver has reached the end of the track");
 				}
-			} catch (RaceTrackEndException e) {
+			} 
+			catch (RaceTrackEndException e) {
+				super.setDistanceRemaining(0);
 				throw e;
 			}
 			catch (Exception e) {
