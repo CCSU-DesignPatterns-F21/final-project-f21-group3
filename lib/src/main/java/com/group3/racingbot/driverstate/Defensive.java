@@ -73,7 +73,7 @@ public class Defensive extends Racing {
 	}
 
 	@Override
-	public void raceRoll(Driver driver) {
+	public void raceStep(Driver driver) {
 		// TODO Auto-generated method stub
 		
 	}

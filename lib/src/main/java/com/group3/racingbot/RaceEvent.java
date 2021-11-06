@@ -9,6 +9,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.racetrack.RaceTrack;
 
 /**
+ * An racing event which a driver may participate in
  * @author Nick Sabia
  *
  */
@@ -19,6 +20,9 @@ public class RaceEvent {
 	private int timeElapsed;
 	private int grandPrize;
 	
+	/**
+	 * Construct a race event
+	 */
 	public RaceEvent() {
 		
 	}

@@ -327,8 +327,8 @@ public class Driver {
 	/**
 	 * Allows the Driver to progress through the track.
 	 */
-	public void raceRoll() {
-		this.getState().raceRoll(this);
+	public void raceStep() {
+		this.getState().raceStep(this);
 	}
 	
 	/**
