@@ -25,6 +25,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import com.group3.racingbot.shop.Shop;
 
 /**
  * Handles Discord user command inputs and interacts with the gameplay handler
