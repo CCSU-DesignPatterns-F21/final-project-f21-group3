@@ -7,11 +7,16 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
+import com.group3.racingbot.ComponentFactory.EngineComponent;
+import com.group3.racingbot.inventory.CarInventory;
+import com.group3.racingbot.inventory.Inventory;
+import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.filter.QualityFilter;
 import com.group3.racingbot.gameservice.GameplayHandler;
-import com.group3.racingbot.shop.Shop;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -20,6 +25,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import com.group3.racingbot.shop.Shop;
 
 /**
  * Handles Discord user command inputs and interacts with the gameplay handler
@@ -40,6 +46,7 @@ public class Commands extends ListenerAdapter {
 		eb = new EmbedBuilder();
 		dbh = db;
 		component = new ConcreteComponentFactory();
+
 	} 
 	
 	/**
@@ -87,7 +94,6 @@ public class Commands extends ListenerAdapter {
 		}catch(Exception e) {
 			event.getGuild().getSystemChannel().sendMessage("Unexpected error when registering User, try again!");
 		}
-		
 	}
 	
 	
@@ -426,23 +432,41 @@ public class Commands extends ListenerAdapter {
 				//Sports: 751 - 3000
 				//Racing: 3001 - 20000
 			
-			if (args[1].equalsIgnoreCase("factorymethod")) {
-				eb.clear();
-				eb.setColor(Color.green);
-				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
-				eb.setTitle("Your components have been successfully generated based on preset parameters");
+
+			if (args[1].equalsIgnoreCase("test")) {
 				
-				Component testComp1 = component.createComponent("engine", 5000);
-				Component testComp2 = component.createComponent("suspension", 2999);
-				Component testComp3 = component.createComponent("wheel", 700);
-				Component testComp4 = component.createComponent("transmission", 299);
-				Component testComp5 = component.createComponent("chassis", 99);
-					
-				eb.setDescription(testComp1.toString() + testComp2.toString() + testComp3.toString() + testComp4.toString() + testComp5.toString());		
+				eb.clear();
+				eb.setColor(Color.ORANGE);
+				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
+				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
+				
+				Component engine = component.createComponent("engine", 5000);
+				Component suspension = component.createComponent("suspension", 2999);
+				Component wheel = component.createComponent("wheel", 700);
+				Component transmission = component.createComponent("transmission", 299);
+				Component chassis = component.createComponent("chassis", 99);
+				
+				CarBuilder car = new Car.CarBuilder();
+				
+				//suspension and transmission not added to car for testing
+				
+				car.addEngine(engine);
+				//car.addSuspension(suspension);
+				car.addWheels(wheel);
+				//car.addTransmission(transmission);
+				car.addChassis(chassis);
+				
+				car.build();
+				
+				//prints out all the generated components
+				//eb.setDescription(engine.toString() + suspension.toString() + wheel.toString() + transmission.toString() + chassis.toString());
+				
+				//prints out the assembled car with ONLY added components
+				eb.setDescription(car.toString());	
+
 	
 				event.getChannel().sendMessage(eb.build()).queue();
 			}
-	    
 	 }
 	}
 
