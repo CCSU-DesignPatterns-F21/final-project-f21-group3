@@ -15,7 +15,7 @@ import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
-import com.group3.racingbot.inventory.QualityFilter;
+import com.group3.racingbot.inventory.filter.QualityFilter;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
