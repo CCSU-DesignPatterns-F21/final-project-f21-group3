@@ -1,6 +1,9 @@
 package com.group3.racingbot;
 
+import java.util.Objects;
+
 import com.group3.racingbot.ComponentFactory.ChassisComponent;
+import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
@@ -30,6 +33,91 @@ public class Car implements Filterable {
 		this.suspension = null;
 		this.transmission = null;
 		this.wheels = null;
+	}
+	
+	private Car(CarBuilder builder) {
+		this.chassis = builder.chassis;
+		this.engine = builder.engine;
+		this.suspension = builder.suspension;
+		this.transmission = builder.transmission;
+		this.wheels = builder.wheels;
+	}
+	
+	/**
+	 * Builds car using desired components (Builder Pattern) 
+	 * @return Car with desired components
+	 * 
+	 * @author Jack Gola
+	 */
+	
+	public static class CarBuilder{
+		
+		private ChassisComponent chassis = null;
+		private EngineComponent engine = null;
+		private SuspensionComponent suspension = null;
+		private TransmissionComponent transmission = null;
+		private WheelComponent wheels = null;
+		
+		
+		public CarBuilder addChassis(Component chassis) {
+			this.chassis = (ChassisComponent) chassis;
+			return this;		
+		}
+		
+		public CarBuilder addEngine(Component engine) {
+			this.engine = (EngineComponent) engine;
+			return this;
+		}
+		public CarBuilder addSuspension(Component suspension) {
+			this.suspension = (SuspensionComponent) suspension;
+			return this;
+		}
+		public CarBuilder addTransmission(Component transmission) {
+			this.transmission = (TransmissionComponent) transmission;
+			return this;
+		}
+		public CarBuilder addWheels(Component wheel) {
+			this.wheels = (WheelComponent) wheel;
+			return this;
+		}
+		public Car build() {
+			return new Car(this);
+		}
+		
+		/**
+		 * returns toString() for built Car that displays which components are present
+		 */
+
+		@Override
+		public String toString() {
+			
+			StringBuilder stringBuilder = new StringBuilder("```-----Assembled Car-----\n");
+			
+			if (chassis != null)
+				stringBuilder.append(chassis);
+			else
+				stringBuilder.append("---Chassis MISSING---\n\n");
+			if (engine != null)
+				stringBuilder.append(engine);
+			else
+				stringBuilder.append("---Engine MISSING---\n\n");
+			if (suspension != null)
+				stringBuilder.append(suspension);
+			else
+				stringBuilder.append("---Suspension MISSING---\n\n");
+			if (transmission != null)
+				stringBuilder.append(transmission);
+			else
+				stringBuilder.append("---Transmission MISSING---\n\n");
+			if (wheels != null)
+				stringBuilder.append(wheels);
+			else
+				stringBuilder.append("---Wheels MISSING---\n\n");
+			
+			return stringBuilder.toString() + ("```");
+		}
+		
+		
 	}
 	
 	/**
@@ -248,6 +336,8 @@ public class Car implements Filterable {
 			return this.wheels.getBraking() * this.chassis.getBrakingModifier();
 		return 0;
 	}
+	
+	
 	
 	@Override
 	public int hashCode() {
