@@ -11,6 +11,8 @@ import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
 import com.group3.racingbot.gameservice.GameplayHandler;
+import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.TrackNode;
 import com.group3.racingbot.shop.Shop;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -35,11 +37,15 @@ public class Commands extends ListenerAdapter {
 	private EmbedBuilder eb;
 	private ComponentFactory component;
 	private GameplayHandler gph;
-
+	private RaceTrack track;
+	
 	public Commands(DBHandler db) {
 		eb = new EmbedBuilder();
 		dbh = db;
 		component = new ConcreteComponentFactory();
+		
+		//TODO: remove
+		 track = new RaceTrack();
 	} 
 	
 	/**
@@ -185,6 +191,7 @@ public class Commands extends ListenerAdapter {
 	    		}
 		    	
 	    	}
+	    	//TODO: Working for the first time gives double credits.
 	    	if(args[1].equalsIgnoreCase("work") || args[1].equalsIgnoreCase("w"))
 	    	{
 	    		try {
@@ -370,9 +377,36 @@ public class Commands extends ListenerAdapter {
 	    		
     		}
 	    	
-	    	//TODO: Remove before final release, DEBUG ONLY FUNCTIONS
+	    	/*
+				 ____      _           
+				|    \ ___| |_ _ _ ___ 
+				|  |  | -_| . | | | . |
+				|____/|___|___|___|_  |
+				                  |___|
+				                  
+				                                     
+               TODO: Remove before final release, DEBUG ONLY FUNCTIONS any relationships with other classes in this case are not to be represented in the UML.                                                                                        
+	    	 */
+
 	    	if(args[1].equalsIgnoreCase("debug"))
 	    	{
+	    		if(args[2].equalsIgnoreCase("track"))
+	    		{
+	    			if(args[3].equalsIgnoreCase("generate"))
+	    			{
+	    				if(args[4] != null)
+	    				{
+	    					
+		    				List<TrackNode> nodes = track.generateRaceTrack(Integer.parseInt(args[4]));
+		    				event.getChannel().sendMessage("Number of Nodes in Track: "+nodes.size()).queue();
+	    				}
+	    			}
+	    			if(args[3].equalsIgnoreCase("cor"))
+	    			{
+	    				
+	    			}
+	    		}
+	    		
 	    		if(args[2].equalsIgnoreCase("shop"))
 	    		{
 	    			if(args[3].equalsIgnoreCase("update"))
