@@ -13,13 +13,10 @@ import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
 import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.DurabilityFilter;
-import com.group3.racingbot.inventory.FilterOperation;
 import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.QualityFilter;
 import com.group3.racingbot.gameservice.GameplayHandler;
-import com.group3.racingbot.shop.Shop;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
