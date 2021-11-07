@@ -505,6 +505,7 @@ public class Commands extends ListenerAdapter {
 	    				// Add the new driver
 	    				Driver createdDriver = new Driver(driverName);
 	    				createdDriver.setPlayer(p);
+	    				createdDriver.setPlayerId(user.getId());
 	    				p.getOwnedDrivers().add(createdDriver);
 	    				dbh.updateUser(p);
 	    				

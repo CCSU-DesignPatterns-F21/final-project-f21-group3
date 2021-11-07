@@ -17,7 +17,15 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
+import com.group3.racingbot.driverstate.Aggressive;
+import com.group3.racingbot.driverstate.Crashed;
+import com.group3.racingbot.driverstate.DNF;
+import com.group3.racingbot.driverstate.Defensive;
 import com.group3.racingbot.driverstate.DriverState;
+import com.group3.racingbot.driverstate.FinishedRace;
+import com.group3.racingbot.driverstate.FinishedTraining;
+import com.group3.racingbot.driverstate.Normal;
+import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.ComponentInventory;
@@ -55,6 +63,14 @@ public class DBHandler {
 		// States
 		ClassModel<Resting> restingStateModel = ClassModel.builder(Resting.class).enableDiscriminator(true).build();
 		ClassModel<Training> trainingStateModel = ClassModel.builder(Training.class).enableDiscriminator(true).build();
+		ClassModel<RacePending> racePendingStateModel = ClassModel.builder(RacePending.class).enableDiscriminator(true).build();
+		ClassModel<Defensive> defensiveStateModel = ClassModel.builder(Defensive.class).enableDiscriminator(true).build();
+		ClassModel<Normal> normalStateModel = ClassModel.builder(Normal.class).enableDiscriminator(true).build();
+		ClassModel<Aggressive> aggressiveStateModel = ClassModel.builder(Aggressive.class).enableDiscriminator(true).build();
+		ClassModel<Crashed> crashedStateModel = ClassModel.builder(Crashed.class).enableDiscriminator(true).build();
+		ClassModel<DNF> dnfStateModel = ClassModel.builder(DNF.class).enableDiscriminator(true).build();
+		ClassModel<FinishedRace> finishedRaceStateModel = ClassModel.builder(FinishedRace.class).enableDiscriminator(true).build();
+		ClassModel<FinishedTraining> finishedTrainingStateModel = ClassModel.builder(FinishedTraining.class).enableDiscriminator(true).build();
 		CodecProvider pojoCodecProvider = PojoCodecProvider.builder().conventions(Arrays.asList(Conventions.ANNOTATION_CONVENTION))
 				 .register(shopModel)
 				 .register(componentFactoryModel)
@@ -63,6 +79,14 @@ public class DBHandler {
 				 .register(componentModel)
 				 .register(restingStateModel)
 				 .register(trainingStateModel)
+				 .register(racePendingStateModel)
+				 .register(defensiveStateModel)
+				 .register(normalStateModel)
+				 .register(aggressiveStateModel)
+				 .register(crashedStateModel)
+				 .register(dnfStateModel)
+				 .register(finishedRaceStateModel)
+				 .register(finishedTrainingStateModel)
 				 .automatic(true).build();
 		CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
             MongoClientSettings.getDefaultCodecRegistry(),

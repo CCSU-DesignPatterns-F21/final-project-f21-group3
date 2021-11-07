@@ -1,7 +1,5 @@
 package com.group3.racingbot;
 
-import java.awt.Color;
-
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
