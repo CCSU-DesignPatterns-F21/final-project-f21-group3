@@ -106,10 +106,17 @@ public class Commands extends ListenerAdapter {
 	 */
 	 @Override
 	  public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		 
+		
 	    String[] args = event.getMessage().getContentRaw().split(" ");
 	    Member user = event.getMember(); //Gets the id of the user who called the command.
 	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
+	    
+	    // Verify that each Driver which a user owns is paired with a Player object
+	    /*if(dbh.userExists(user.getId())) {
+	    	Player p = dbh.getPlayer(user.getId());
+	    	dbh.getPlayer(null);
+	    	//setPlayerFromDB(dbh, user.getId());
+	    }*/
 	    
 	    if(args[0].equalsIgnoreCase(RacingBot.prefix+"iracer") || args[0].equalsIgnoreCase(RacingBot.prefix+"r"))
 	    {

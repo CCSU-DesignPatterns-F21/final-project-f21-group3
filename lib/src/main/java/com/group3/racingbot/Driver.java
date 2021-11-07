@@ -1,6 +1,9 @@
 package com.group3.racingbot;
 
+import java.awt.Color;
+
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.driverstate.DriverState;
@@ -14,8 +17,10 @@ import com.group3.racingbot.driverstate.Skill;
  *
  */
 public class Driver {
-	@BsonProperty("player")
+	@BsonIgnore
 	private Player player;
+	@BsonProperty("playerId")
+	private String playerId;
 	@BsonProperty("state")
 	private DriverState state;
 	@BsonProperty("raceEvent")
@@ -46,6 +51,7 @@ public class Driver {
 	@BsonCreator
 	public Driver(@BsonProperty("name") String name) {
 		this.player = null;
+		this.playerId = null;
 		this.state = new Resting();
 		this.name = name;
 		this.composure = 10;
@@ -281,6 +287,39 @@ public class Driver {
 	 */
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+	
+	/**
+	 * Sets the player for the driver based on a discord user id.
+	 * @param db database which holds all drivers.
+	 * @param userId user id within the database.
+	 */
+	public void setPlayerFromDB(DBHandler db, String userId) {
+		if(db.userExists(userId)) {
+			Player p = db.getPlayer(userId);
+			this.setPlayer(p);
+    		
+			System.out.println("Player found and paired with the Driver.");
+		}
+		else {
+			System.out.println("Could not find user in the database.");
+		}
+	}
+	
+	/**
+	 * Retrieve the player ID of the Player who uses this Driver.
+	 * @return the player
+	 */
+	public String getPlayerId() {
+		return playerId;
+	}
+	
+	/**
+	 * Set the player ID of the Player who uses this Driver.
+	 * @param player the player to set
+	 */
+	public void setPlayerId(String id) {
+		this.playerId = id;
 	}
 	
 	/**

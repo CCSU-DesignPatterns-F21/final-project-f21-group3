@@ -9,7 +9,6 @@ import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 
-import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 /**
@@ -19,15 +18,6 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
  */
 @BsonDiscriminator(value="Resting", key="_cls")
 public class Resting implements DriverState {
-
-	/**
-	 * Set the Driver's state to a resting state.
-	 * @param driver
-	 */
-	@BsonCreator
-	public Resting() {
-
-	}
 
 	@Override
 	public void rest() {
