@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.group3.racingbot;
 
 import com.group3.racingbot.driverstate.Racing;
@@ -21,10 +18,14 @@ public class RaceEvent {
 	private int grandPrize;
 	
 	/**
-	 * Construct a race event
+	 * Construct a new race event. This is where drivers will compete for a cash prize.
 	 */
 	public RaceEvent() {
-		
+		this.eventName = "Some event";
+		this.raceTrack = new RaceTrack();
+		this.drivers = new DriverInventory();
+		this.timeElapsed = 0;
+		this.grandPrize = 10000;
 	}
 
 	/**
