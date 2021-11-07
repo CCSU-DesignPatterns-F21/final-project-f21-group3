@@ -3,6 +3,7 @@ package com.group3.racingbot.ComponentFactory;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -22,17 +23,18 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
 public abstract class Component {
-	private String quality, name;
-	private int weight, value, durability, rating;
-	private int maxDurability = 100;				
-	
-	
-	/**
-	 * @return the rating
-	 */
-	public int getRating() {
-		return rating;
-	}
+	@BsonProperty("quality")
+	private String quality = "Lemon";
+	@BsonProperty("name")
+	private String name = "Component";
+	@BsonProperty("weight")
+	private int weight = 100;
+	@BsonProperty("value")
+	private int value = 50;
+	@BsonProperty("maxDurability")
+	private int maxDurability = 100;
+	@BsonProperty("durability")
+	private int durability = maxDurability;
 
 	/**
 	 * @return the name
@@ -46,13 +48,6 @@ public abstract class Component {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @param rating the rating to set
-	 */
-	public void setRating(int rating) {
-		this.rating = rating;
 	}
 
 	/**
@@ -137,13 +132,6 @@ public abstract class Component {
 	public int getMaxDurability() {
 		return durability;
 	}
-	/**
-	 * @param returns rating
-	 */
-	
-	public int computeRating() {
-		return rating;
-	}
 	
 	/**
 	 * @param returns durability ratio
@@ -158,7 +146,7 @@ public abstract class Component {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(durability, maxDurability, name, quality, rating, value, weight);
+		return Objects.hash(durability, maxDurability, name, quality, value, weight);
 	}
 	
 	/**
@@ -175,7 +163,7 @@ public abstract class Component {
 			return false;
 		Component other = (Component) obj;
 		return durability == other.durability && maxDurability == other.maxDurability
-				&& Objects.equals(name, other.name) && Objects.equals(quality, other.quality) && rating == other.rating
+				&& Objects.equals(name, other.name) && Objects.equals(quality, other.quality)
 				&& value == other.value && weight == other.weight;
 	}
 	
@@ -186,6 +174,6 @@ public abstract class Component {
 	@Override
 	public String toString() {
 		return "Component [quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
-				+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
+				+ ", durability=" + durability +", maxDurability=" + maxDurability + "]";
 	}
 }

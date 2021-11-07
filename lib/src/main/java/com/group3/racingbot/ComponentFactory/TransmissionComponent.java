@@ -12,9 +12,8 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  */
 
 public class TransmissionComponent extends Component {
-	
+	@BsonProperty("acceleration")
 	private float acceleration;
-	//TODO: tunedFor
 	
 	/**
 	 * Constructor for transmission component
@@ -24,17 +23,8 @@ public class TransmissionComponent extends Component {
 	 * @param acceleration
 	 */
 	@BsonCreator
-	public TransmissionComponent(@BsonProperty("quality") String quality, 
-			@BsonProperty("value") int value, 
-			@BsonProperty("durability") int durability, 
-			@BsonProperty("acceleration") float acceleration) {
-		
-		
+	public TransmissionComponent() {
 		this.setName("Transmission");
-		this.setQuality(quality);
-		this.setValue(value);
-		this.setDurability(durability);
-		this.setAcceleration(acceleration);
 	}
 
 	/**

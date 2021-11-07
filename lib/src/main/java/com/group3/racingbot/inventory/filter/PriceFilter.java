@@ -40,15 +40,15 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 		switch (this.operation) {
 			case IS_GREATER_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() > this.price;
+					&& item.getValue() > this.price;
 				break;
 			case IS_LESS_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() < this.price;
+					&& item.getValue() < this.price;
 				break;
 			case IS_EQUAL: default:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() == this.price;
+					&& item.getValue() == this.price;
 				break;
 		}
 		if (!itemMatchesContraints) {

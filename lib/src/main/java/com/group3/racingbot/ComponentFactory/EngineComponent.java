@@ -11,30 +11,16 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  * defines specialized variables
  */
 
-public class EngineComponent extends Component{
-	
-	private float speed;
-	
-	//TODO: tunedFor
+public class EngineComponent extends Component {
+	@BsonProperty("speed")
+	private float speed = 25;
 	
 	/**
 	 * Constructor for engine component
-	 * @param quality
-	 * @param value
-	 * @param durability
-	 * @param speed
 	 */
 	@BsonCreator
-	public EngineComponent(@BsonProperty("quality") String quality,
-			@BsonProperty("value") int value,
-			@BsonProperty("durability") int durability,
-			@BsonProperty("speed") float speed) {
-		
+	public EngineComponent() {
 		this.setName("Engine");
-		this.setQuality(quality);
-		this.setValue(value);
-		this.setDurability(durability);
-		this.setSpeed(speed);
 	}
 	/**
 	 * @return the speed

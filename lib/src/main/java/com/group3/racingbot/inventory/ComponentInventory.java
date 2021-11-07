@@ -3,7 +3,8 @@ package com.group3.racingbot.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.group3.racingbot.Car;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import com.group3.racingbot.ComponentFactory.Component;
 
 /**
@@ -12,6 +13,8 @@ import com.group3.racingbot.ComponentFactory.Component;
  *
  */
 public class ComponentInventory implements Inventory<Component>{
+	
+	@BsonProperty("items")
 	private List<Component> items =  new ArrayList<Component>();
 	
 	/**

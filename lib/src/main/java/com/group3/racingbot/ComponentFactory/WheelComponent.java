@@ -12,9 +12,8 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  */
 
 public class WheelComponent extends Component {
-	
+	@BsonProperty("braking")
 	private float braking;
-	//TODO: tunedFor
 	
 	/**
 	 * Constructor for wheel component
@@ -24,16 +23,8 @@ public class WheelComponent extends Component {
 	 * @param braking
 	 */
 	@BsonCreator
-	public WheelComponent(@BsonProperty("quality") String quality,
-			@BsonProperty("value") int value, 
-			@BsonProperty("durability") int durability,
-			@BsonProperty("braking") float braking) {
-		
+	public WheelComponent() {
 		this.setName("Wheel");
-		this.setQuality(quality);
-		this.setValue(value);
-		this.setDurability(durability);
-		this.setBraking(braking);
 	}
 	/**
 	 * @return the braking

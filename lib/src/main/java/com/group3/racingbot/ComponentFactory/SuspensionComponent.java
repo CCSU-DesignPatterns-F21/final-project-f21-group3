@@ -12,9 +12,8 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  */
 
 public class SuspensionComponent extends Component {
-	
+	@BsonProperty("handling")
 	private float handling;
-	//TODO: tunedFor
 	
 	/**
 	 * Constructor for suspension component
@@ -24,16 +23,8 @@ public class SuspensionComponent extends Component {
 	 * @param handling
 	 */
 	@BsonCreator
-	public SuspensionComponent(@BsonProperty("quality") String quality, 
-			@BsonProperty("value") int value,
-			@BsonProperty("durability") int durability,
-			@BsonProperty("handling") float handling) {
-		
+	public SuspensionComponent() {
 		this.setName("Suspension");
-		this.setQuality(quality);
-		this.setValue(value);
-		this.setDurability(durability);
-		this.setHandling(handling);
 	}
 
 	/**
