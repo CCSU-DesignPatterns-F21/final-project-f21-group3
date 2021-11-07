@@ -2,6 +2,8 @@ package com.group3.racingbot.shop;
 
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -23,11 +25,17 @@ import com.group3.racingbot.inventory.ComponentInventory;
 @BsonDiscriminator
 public abstract class Shop implements CustomObserver{
 	
+	@BsonProperty("name")
 	private String name;
+	@BsonProperty("description")
 	private String description;
+	@BsonProperty("id")
 	private int id;
+	@BsonProperty("carsForSale")
 	private CarInventory carsForSale;
+	@BsonProperty("componentsForSale")
 	private ComponentInventory componentsForSale;
+	@BsonIgnore
 	private ComponentFactory factory;
 
 	public abstract Component createComponent();

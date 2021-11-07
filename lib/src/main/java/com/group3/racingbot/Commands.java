@@ -15,6 +15,7 @@ import com.group3.racingbot.driverstate.Completed;
 import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Training;
+import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
@@ -493,7 +494,13 @@ public class Commands extends ListenerAdapter {
 	    				{
 	    					driverName = args[4];
 	    				}
+	    				
+	    				// Add the new driver
 	    				p.getOwnedDrivers().add(new Driver(p, driverName));
+	    				dbh.updateUser(p);
+	    				
+	    				String capitalizedDriverName = driverName.substring(0, 1).toUpperCase() + driverName.substring(1);
+	    				event.getChannel().sendMessage("Driver created! " + capitalizedDriverName + " is now a part of your team.").queue();
 		    		}
 	    			if(args[3].equalsIgnoreCase("set"))
 		    		{

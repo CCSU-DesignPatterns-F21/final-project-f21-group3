@@ -1,6 +1,7 @@
 package com.group3.racingbot;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.driverstate.DriverState;
@@ -14,17 +15,29 @@ import com.group3.racingbot.driverstate.Skill;
  *
  */
 public class Driver {
+	@BsonProperty("player")
 	private Player player;
+	@BsonProperty("state")
 	private DriverState state;
+	@BsonProperty("raceEvent")
 	private RaceEvent lastRegisteredEvent;
+	@BsonProperty("name")
 	private String name;
+	@BsonProperty("composure")
 	private int composure;
+	@BsonProperty("awareness")
 	private int awareness;
+	@BsonProperty("drafting")
 	private int drafting;
+	@BsonProperty("straights")
 	private int straights;
+	@BsonProperty("cornering")
 	private int cornering;
+	@BsonProperty("recovery")
 	private int recovery;
+	@BsonProperty("payPercentage")
 	private float payPercentage; // Percentage of money deducted from each event's cash prize.
+	@BsonProperty("cooldown")
 	private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
 	
 	/**
@@ -51,8 +64,10 @@ public class Driver {
 	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
 	 * @param name the name of the Driver
 	 */
-	public Driver(String name) {
+	@BsonCreator
+	public Driver(@BsonProperty("name") String name) {
 		this.player = null;
+		this.state = new Resting();
 		this.name = name;
 		this.composure = 10;
 		this.awareness = 10;

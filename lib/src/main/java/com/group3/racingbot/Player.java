@@ -1,5 +1,8 @@
 package com.group3.racingbot;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 import com.group3.racingbot.inventory.DriverInventory;
@@ -11,23 +14,35 @@ import com.group3.racingbot.inventory.DriverInventory;
  */
 
 public class Player {
-	
+	@BsonProperty("id")
 	private String id;
+	@BsonProperty("username")
 	private String username;
+	@BsonProperty("credits")
 	private int credits = 2000;
+	@BsonProperty("famepoints")
 	private int famepoints = 0;
+	@BsonProperty("totalWins")
 	private int totalWins = 0;
+	@BsonProperty("totalLosses")
 	private int totalLosses = 0;
+	@BsonProperty("lastWorked")
 	private long lastWorked = 0;
+	@BsonProperty("ownedComponents")
 	private ComponentInventory ownedComponents;
+	@BsonProperty("ownedCars")
 	private CarInventory ownedCars;
+	@BsonProperty("ownedDrivers")
 	private DriverInventory ownedDrivers;
+	@BsonProperty("activeDriver")
 	private Driver activeDriver;
+	@BsonProperty("activeCar")
 	private Car activeCar;
 	
 	/**
 	 * Player class constructor.
 	 */
+	@BsonCreator
 	public Player() {
 		this.id = "";
 		this.username = "";

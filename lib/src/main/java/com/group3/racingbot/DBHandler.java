@@ -4,12 +4,14 @@ package com.group3.racingbot;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.ClassModel;
+import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import com.group3.racingbot.ComponentFactory.Component;
@@ -47,7 +49,8 @@ public class DBHandler {
 		ClassModel<ConcreteComponentFactory> concreteComponentFactoryModel = ClassModel.builder(ConcreteComponentFactory.class).enableDiscriminator(true).build();
 		ClassModel<ComponentInventory> componenInventorytModel = ClassModel.builder(ComponentInventory.class).enableDiscriminator(true).build();
 		ClassModel<Component> componentModel = ClassModel.builder(Component.class).enableDiscriminator(true).build();
-		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(shopModel)
+		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().conventions(Arrays.asList(Conventions.ANNOTATION_CONVENTION))
+				 .register(shopModel)
 				 .register(componentFactoryModel)
 				 .register(concreteComponentFactoryModel)
 				 .register(componenInventorytModel)

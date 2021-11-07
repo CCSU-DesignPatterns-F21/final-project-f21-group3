@@ -51,7 +51,7 @@ public class DriverInventory implements Inventory<Driver>{
 	 * @return List<Driver>
 	 */
 	public List<Driver> getItems() {
-		return items;
+		return this.items;
 	}
 	
 	/**

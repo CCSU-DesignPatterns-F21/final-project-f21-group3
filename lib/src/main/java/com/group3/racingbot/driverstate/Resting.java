@@ -3,24 +3,34 @@
  */
 package com.group3.racingbot.driverstate;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 /**
  * A state where the Driver is idle. A Driver may leave this state once their cooldown has expired.
  * @author Nick Sabia
  *
  */
-public class Resting implements DriverState {
+public class Resting implements DriverState, Serializable {
+	@BsonProperty("serialVersionUID")
+	private static final long serialVersionUID = -945148743565952207L; 
+	@BsonProperty("stateType")
+	private String stateType;
+
 	/**
 	 * Set the Driver's state to a resting state.
 	 * @param driver
 	 */
+	@BsonCreator
 	public Resting() {
-		
+		this.stateType = "Resting";
 	}
 
 	@Override
