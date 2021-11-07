@@ -13,23 +13,28 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Crashed extends Racing {
 	
+	/**
+	 * Constructs the crashed state
+	 * @param driver the driver's recovery skill governs how likely they are to escape this state
+	 * @param car the car which is damaged by entering this state
+	 * @param raceEvent the driver stays put in one of the track nodes on the track in this event
+	 */
 	public Crashed(Driver driver, Car car, RaceEvent raceEvent) {
 		super(driver, car, raceEvent);
 	}
 
 	@Override
-	public DriverState rollDriverState() {
+	public void rollDriverState() {
 		// TODO Auto-generated method stub
 		int lowerBound = (int) Math.floor(this.getDriver().getRecovery()/5);
 		int recoveryRoll = ThreadLocalRandom.current().nextInt(lowerBound, 100);
 		if (recoveryRoll > 75) {
 			this.getDriver().setState(new Normal(this.getDriver(), this.getCar(), this.getRaceEvent()));
 		}
-		return null;
 	}
 
 	@Override
-	public void raceRoll(Driver driver) {
+	public void raceStep(Driver driver) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -38,5 +43,10 @@ public class Crashed extends Racing {
 	public void crash(Car car) {
 		// TODO Auto-generated method stub
 		// Do nothing
+	}
+	
+	@Override
+	public String toString() {
+		return "DNF";
 	}
 }

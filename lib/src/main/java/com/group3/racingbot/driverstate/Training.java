@@ -115,7 +115,7 @@ public class Training implements DriverState {
 	}
 
 	@Override
-	public void raceRoll(Driver driver) {
+	public void raceStep(Driver driver) {
 		// If in Racing state, calculate the distance which the driver can travel on straights and corners. 
 		// Next, randomize if a crash will occur this roll. If so, add to the idleTime and damage the Car. Otherwise, continue.
 		// Finally, if the Driver's on a straight node then travel the straight distance + Math.floor(cornerDistance/3). Otherwise, vice versa.
@@ -137,6 +137,39 @@ public class Training implements DriverState {
 		if (now > this.getDriver().getCooldown()) {
 			this.getDriver().setState(new FinishedTraining(this.getDriver(), this.getTrainingReward(), this.getSkillToTrain()));
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((driver == null) ? 0 : driver.hashCode());
+		result = prime * result + skillToTrain.getSkill();
+		result = prime * result + trainingReward;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Training) {
+			Training otherObj = (Training) other;
+			
+			if (!(this.getDriver().equals(otherObj.getDriver())))
+				return false;
+			if (this.getSkillToTrain() != otherObj.getSkillToTrain())
+				return false;
+			if (this.getTrainingReward() != otherObj.getTrainingReward())
+				return false;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "Training [driver=" + driver + ", skillToTrain=" + skillToTrain + ", trainingReward=" + trainingReward + "]";
 	}
 	
 }

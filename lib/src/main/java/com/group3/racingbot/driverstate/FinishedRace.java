@@ -25,7 +25,6 @@ public class FinishedRace extends Completed {
 	}
 	
 	/**
-	 * 
 	 * @return the final pole position of the Driver in the race
 	 */
 	public int getPosition() {
@@ -41,4 +40,32 @@ public class FinishedRace extends Completed {
 		// Return the driver to a resting state
 		this.getDriver().setState(new Resting());
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + position;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof FinishedRace) {
+			FinishedRace otherObj = (FinishedRace) other;
+			
+			if (this.getPosition() != otherObj.getPosition())
+				return false;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "FinishedRace [position=" + position + "]";
+	}
+	
 }

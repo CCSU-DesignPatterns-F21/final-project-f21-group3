@@ -44,15 +44,15 @@ public class Aggressive extends Racing {
 	}
 
 	@Override
-	public DriverState rollDriverState() {
+	public void rollDriverState() {
 		// TODO Auto-generated method stub
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			crash(this.getCar());
 			if (this.getCar().getDurability() > 0)
-				return new Crashed(this.getDriver(), this.getCar(), this.getRaceEvent());
+				this.getDriver().setState(new Crashed(this.getDriver(), this.getCar(), this.getRaceEvent()));
 			else 
-				return new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize());
+				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize()));
 		}
 		else if (roll < 60) {
 			int corneringDist = this.rollCornerDistance(this.getMultiplier());
@@ -68,11 +68,10 @@ public class Aggressive extends Racing {
 			}
 			this.getRaceTrack().progressForward(super.getDriver(), distanceToCover);
 		}
-		return this;
 	}
 
 	@Override
-	public void raceRoll(Driver driver) {
+	public void raceStep(Driver driver) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -133,6 +132,32 @@ public class Aggressive extends Racing {
 		}
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(multiplier);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Aggressive) {
+			Aggressive otherObj = (Aggressive) other;
+			
+			if (this.getMultiplier() != otherObj.getMultiplier())
+				return false;
+			if (!(this.getDriver().equals(otherObj.getDriver())))
+				return false;
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		return "Aggressive Racing State";

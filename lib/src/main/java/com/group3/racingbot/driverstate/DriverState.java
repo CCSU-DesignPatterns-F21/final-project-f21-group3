@@ -52,7 +52,7 @@ public interface DriverState {
 	 * Allow the Driver to perform their turn to move on the track during a race.
 	 * @param driver
 	 */
-	void raceRoll(Driver driver);
+	void raceStep(Driver driver);
 	
 	/**
 	 * Move to the finished race state upon race completion.

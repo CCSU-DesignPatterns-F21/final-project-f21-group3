@@ -6,6 +6,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.racetrack.RaceTrack;
 
 /**
+ * An racing event which a driver may participate in
  * @author Nick Sabia
  *
  */
@@ -126,10 +127,10 @@ public class RaceEvent {
 	}
 
 	/**
-	 * Lets each driver perform a roll on the race track to advance forward or run down an idle timer.
+	 * Lets each driver perform a step on the race track to advance forward or run down an idle timer.
 	 */
-	public void rollAllDrivers() {
-		// roll every driver in the list.
+	public void stepAllDrivers() {
+		// step every driver in the list.
 	}
 	
 	/**

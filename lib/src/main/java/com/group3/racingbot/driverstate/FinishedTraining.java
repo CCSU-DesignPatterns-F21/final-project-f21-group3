@@ -63,4 +63,32 @@ public class FinishedTraining extends Completed {
 		// Return the driver to a resting state
 		this.getDriver().setState(new Resting());
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((skill == null) ? 0 : skill.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof FinishedTraining) {
+			FinishedTraining otherObj = (FinishedTraining) other;
+			
+			if (this.getSkill() != otherObj.getSkill())
+				return false;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "FinishedTraining [skill=" + skill + "]";
+	}
+	
 }

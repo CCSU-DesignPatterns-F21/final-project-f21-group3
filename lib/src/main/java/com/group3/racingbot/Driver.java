@@ -327,8 +327,8 @@ public class Driver {
 	/**
 	 * Allows the Driver to progress through the track.
 	 */
-	public void raceRoll() {
-		this.getState().raceRoll(this);
+	public void raceStep() {
+		this.getState().raceStep(this);
 	}
 	
 	/**
@@ -362,6 +362,7 @@ public class Driver {
 		return result;
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if (other == null) { return false; }
 		if (this == other) { return true; } // Same instance 

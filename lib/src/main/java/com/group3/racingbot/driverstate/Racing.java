@@ -36,6 +36,22 @@ public abstract class Racing implements DriverState {
 		this.cornerDistance = 0;
 		this.position = 1;
 	}
+	
+	/**
+	 * Retrieve the race track which is currently being raced on.
+	 * @return the raceTrack
+	 */
+	public RaceTrack getRaceTrack() {
+		return raceTrack;
+	}
+
+	/**
+	 * Set the race track which is currently being raced on.
+	 * @param raceTrack the raceTrack to set
+	 */
+	public void setRaceTrack(RaceTrack raceTrack) {
+		this.raceTrack = raceTrack;
+	}
 
 	/**
 	 * Retrieve the driver who is currently racing.
@@ -67,22 +83,6 @@ public abstract class Racing implements DriverState {
 	 */
 	public void setCar(Car car) {
 		this.car = car;
-	}
-
-	/**
-	 * Retrieve the race track which is currently being raced on.
-	 * @return the raceTrack
-	 */
-	public RaceTrack getRaceTrack() {
-		return raceTrack;
-	}
-
-	/**
-	 * Set the race track which is currently being raced on.
-	 * @param raceTrack the raceTrack to set
-	 */
-	public void setRaceTrack(RaceTrack raceTrack) {
-		this.raceTrack = raceTrack;
 	}
 
 	/**
@@ -168,7 +168,7 @@ public abstract class Racing implements DriverState {
 	/**
 	 * Determines which state the driver will be in for the current unit of time.
 	 */
-	abstract public DriverState rollDriverState();
+	abstract public void rollDriverState();
 	
 	/**
 	 * Determine how far the driver can go on straight nodes this turn based on the Driver's straights skill and the Car's speed and acceleration.
@@ -242,7 +242,7 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	abstract public void raceRoll(Driver driver);
+	abstract public void raceStep(Driver driver);
 
 	@Override
 	public void completedRace(Driver driver, RaceEvent raceEvent) {
