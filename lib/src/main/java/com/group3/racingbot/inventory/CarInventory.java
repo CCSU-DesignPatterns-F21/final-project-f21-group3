@@ -121,7 +121,7 @@ public class CarInventory implements Inventory<Car>{
 		 * Verifies that there is another car ahead of the current one.
 		 */
 		public boolean hasNext() {
-			if (this.current < CarInventory.this.items.size() + 1) {
+			if (this.current < CarInventory.this.items.size()) {
 				return true;
 			}
 			return false;

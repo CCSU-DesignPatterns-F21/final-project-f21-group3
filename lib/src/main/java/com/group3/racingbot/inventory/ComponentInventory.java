@@ -122,7 +122,7 @@ public class ComponentInventory implements Inventory<Component>{
 		 * Verifies that there is another component ahead of the current one.
 		 */
 		public boolean hasNext() {
-			if (this.current < ComponentInventory.this.items.size() + 1) {
+			if (this.current < ComponentInventory.this.items.size()) {
 				return true;
 			}
 			return false;

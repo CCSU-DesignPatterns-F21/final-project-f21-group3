@@ -122,7 +122,7 @@ public class DriverInventory implements Inventory<Driver>{
 		 * Verifies that there is another driver ahead of the current one.
 		 */
 		public boolean hasNext() {
-			if (this.current < DriverInventory.this.items.size() + 1) {
+			if (this.current < DriverInventory.this.items.size()) {
 				return true;
 			}
 			return false;
