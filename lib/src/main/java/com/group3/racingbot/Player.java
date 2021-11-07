@@ -14,7 +14,7 @@ import com.group3.racingbot.inventory.DriverInventory;
  */
 
 public class Player {
-	@BsonProperty("id")
+	@BsonProperty("_id")
 	private String id;
 	@BsonProperty("username")
 	private String username;

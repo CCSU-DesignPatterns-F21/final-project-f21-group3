@@ -26,6 +26,7 @@ import com.group3.racingbot.driverstate.FinishedRace;
 import com.group3.racingbot.driverstate.FinishedTraining;
 import com.group3.racingbot.driverstate.Normal;
 import com.group3.racingbot.driverstate.RacePending;
+import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.ComponentInventory;
@@ -61,6 +62,8 @@ public class DBHandler {
 		ClassModel<ComponentInventory> componenInventorytModel = ClassModel.builder(ComponentInventory.class).enableDiscriminator(true).build();
 		ClassModel<Component> componentModel = ClassModel.builder(Component.class).enableDiscriminator(true).build();
 		// States
+		ClassModel<DriverState> driverStateModel = ClassModel.builder(DriverState.class).enableDiscriminator(true).build();
+		ClassModel<Racing> racingStateModel = ClassModel.builder(Racing.class).enableDiscriminator(true).build();
 		ClassModel<Resting> restingStateModel = ClassModel.builder(Resting.class).enableDiscriminator(true).build();
 		ClassModel<Training> trainingStateModel = ClassModel.builder(Training.class).enableDiscriminator(true).build();
 		ClassModel<RacePending> racePendingStateModel = ClassModel.builder(RacePending.class).enableDiscriminator(true).build();
@@ -72,6 +75,8 @@ public class DBHandler {
 		ClassModel<FinishedRace> finishedRaceStateModel = ClassModel.builder(FinishedRace.class).enableDiscriminator(true).build();
 		ClassModel<FinishedTraining> finishedTrainingStateModel = ClassModel.builder(FinishedTraining.class).enableDiscriminator(true).build();
 		CodecProvider pojoCodecProvider = PojoCodecProvider.builder().conventions(Arrays.asList(Conventions.ANNOTATION_CONVENTION))
+				 .register(driverStateModel)
+				 .register(racingStateModel)
 				 .register(shopModel)
 				 .register(componentFactoryModel)
 				 .register(concreteComponentFactoryModel)
