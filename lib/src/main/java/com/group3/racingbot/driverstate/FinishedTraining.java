@@ -1,5 +1,7 @@
 package com.group3.racingbot.driverstate;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 import com.group3.racingbot.Driver;
 
 /**
@@ -7,6 +9,7 @@ import com.group3.racingbot.Driver;
  * @author Nick Sabia
  *
  */
+@BsonDiscriminator(value="FinishedTraining", key="_cls")
 public class FinishedTraining extends Completed {
 	private final Skill skill;
 	

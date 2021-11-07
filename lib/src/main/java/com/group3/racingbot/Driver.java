@@ -1,7 +1,6 @@
 package com.group3.racingbot;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.driverstate.DriverState;
@@ -39,26 +38,6 @@ public class Driver {
 	private float payPercentage; // Percentage of money deducted from each event's cash prize.
 	@BsonProperty("cooldown")
 	private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
-	
-	/**
-	 * Creates a Driver and assigns it to a player. Base stats all start off at 10 and the pay percentage starts at 0.15.
-	 * @param player the Player who owns this Driver
-	 * @param name the name of the Driver
-	 */
-	@BsonCreator
-	public Driver(@BsonProperty("player") Player player,@BsonProperty("name") String name) {
-		this.player = player;
-		this.state = new Resting();
-		this.name = name;
-		this.composure = 10;
-		this.awareness = 10;
-		this.drafting = 10;
-		this.straights = 10;
-		this.cornering = 10;
-		this.recovery = 10;
-		this.payPercentage = (float) 0.15;
-		this.cooldown = 0;
-	}
 	
 	/**
 	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.

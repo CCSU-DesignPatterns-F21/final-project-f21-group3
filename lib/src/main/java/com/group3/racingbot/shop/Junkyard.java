@@ -1,18 +1,20 @@
 package com.group3.racingbot.shop;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 
 /**
+ * Concrete class extending abstract class Shop. Sells Junkyard quality components and cars.
  * @author Maciej Bregisz
  *
  */
+@BsonDiscriminator(value="Junkyard", key="_cls")
 public class Junkyard extends Shop {
 
-	
 	@BsonCreator
 	public Junkyard() {
 		setCarsForSale(new CarInventory());

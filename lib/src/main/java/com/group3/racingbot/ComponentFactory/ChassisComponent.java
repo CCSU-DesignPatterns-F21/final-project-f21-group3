@@ -3,6 +3,7 @@ package com.group3.racingbot.ComponentFactory;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.Driver;
@@ -12,7 +13,7 @@ import com.group3.racingbot.Driver;
  * Specialized class of Component abstract class
  * defines specialized variables for chassis component
  */
-
+@BsonDiscriminator(value="ChassisComponent", key="_cls")
 public class ChassisComponent extends Component {
 	@BsonProperty("popularity")
 	private int popularity = 0;

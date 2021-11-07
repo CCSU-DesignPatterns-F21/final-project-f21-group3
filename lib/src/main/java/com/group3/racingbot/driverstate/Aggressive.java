@@ -2,6 +2,8 @@ package com.group3.racingbot.driverstate;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
@@ -13,6 +15,7 @@ import com.group3.racingbot.racetrack.StraightNode;
  * @author Nick Sabia
  *
  */
+@BsonDiscriminator(value="Aggressive", key="_cls")
 public class Aggressive extends Racing {
 	private double multiplier;
 	

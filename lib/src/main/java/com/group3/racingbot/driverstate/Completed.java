@@ -3,6 +3,10 @@
  */
 package com.group3.racingbot.driverstate;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
@@ -12,6 +16,12 @@ import com.group3.racingbot.RaceEvent;
  * @author Nick Sabia
  *
  */
+@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = DNF.class),
+        @JsonSubTypes.Type(value = FinishedRace.class),
+		@JsonSubTypes.Type(value = FinishedTraining.class)})
+@BsonDiscriminator(value="Completed", key="_cls")
 public abstract class Completed implements DriverState{
 	private Driver driver;
 	private int reward;

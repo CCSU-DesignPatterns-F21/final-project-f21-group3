@@ -343,7 +343,7 @@ public class Car implements MaterialFilterable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.getDurability() + this.getValue() + this.getRating() + this.getWeight() + ((int) this.getRating());
+		result = prime * result + this.getDurability() + this.getValue() + this.getRating() + this.getWeight() + this.getRating();
 		return result;
 	}
 	

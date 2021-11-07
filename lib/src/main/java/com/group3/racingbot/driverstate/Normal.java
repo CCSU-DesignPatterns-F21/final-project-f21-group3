@@ -11,11 +11,14 @@ import com.group3.racingbot.racetrack.StraightNode;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 /**
  * A state where the Driver is racing as they normally would. A Driver may leave this state once they finish the race.
  * @author Nick Sabia
  *
  */
+@BsonDiscriminator(value="Normal", key="_cls")
 public class Normal extends Racing {
 	private double multiplier;
 	/**

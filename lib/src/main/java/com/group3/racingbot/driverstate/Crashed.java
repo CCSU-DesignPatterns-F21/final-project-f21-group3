@@ -6,11 +6,14 @@ import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.racetrack.RaceTrack;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 /**
  * A state which the driver stays in one place on the track until they recover.
  * @author Nick Sabia
  *
  */
+@BsonDiscriminator(value="Crashed", key="_cls")
 public class Crashed extends Racing {
 	
 	/**

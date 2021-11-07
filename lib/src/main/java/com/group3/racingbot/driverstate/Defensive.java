@@ -5,6 +5,8 @@ package com.group3.racingbot.driverstate;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
@@ -12,9 +14,11 @@ import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.StraightNode;
 
 /**
+ * A state where the driver is racing defensively. This negatively impacts how far the Driver travels, but also decreases chances of crashing.
  * @author Nick Sabia
  *
  */
+@BsonDiscriminator(value="Defensive", key="_cls")
 public class Defensive extends Racing {
 	private double multiplier;
 	/**
