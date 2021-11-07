@@ -1,5 +1,8 @@
 package com.group3.racingbot;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import com.group3.racingbot.driverstate.DriverState;
 import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
@@ -29,7 +32,8 @@ public class Driver {
 	 * @param player the Player who owns this Driver
 	 * @param name the name of the Driver
 	 */
-	public Driver(Player player, String name) {
+	@BsonCreator
+	public Driver(@BsonProperty("player") Player player,@BsonProperty("name") String name) {
 		this.player = player;
 		this.state = new Resting();
 		this.name = name;
