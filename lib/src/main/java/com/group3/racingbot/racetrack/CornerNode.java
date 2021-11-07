@@ -3,7 +3,6 @@
  */
 package com.group3.racingbot.racetrack;
 
-import com.group3.racingbot.Player;
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
 /**
