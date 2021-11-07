@@ -16,13 +16,6 @@ import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.Iterator;
-import com.group3.racingbot.racetrack.RaceTrack;
-import com.group3.racingbot.racetrack.TrackNode;
-import com.group3.racingbot.ComponentFactory.EngineComponent;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.Inventory;
-import com.group3.racingbot.inventory.InventoryIterator;
-import com.group3.racingbot.inventory.filter.QualityFilter;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -54,6 +47,7 @@ public class Commands extends ListenerAdapter {
 		eb = new EmbedBuilder();
 		dbh = db;
 		component = new ConcreteComponentFactory();
+		this.raceEvent = new RaceEvent();
 	} 
 	
 	/**
@@ -402,14 +396,14 @@ public class Commands extends ListenerAdapter {
 	    			if(args[3].equalsIgnoreCase("generate"))
 	    			{
 	    				int totalNodes = 2; // initialize totalNodes
-	    				if(args[4] != null)
+	    				if(args.length > 4 && args[4] != null)
 	    				{
 	    					totalNodes = Integer.parseInt(args[4]);
 	    				}
 	    				else {
 	    					totalNodes = ThreadLocalRandom.current().nextInt(5, 20);
 	    				}
-	    				raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(totalNodes)); // Create the new track
+	    				this.raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(totalNodes)); // Create the new track
 	    				event.getChannel().sendMessage("Number of Nodes in Track: "+totalNodes).queue();
 	    			}
 	    			if(args[3].equalsIgnoreCase("register")) {
@@ -488,6 +482,58 @@ public class Commands extends ListenerAdapter {
 	    				gph.debug();
 	    			}
 	    			
+	    		}
+	    		if(args[2].equalsIgnoreCase("driver"))
+	    		{
+	    			Player p = dbh.getPlayer(user.getId());
+	    			if(args[3].equalsIgnoreCase("create"))
+		    		{
+	    				String driverName = "Dude";
+	    				if(args.length > 4 && args[4] != null)
+	    				{
+	    					driverName = args[4];
+	    				}
+	    				p.getOwnedDrivers().add(new Driver(p, driverName));
+		    		}
+	    			if(args[3].equalsIgnoreCase("set"))
+		    		{
+	    				if (args.length > 4 && args[4] != null) {
+	    					// User enters name of the driver they wish to use.
+	    					String driverName = args[4];
+	    					boolean driverFound = false;
+	    					Iterator<Driver> ownedDrivers = p.getOwnedDrivers().iterator();
+	    					while (ownedDrivers.hasNext()) {
+	    						// Searches the player's owned drivers one by one by name.
+	    						// If found, set the player's active driver to the one found.
+	    						// If not found, send a message saying that driver does not exist.
+	    						Driver ownedDriver = ownedDrivers.next();
+	    						if (ownedDriver.getName().equals(driverName)) {
+	    							driverFound = true;
+	    							p.setActiveDriver(ownedDriver);
+	    							break;
+	    						}
+	    					}
+	    					if (!driverFound) {
+	    						event.getChannel().sendMessage("Could not find that driver. Did not set an active driver. Look at the drivers you own by the command: !iracer debug driver view").queue();
+	    					}
+	    				}
+	    				else {
+	    					event.getChannel().sendMessage("No driver name specified! Set an active driver using the command: !iracer debug driver set [driver's name]").queue();
+	    				}
+		    		}
+	    			if(args[3].equalsIgnoreCase("view"))
+		    		{
+	    				String message = "";
+	    				Iterator<Driver> ownedDrivers = p.getOwnedDrivers().iterator();
+	    				while (ownedDrivers.hasNext()) {
+	    					message += ownedDrivers.next() + "\n_____________________\n";
+	    				}
+	    				event.getChannel().sendMessage(message).queue();
+		    		}
+	    			if(args[3].equalsIgnoreCase("active"))
+		    		{
+	    				event.getChannel().sendMessage(p.getActiveDriver().toString()).queue();
+		    		}
 	    		}
 	    	}
 	    	

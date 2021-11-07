@@ -1,7 +1,5 @@
 package com.group3.racingbot;
 
-import java.util.Objects;
-
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 import com.group3.racingbot.inventory.DriverInventory;
@@ -31,9 +29,14 @@ public class Player {
 	 * Player class constructor.
 	 */
 	public Player() {
-	
+		this.id = "";
+		this.username = "";
 		setOwnedComponents(new ComponentInventory());
 		setOwnedCars(new CarInventory());
+		setOwnedDrivers(new DriverInventory());
+		// Create a default driver.
+		getOwnedDrivers().add(new Driver("Stig"));
+		setActiveDriver(getOwnedDrivers().getItems().get(0));
 	}
 	
 	/**
