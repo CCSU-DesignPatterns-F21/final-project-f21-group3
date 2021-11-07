@@ -298,8 +298,15 @@ public class Driver {
 	 * @param skillToTrain
 	 * @param intensity
 	 */
-	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
-		this.getState().beginTraining(driver, skillToTrain, intensity);
+	public void beginTraining(Skill skillToTrain, Intensity intensity) {
+		this.getState().beginTraining(this, skillToTrain, intensity);
+	}
+	
+	/**
+	 * Enters the driver into a racing state.
+	 */
+	public void beginRace() {
+		this.getState().beginRace();
 	}
 	
 	/**

@@ -474,10 +474,10 @@ public class Commands extends ListenerAdapter {
 	    			if(args[3].equalsIgnoreCase("begin"))
 	    			{
 	    				// The event has started! Move every registered driver into a racing state then begin moving the drivers.
-	    				//Iterator<Driver> driverIterator = raceEvent.getDrivers().iterator();
-	    				//while (driverIterator.hasNext()) {
-	    					//driverIterator.next().
-	    				//}
+	    				Iterator<Driver> driverIterator = raceEvent.getDrivers().iterator();
+	    				while (driverIterator.hasNext()) {
+	    					driverIterator.next().beginRace();
+	    				}
 	    			}
 	    		}
 	    		
