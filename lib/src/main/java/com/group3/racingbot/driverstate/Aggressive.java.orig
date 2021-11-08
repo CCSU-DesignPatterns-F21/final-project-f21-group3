@@ -58,7 +58,7 @@ public class Aggressive extends Racing {
 				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize()));
 		}
 		else if (roll < 60) {
-<<<<<<< HEAD
+
 			this.raceStep(this.getDriver());
 		}
 		else if (roll < 80) {
@@ -68,7 +68,7 @@ public class Aggressive extends Racing {
 		else {
 			this.getDriver().setState(new Aggressive(this.getDriver(), this.getCar(), this.getRaceEvent()));
 			this.getDriver().getState().raceStep(this.getDriver());
-=======
+
 			int corneringDist = this.rollCornerDistance(this.getMultiplier());
 			int straightDist = this.rollStraightDistance(this.getMultiplier());
 			this.setCornerDistance(corneringDist);
@@ -81,7 +81,7 @@ public class Aggressive extends Racing {
 				distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
 			}
 			this.getRaceTrack().progressForward(super.getDriver(), distanceToCover);
->>>>>>> development
+
 		}
 	}
 
