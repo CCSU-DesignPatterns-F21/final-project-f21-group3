@@ -9,19 +9,15 @@ import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 /**
  * A state where the Driver is idle. A Driver may leave this state once their cooldown has expired.
  * @author Nick Sabia
  *
  */
+//@BsonDiscriminator(value="Resting", key="_cls")
 public class Resting implements DriverState {
-	/**
-	 * Set the Driver's state to a resting state.
-	 * @param driver
-	 */
-	public Resting() {
-		
-	}
 
 	@Override
 	public void rest() {
@@ -84,7 +80,7 @@ public class Resting implements DriverState {
 	}
 
 	@Override
-	public void raceRoll(Driver driver) {
+	public void raceStep(Driver driver) {
 		// If in Racing state, calculate the distance which the driver can travel on straights and corners. 
 		// Next, randomize if a crash will occur this roll. If so, add to the idleTime and damage the Car. Otherwise, continue.
 		// Finally, if the Driver's on a straight node then travel the straight distance + Math.floor(cornerDistance/3). Otherwise, vice versa.

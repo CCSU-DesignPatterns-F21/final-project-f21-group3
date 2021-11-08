@@ -52,7 +52,7 @@ public class GameplayHandler {
 		
 		if(dbh.getShop(0) != null) {
 			chopshop = dbh.getShop(0);
-			chopshop.setFactory(componentFactory);
+//			chopshop.setFactory(componentFactory);
 			//System.out.println(chopshop);
 			this.subscribe(chopshop);
 		}else {

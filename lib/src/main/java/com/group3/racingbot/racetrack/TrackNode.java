@@ -1,6 +1,8 @@
 package com.group3.racingbot.racetrack;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.group3.racingbot.exceptions.RaceTrackEndException;
+
 /**
  * A portion of a race track which can either be a corner or a straight.
  * @author Nick Sabia
@@ -61,4 +63,20 @@ public abstract class TrackNode {
 	public void setDistanceRemaining(int distanceRemaining) {
 		this.distanceRemaining = distanceRemaining;
 	}
+	
+	/**
+	 * Subtract some amount from the distance covered of this track node (and others within the Chain of Responsibility if this track node has been traversed completely)
+	 * @param distance the distance to travel along the track node
+	 * @throws RaceTrackEndException no more track nodes, so the driver has reached the end
+	 */
+	abstract protected void progressForward(int distance) throws RaceTrackEndException;
+	
+	@Override
+	public abstract int hashCode();
+	
+	@Override
+	public abstract boolean equals(Object other);
+	
+	@Override
+	public abstract String toString();
 }

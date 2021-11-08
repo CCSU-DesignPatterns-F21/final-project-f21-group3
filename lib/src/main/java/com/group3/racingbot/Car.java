@@ -1,6 +1,7 @@
 package com.group3.racingbot;
 
 import com.group3.racingbot.ComponentFactory.ChassisComponent;
+import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
@@ -30,6 +31,91 @@ public class Car implements MaterialFilterable {
 		this.suspension = null;
 		this.transmission = null;
 		this.wheels = null;
+	}
+	
+	private Car(CarBuilder builder) {
+		this.chassis = builder.chassis;
+		this.engine = builder.engine;
+		this.suspension = builder.suspension;
+		this.transmission = builder.transmission;
+		this.wheels = builder.wheels;
+	}
+	
+	/**
+	 * Builds car using desired components (Builder Pattern) 
+	 * @return Car with desired components
+	 * 
+	 * @author Jack Gola
+	 */
+	
+	public static class CarBuilder{
+		
+		private ChassisComponent chassis = null;
+		private EngineComponent engine = null;
+		private SuspensionComponent suspension = null;
+		private TransmissionComponent transmission = null;
+		private WheelComponent wheels = null;
+		
+		
+		public CarBuilder addChassis(Component chassis) {
+			this.chassis = (ChassisComponent) chassis;
+			return this;		
+		}
+		
+		public CarBuilder addEngine(Component engine) {
+			this.engine = (EngineComponent) engine;
+			return this;
+		}
+		public CarBuilder addSuspension(Component suspension) {
+			this.suspension = (SuspensionComponent) suspension;
+			return this;
+		}
+		public CarBuilder addTransmission(Component transmission) {
+			this.transmission = (TransmissionComponent) transmission;
+			return this;
+		}
+		public CarBuilder addWheels(Component wheel) {
+			this.wheels = (WheelComponent) wheel;
+			return this;
+		}
+		public Car build() {
+			return new Car(this);
+		}
+		
+		/**
+		 * returns toString() for built Car that displays which components are present
+		 */
+
+		@Override
+		public String toString() {
+			
+			StringBuilder stringBuilder = new StringBuilder("```-----Assembled Car-----\n");
+			
+			if (chassis != null)
+				stringBuilder.append(chassis);
+			else
+				stringBuilder.append("---Chassis MISSING---\n\n");
+			if (engine != null)
+				stringBuilder.append(engine);
+			else
+				stringBuilder.append("---Engine MISSING---\n\n");
+			if (suspension != null)
+				stringBuilder.append(suspension);
+			else
+				stringBuilder.append("---Suspension MISSING---\n\n");
+			if (transmission != null)
+				stringBuilder.append(transmission);
+			else
+				stringBuilder.append("---Transmission MISSING---\n\n");
+			if (wheels != null)
+				stringBuilder.append(wheels);
+			else
+				stringBuilder.append("---Wheels MISSING---\n\n");
+			
+			return stringBuilder.toString() + ("```");
+		}
+		
+		
 	}
 	
 	/**
@@ -127,11 +213,27 @@ public class Car implements MaterialFilterable {
 	}
 	
 	/**
+	 * Get the overall rating of the car.
+	 * 
+	 * Rates the car based on the rating of all car components combined.
+	 */
+	public int getRating() {
+		if (this.hasAllComponents()) {
+			return (int) Math.floor(this.getPopularityRating()
+				 + this.getAccelerationRating()
+				 + this.getBrakingRating()
+				 + this.getSpeedRating()
+				 + this.getBrakingRating());
+		}
+		return 0;
+	}
+	
+	/**
 	 * Get the price of the car.
 	 * 
 	 * Values the car based on the value of all car components combined.
 	 */
-	public int getPrice() {
+	public int getValue() {
 		if (this.hasAllComponents()) {
 			return this.chassis.getValue()
 					 + this.engine.getValue()
@@ -143,35 +245,19 @@ public class Car implements MaterialFilterable {
 	}
 	
 	/**
-	 * Get the overall rating of the car.
-	 * 
-	 * Rates the car based on the rating of all car components combined.
-	 */
-	public int getRating() {
-		if (this.hasAllComponents()) {
-			return this.chassis.getRating()
-				 + this.engine.getRating()
-				 + this.suspension.getRating()
-				 + this.transmission.getRating()
-				 + this.wheels.getRating();
-		}
-		return 0;
-	}
-	
-	/**
 	 * Get the quality of the car.
 	 * 
 	 * Classifies the quality of the car based on the car's rating.
 	 */
 	public String getQuality() {
-		int overallRating = this.getRating();
-		if (overallRating < 100)
+		int carRating = this.getRating();
+		if (carRating < 200)
 			return "Lemon";
-		else if (overallRating < 200) 
+		else if (carRating < 500) 
 			return "Junkyard";
-		else if (overallRating < 300) 
+		else if (carRating < 1000) 
 			return "OEM";
-		else if (overallRating < 400) 
+		else if (carRating < 3000) 
 			return "Sports";
 		else {
 			return "Racing";
@@ -199,7 +285,7 @@ public class Car implements MaterialFilterable {
 	 * 
 	 * @return the popularity rating of the car.
 	 */
-	public float getPopularityRating() {
+	public double getPopularityRating() {
 		if (this.chassis != null)
 			return this.chassis.getPopularity() * this.chassis.getPopularityModifier();
 		return 0;
@@ -210,7 +296,7 @@ public class Car implements MaterialFilterable {
 	 * 
 	 * @return the speed rating of the car.
 	 */
-	public float getSpeedRating() {
+	public double getSpeedRating() {
 		if (this.chassis != null && this.engine != null)
 			return this.engine.getSpeed() * this.chassis.getSpeedModifier();
 		return 0;
@@ -221,7 +307,7 @@ public class Car implements MaterialFilterable {
 	 * 
 	 * @return the handling rating of the car.
 	 */
-	public float getHandlingRating() {
+	public double getHandlingRating() {
 		if (this.chassis != null && this.suspension != null)
 			return this.suspension.getHandling() * this.chassis.getHandlingModifier();
 		return 0;
@@ -232,7 +318,7 @@ public class Car implements MaterialFilterable {
 	 * 
 	 * @return the acceleration rating of the car.
 	 */
-	public float getAccelerationRating() {
+	public double getAccelerationRating() {
 		if (this.chassis != null && this.transmission != null)
 			return this.transmission.getAcceleration() * this.chassis.getAccelerationModifier();
 		return 0;
@@ -243,17 +329,19 @@ public class Car implements MaterialFilterable {
 	 * 
 	 * @return the braking rating of the car.
 	 */
-	public float getBrakingRating() {
+	public double getBrakingRating() {
 		if (this.chassis != null && this.wheels != null)
 			return this.wheels.getBraking() * this.chassis.getBrakingModifier();
 		return 0;
 	}
 	
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.getDurability() + this.getPrice() + this.getRating() + this.getWeight() + ((int) this.getPopularityRating()) + ((int) this.getSpeedRating()) + ((int) this.getHandlingRating()) + ((int) this.getBrakingRating()) + ((int) this.getAccelerationRating());
+		result = prime * result + this.getDurability() + this.getValue() + this.getRating() + this.getWeight() + this.getRating();
 		return result;
 	}
 	
@@ -266,7 +354,7 @@ public class Car implements MaterialFilterable {
 			
 			if (this.getDurability() != otherObj.getDurability())
 				return false;
-			if (this.getPrice() != otherObj.getPrice())
+			if (this.getValue() != otherObj.getValue())
 				return false;
 			if (this.getRating() != otherObj.getRating())
 				return false;
@@ -289,6 +377,12 @@ public class Car implements MaterialFilterable {
 	
 	@Override
 	public String toString() {
-		return "Durability: " + this.getDurability() + " | Price: " + this.getPrice() + " | Quality: " + this.getQuality() + " | Weight: " + this.getWeight();
+		return "Durability: " + this.getDurability() + " | Price: " + this.getValue() + " | Quality: " + this.getQuality() + " | Weight: " + this.getWeight();
+	}
+
+	@Override
+	public int getPrice() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

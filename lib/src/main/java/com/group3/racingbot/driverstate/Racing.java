@@ -3,6 +3,8 @@
  */
 package com.group3.racingbot.driverstate;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
@@ -11,11 +13,20 @@ import com.group3.racingbot.racetrack.TrackNode;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 /**
  * A state where the Driver is currently racing. A Driver may leave this state once they finish the race.
  * @author Nick Sabia
  *
  */
+//@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = Aggressive.class),
+//        @JsonSubTypes.Type(value = Normal.class),
+//        @JsonSubTypes.Type(value = Defensive.class),
+//		@JsonSubTypes.Type(value = Crashed.class)})
+//@BsonDiscriminator(value="Racing", key="_cls")
 public abstract class Racing implements DriverState {
 	
 	private Driver driver;
@@ -35,6 +46,22 @@ public abstract class Racing implements DriverState {
 		this.straightDistance = 0;
 		this.cornerDistance = 0;
 		this.position = 1;
+	}
+	
+	/**
+	 * Retrieve the race track which is currently being raced on.
+	 * @return the raceTrack
+	 */
+	public RaceTrack getRaceTrack() {
+		return raceTrack;
+	}
+
+	/**
+	 * Set the race track which is currently being raced on.
+	 * @param raceTrack the raceTrack to set
+	 */
+	public void setRaceTrack(RaceTrack raceTrack) {
+		this.raceTrack = raceTrack;
 	}
 
 	/**
@@ -67,22 +94,6 @@ public abstract class Racing implements DriverState {
 	 */
 	public void setCar(Car car) {
 		this.car = car;
-	}
-
-	/**
-	 * Retrieve the race track which is currently being raced on.
-	 * @return the raceTrack
-	 */
-	public RaceTrack getRaceTrack() {
-		return raceTrack;
-	}
-
-	/**
-	 * Set the race track which is currently being raced on.
-	 * @param raceTrack the raceTrack to set
-	 */
-	public void setRaceTrack(RaceTrack raceTrack) {
-		this.raceTrack = raceTrack;
 	}
 
 	/**
@@ -168,7 +179,7 @@ public abstract class Racing implements DriverState {
 	/**
 	 * Determines which state the driver will be in for the current unit of time.
 	 */
-	abstract public DriverState rollDriverState();
+	abstract public void rollDriverState();
 	
 	/**
 	 * Determine how far the driver can go on straight nodes this turn based on the Driver's straights skill and the Car's speed and acceleration.
@@ -242,7 +253,7 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	abstract public void raceRoll(Driver driver);
+	abstract public void raceStep(Driver driver);
 
 	@Override
 	public void completedRace(Driver driver, RaceEvent raceEvent) {

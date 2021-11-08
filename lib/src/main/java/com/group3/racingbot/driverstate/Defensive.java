@@ -5,6 +5,8 @@ package com.group3.racingbot.driverstate;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
@@ -12,9 +14,11 @@ import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.StraightNode;
 
 /**
+ * A state where the driver is racing defensively. This negatively impacts how far the Driver travels, but also decreases chances of crashing.
  * @author Nick Sabia
  *
  */
+//@BsonDiscriminator(value="Defensive", key="_cls")
 public class Defensive extends Racing {
 	private double multiplier;
 	/**
@@ -45,37 +49,44 @@ public class Defensive extends Racing {
 	}
 
 	@Override
-	public DriverState rollDriverState() {
+	public void rollDriverState() {
 		// TODO Auto-generated method stub
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			crash(this.getCar());
 			if (this.getCar().getDurability() > 0)
-				return new Crashed(this.getDriver(), this.getCar(), this.getRaceEvent());
+				this.getDriver().setState(new Crashed(this.getDriver(), this.getCar(), this.getRaceEvent()));
 			else 
-				return new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize());
+				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize()));
 		}
 		else if (roll < 60) {
-			int corneringDist = this.rollCornerDistance(this.getMultiplier());
-			int straightDist = this.rollStraightDistance(this.getMultiplier());
-			this.setCornerDistance(corneringDist);
-			this.setStraightDistance(straightDist);
-			int distanceToCover = 0;
-			if (this.getCurrentNode() instanceof StraightNode) {
-				distanceToCover = straightDist + (int) Math.floor(corneringDist/3);
-			}
-			else if (this.getCurrentNode() instanceof CornerNode) {
-				distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
-			}
-			this.getRaceTrack().progressForward(distanceToCover);
+			this.raceStep(this.getDriver());
 		}
-		return this;
+		else if (roll < 80) {
+			this.getDriver().setState(new Defensive(this.getDriver(), this.getCar(), this.getRaceEvent()));
+			this.getDriver().getState().raceStep(this.getDriver());
+		}
+		else {
+			this.getDriver().setState(new Aggressive(this.getDriver(), this.getCar(), this.getRaceEvent()));
+			this.getDriver().getState().raceStep(this.getDriver());
+		}
 	}
 
 	@Override
-	public void raceRoll(Driver driver) {
+	public void raceStep(Driver driver) {
 		// TODO Auto-generated method stub
-		
+		int corneringDist = this.rollCornerDistance(this.getMultiplier());
+		int straightDist = this.rollStraightDistance(this.getMultiplier());
+		this.setCornerDistance(corneringDist);
+		this.setStraightDistance(straightDist);
+		int distanceToCover = 0;
+		if (this.getCurrentNode() instanceof StraightNode) {
+			distanceToCover = straightDist + (int) Math.floor(corneringDist/3);
+		}
+		else if (this.getCurrentNode() instanceof CornerNode) {
+			distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
+		}
+		this.getRaceTrack().progressForward(super.getDriver(), distanceToCover);
 	}
 	
 	@Override
@@ -132,6 +143,32 @@ public class Defensive extends Racing {
 					break;
 			}
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(multiplier);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Defensive) {
+			Defensive otherObj = (Defensive) other;
+			
+			if (this.getMultiplier() != otherObj.getMultiplier())
+				return false;
+			if (!(this.getDriver().equals(otherObj.getDriver())))
+				return false;
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
