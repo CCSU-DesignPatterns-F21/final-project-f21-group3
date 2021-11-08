@@ -3,6 +3,7 @@ package com.group3.racingbot.ComponentFactory;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 /**
@@ -10,11 +11,10 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  * Specialized class of Component abstract class
  * defines specialized variables
  */
-
+//@BsonDiscriminator(value="SuspensionComponent", key="_cls")
 public class SuspensionComponent extends Component {
-	
+	//@BsonProperty("handling")
 	private float handling;
-	//TODO: tunedFor
 	
 	/**
 	 * Constructor for suspension component
@@ -24,16 +24,8 @@ public class SuspensionComponent extends Component {
 	 * @param handling
 	 */
 	@BsonCreator
-	public SuspensionComponent(@BsonProperty("quality") String quality, 
-			@BsonProperty("value") int value,
-			@BsonProperty("durability") int durability,
-			@BsonProperty("handling") float handling) {
-		
+	public SuspensionComponent() {
 		this.setName("Suspension");
-		this.setQuality(quality);
-		this.setValue(value);
-		this.setDurability(durability);
-		this.setHandling(handling);
 	}
 
 	/**

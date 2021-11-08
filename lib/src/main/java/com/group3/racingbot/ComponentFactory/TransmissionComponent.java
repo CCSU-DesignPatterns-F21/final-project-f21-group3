@@ -3,6 +3,7 @@ package com.group3.racingbot.ComponentFactory;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 /**
@@ -10,11 +11,10 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  * Specialized class of Component abstract class
  * defines specialized variables
  */
-
+//@BsonDiscriminator(value="TransmissionComponent", key="_cls")
 public class TransmissionComponent extends Component {
-	
+	//@BsonProperty("acceleration")
 	private float acceleration;
-	//TODO: tunedFor
 	
 	/**
 	 * Constructor for transmission component
@@ -24,17 +24,8 @@ public class TransmissionComponent extends Component {
 	 * @param acceleration
 	 */
 	@BsonCreator
-	public TransmissionComponent(@BsonProperty("quality") String quality, 
-			@BsonProperty("value") int value, 
-			@BsonProperty("durability") int durability, 
-			@BsonProperty("acceleration") float acceleration) {
-		
-		
+	public TransmissionComponent() {
 		this.setName("Transmission");
-		this.setQuality(quality);
-		this.setValue(value);
-		this.setDurability(durability);
-		this.setAcceleration(acceleration);
 	}
 
 	/**
