@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.group3.racingbot;
 
 import com.group3.racingbot.driverstate.Racing;
@@ -9,6 +6,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.racetrack.RaceTrack;
 
 /**
+ * An racing event which a driver may participate in
  * @author Nick Sabia
  *
  */
@@ -19,8 +17,15 @@ public class RaceEvent {
 	private int timeElapsed;
 	private int grandPrize;
 	
+	/**
+	 * Construct a new race event. This is where drivers will compete for a cash prize.
+	 */
 	public RaceEvent() {
-		
+		this.eventName = "Some event";
+		this.raceTrack = new RaceTrack();
+		this.drivers = new DriverInventory();
+		this.timeElapsed = 0;
+		this.grandPrize = 10000;
 	}
 
 	/**
@@ -122,10 +127,10 @@ public class RaceEvent {
 	}
 
 	/**
-	 * Lets each driver perform a roll on the race track to advance forward or run down an idle timer.
+	 * Lets each driver perform a step on the race track to advance forward or run down an idle timer.
 	 */
-	public void rollAllDrivers() {
-		// roll every driver in the list.
+	public void stepAllDrivers() {
+		// step every driver in the list.
 	}
 	
 	/**

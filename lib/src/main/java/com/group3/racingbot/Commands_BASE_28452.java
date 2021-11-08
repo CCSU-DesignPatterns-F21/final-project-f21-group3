@@ -7,28 +7,13 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
-import com.group3.racingbot.driverstate.Completed;
-import com.group3.racingbot.driverstate.RacePending;
-import com.group3.racingbot.driverstate.Racing;
-import com.group3.racingbot.driverstate.Training;
-import com.group3.racingbot.inventory.DriverInventory;
-import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.gameservice.GameplayHandler;
-import com.group3.racingbot.driverstate.Racing;
-import com.group3.racingbot.driverstate.Training;
-import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.TrackNode;
-import com.group3.racingbot.ComponentFactory.EngineComponent;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.Inventory;
-import com.group3.racingbot.inventory.InventoryIterator;
-import com.group3.racingbot.inventory.filter.QualityFilter;
-import com.group3.racingbot.gameservice.GameplayHandler;
+import com.group3.racingbot.shop.Shop;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -37,7 +22,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import com.group3.racingbot.shop.Shop;
 
 /**
  * Handles Discord user command inputs and interacts with the gameplay handler
@@ -53,13 +37,15 @@ public class Commands extends ListenerAdapter {
 	private EmbedBuilder eb;
 	private ComponentFactory component;
 	private GameplayHandler gph;
-	private RaceEvent raceEvent;
+	private RaceTrack track;
 	
 	public Commands(DBHandler db) {
 		eb = new EmbedBuilder();
 		dbh = db;
 		component = new ConcreteComponentFactory();
-		this.raceEvent = new RaceEvent();
+		
+		//TODO: remove
+		 track = new RaceTrack();
 	} 
 	
 	/**
@@ -107,6 +93,7 @@ public class Commands extends ListenerAdapter {
 		}catch(Exception e) {
 			event.getGuild().getSystemChannel().sendMessage("Unexpected error when registering User, try again!");
 		}
+		
 	}
 	
 	
@@ -117,17 +104,10 @@ public class Commands extends ListenerAdapter {
 	 */
 	 @Override
 	  public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		
+		 
 	    String[] args = event.getMessage().getContentRaw().split(" ");
 	    Member user = event.getMember(); //Gets the id of the user who called the command.
 	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
-	    
-	    // Verify that each Driver which a user owns is paired with a Player object
-	    /*if(dbh.userExists(user.getId())) {
-	    	Player p = dbh.getPlayer(user.getId());
-	    	dbh.getPlayer(null);
-	    	//setPlayerFromDB(dbh, user.getId());
-	    }*/
 	    
 	    if(args[0].equalsIgnoreCase(RacingBot.prefix+"iracer") || args[0].equalsIgnoreCase(RacingBot.prefix+"r"))
 	    {
@@ -232,7 +212,7 @@ public class Commands extends ListenerAdapter {
 		    		int randomWage = ThreadLocalRandom.current().nextInt(250, 500 + 1);
 		    		
 		    		
-		    		//Work for the first time regardless of time.
+		    		//Work for the firt time regardless of time.
 		    		if(p.getLastWorked() == 0)
 		    		{
 		    			p.setCredits(p.getCredits() + randomWage);
@@ -410,87 +390,20 @@ public class Commands extends ListenerAdapter {
 
 	    	if(args[1].equalsIgnoreCase("debug"))
 	    	{
-	    		if(args[2].equalsIgnoreCase("event"))
+	    		if(args[2].equalsIgnoreCase("track"))
 	    		{
 	    			if(args[3].equalsIgnoreCase("generate"))
 	    			{
-	    				int totalNodes = 2; // initialize totalNodes
-	    				if(args.length > 4 && args[4] != null)
+	    				if(args[4] != null)
 	    				{
-	    					totalNodes = Integer.parseInt(args[4]);
-	    				}
-	    				else {
-	    					totalNodes = ThreadLocalRandom.current().nextInt(5, 20);
-	    				}
-	    				this.raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(totalNodes)); // Create the new track
-	    				event.getChannel().sendMessage("Number of Nodes in Track: "+totalNodes).queue();
-	    			}
-	    			if(args[3].equalsIgnoreCase("register")) {
-	    				// Register a user to an event
-	    				if (raceEvent.getRaceTrack().getFirstNode() == null) {
-	    					event.getChannel().sendMessage("Event does not yet exist! Create a random one by performing the command: !iracer debug event generate").queue();
-	    				}
-	    				else if (raceEvent.getTimeElapsed() != 0) {
-	    					event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
-	    				}
-	    				else {
-	    					Player p = dbh.getPlayer(user.getId());
-	    					if (p.getActiveDriver() == null) {
-	    						event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveCar() == null) {
-	    						event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveCar().getDurability() == 0) {
-	    						event.getChannel().sendMessage("User's car is currently totaled. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveDriver().getState() instanceof Training) {
-	    						event.getChannel().sendMessage("User's driver is currently training. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveDriver().getState() instanceof RacePending) {
-	    						event.getChannel().sendMessage("User's driver is currently signed up for an event. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveDriver().getState() instanceof Completed) {
-	    						event.getChannel().sendMessage("User's driver needs to collect reward from previous event. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveDriver().getState() instanceof Racing) {
-	    						event.getChannel().sendMessage("User's driver is currently racing. Cannot sign up for race.").queue();
-	    					}
-	    					else {
-	    						p.getActiveDriver().signUpForRace(p.getActiveCar(), raceEvent);
-	    						event.getChannel().sendMessage("User now registered for the event").queue();
-	    					}
-	    				}
-	    				if (raceEvent.getRaceTrack().getFirstNode() != null) {
-	    					if (raceEvent.getTimeElapsed() == 0) {
-	    						Player p = dbh.getPlayer(user.getId());
-	    						if (p.getActiveDriver() != null) {
-	    							if (p.getActiveCar() != null) {
-	    								event.getChannel().sendMessage("User now registered for the event").queue();
-	    							}
-	    							else {
-	    								event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
-	    							}
-	    						}
-	    						else {
-	    							event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
-	    						}
-	    					}
-	    					else {
-	    						event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
-	    					}
-	    				}
-	    				else {
-	    					event.getChannel().sendMessage("Event does not yet exist! Create a random one by performing the command: !iracer debug event generate").queue();
+	    					
+		    				List<TrackNode> nodes = track.generateRaceTrack(Integer.parseInt(args[4]));
+		    				event.getChannel().sendMessage("Number of Nodes in Track: "+nodes.size()).queue();
 	    				}
 	    			}
-	    			if(args[3].equalsIgnoreCase("begin"))
+	    			if(args[3].equalsIgnoreCase("cor"))
 	    			{
-	    				// The event has started! Move every registered driver into a racing state then begin moving the drivers.
-	    				Iterator<Driver> driverIterator = raceEvent.getDrivers().iterator();
-	    				while (driverIterator.hasNext()) {
-	    					driverIterator.next().beginRace();
-	    				}
+	    				
 	    			}
 	    		}
 	    		
@@ -501,67 +414,6 @@ public class Commands extends ListenerAdapter {
 	    				gph.debug();
 	    			}
 	    			
-	    		}
-	    		if(args[2].equalsIgnoreCase("driver"))
-	    		{
-	    			Player p = dbh.getPlayer(user.getId());
-	    			if(args[3].equalsIgnoreCase("create"))
-		    		{
-	    				String driverName = "Dude";
-	    				if(args.length > 4 && args[4] != null)
-	    				{
-	    					driverName = args[4];
-	    				}
-	    				
-	    				// Add the new driver
-	    				Driver createdDriver = new Driver(driverName);
-	    				createdDriver.setPlayer(p);
-	    				createdDriver.setPlayerId(user.getId());
-	    				p.getOwnedDrivers().add(createdDriver);
-	    				dbh.updateUser(p);
-	    				
-	    				String capitalizedDriverName = driverName.substring(0, 1).toUpperCase() + driverName.substring(1);
-	    				event.getChannel().sendMessage("Driver created! " + capitalizedDriverName + " is now a part of your team.").queue();
-		    		}
-	    			if(args[3].equalsIgnoreCase("set"))
-		    		{
-	    				if (args.length > 4 && args[4] != null) {
-	    					// User enters name of the driver they wish to use.
-	    					String driverName = args[4];
-	    					boolean driverFound = false;
-	    					Iterator<Driver> ownedDrivers = p.getOwnedDrivers().iterator();
-	    					while (ownedDrivers.hasNext()) {
-	    						// Searches the player's owned drivers one by one by name.
-	    						// If found, set the player's active driver to the one found.
-	    						// If not found, send a message saying that driver does not exist.
-	    						Driver ownedDriver = ownedDrivers.next();
-	    						if (ownedDriver.getName().equals(driverName)) {
-	    							driverFound = true;
-	    							p.setActiveDriver(ownedDriver);
-	    							break;
-	    						}
-	    					}
-	    					if (!driverFound) {
-	    						event.getChannel().sendMessage("Could not find that driver. Did not set an active driver. Look at the drivers you own by the command: !iracer debug driver view").queue();
-	    					}
-	    				}
-	    				else {
-	    					event.getChannel().sendMessage("No driver name specified! Set an active driver using the command: !iracer debug driver set [driver's name]").queue();
-	    				}
-		    		}
-	    			if(args[3].equalsIgnoreCase("view"))
-		    		{
-	    				String message = "";
-	    				Iterator<Driver> ownedDrivers = p.getOwnedDrivers().iterator();
-	    				while (ownedDrivers.hasNext()) {
-	    					message += ownedDrivers.next() + "\n_____________________\n";
-	    				}
-	    				event.getChannel().sendMessage(message).queue();
-		    		}
-	    			if(args[3].equalsIgnoreCase("active"))
-		    		{
-	    				event.getChannel().sendMessage(p.getActiveDriver().toString()).queue();
-		    		}
 	    		}
 	    	}
 	    	
@@ -608,41 +460,23 @@ public class Commands extends ListenerAdapter {
 				//Sports: 751 - 3000
 				//Racing: 3001 - 20000
 			
-
-			if (args[1].equalsIgnoreCase("test")) {
-				
+			if (args[1].equalsIgnoreCase("factorymethod")) {
 				eb.clear();
-				eb.setColor(Color.ORANGE);
+				eb.setColor(Color.green);
 				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
-				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
+				eb.setTitle("Your components have been successfully generated based on preset parameters");
 				
-				Component engine = component.createComponent("engine", 5000);
-				Component suspension = component.createComponent("suspension", 2999);
-				Component wheel = component.createComponent("wheel", 700);
-				Component transmission = component.createComponent("transmission", 299);
-				Component chassis = component.createComponent("chassis", 99);
-				
-				CarBuilder car = new Car.CarBuilder();
-				
-				//suspension and transmission not added to car for testing
-				
-				car.addEngine(engine);
-				//car.addSuspension(suspension);
-				car.addWheels(wheel);
-				//car.addTransmission(transmission);
-				car.addChassis(chassis);
-				
-				car.build();
-				
-				//prints out all the generated components
-				//eb.setDescription(engine.toString() + suspension.toString() + wheel.toString() + transmission.toString() + chassis.toString());
-				
-				//prints out the assembled car with ONLY added components
-				eb.setDescription(car.toString());	
-
+				Component testComp1 = component.createComponent("engine", 5000);
+				Component testComp2 = component.createComponent("suspension", 2999);
+				Component testComp3 = component.createComponent("wheel", 700);
+				Component testComp4 = component.createComponent("transmission", 299);
+				Component testComp5 = component.createComponent("chassis", 99);
+					
+				eb.setDescription(testComp1.toString() + testComp2.toString() + testComp3.toString() + testComp4.toString() + testComp5.toString());		
 	
 				event.getChannel().sendMessage(eb.build()).queue();
 			}
+	    
 	 }
 	}
 

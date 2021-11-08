@@ -1,5 +1,7 @@
 package com.group3.racingbot;
 
+import java.util.Objects;
+
 import com.group3.racingbot.ComponentFactory.ChassisComponent;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.EngineComponent;

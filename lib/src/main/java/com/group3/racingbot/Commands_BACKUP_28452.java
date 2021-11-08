@@ -15,11 +15,10 @@ import com.group3.racingbot.driverstate.Completed;
 import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Training;
+<<<<<<< HEAD
 import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.Iterator;
-import com.group3.racingbot.gameservice.GameplayHandler;
-import com.group3.racingbot.driverstate.Racing;
-import com.group3.racingbot.driverstate.Training;
+=======
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.TrackNode;
@@ -28,6 +27,7 @@ import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.filter.QualityFilter;
+>>>>>>> development
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -59,7 +59,10 @@ public class Commands extends ListenerAdapter {
 		eb = new EmbedBuilder();
 		dbh = db;
 		component = new ConcreteComponentFactory();
+<<<<<<< HEAD
 		this.raceEvent = new RaceEvent();
+=======
+>>>>>>> development
 	} 
 	
 	/**
@@ -415,16 +418,85 @@ public class Commands extends ListenerAdapter {
 	    			if(args[3].equalsIgnoreCase("generate"))
 	    			{
 	    				int totalNodes = 2; // initialize totalNodes
+<<<<<<< HEAD
 	    				if(args.length > 4 && args[4] != null)
+=======
+	    				if(args[4] != null)
+>>>>>>> development
 	    				{
 	    					totalNodes = Integer.parseInt(args[4]);
 	    				}
 	    				else {
 	    					totalNodes = ThreadLocalRandom.current().nextInt(5, 20);
+<<<<<<< HEAD
+=======
+	    				}
+	    				raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(totalNodes)); // Create the new track
+	    				event.getChannel().sendMessage("Number of Nodes in Track: "+totalNodes).queue();
+	    			}
+	    			if(args[3].equalsIgnoreCase("register")) {
+	    				// Register a user to an event
+	    				if (raceEvent.getRaceTrack().getFirstNode() == null) {
+	    					event.getChannel().sendMessage("Event does not yet exist! Create a random one by performing the command: !iracer debug event generate").queue();
+	    				}
+	    				else if (raceEvent.getTimeElapsed() != 0) {
+	    					event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
+	    				}
+	    				else {
+	    					Player p = dbh.getPlayer(user.getId());
+	    					if (p.getActiveDriver() == null) {
+	    						event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveCar() == null) {
+	    						event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveCar().getDurability() == 0) {
+	    						event.getChannel().sendMessage("User's car is currently totaled. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveDriver().getState() instanceof Training) {
+	    						event.getChannel().sendMessage("User's driver is currently training. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveDriver().getState() instanceof RacePending) {
+	    						event.getChannel().sendMessage("User's driver is currently signed up for an event. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveDriver().getState() instanceof Completed) {
+	    						event.getChannel().sendMessage("User's driver needs to collect reward from previous event. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveDriver().getState() instanceof Racing) {
+	    						event.getChannel().sendMessage("User's driver is currently racing. Cannot sign up for race.").queue();
+	    					}
+	    					else {
+	    						p.getActiveDriver().signUpForRace(p.getActiveCar(), raceEvent);
+	    						event.getChannel().sendMessage("User now registered for the event").queue();
+	    					}
+	    				}
+	    				if (raceEvent.getRaceTrack().getFirstNode() != null) {
+	    					if (raceEvent.getTimeElapsed() == 0) {
+	    						Player p = dbh.getPlayer(user.getId());
+	    						if (p.getActiveDriver() != null) {
+	    							if (p.getActiveCar() != null) {
+	    								event.getChannel().sendMessage("User now registered for the event").queue();
+	    							}
+	    							else {
+	    								event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
+	    							}
+	    						}
+	    						else {
+	    							event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
+	    						}
+	    					}
+	    					else {
+	    						event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
+	    					}
+	    				}
+	    				else {
+	    					event.getChannel().sendMessage("Event does not yet exist! Create a random one by performing the command: !iracer debug event generate").queue();
+>>>>>>> development
 	    				}
 	    				this.raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(totalNodes)); // Create the new track
 	    				event.getChannel().sendMessage("Number of Nodes in Track: "+totalNodes).queue();
 	    			}
+<<<<<<< HEAD
 	    			if(args[3].equalsIgnoreCase("register")) {
 	    				// Register a user to an event
 	    				if (raceEvent.getRaceTrack().getFirstNode() == null) {
@@ -491,6 +563,15 @@ public class Commands extends ListenerAdapter {
 	    				while (driverIterator.hasNext()) {
 	    					driverIterator.next().beginRace();
 	    				}
+=======
+	    			if(args[3].equalsIgnoreCase("begin"))
+	    			{
+	    				// The event has started! Move every registered driver into a racing state then begin moving the drivers.
+	    				//Iterator<Driver> driverIterator = raceEvent.getDrivers().iterator();
+	    				//while (driverIterator.hasNext()) {
+	    					//driverIterator.next().
+	    				//}
+>>>>>>> development
 	    			}
 	    		}
 	    		

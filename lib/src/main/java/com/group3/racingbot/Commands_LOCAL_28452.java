@@ -18,17 +18,6 @@ import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.gameservice.GameplayHandler;
-import com.group3.racingbot.driverstate.Racing;
-import com.group3.racingbot.driverstate.Training;
-import com.group3.racingbot.inventory.Iterator;
-import com.group3.racingbot.racetrack.RaceTrack;
-import com.group3.racingbot.racetrack.TrackNode;
-import com.group3.racingbot.ComponentFactory.EngineComponent;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.Inventory;
-import com.group3.racingbot.inventory.InventoryIterator;
-import com.group3.racingbot.inventory.filter.QualityFilter;
-import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
