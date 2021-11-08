@@ -9,19 +9,15 @@ import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 /**
  * A state where the Driver is idle. A Driver may leave this state once their cooldown has expired.
  * @author Nick Sabia
  *
  */
+//@BsonDiscriminator(value="Resting", key="_cls")
 public class Resting implements DriverState {
-	/**
-	 * Set the Driver's state to a resting state.
-	 * @param driver
-	 */
-	public Resting() {
-		
-	}
 
 	@Override
 	public void rest() {

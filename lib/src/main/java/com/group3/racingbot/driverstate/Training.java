@@ -2,6 +2,8 @@ package com.group3.racingbot.driverstate;
 
 import java.util.Date;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
@@ -11,6 +13,7 @@ import com.group3.racingbot.RaceEvent;
  * @author Nick Sabia
  *
  */
+//@BsonDiscriminator(value="Training", key="_cls")
 public class Training implements DriverState {
 	private final Driver driver;
 	private Skill skillToTrain;

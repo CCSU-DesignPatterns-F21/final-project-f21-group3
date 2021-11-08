@@ -3,6 +3,8 @@
  */
 package com.group3.racingbot.driverstate;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
@@ -11,11 +13,20 @@ import com.group3.racingbot.racetrack.TrackNode;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 /**
  * A state where the Driver is currently racing. A Driver may leave this state once they finish the race.
  * @author Nick Sabia
  *
  */
+//@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = Aggressive.class),
+//        @JsonSubTypes.Type(value = Normal.class),
+//        @JsonSubTypes.Type(value = Defensive.class),
+//		@JsonSubTypes.Type(value = Crashed.class)})
+//@BsonDiscriminator(value="Racing", key="_cls")
 public abstract class Racing implements DriverState {
 	
 	private Driver driver;

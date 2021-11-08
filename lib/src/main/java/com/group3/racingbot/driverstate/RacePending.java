@@ -1,5 +1,9 @@
 package com.group3.racingbot.driverstate;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
@@ -10,6 +14,7 @@ import com.group3.racingbot.RaceEvent;
  * @author Nick Sabia
  *
  */
+//@BsonDiscriminator(value="RacePending", key="_cls")
 public class RacePending implements DriverState {
 	private Driver driver;
 	private Car car;

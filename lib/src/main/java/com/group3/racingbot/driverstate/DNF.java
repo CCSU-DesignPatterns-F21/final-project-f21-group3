@@ -3,6 +3,8 @@
  */
 package com.group3.racingbot.driverstate;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 import com.group3.racingbot.Driver;
 
 /**
@@ -10,6 +12,7 @@ import com.group3.racingbot.Driver;
  * @author Nick Sabia
  *
  */
+//@BsonDiscriminator(value="DNF", key="_cls")
 public class DNF extends Completed {
 	/**
 	 * Constructs a DNF state.

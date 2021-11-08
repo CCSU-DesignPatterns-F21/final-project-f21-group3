@@ -1,5 +1,9 @@
 package com.group3.racingbot;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import com.group3.racingbot.driverstate.DriverState;
 import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
@@ -11,7 +15,9 @@ import com.group3.racingbot.driverstate.Skill;
  *
  */
 public class Driver {
+	@BsonIgnore
 	private Player player;
+	private String playerId;
 	private DriverState state;
 	private RaceEvent lastRegisteredEvent;
 	private String name;
@@ -25,30 +31,15 @@ public class Driver {
 	private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
 	
 	/**
-	 * Creates a Driver and assigns it to a player. Base stats all start off at 10 and the pay percentage starts at 0.15.
-	 * @param player the Player who owns this Driver
-	 * @param name the name of the Driver
-	 */
-	public Driver(Player player, String name) {
-		this.player = player;
-		this.state = new Resting();
-		this.name = name;
-		this.composure = 10;
-		this.awareness = 10;
-		this.drafting = 10;
-		this.straights = 10;
-		this.cornering = 10;
-		this.recovery = 10;
-		this.payPercentage = (float) 0.15;
-		this.cooldown = 0;
-	}
-	
-	/**
 	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
 	 * @param name the name of the Driver
 	 */
-	public Driver(String name) {
+	@BsonCreator
+	//@BsonProperty("name")
+	public Driver(@BsonProperty("name") String name) {
 		this.player = null;
+		this.playerId = null;
+		this.state = new Resting();
 		this.name = name;
 		this.composure = 10;
 		this.awareness = 10;
@@ -286,6 +277,39 @@ public class Driver {
 	}
 	
 	/**
+	 * Sets the player for the driver based on a discord user id.
+	 * @param db database which holds all drivers.
+	 * @param userId user id within the database.
+	 */
+	public void setPlayerFromDB(DBHandler db, String userId) {
+		if(db.userExists(userId)) {
+			Player p = db.getPlayer(userId);
+			this.setPlayer(p);
+    		
+			System.out.println("Player found and paired with the Driver.");
+		}
+		else {
+			System.out.println("Could not find user in the database.");
+		}
+	}
+	
+	/**
+	 * Retrieve the player ID of the Player who uses this Driver.
+	 * @return the player
+	 */
+	public String getPlayerId() {
+		return playerId;
+	}
+	
+	/**
+	 * Set the player ID of the Player who uses this Driver.
+	 * @param player the player to set
+	 */
+	public void setPlayerId(String id) {
+		this.playerId = id;
+	}
+	
+	/**
 	 * Puts the Driver into a Resting state.
 	 */
 	public void rest() {
@@ -298,8 +322,15 @@ public class Driver {
 	 * @param skillToTrain
 	 * @param intensity
 	 */
-	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
-		this.getState().beginTraining(driver, skillToTrain, intensity);
+	public void beginTraining(Skill skillToTrain, Intensity intensity) {
+		this.getState().beginTraining(this, skillToTrain, intensity);
+	}
+	
+	/**
+	 * Enters the driver into a racing state.
+	 */
+	public void beginRace() {
+		this.getState().beginRace();
 	}
 	
 	/**

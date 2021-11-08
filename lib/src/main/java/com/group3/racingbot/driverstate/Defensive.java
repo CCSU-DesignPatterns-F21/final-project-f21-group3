@@ -5,6 +5,8 @@ package com.group3.racingbot.driverstate;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
@@ -12,9 +14,11 @@ import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.StraightNode;
 
 /**
+ * A state where the driver is racing defensively. This negatively impacts how far the Driver travels, but also decreases chances of crashing.
  * @author Nick Sabia
  *
  */
+//@BsonDiscriminator(value="Defensive", key="_cls")
 public class Defensive extends Racing {
 	private double multiplier;
 	/**
@@ -56,25 +60,33 @@ public class Defensive extends Racing {
 				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize()));
 		}
 		else if (roll < 60) {
-			int corneringDist = this.rollCornerDistance(this.getMultiplier());
-			int straightDist = this.rollStraightDistance(this.getMultiplier());
-			this.setCornerDistance(corneringDist);
-			this.setStraightDistance(straightDist);
-			int distanceToCover = 0;
-			if (this.getCurrentNode() instanceof StraightNode) {
-				distanceToCover = straightDist + (int) Math.floor(corneringDist/3);
-			}
-			else if (this.getCurrentNode() instanceof CornerNode) {
-				distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
-			}
-			this.getRaceTrack().progressForward(super.getDriver(), distanceToCover);
+			this.raceStep(this.getDriver());
+		}
+		else if (roll < 80) {
+			this.getDriver().setState(new Defensive(this.getDriver(), this.getCar(), this.getRaceEvent()));
+			this.getDriver().getState().raceStep(this.getDriver());
+		}
+		else {
+			this.getDriver().setState(new Aggressive(this.getDriver(), this.getCar(), this.getRaceEvent()));
+			this.getDriver().getState().raceStep(this.getDriver());
 		}
 	}
 
 	@Override
 	public void raceStep(Driver driver) {
 		// TODO Auto-generated method stub
-		
+		int corneringDist = this.rollCornerDistance(this.getMultiplier());
+		int straightDist = this.rollStraightDistance(this.getMultiplier());
+		this.setCornerDistance(corneringDist);
+		this.setStraightDistance(straightDist);
+		int distanceToCover = 0;
+		if (this.getCurrentNode() instanceof StraightNode) {
+			distanceToCover = straightDist + (int) Math.floor(corneringDist/3);
+		}
+		else if (this.getCurrentNode() instanceof CornerNode) {
+			distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
+		}
+		this.getRaceTrack().progressForward(super.getDriver(), distanceToCover);
 	}
 	
 	@Override
