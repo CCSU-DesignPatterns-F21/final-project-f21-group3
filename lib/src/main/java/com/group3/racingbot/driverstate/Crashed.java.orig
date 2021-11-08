@@ -52,8 +52,7 @@ public class Crashed extends Racing {
 	public String toString() {
 		return "DNF";
 	}
-<<<<<<< HEAD
+
+
 }
-=======
-}
->>>>>>> development
+
