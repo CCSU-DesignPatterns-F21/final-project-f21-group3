@@ -22,8 +22,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
 public abstract class Component {
-	private String quality, name;
-	private int weight, value, durability, rating;
+	private String quality = "", name = "";
+	private int weight = 0, value = 0, durability = 0, rating = 0;
 	private int maxDurability = 100;				
 	
 	
@@ -146,9 +146,10 @@ public abstract class Component {
 	}
 	
 	/**
+	 * Returns a percentage representing how worn down this component is.
 	 * @param returns durability ratio
 	 */
-	public int getDurabilityRatio() {
+	public double calculateDurabilityRatio() {
 		return  durability / maxDurability;
 	}
 	
