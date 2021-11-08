@@ -211,7 +211,9 @@ public class Car implements MaterialFilterable {
 			minDurability = Math.min(minDurability, this.wheels.getDurability());
 			return minDurability;
 		}
-		return 0;
+		else {
+			return 0;
+		}
 	}
 	
 	/**

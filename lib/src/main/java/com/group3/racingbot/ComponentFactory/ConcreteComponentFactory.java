@@ -188,6 +188,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setQuality("Lemon");
 			((ChassisComponent)createdComponent).setValue(100);
 			((ChassisComponent)createdComponent).setWeight(800);
+			((ChassisComponent)createdComponent).setDurability(50);
 			((ChassisComponent)createdComponent).setMaxDurability(50);
 		}
 		else if(type == "chassis" && (cost >= 151 && cost <= 300)) {
@@ -195,6 +196,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setQuality("Junkyard");
 			((ChassisComponent)createdComponent).setValue(250);
 			((ChassisComponent)createdComponent).setWeight(600);
+			((ChassisComponent)createdComponent).setDurability(75);
 			((ChassisComponent)createdComponent).setMaxDurability(75);
 			((ChassisComponent)createdComponent).setAccelerationModifier(2.0);
 			((ChassisComponent)createdComponent).setBrakingModifier(2.0);
@@ -207,6 +209,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setQuality("OEM");
 			((ChassisComponent)createdComponent).setValue(500);
 			((ChassisComponent)createdComponent).setWeight(400);
+			((ChassisComponent)createdComponent).setDurability(100);
 			((ChassisComponent)createdComponent).setMaxDurability(100);
 			((ChassisComponent)createdComponent).setAccelerationModifier(3.0);
 			((ChassisComponent)createdComponent).setBrakingModifier(3.0);
@@ -219,6 +222,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setQuality("Sports");
 			((ChassisComponent)createdComponent).setValue(1000);
 			((ChassisComponent)createdComponent).setWeight(300);
+			((ChassisComponent)createdComponent).setDurability(150);
 			((ChassisComponent)createdComponent).setMaxDurability(150);
 			((ChassisComponent)createdComponent).setAccelerationModifier(4.0);
 			((ChassisComponent)createdComponent).setBrakingModifier(4.0);
@@ -231,6 +235,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setQuality("Racing");
 			((ChassisComponent)createdComponent).setValue(4000);
 			((ChassisComponent)createdComponent).setWeight(200);
+			((ChassisComponent)createdComponent).setDurability(200);
 			((ChassisComponent)createdComponent).setMaxDurability(200);
 			((ChassisComponent)createdComponent).setAccelerationModifier(5.0);
 			((ChassisComponent)createdComponent).setBrakingModifier(5.0);
@@ -248,8 +253,8 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setValue(100);
 			((TransmissionComponent)createdComponent).setWeight(800);
 			((TransmissionComponent)createdComponent).setAcceleration(25);
-			((TransmissionComponent)createdComponent).setMaxDurability(50);
 			((TransmissionComponent)createdComponent).setDurability(50);
+			((TransmissionComponent)createdComponent).setMaxDurability(50);
 		}
 		else if(type == "transmission" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new TransmissionComponent();
@@ -257,8 +262,8 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setValue(250);
 			((TransmissionComponent)createdComponent).setWeight(600);
 			((TransmissionComponent)createdComponent).setAcceleration(50);
-			((TransmissionComponent)createdComponent).setMaxDurability(75);
 			((TransmissionComponent)createdComponent).setDurability(75);
+			((TransmissionComponent)createdComponent).setMaxDurability(75);
 		}
 		else if(type == "transmission" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new TransmissionComponent();
@@ -266,8 +271,8 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setValue(500);
 			((TransmissionComponent)createdComponent).setWeight(400);
 			((TransmissionComponent)createdComponent).setAcceleration(100);
-			((TransmissionComponent)createdComponent).setMaxDurability(100);
 			((TransmissionComponent)createdComponent).setDurability(100);
+			((TransmissionComponent)createdComponent).setMaxDurability(100);
 		}
 		else if(type == "transmission" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new TransmissionComponent();
@@ -275,8 +280,8 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setValue(1000);
 			((TransmissionComponent)createdComponent).setWeight(300);
 			((TransmissionComponent)createdComponent).setAcceleration(150);
-			((TransmissionComponent)createdComponent).setMaxDurability(150);
 			((TransmissionComponent)createdComponent).setDurability(150);
+			((TransmissionComponent)createdComponent).setMaxDurability(150);
 		}
 		else if(type == "transmission" && cost >= 3001) {
 			createdComponent = new TransmissionComponent();
@@ -284,8 +289,8 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setValue(4000);
 			((TransmissionComponent)createdComponent).setWeight(200);
 			((TransmissionComponent)createdComponent).setAcceleration(250);
-			((TransmissionComponent)createdComponent).setMaxDurability(200);
 			((TransmissionComponent)createdComponent).setDurability(200);
+			((TransmissionComponent)createdComponent).setMaxDurability(200);
 		}
 		return createdComponent;
 		

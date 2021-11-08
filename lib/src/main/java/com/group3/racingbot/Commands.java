@@ -8,13 +8,19 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import com.group3.racingbot.Car.CarBuilder;
+import com.group3.racingbot.ComponentFactory.ChassisComponent;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
+import com.group3.racingbot.ComponentFactory.EngineComponent;
+import com.group3.racingbot.ComponentFactory.SuspensionComponent;
+import com.group3.racingbot.ComponentFactory.TransmissionComponent;
+import com.group3.racingbot.ComponentFactory.WheelComponent;
 import com.group3.racingbot.driverstate.Completed;
 import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Training;
+import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.gameservice.GameplayHandler;
@@ -383,8 +389,19 @@ public class Commands extends ListenerAdapter {
 		    		}
 		    		event.getChannel().sendMessage(eb.build()).queue();
 	    		}
-	    		
     		}
+	    	if (args[1].equalsIgnoreCase("event")) {
+	    		if (args[2].equalsIgnoreCase("register")) {
+	    			Player p = dbh.getPlayer(user.getId());
+	    			if (p.getActiveCar() != null) {
+	    				p.getActiveDriver().signUpForRace(p.getActiveCar(), raceEvent);
+	    				dbh.updateUser(p);
+	    				String capitalizedDriverName = p.getActiveDriver().getName().substring(0, 1).toUpperCase() + p.getActiveDriver().getName().substring(1);
+	    				event.getChannel().sendMessage("User has signed up for the race! " + capitalizedDriverName + " is now waiting for the race to begin.").queue();
+	    			}
+	    			event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
+	    		}
+	    	}
 	    	
 	    	/*
 				 ____      _           
@@ -551,6 +568,64 @@ public class Commands extends ListenerAdapter {
 		    		{
 	    				event.getChannel().sendMessage(p.getActiveDriver().toString()).queue();
 		    		}
+	    		}
+	    		if(args[2].equalsIgnoreCase("car")) 
+	    		{
+	    			Player p = dbh.getPlayer(user.getId());
+	    			if (args[3].equalsIgnoreCase("free"))
+		    		{
+	    				// Create the car
+	    				Car freeCar = new Car();
+	    				ConcreteComponentFactory componentFactory = new ConcreteComponentFactory();
+	    				EngineComponent engine = (EngineComponent) componentFactory.createComponent("engine", 200);
+	    				TransmissionComponent transmission = (TransmissionComponent) componentFactory.createComponent("transmission", 200);
+	    				SuspensionComponent suspension = (SuspensionComponent) componentFactory.createComponent("suspension", 200);
+	    				ChassisComponent chassis = (ChassisComponent) componentFactory.createComponent("chassis", 200);
+	    				WheelComponent wheels = (WheelComponent) componentFactory.createComponent("wheel", 200);
+	    				freeCar.setEngine(engine);
+	    				freeCar.setChassis(chassis);
+	    				freeCar.setSuspension(suspension);
+	    				freeCar.setTransmission(transmission);
+	    				freeCar.setWheels(wheels);
+	    				p.getOwnedCars().add(freeCar);
+	    				dbh.updateUser(p);
+	    				event.getChannel().sendMessage("A free car was added to your garage.").queue();
+		    		}
+	    			if (args[3].equalsIgnoreCase("active")) {
+	    				if(args.length > 4 && args[4] != null)
+	    				{
+	    					try {
+	    						int index = Integer.parseInt(args[4].toString());
+	    						Car activeCar = p.getOwnedCars().getItems().get(index);
+	    						p.setActiveCar(activeCar);
+	    						dbh.updateUser(p);
+	    						event.getChannel().sendMessage("Active car set!\n" + activeCar).queue();
+	    					}
+	    					catch (Exception e) {
+	    						e.printStackTrace();
+	    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not change active car.").queue();
+	    					}
+	    					
+	    				}
+	    			}
+	    			if (args[3].equalsIgnoreCase("remove")) {
+	    				if(args.length > 4 && args[4] != null)
+	    				{
+	    					try {
+	    						int index = Integer.parseInt(args[4].toString());
+	    						CarInventory updatedInventory = p.getOwnedCars();
+	    						Car removedCar = updatedInventory.getItems().get(index);
+	    						updatedInventory.getItems().remove(index);
+	    						p.setOwnedCars(updatedInventory);
+	    						dbh.updateUser(p);
+	    						event.getChannel().sendMessage("Car removed!\n" + removedCar).queue();
+	    					}
+	    					catch (Exception e) {
+	    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not remove a car.").queue();
+	    					}
+	    					
+	    				}
+	    			}
 	    		}
 	    	}
 	    	
