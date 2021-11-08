@@ -3,13 +3,32 @@ package com.group3.racingbot;
 
 import static com.mongodb.client.model.Filters.eq;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.ClassModel;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.ComponentFactory.ComponentFactory;
+import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
+import com.group3.racingbot.driverstate.Aggressive;
+import com.group3.racingbot.driverstate.Crashed;
+import com.group3.racingbot.driverstate.DNF;
+import com.group3.racingbot.driverstate.Defensive;
+import com.group3.racingbot.driverstate.DriverState;
+import com.group3.racingbot.driverstate.FinishedRace;
+import com.group3.racingbot.driverstate.FinishedTraining;
+import com.group3.racingbot.driverstate.Normal;
+import com.group3.racingbot.driverstate.RacePending;
+import com.group3.racingbot.driverstate.Racing;
+import com.group3.racingbot.driverstate.Resting;
+import com.group3.racingbot.driverstate.Training;
+import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.shop.Shop;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -29,25 +48,62 @@ public class DBHandler {
 	private MongoClient mongoClient;
 	private MongoDatabase database;
 	private MongoCollection<Player> userCollection;
+	private MongoCollection<Shop> shopCollection;
 	
 	/**
 	 * Constructor initializes the necessary settings required for connecting to the MongoDB.
 	 */
 	public DBHandler() {
-		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+		ClassModel<Shop> shopModel = ClassModel.builder(Shop.class).enableDiscriminator(true).build();
+		ClassModel<ComponentFactory> componentFactoryModel = ClassModel.builder(ComponentFactory.class).enableDiscriminator(true).build();
+		ClassModel<ConcreteComponentFactory> concreteComponentFactoryModel = ClassModel.builder(ConcreteComponentFactory.class).enableDiscriminator(true).build();
+		ClassModel<ComponentInventory> componenInventorytModel = ClassModel.builder(ComponentInventory.class).enableDiscriminator(true).build();
+		ClassModel<Component> componentModel = ClassModel.builder(Component.class).enableDiscriminator(true).build();
+		// States
+		ClassModel<DriverState> driverStateModel = ClassModel.builder(DriverState.class).enableDiscriminator(true).build();
+		ClassModel<Racing> racingStateModel = ClassModel.builder(Racing.class).enableDiscriminator(true).build();
+		ClassModel<Resting> restingStateModel = ClassModel.builder(Resting.class).enableDiscriminator(true).build();
+		ClassModel<Training> trainingStateModel = ClassModel.builder(Training.class).enableDiscriminator(true).build();
+		ClassModel<RacePending> racePendingStateModel = ClassModel.builder(RacePending.class).enableDiscriminator(true).build();
+		ClassModel<Defensive> defensiveStateModel = ClassModel.builder(Defensive.class).enableDiscriminator(true).build();
+		ClassModel<Normal> normalStateModel = ClassModel.builder(Normal.class).enableDiscriminator(true).build();
+		ClassModel<Aggressive> aggressiveStateModel = ClassModel.builder(Aggressive.class).enableDiscriminator(true).build();
+		ClassModel<Crashed> crashedStateModel = ClassModel.builder(Crashed.class).enableDiscriminator(true).build();
+		ClassModel<DNF> dnfStateModel = ClassModel.builder(DNF.class).enableDiscriminator(true).build();
+		ClassModel<FinishedRace> finishedRaceStateModel = ClassModel.builder(FinishedRace.class).enableDiscriminator(true).build();
+		ClassModel<FinishedTraining> finishedTrainingStateModel = ClassModel.builder(FinishedTraining.class).enableDiscriminator(true).build();
+		 CodecProvider pojoCodecProvider = PojoCodecProvider.builder().register(shopModel)
+				 .register(driverStateModel)
+				 .register(racingStateModel)
+				 .register(shopModel)
+				 .register(componentFactoryModel)
+				 .register(concreteComponentFactoryModel)
+				 .register(componenInventorytModel)
+				 .register(componentModel)
+				 .register(restingStateModel)
+				 .register(trainingStateModel)
+				 .register(racePendingStateModel)
+				 .register(defensiveStateModel)
+				 .register(normalStateModel)
+				 .register(aggressiveStateModel)
+				 .register(crashedStateModel)
+				 .register(dnfStateModel)
+				 .register(finishedRaceStateModel)
+				 .register(finishedTrainingStateModel)
+				 .automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),
 		            CodecRegistries.fromProviders(pojoCodecProvider)
 		    );
 		configProperties = ConfigPropertiesHandler.getInstance();
 
-		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
-		connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
+		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+		//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
 				mongoClient = MongoClients.create(settings);
 				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
 				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
-		
+				shopCollection = database.getCollection("Shops",Shop.class).withCodecRegistry(codecRegistry);
 				//System.out.println(userCollection.countDocuments());
 	}
 	
@@ -91,6 +147,37 @@ public class DBHandler {
 		
 	}
 	
+	public void insertShop(Shop shop)
+	{
+		Shop s = shopCollection.find(eq("_id",shop.getId())).first();
+		if(s != null)
+		{
+			System.out.println("Shop already in DB: " + s.getName());
+		}else {
+			shopCollection.insertOne(shop);
+		}
+		
+	}
+	
+	public Shop getShop(int id) {
+		return (Shop)shopCollection.find(eq("_id",id)).first();
+	}
+	
+	/**
+	 * Finds and replaces the Shop stored in DB with a new one
+	 * @param shop new Shop object replacing the one in the DB
+	 */
+	public void updateShop(Shop shop) {
+		shopCollection.findOneAndReplace(eq("_id",shop.getId()),shop);
+		
+	}
+	public List<Shop> getShops(){
+		//System.out.println(shopCollection.find().first());
+		List<Shop> iterablelist = shopCollection.find().into(new ArrayList<Shop>());
+		
+		return iterablelist;
+	}
+	
 	/**
 	 * @return the database reference
 	 */
@@ -110,6 +197,13 @@ public class DBHandler {
 	 */
 	public MongoCollection<Player> getUserCollection() {
 		return userCollection;
+	}
+	
+	/**
+	 * @return the MongoDB ShopCollection
+	 */
+	public MongoCollection<Shop> getShopCollection() {
+		return shopCollection;
 	}
 
 	/**

@@ -2,32 +2,26 @@ package com.group3.racingbot.ComponentFactory;
 
 import java.util.Objects;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
  * defines specialized variables
  */
-
-public class EngineComponent extends Component{
-	
-	private float speed;
-	
-	//TODO: tunedFor
+//@BsonDiscriminator(value="EngineComponent", key="_cls")
+public class EngineComponent extends Component {
+	//@BsonProperty("speed")
+	private float speed = 25;
 	
 	/**
 	 * Constructor for engine component
-	 * @param quality
-	 * @param value
-	 * @param durability
-	 * @param speed
 	 */
-	
-	public EngineComponent(String quality, int value, int durability, float speed) {
+	@BsonCreator
+	public EngineComponent() {
 		this.setName("Engine");
-		this.setQuality(quality);
-		this.setValue(value);
-		this.setDurability(durability);
-		this.setSpeed(speed);
 	}
 	/**
 	 * @return the speed
@@ -79,4 +73,3 @@ public class EngineComponent extends Component{
 	
 	
 }
-
