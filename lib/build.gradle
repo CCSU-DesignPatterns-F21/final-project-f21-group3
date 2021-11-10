@@ -1,14 +1,14 @@
 plugins {
   id("java")
   id("application")
-  id("com.github.johnrengelman.shadow") version "6.0.0"
+  id("com.github.johnrengelman.shadow")
+  id "eclipse"
 }
 apply plugin: "eclipse"
 mainClassName = "com.group3.racingbot.RacingBot"
 
 version '1.0'
 
-sourceCompatibility = 1.8
 
 shadowJar {
     archiveBaseName = 'racingBot'
