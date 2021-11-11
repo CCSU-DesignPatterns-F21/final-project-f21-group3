@@ -5,7 +5,7 @@
     
 # temp container to build using gradle
 FROM gradle:6.8.3-jre15 AS TEMP_BUILD_IMAGE
-ENV APP_HOME=/usr/app/
+ENV APP_HOME=/usr/app
 WORKDIR $APP_HOME
 COPY /lib/build.gradle settings.gradle $APP_HOME
   
@@ -26,7 +26,7 @@ ENV ARTIFACT_NAME=racingBot-0.1.0-all.jar
 ENV APP_HOME=/usr/app
     
 WORKDIR $APP_HOME
-COPY --from=TEMP_BUILD_IMAGE /usr/app/build/libs/ $APP_HOME/build/libs/
+COPY --from=TEMP_BUILD_IMAGE /usr/app/ $APP_HOME
     
 EXPOSE 443
-ENTRYPOINT exec java -jar /usr/app/build/libs/${ARTIFACT_NAME}
+ENTRYPOINT exec java -jar $APP_HOME/ ${ARTIFACT_NAME}
