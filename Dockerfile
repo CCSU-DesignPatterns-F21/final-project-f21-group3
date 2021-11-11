@@ -29,4 +29,4 @@ WORKDIR $APP_HOME
 COPY --from=TEMP_BUILD_IMAGE $APP_HOME/build/libs/$ARTIFACT_NAME .
     
 EXPOSE 443
-ENTRYPOINT exec  $APP_HOMEgradlew build && java -jar $APP_HOME/build/libs/${ARTIFACT_NAME}
+ENTRYPOINT exec  java -jar $APP_HOME/build/libs/${ARTIFACT_NAME}
