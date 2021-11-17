@@ -108,6 +108,16 @@ public class RaceTrack {
 			driver.completedRace();
 		}
 	}
+	
+	public String currentProgressToString() {
+		String result = "";
+		try {
+			result = this.getFirstNode().currentProgressToString(this, 1);
+		} catch (RaceTrackEndException e) {
+			result = "Finished";
+		}
+		return result;
+	}
 
 	@Override
 	public int hashCode() {

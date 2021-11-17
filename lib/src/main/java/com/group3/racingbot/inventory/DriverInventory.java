@@ -3,6 +3,7 @@ package com.group3.racingbot.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.ComponentFactory.Component;
 
@@ -12,6 +13,7 @@ import com.group3.racingbot.ComponentFactory.Component;
  *
  */
 public class DriverInventory implements Inventory<Driver>{
+	@JsonBackReference
 	private List<Driver> items;
 	
 	/**
@@ -44,6 +46,21 @@ public class DriverInventory implements Inventory<Driver>{
 		if (this.items.remove(driver)) 
 			return true;
 		return false;
+	}
+	
+	/**
+	 * Get a driver from the inventory based on their ID.
+	 * @throws NotFoundException 
+	 */
+	public Driver getById(String driverId) throws NotFoundException {
+		InventoryIterator<Driver> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			Driver currentDriver = iterator.next();
+			if (currentDriver.getId().equals(driverId)) {
+				return currentDriver;
+			}
+		}
+		throw new NotFoundException("Unable to find the driver with the id: " + driverId);
 	}
 	
 	/**

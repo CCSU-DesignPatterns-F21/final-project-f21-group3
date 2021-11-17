@@ -8,6 +8,7 @@ import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.racetrack.CornerNode;
+import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.StraightNode;
 
 /**
@@ -25,8 +26,8 @@ public class Aggressive extends Racing {
 	 * @param car calculate how far the Driver will travel per time unit
 	 * @param raceEvent carries event reward info into the completed stages
 	 */
-	public Aggressive(Driver driver, Car car, RaceEvent raceEvent) {
-		super(driver, car, raceEvent);
+	public Aggressive(Driver driver, Car car, RaceTrack raceTrack, String raceEventId) {
+		super(driver, car, raceTrack, raceEventId);
 		this.multiplier = 2.0;
 	}
 	
@@ -51,27 +52,33 @@ public class Aggressive extends Racing {
 		// TODO Auto-generated method stub
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
+			// Driver has crashed
 			crash(this.getCar());
-			if (this.getCar().getDurability() > 0)
-				this.getDriver().setState(new Crashed(this.getDriver(), this.getCar(), this.getRaceEvent()));
-			else 
-				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEvent().getGrandPrize()));
+			if (this.getCar().getDurability() > 0) {
+				this.getDriver().setState(new Crashed(this.getDriver(), this.getCar(), this.getRaceTrack(), this.getRaceEventId()));
+			}
+			else {
+				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEventId()));
+			}
 		}
 		else if (roll < 60) {
+			// Driver remains in the Aggressive state.
 			this.raceStep(this.getDriver());
 		}
 		else if (roll < 80) {
-			this.getDriver().setState(new Defensive(this.getDriver(), this.getCar(), this.getRaceEvent()));
+			// Driver is now driving normally.
+			this.getDriver().setState(new Normal(this.getDriver(), this.getCar(), this.getRaceTrack(), this.getRaceEventId()));
 			this.getDriver().getState().raceStep(this.getDriver());
 		}
 		else {
-			this.getDriver().setState(new Aggressive(this.getDriver(), this.getCar(), this.getRaceEvent()));
+			// Driver is now driving defensively.
+			this.getDriver().setState(new Defensive(this.getDriver(), this.getCar(), this.getRaceTrack(), this.getRaceEventId()));
 			this.getDriver().getState().raceStep(this.getDriver());
 		}
 	}
 
 	@Override
-	public void raceStep(Driver driver) {
+	public String raceStep(Driver driver) {
 		// TODO Auto-generated method stub
 		int corneringDist = this.rollCornerDistance(this.getMultiplier());
 		int straightDist = this.rollStraightDistance(this.getMultiplier());
@@ -85,6 +92,8 @@ public class Aggressive extends Racing {
 			distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
 		}
 		this.getRaceTrack().progressForward(super.getDriver(), distanceToCover);
+		super.setTotalDistanceTraveled(super.getTotalDistanceTraveled() + distanceToCover);
+		return "Driver: " + driver.getName() + " | " + this.getRaceTrack().currentProgressToString() + " | Distance covered this turn: " + distanceToCover;
 	}
 	
 	@Override

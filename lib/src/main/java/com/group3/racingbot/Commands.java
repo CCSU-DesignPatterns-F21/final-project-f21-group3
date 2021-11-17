@@ -19,6 +19,7 @@ import com.group3.racingbot.ComponentFactory.WheelComponent;
 import com.group3.racingbot.driverstate.Completed;
 import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
+import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.DriverInventory;
@@ -33,6 +34,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import com.group3.racingbot.shop.Shop;
+import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * Handles Discord user command inputs and interacts with the gameplay handler
@@ -394,7 +396,7 @@ public class Commands extends ListenerAdapter {
 	    		if (args[2].equalsIgnoreCase("register")) {
 	    			Player p = dbh.getPlayer(user.getId());
 	    			if (p.getActiveCar() != null) {
-	    				p.getActiveDriver().signUpForRace(p.getActiveCar(), raceEvent);
+	    				p.getActiveDriver().signUpForRace(p.getActiveCar(), raceEvent.getId());
 	    				dbh.updateUser(p);
 	    				String capitalizedDriverName = p.getActiveDriver().getName().substring(0, 1).toUpperCase() + p.getActiveDriver().getName().substring(1);
 	    				event.getChannel().sendMessage("User has signed up for the race! " + capitalizedDriverName + " is now waiting for the race to begin.").queue();
@@ -420,7 +422,8 @@ public class Commands extends ListenerAdapter {
 	    		{
 	    			if(args[3].equalsIgnoreCase("generate"))
 	    			{
-	    				int totalNodes = 2; // initialize totalNodes
+	    				this.raceEvent = new RaceEvent();
+	    				int totalNodes = 0; // initialize totalNodes
 	    				if(args.length > 4 && args[4] != null)
 	    				{
 	    					totalNodes = Integer.parseInt(args[4]);
@@ -428,74 +431,102 @@ public class Commands extends ListenerAdapter {
 	    				else {
 	    					totalNodes = ThreadLocalRandom.current().nextInt(5, 20);
 	    				}
-	    				this.raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(totalNodes)); // Create the new track
-	    				event.getChannel().sendMessage("Number of Nodes in Track: "+totalNodes).queue();
+	    				this.raceEvent.getRaceTrack().generateRaceTrack(totalNodes); // Create the new track
+	    				dbh.insertRaceEvent(this.raceEvent);
+	    				event.getChannel().sendMessage("Number of Nodes in Track: " + totalNodes).queue();
 	    			}
 	    			if(args[3].equalsIgnoreCase("register")) {
-	    				// Register a user to an event
-	    				if (raceEvent.getRaceTrack().getFirstNode() == null) {
-	    					event.getChannel().sendMessage("Event does not yet exist! Create a random one by performing the command: !iracer debug event generate").queue();
-	    				}
-	    				else if (raceEvent.getTimeElapsed() != 0) {
-	    					event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
-	    				}
-	    				else {
-	    					Player p = dbh.getPlayer(user.getId());
-	    					if (p.getActiveDriver() == null) {
-	    						event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveCar() == null) {
-	    						event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveCar().getDurability() == 0) {
-	    						event.getChannel().sendMessage("User's car is currently totaled. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveDriver().getState() instanceof Training) {
-	    						event.getChannel().sendMessage("User's driver is currently training. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveDriver().getState() instanceof RacePending) {
-	    						event.getChannel().sendMessage("User's driver is currently signed up for an event. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveDriver().getState() instanceof Completed) {
-	    						event.getChannel().sendMessage("User's driver needs to collect reward from previous event. Cannot sign up for race.").queue();
-	    					}
-	    					else if (p.getActiveDriver().getState() instanceof Racing) {
-	    						event.getChannel().sendMessage("User's driver is currently racing. Cannot sign up for race.").queue();
-	    					}
-	    					else {
-	    						p.getActiveDriver().signUpForRace(p.getActiveCar(), raceEvent);
+	    				// Register a user to an event	
+    					Player p = dbh.getPlayer(user.getId());
+    					if (p.getActiveDriver() == null) {
+    						event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
+    					}
+    					else if (p.getActiveCar() == null) {
+    						event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
+    					}
+    					else if (p.getActiveCar().getDurability() == 0) {
+    						event.getChannel().sendMessage("User's car is currently totaled. Cannot sign up for race.").queue();
+    					}
+    					else if (p.getActiveDriver().getState() instanceof Training) {
+    						event.getChannel().sendMessage("User's driver is currently training. Cannot sign up for race.").queue();
+    					}
+    					else if (p.getActiveDriver().getState() instanceof RacePending) {
+    						event.getChannel().sendMessage("User's driver is currently signed up for an event. Cannot sign up for race.").queue();
+    					}
+    					else if (p.getActiveDriver().getState() instanceof Completed) {
+    						event.getChannel().sendMessage("User's driver needs to collect reward from previous event. Cannot sign up for race.").queue();
+    					}
+    					else if (p.getActiveDriver().getState() instanceof Racing) {
+    						event.getChannel().sendMessage("User's driver is currently racing. Cannot sign up for race.").queue();
+    					}
+    					else {
+    						boolean specifiedRaceEvent = false;
+    						RaceEvent eventToRegisterFor = raceEvent;
+    						if (args.length > 4 && args[4] != null) {
+    							// Race event ID specified! Check it to see if there is an event associated with that ID
+    							String raceTrackId = args[4];
+    							if (dbh.raceEventExists(raceTrackId)) {
+    								eventToRegisterFor = dbh.getRaceEvent(raceTrackId);
+    								specifiedRaceEvent = true;
+    							}
+    							else {
+    								event.getChannel().sendMessage("Event does not yet exist! Create a new one by performing the command: !iracer debug event generate").queue();
+    								return;
+    							}
+    						}
+							// Register driver for the given race event.
+							if (eventToRegisterFor.getRaceTrack().getFirstNode() == null) {
+    	    					event.getChannel().sendMessage("Event does not yet exist! Create a new one by performing the command: !iracer debug event generate").queue();
+    	    				}
+    	    				else if (eventToRegisterFor.getTimeElapsed() != 0) {
+    	    					event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
+    	    				}
+    	    				else {
+    	    					// Update the driver
+	    						p.getActiveDriver().signUpForRace(p.getActiveCar(), eventToRegisterFor.getId());
+	    						dbh.updateUser(p);
+	    						
+	    						// Update the race event
+	    						eventToRegisterFor.getStandings().addDriver(p.getActiveDriver());
+	    						dbh.updateRaceEvent(eventToRegisterFor);
+	    						if (!specifiedRaceEvent) {
+	    							// Update local race event
+	    							raceEvent = eventToRegisterFor;
+	    						}
+	    						
 	    						event.getChannel().sendMessage("User now registered for the event").queue();
-	    					}
-	    				}
-	    				if (raceEvent.getRaceTrack().getFirstNode() != null) {
-	    					if (raceEvent.getTimeElapsed() == 0) {
-	    						Player p = dbh.getPlayer(user.getId());
-	    						if (p.getActiveDriver() != null) {
-	    							if (p.getActiveCar() != null) {
-	    								event.getChannel().sendMessage("User now registered for the event").queue();
-	    							}
-	    							else {
-	    								event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
-	    							}
-	    						}
-	    						else {
-	    							event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
-	    						}
-	    					}
-	    					else {
-	    						event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
-	    					}
-	    				}
-	    				else {
-	    					event.getChannel().sendMessage("Event does not yet exist! Create a random one by performing the command: !iracer debug event generate").queue();
-	    				}
+    	    				}
+    					}
+	    			}
+	    			if (args[3].equalsIgnoreCase("withdraw")) {
+	    				Player p = dbh.getPlayer(user.getId());
+	    				p.getActiveDriver().withdrawFromRace();
+	    				dbh.updateUser(p);
+	    				event.getChannel().sendMessage("User now withdrew from the event").queue();
+	    			}
+	    			if (args[3].equalsIgnoreCase("forcewithdraw")) {
+	    				Player p = dbh.getPlayer(user.getId());
+	    				p.getActiveDriver().setState(new Resting());
+	    				dbh.updateUser(p);
+	    				event.getChannel().sendMessage("User forced to withdraw from the event").queue();
 	    			}
 	    			if(args[3].equalsIgnoreCase("begin"))
 	    			{
 	    				// The event has started! Move every registered driver into a racing state then begin moving the drivers.
-	    				Iterator<Driver> driverIterator = raceEvent.getDrivers().iterator();
+	    				Iterator<DriverStanding> driverIterator = raceEvent.getStandings().iterator();
 	    				while (driverIterator.hasNext()) {
-	    					driverIterator.next().beginRace();
+	    					driverIterator.next().getDriver().beginRace();
+	    				}
+	    				
+	    				// Advance the race until it completes.
+	    				while (!raceEvent.isFinished()) {
+	    					try {
+	    						TimeUnit.SECONDS.sleep(3);
+	    						event.getChannel().sendMessage(raceEvent.stepAllDrivers()).queue();
+	    					}
+	    					catch (InterruptedException e) {
+	    						e.printStackTrace();
+	    					}
 	    				}
 	    			}
 	    		}
@@ -544,6 +575,8 @@ public class Commands extends ListenerAdapter {
 	    						if (ownedDriver.getName().equals(driverName)) {
 	    							driverFound = true;
 	    							p.setActiveDriver(ownedDriver);
+	    							dbh.updateUser(p);
+	    							event.getChannel().sendMessage("Driver set. \n" + ownedDriver.toString()).queue();
 	    							break;
 	    						}
 	    					}

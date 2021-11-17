@@ -6,6 +6,7 @@ package com.group3.racingbot.driverstate;
 import java.util.Date;
 
 import com.group3.racingbot.Car;
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 
@@ -51,13 +52,13 @@ public class Resting implements DriverState {
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
+	public void signUpForRace(Driver driver, Car car, String raceEventId) {
 		// Check cooldown, if ok then sign up for race. Otherwise, remain resting. 
 		Date d = new Date();
 		long now = d.getTime();
 		
 		if (now > driver.getCooldown()) {
-			driver.setState(new RacePending(driver, car, raceEvent));
+			driver.setState(new RacePending(driver, car, raceEventId));
 		}
 	}
 	
@@ -80,16 +81,17 @@ public class Resting implements DriverState {
 	}
 
 	@Override
-	public void raceStep(Driver driver) {
+	public String raceStep(Driver driver) {
 		// If in Racing state, calculate the distance which the driver can travel on straights and corners. 
 		// Next, randomize if a crash will occur this roll. If so, add to the idleTime and damage the Car. Otherwise, continue.
 		// Finally, if the Driver's on a straight node then travel the straight distance + Math.floor(cornerDistance/3). Otherwise, vice versa.
 		
 		// Do nothing
+		return "";
 	}
 
 	@Override
-	public void completedRace(Driver driver, RaceEvent raceEvent) {
+	public void completedRace(Driver driver) {
 		// If in the Racing state, move to FinishedRace state.
 		// Do nothing
 	}

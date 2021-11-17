@@ -3,6 +3,7 @@
  */
 package com.group3.racingbot.driverstate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
@@ -14,6 +15,7 @@ import com.group3.racingbot.racetrack.TrackNode;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 
 /**
  * A state where the Driver is currently racing. A Driver may leave this state once they finish the race.
@@ -29,23 +31,27 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 //@BsonDiscriminator(value="Racing", key="_cls")
 public abstract class Racing implements DriverState {
 	
+	@JsonBackReference
 	private Driver driver;
 	private Car car;
 	private RaceTrack raceTrack;
-	private RaceEvent raceEvent;
+	//private RaceEvent raceEvent;
+	private String raceEventId;
 	private int straightDistance;
 	private int cornerDistance;
-	private int position;
+	//private int position;
+	private int totalDistanceTraveled; // Used to compare with other drivers to determine position.
 	private TrackNode currentNode;
-	
-	public Racing(Driver driver, Car car, RaceEvent raceEvent) {
+
+	public Racing(Driver driver, Car car, RaceTrack raceTrack, String raceEventId) {
 		this.driver = driver;
 		this.car = car;
-		this.raceTrack = raceEvent.getRaceTrack();
-		this.raceEvent = raceEvent;
+		this.raceTrack = raceTrack;
+		this.raceEventId = raceEventId;
 		this.straightDistance = 0;
 		this.cornerDistance = 0;
-		this.position = 1;
+		this.totalDistanceTraveled = 0;
+		//this.position = 1;
 	}
 	
 	/**
@@ -95,22 +101,50 @@ public abstract class Racing implements DriverState {
 	public void setCar(Car car) {
 		this.car = car;
 	}
+	
+	/**
+	 * @return the raceEventId
+	 */
+	public String getRaceEventId() {
+		return raceEventId;
+	}
+
+	/**
+	 * @param raceEventId the raceEventId to set
+	 */
+	public void setRaceEventId(String raceEventId) {
+		this.raceEventId = raceEventId;
+	}
+
+	/**
+	 * @return the totalDistanceTraveled
+	 */
+	public int getTotalDistanceTraveled() {
+		return totalDistanceTraveled;
+	}
+
+	/**
+	 * @param totalDistanceTraveled the totalDistanceTraveled to set
+	 */
+	public void setTotalDistanceTraveled(int totalDistanceTraveled) {
+		this.totalDistanceTraveled = totalDistanceTraveled;
+	}
 
 	/**
 	 * Retrieve the race event.
 	 * @return the raceEvent
 	 */
-	public RaceEvent getRaceEvent() {
-		return raceEvent;
-	}
+	//public RaceEvent getRaceEvent() {
+	//	return raceEvent;
+	//}
 
 	/**
 	 * Set the race event.
 	 * @param raceEvent the raceEvent to set
 	 */
-	public void setRaceEvent(RaceEvent raceEvent) {
-		this.raceEvent = raceEvent;
-	}
+	//public void setRaceEvent(RaceEvent raceEvent) {
+	//	this.raceEvent = raceEvent;
+	//}
 
 	/**
 	 * Retrieve the distance this Driver is able to travel on straight track nodes this turn.
@@ -148,17 +182,17 @@ public abstract class Racing implements DriverState {
 	 * Retrieve the pole position of this driver in the race.
 	 * @return the position
 	 */
-	public int getPosition() {
-		return position;
-	}
+	//public int getPosition() {
+	//	return position;
+	//}
 
 	/**
 	 * Set the pole position of this driver in the race.
 	 * @param position the position to set
 	 */
-	public void setPosition(int position) {
-		this.position = position;
-	}
+	//public void setPosition(int position) {
+	//	this.position = position;
+	//}
 
 	/**
 	 * Retrieve the node which the Driver is currently on.
@@ -229,7 +263,7 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
+	public void signUpForRace(Driver driver, Car car, String raceEventId) {
 		// Check cooldown, if ok then sign up for race. Otherwise, remain resting. 
 		// Do nothing
 	}
@@ -253,12 +287,12 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	abstract public void raceStep(Driver driver);
+	abstract public String raceStep(Driver driver);
 
 	@Override
-	public void completedRace(Driver driver, RaceEvent raceEvent) {
+	public void completedRace(Driver driver) {
 		// If in the Racing state, move to FinishedRace state.
-		this.getDriver().setState(new FinishedRace(this.getDriver(), raceEvent.getGrandPrize(), this.getPosition()));
+		this.getDriver().setState(new FinishedRace(this.getDriver(), this.getDriver().getLastRaceEventId()));
 	}
 
 	@Override

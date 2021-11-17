@@ -66,10 +66,29 @@ public abstract class TrackNode {
 	
 	/**
 	 * Subtract some amount from the distance covered of this track node (and others within the Chain of Responsibility if this track node has been traversed completely)
-	 * @param distance the distance to travel along the track node
+	 * @param distance The distance to travel along the track node
 	 * @throws RaceTrackEndException no more track nodes, so the driver has reached the end
 	 */
 	abstract protected void progressForward(int distance) throws RaceTrackEndException;
+	
+	/**
+	 * Prints what node the Driver is on out of the total number of track nodes.
+	 * @return the current node the Driver is on and the distance left in that node.
+	 * @throws RaceTrackEndException 
+	 */
+	public String currentProgressToString(RaceTrack raceTrack, int nodeCount) throws RaceTrackEndException {
+		if (this.getDistanceRemaining() <= 0) {
+			if (this.getSuccessor() != null) {
+				return this.getSuccessor().currentProgressToString(raceTrack, nodeCount + 1);
+			}
+			else {
+				throw new RaceTrackEndException("The driver has reached the end of the track");
+			}
+		}
+		else {
+			return "Node " + nodeCount + " of " + raceTrack.getTrackNodes().size();
+		}
+	}
 	
 	@Override
 	public abstract int hashCode();

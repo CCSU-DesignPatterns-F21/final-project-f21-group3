@@ -24,16 +24,15 @@ import com.group3.racingbot.RaceEvent;
 //@BsonDiscriminator(value="Completed", key="_cls")
 public abstract class Completed implements DriverState{
 	private Driver driver;
-	private int reward;
 	
 	/**
 	 * Constructs a completed state.
 	 * @param driver allows this state to set the state of the driver
 	 * @param reward the event reward for first place that gets added to the players balance. 
 	 */
-	public Completed(Driver driver, int reward) {
+	public Completed(Driver driver) {
 		this.driver = driver;
-		this.reward = reward;
+		//this.raceEventId = raceEventId;
 	}
 
 	/**
@@ -52,22 +51,6 @@ public abstract class Completed implements DriverState{
 		this.driver = driver;
 	}
 
-	/**
-	 * Retrieve the reward for the Driver's completion of something.
-	 * @return the reward
-	 */
-	public int getReward() {
-		return reward;
-	}
-
-	/**
-	 * Set the reward for the Driver's completion of something.
-	 * @param reward the reward to set
-	 */
-	public void setReward(int reward) {
-		this.reward = reward;
-	}
-	
 	@Override
 	public void rest() {
 		// TODO Auto-generated method stub
@@ -81,7 +64,7 @@ public abstract class Completed implements DriverState{
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
+	public void signUpForRace(Driver driver, Car car, String raceEventId) {
 		// TODO Auto-generated method stub
 		// Do nothing
 	}
@@ -99,13 +82,14 @@ public abstract class Completed implements DriverState{
 	}
 
 	@Override
-	public void raceStep(Driver driver) {
+	public String raceStep(Driver driver) {
 		// TODO Auto-generated method stub
 		// Do nothing
+		return "Finished";
 	}
 
 	@Override
-	public void completedRace(Driver driver, RaceEvent raceEvent) {
+	public void completedRace(Driver driver) {
 		// TODO Auto-generated method stub
 		// Do nothing
 	}

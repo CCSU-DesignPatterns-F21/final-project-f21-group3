@@ -1,5 +1,7 @@
 package com.group3.racingbot;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
@@ -15,11 +17,12 @@ import com.group3.racingbot.driverstate.Skill;
  *
  */
 public class Driver {
+	private final String id;
 	@BsonIgnore
 	private Player player;
 	private String playerId;
 	private DriverState state;
-	private RaceEvent lastRegisteredEvent;
+	private String lastRaceEventId;
 	private String name;
 	private int composure;
 	private int awareness;
@@ -37,6 +40,7 @@ public class Driver {
 	@BsonCreator
 	//@BsonProperty("name")
 	public Driver(@BsonProperty("name") String name) {
+		this.id = this.generateId();
 		this.player = null;
 		this.playerId = null;
 		this.state = new Resting();
@@ -49,6 +53,17 @@ public class Driver {
 		this.recovery = 10;
 		this.payPercentage = (float) 0.15;
 		this.cooldown = 0;
+	}
+	
+	private String generateId() {
+		String alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		int alphabetLength = 62;
+		int length = 20;
+		String result = "";
+		for (int i = 0; i < length; i++) {
+			result += String.valueOf(alphabet.charAt(ThreadLocalRandom.current().nextInt(0, alphabetLength-1)));
+		}
+		return result;
 	}
 	
 	/**
@@ -88,16 +103,40 @@ public class Driver {
 	 * Retrieve the last event that this Driver has registered for.
 	 * @return the lastRegisteredEvent
 	 */
-	public RaceEvent getLastRegisteredEvent() {
-		return lastRegisteredEvent;
-	}
+	//public RaceEvent getLastRegisteredEvent() {
+	//	return lastRegisteredEvent;
+	//}
 
 	/**
 	 * Set the last event that this Driver has registered for.
 	 * @param lastRegisteredEvent the lastRegisteredEvent to set
 	 */
-	public void setLastRegisteredEvent(RaceEvent lastRegisteredEvent) {
-		this.lastRegisteredEvent = lastRegisteredEvent;
+	//public void setLastRegisteredEvent(RaceEvent lastRegisteredEvent) {
+	//	this.lastRegisteredEvent = lastRegisteredEvent;
+	//}
+
+	/**
+	 * Return the id which identifies this Driver
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * Retrieve the id of the last race event that this Driver has registered for.
+	 * @return the lastRaceEventId
+	 */
+	public String getLastRaceEventId() {
+		return lastRaceEventId;
+	}
+
+	/**
+	 * Set the id of the last race event that this Driver has registered for.
+	 * @param lastRaceEventId the lastRaceEventId to set
+	 */
+	public void setLastRaceEventId(String lastRaceEventId) {
+		this.lastRaceEventId = lastRaceEventId;
 	}
 
 	/**
@@ -336,8 +375,8 @@ public class Driver {
 	/**
 	 * Switch to the RacePending state.
 	 */
-	public void signUpForRace(Car car, RaceEvent raceEvent) {
-		this.getState().signUpForRace(this, car, raceEvent);
+	public void signUpForRace(Car car, String raceEventId) {
+		this.getState().signUpForRace(this, car, raceEventId);
 	}
 	
 	/**
@@ -357,16 +396,17 @@ public class Driver {
 	
 	/**
 	 * Allows the Driver to progress through the track.
+	 * @return where the driver currently is on the track.
 	 */
-	public void raceStep() {
-		this.getState().raceStep(this);
+	public String raceStep() {
+		return this.getState().raceStep(this);
 	}
 	
 	/**
 	 * Once the Driver completes the race, this will move the Driver to a Completed state.
 	 */
 	public void completedRace() {
-		this.getState().completedRace(this, this.getLastRegisteredEvent());
+		this.getState().completedRace(this);
 	}
 	
 	/**

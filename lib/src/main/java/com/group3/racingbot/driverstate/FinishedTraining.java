@@ -12,6 +12,7 @@ import com.group3.racingbot.Driver;
 //@BsonDiscriminator(value="FinishedTraining", key="_cls")
 public class FinishedTraining extends Completed {
 	private final Skill skill;
+	private final int reward;
 	
 	/**
 	 * Constructs a finished training state.
@@ -20,7 +21,8 @@ public class FinishedTraining extends Completed {
 	 * @param skill the Driver skill to add the skill points to.
 	 */
 	public FinishedTraining(Driver driver, int reward, Skill skill) {
-		super(driver, reward);
+		super(driver);
+		this.reward = reward;
 		this.skill = skill;
 	}
 	
@@ -30,6 +32,14 @@ public class FinishedTraining extends Completed {
 	 */
 	public Skill getSkill() {
 		return this.skill;
+	}
+	
+	/**
+	 * Retrieve the amount of skill points which the Driver will earn.
+	 * @return the reward
+	 */
+	public int getReward() {
+		return this.reward;
 	}
 	
 	@Override

@@ -15,6 +15,8 @@ import com.group3.racingbot.Driver;
 //@BsonDiscriminator(value="FinishedRace", key="_cls")
 public class FinishedRace extends Completed {
 	private final int position;
+	private final String raceEventId;
+	// When race is completed, use the race event ID to pull from the database to determine reward.
 	
 	/**
 	 * Constructs a finished race state
@@ -22,9 +24,11 @@ public class FinishedRace extends Completed {
 	 * @param reward the event reward for first place that gets added to the players balance. 
 	 * @param position the final pole position of the Driver in the race.
 	 */
-	public FinishedRace(Driver driver, int reward, int position) {
-		super(driver, reward);
-		this.position = position;
+	public FinishedRace(Driver driver, String raceEventId) {
+		super(driver);
+		// TODO: call to database for position
+		this.position = 0;
+		this.raceEventId = raceEventId;
 	}
 	
 	/**
@@ -33,12 +37,23 @@ public class FinishedRace extends Completed {
 	public int getPosition() {
 		return this.position;
 	}
+	
+	/**
+	 * @return the id of the race event which the driver completed.
+	 */
+	public String getRaceEventId() {
+		return this.raceEventId;
+	}
 
 	@Override
 	public void collectReward() {
+		// TODO: Obtain reward from race event in database.
+		int reward = 10000;
+		
+		
 		// Reward the player with credits
 		int currentCredits = this.getDriver().getPlayer().getCredits();
-		this.getDriver().getPlayer().setCredits(currentCredits + (this.getReward()/this.getPosition()));
+		this.getDriver().getPlayer().setCredits(currentCredits + (reward/this.getPosition()));
 		
 		// Return the driver to a resting state
 		this.getDriver().setState(new Resting());

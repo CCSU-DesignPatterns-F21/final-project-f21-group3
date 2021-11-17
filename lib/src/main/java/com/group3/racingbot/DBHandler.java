@@ -42,6 +42,7 @@ import com.mongodb.client.MongoDatabase;
  *
  */
 public class DBHandler {
+	private static DBHandler instance; // Singleton
 	private static ConnectionString connectionString;
 	private static MongoClientSettings settings;
 	private static ConfigPropertiesHandler configProperties;
@@ -49,16 +50,18 @@ public class DBHandler {
 	private MongoDatabase database;
 	private MongoCollection<Player> userCollection;
 	private MongoCollection<Shop> shopCollection;
+	private MongoCollection<RaceEvent> raceEventCollection;
 	
 	/**
 	 * Constructor initializes the necessary settings required for connecting to the MongoDB.
 	 */
-	public DBHandler() {
+	private DBHandler() {
 		ClassModel<Shop> shopModel = ClassModel.builder(Shop.class).enableDiscriminator(true).build();
 		ClassModel<ComponentFactory> componentFactoryModel = ClassModel.builder(ComponentFactory.class).enableDiscriminator(true).build();
 		ClassModel<ConcreteComponentFactory> concreteComponentFactoryModel = ClassModel.builder(ConcreteComponentFactory.class).enableDiscriminator(true).build();
 		ClassModel<ComponentInventory> componenInventorytModel = ClassModel.builder(ComponentInventory.class).enableDiscriminator(true).build();
 		ClassModel<Component> componentModel = ClassModel.builder(Component.class).enableDiscriminator(true).build();
+		ClassModel<RaceEvent> raceEventModel = ClassModel.builder(RaceEvent.class).enableDiscriminator(true).build();
 		// States
 		ClassModel<DriverState> driverStateModel = ClassModel.builder(DriverState.class).enableDiscriminator(true).build();
 		ClassModel<Racing> racingStateModel = ClassModel.builder(Racing.class).enableDiscriminator(true).build();
@@ -90,6 +93,7 @@ public class DBHandler {
 				 .register(dnfStateModel)
 				 .register(finishedRaceStateModel)
 				 .register(finishedTrainingStateModel)
+				 .register(raceEventModel)
 				 .automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),
@@ -104,9 +108,73 @@ public class DBHandler {
 				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
 				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
 				shopCollection = database.getCollection("Shops",Shop.class).withCodecRegistry(codecRegistry);
+				raceEventCollection = database.getCollection("Events",RaceEvent.class).withCodecRegistry(codecRegistry);
 				//System.out.println(userCollection.countDocuments());
 	}
 	
+	/**
+	 * Returns an instance of DBHandler.
+	 * @return
+	 */
+	public static DBHandler getInstance() {
+		if (instance == null)
+        	instance = new DBHandler();
+ 
+        return instance;
+	}
+	
+	/**
+	 * Checks to see if a given race event exists within the database based on an event id.
+	 * @param id Race event ID
+	 * @return Whether or not the event exists within the database
+	 */
+	public boolean raceEventExists(String id) {
+		if(raceEventCollection.find(eq("_id",id)).first() != null) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Insert a race event into the database.
+	 * @param raceEvent RaceEvent object being stored into the database
+	 */
+	public void insertRaceEvent(RaceEvent raceEvent) {
+		raceEventCollection.insertOne(raceEvent);
+	}
+	
+	/**
+	 * Update a RaceEvent in the database.
+	 * @param raceEvent RaceEvent object being updated in the database
+	 */
+	public void updateRaceEvent(RaceEvent raceEvent) {
+		raceEventCollection.findOneAndReplace(eq("_id",raceEvent.getId()), raceEvent);
+	}
+	
+	/**
+	 * Retrieve a race event's info from the database.
+	 * @param id RaceEvent id to use to obtain info from the database
+	 * @return RaceEvent object based on the id supplied
+	 */
+	public RaceEvent getRaceEvent(String id) {
+		return (RaceEvent) raceEventCollection.find(eq("_id",id)).first();
+	}
+	
+	/**
+	 * @return the raceEventCollection
+	 */
+	public MongoCollection<RaceEvent> getRaceEventCollection() {
+		return raceEventCollection;
+	}
+
+	/**
+	 * @param raceEventCollection the raceEventCollection to set
+	 */
+	public void setRaceEventCollection(MongoCollection<RaceEvent> raceEventCollection) {
+		this.raceEventCollection = raceEventCollection;
+	}
+
 	/**
 	 * Gets a User record from the database by specified id. ID is the Discord User id.  
 	 * @param id the Discord user ID
@@ -171,6 +239,7 @@ public class DBHandler {
 		shopCollection.findOneAndReplace(eq("_id",shop.getId()),shop);
 		
 	}
+	
 	public List<Shop> getShops(){
 		//System.out.println(shopCollection.find().first());
 		List<Shop> iterablelist = shopCollection.find().into(new ArrayList<Shop>());

@@ -5,6 +5,7 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.shop.ChopShop;
@@ -48,9 +49,9 @@ public interface DriverState {
 	 * Registers this driver and their car for a racing event.
 	 * @param driver
 	 * @param car
-	 * @param raceEvent
+	 * @param raceEventId
 	 */
-	void signUpForRace(Driver driver, Car car, RaceEvent raceEvent);
+	void signUpForRace(Driver driver, Car car, String raceEventId);
 	
 	/**
 	 * Upon completion of training or a race, collect your reward (whether it's stat points or credits).
@@ -68,13 +69,13 @@ public interface DriverState {
 	 * Allow the Driver to perform their turn to move on the track during a race.
 	 * @param driver
 	 */
-	void raceStep(Driver driver);
+	String raceStep(Driver driver);
 	
 	/**
 	 * Move to the finished race state upon race completion.
 	 * @param driver
 	 */
-	void completedRace(Driver driver, RaceEvent raceEvent);
+	void completedRace(Driver driver);
 	
 	/**
 	 * Move to the finished training state upon training completion.
