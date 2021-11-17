@@ -297,30 +297,63 @@ public class Commands extends ListenerAdapter {
 	    	if(args[1].equalsIgnoreCase("shop") || args[1].equalsIgnoreCase("s"))
     		{
 	    		
-	    		System.out.println("Shop");
-	    		
-	    		
 	    		if(args[2].equalsIgnoreCase("chopshop") || args[2].equalsIgnoreCase("c"))
 	    		{
-	    			Shop shop = dbh.getShop(0);
-		    		//System.out.println(shop.size());
-		    		eb.clear();
-	    			eb.setColor(Color.green);
-	    			List<Component> components = shop.getComponentsForSale().getItems();
-	    			eb.setTitle(shop.getName());
-	    			eb.setDescription(shop.getDescription());
-	    			
-		    		for(int i=0; i<components.size();i++)
-		    		{
-		    			
-		    			//TODO: use the iterator function instead?
-		    			System.out.println(components.size());
-		    					
-		    			Field field = new Field(components.get(i).getName(), components.get(i).toString(), true);
-    					eb.addField(field);
-		    					
-		    		}
-		    		event.getChannel().sendMessage(eb.build()).queue();
+	    				if(args.length > 3)
+	    				{
+	    					if(args[3].equalsIgnoreCase("buy") || args[3].equalsIgnoreCase("b")) {
+	    						if(args.length > 4)
+	    	    				{
+	    							int id = Integer.parseInt(args[4]);
+	    							Shop shop = dbh.getShop(0);
+	    							List<Component> components = shop.getComponentsForSale().getItems();
+	    							try
+	    							{
+	    								Player player = dbh.getPlayer(event.getAuthor().getId());
+		    							if(player.getCredits() >= components.get(id).getValue())
+		    							{
+		    								player.setCredits(player.getCredits()-components.get(id).getValue());
+		    								player.getOwnedComponents().add(components.get(id));
+		    								dbh.updateUser(player);
+		    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
+		    							}else {
+		    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
+		    							}
+	    								
+	    							}catch(Exception e){
+	    								System.out.println("Error performing transaction: "+ e.getMessage());
+	    							}
+	    							
+	    							event.getChannel().sendMessage(""+id).queue();
+	    							
+	    	    				}else {
+	    	    					event.getChannel().sendMessage("Please try again with an id.").queue();
+	    	    				}
+	    					}
+	    				}else {
+	    					Shop shop = dbh.getShop(0);
+				    		//System.out.println(shop.size());
+				    		eb.clear();
+			    			eb.setColor(Color.green);
+			    			List<Component> components = shop.getComponentsForSale().getItems();
+			    			eb.setTitle(shop.getName());
+			    			eb.setDescription(shop.getDescription());
+			    			
+				    		for(int i=0; i<components.size();i++)
+				    		{
+				    			
+				    			//TODO: use the iterator function instead?
+				    			//System.out.println(components.size());
+				    					
+				    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+		    					eb.addField(field);
+				    					
+				    		}
+				    		event.getChannel().sendMessage(eb.build()).queue();
+	    				}
+	    					
+	    				
+	    	
 	    		}
 	    		
 	    		if(args[2].equalsIgnoreCase("junkyard") || args[2].equalsIgnoreCase("j"))
