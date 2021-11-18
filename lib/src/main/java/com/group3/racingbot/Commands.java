@@ -259,8 +259,80 @@ public class Commands extends ListenerAdapter {
 	    	
 	    	if(args[1].equalsIgnoreCase("profile") || args[1].equalsIgnoreCase("p"))
 	    	{
-	    		
-	    		
+	    		if(args.length >= 3)
+	    		{
+	    			Member m = event.getMessage().getMentionedMembers().get(0);
+	    			if(dbh.userExists(m.getId()))
+	    			{
+	    				Player p = dbh.getPlayer(m.getId());
+    					eb.clear();
+    					eb.setTitle("Profile: ");
+    					eb.setColor(Color.green);
+		    			eb.setThumbnail(m.getUser().getAvatarUrl());
+		    			
+			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+			    				+ "\n Total Losses: " + p.getTotalLosses()
+			    				+ "\n Credits: " + p.getCredits()
+			    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
+			    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
+			    		//eb.addField("Title of field", "test of field", false);
+			    		event.getChannel().sendMessage(eb.build()).queue();
+	    				
+	    			}
+	    			else {
+	    				System.out.println("Could not find that player in database.");
+	    				event.getChannel().sendMessage("Could not find that player in database.").queue();
+	    				
+	    			}
+	    			
+	    		}else {
+	    			try {
+	    				String id = event.getAuthor().getId();
+	    				if(dbh.userExists(id))
+	    				{
+	    					Player p = dbh.getPlayer(id);
+	    					eb.clear();
+	    					eb.setTitle("Profile: ");
+	    					eb.setColor(Color.green);
+			    			eb.setThumbnail(user.getUser().getAvatarUrl());
+			    			
+				    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+				    				+ "\n Total Losses: " + p.getTotalLosses()
+				    				+ "\n Credits: " + p.getCredits()
+				    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
+				    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
+				    		//eb.addField("Title of field", "test of field", false);
+				    		event.getChannel().sendMessage(eb.build()).queue();
+	    				}else {
+	    					
+	    					Player p = new Player();
+	    					p.setId(user.getId());
+			    			p.setUsername(user.getUser().getName());
+			    			p.setLastWorked(0);
+			    			dbh.insertUser(p);
+			    			
+			    			eb.clear();
+	    					eb.setTitle("No Player found, so it was created!");
+	    					eb.setColor(Color.green);
+			    			eb.setThumbnail(user.getUser().getAvatarUrl());
+			    			
+				    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+				    				+ "\n Total Losses: " + p.getTotalLosses()
+				    				+ "\n Credits: " + p.getCredits()
+				    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
+				    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
+				    		//eb.addField("Title of field", "test of field", false);
+				    		event.getChannel().sendMessage(eb.build()).queue();
+	    				}
+	    				Player p = dbh.getPlayer(event.getAuthor().getId());
+	    				
+		    		}catch(Exception e)
+		    		{	
+		    			event.getChannel().sendMessage("Error retrieving profile!").queue();
+		    			System.out.println("Error retrieving profile: " + e.getMessage());
+		    		}	 
+	    		}
+	    		   		
 	    	}
 	    	
 	    	if(args[1].equalsIgnoreCase("shops"))
@@ -449,6 +521,7 @@ public class Commands extends ListenerAdapter {
 
 	    	if(args[1].equalsIgnoreCase("debug"))
 	    	{
+	    	
 	    		if(args[2].equalsIgnoreCase("event"))
 	    		{
 	    			if(args[3].equalsIgnoreCase("generate"))
@@ -660,6 +733,7 @@ public class Commands extends ListenerAdapter {
 	    				}
 	    			}
 	    		}
+	    		
 	    	}
 	    	
 		    	// A test for filtering an inventory of cars.
@@ -742,6 +816,43 @@ public class Commands extends ListenerAdapter {
 			}
 	 }
 	}
+	 public String formatText(String style,String text)
+	 {
+		 String styledText = text;
+		 if(style == "i")
+		 {
+			 styledText = "*"+ text + "*";
+		 }
+		 if(style == "b")
+		 {
+			 styledText = "**"+ text + "**";
+		 }
+		 if(style == "u")
+		 {
+			 styledText = "__"+ text + "__";
+		 }
+		 if(style == "s")
+		 {
+			 styledText = "~~"+ text + "~~";
+		 }
+		 if(style == "bi")
+		 {
+			 styledText = "***"+ text + "***";
+		 }
+		 if(style == "ui")
+		 {
+			 styledText = "___*"+ text + "*__";
+		 }
+		 if(style == "bi")
+		 {
+			 styledText = "___**"+ text + "**__";
+		 }
+		 if(style == "ubi")
+		 {
+			 styledText = "___***"+ text + "***__";
+		 }
+		 return styledText;
+	 }
 
 	 /**
 	  * 

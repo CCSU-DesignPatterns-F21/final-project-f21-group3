@@ -1,12 +1,13 @@
 package com.group3.racingbot;
 
+import java.awt.Color;
+
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 import com.group3.racingbot.inventory.DriverInventory;
-
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
  * @author Maciej Bregisz
@@ -236,6 +237,7 @@ public class Player {
 	public void setActiveCar(Car activeCar) {
 		this.activeCar = activeCar;
 	}
+	
 
 	/**
 	 * @return details about Player Object.
