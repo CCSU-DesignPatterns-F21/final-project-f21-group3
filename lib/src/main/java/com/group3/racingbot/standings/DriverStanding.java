@@ -3,9 +3,14 @@
  */
 package com.group3.racingbot.standings;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.Player;
+import com.group3.racingbot.inventory.NotFoundException;
 
 /**
  * Keep track of a driver's position within a race event.
@@ -14,14 +19,27 @@ import com.group3.racingbot.Driver;
 public class DriverStanding {
 	@BsonIgnore
 	private final Driver driver;
+	private final String playerId;
 	private final String driverId;
 	private int position;
 	private int distanceTraveled;
 	private int timeCompleted;
 	
-	public DriverStanding(Driver driver) {
+	@BsonCreator
+	public DriverStanding(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId) {
+		// Obtain driver from DB
+		DBHandler dbh = DBHandler.getInstance();
+		Player p = dbh.getPlayer(playerId);
+		Driver driver = null;
+		try {
+			driver = p.getOwnedDrivers().getById(driverId);
+		}
+		catch (NotFoundException e) {
+			e.printStackTrace();
+		}
 		this.driver = driver;
-		this.driverId = driver.getId();
+		this.driverId = driverId;
+		this.playerId = playerId;
 		this.position = 1;
 		this.distanceTraveled = 0;
 		this.timeCompleted = 0;
@@ -81,6 +99,13 @@ public class DriverStanding {
 	 */
 	public String getDriverId() {
 		return driverId;
+	}
+	
+	/**
+	 * @return the playerId
+	 */
+	public String getPlayerId() {
+		return playerId;
 	}
 	
 }

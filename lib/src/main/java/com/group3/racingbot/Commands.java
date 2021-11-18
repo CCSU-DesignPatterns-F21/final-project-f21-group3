@@ -22,8 +22,8 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.Iterator;
+import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -56,7 +56,12 @@ public class Commands extends ListenerAdapter {
 		eb = new EmbedBuilder();
 		dbh = db;
 		component = new ConcreteComponentFactory();
-		this.raceEvent = new RaceEvent();
+		this.raceEvent = dbh.pullMostRecentRaceEvent();
+		if (this.raceEvent == null) {
+			// Failed to pull from the database.
+			// Create a new RaceEvent
+			this.raceEvent = new RaceEvent();
+		}
 	} 
 	
 	/**
@@ -423,17 +428,8 @@ public class Commands extends ListenerAdapter {
 	    			if(args[3].equalsIgnoreCase("generate"))
 	    			{
 	    				this.raceEvent = new RaceEvent();
-	    				int totalNodes = 0; // initialize totalNodes
-	    				if(args.length > 4 && args[4] != null)
-	    				{
-	    					totalNodes = Integer.parseInt(args[4]);
-	    				}
-	    				else {
-	    					totalNodes = ThreadLocalRandom.current().nextInt(5, 20);
-	    				}
-	    				this.raceEvent.getRaceTrack().generateRaceTrack(totalNodes); // Create the new track
 	    				dbh.insertRaceEvent(this.raceEvent);
-	    				event.getChannel().sendMessage("Number of Nodes in Track: " + totalNodes).queue();
+	    				event.getChannel().sendMessage("New Event Created: " + this.raceEvent.getId()).queue();
 	    			}
 	    			if(args[3].equalsIgnoreCase("register")) {
 	    				// Register a user to an event	
@@ -461,12 +457,12 @@ public class Commands extends ListenerAdapter {
     					}
     					else {
     						boolean specifiedRaceEvent = false;
-    						RaceEvent eventToRegisterFor = raceEvent;
+    						RaceEvent eventToRegisterFor = this.raceEvent;
     						if (args.length > 4 && args[4] != null) {
     							// Race event ID specified! Check it to see if there is an event associated with that ID
-    							String raceTrackId = args[4];
-    							if (dbh.raceEventExists(raceTrackId)) {
-    								eventToRegisterFor = dbh.getRaceEvent(raceTrackId);
+    							String raceEventId = args[4];
+    							if (dbh.raceEventExists(raceEventId)) {
+    								eventToRegisterFor = dbh.getRaceEvent(raceEventId);
     								specifiedRaceEvent = true;
     							}
     							else {
@@ -475,7 +471,7 @@ public class Commands extends ListenerAdapter {
     							}
     						}
 							// Register driver for the given race event.
-							if (eventToRegisterFor.getRaceTrack().getFirstNode() == null) {
+							if (eventToRegisterFor.getRaceTrack().obtainFirstNode() == null) {
     	    					event.getChannel().sendMessage("Event does not yet exist! Create a new one by performing the command: !iracer debug event generate").queue();
     	    				}
     	    				else if (eventToRegisterFor.getTimeElapsed() != 0) {
@@ -487,7 +483,7 @@ public class Commands extends ListenerAdapter {
 	    						dbh.updateUser(p);
 	    						
 	    						// Update the race event
-	    						eventToRegisterFor.getStandings().addDriver(p.getActiveDriver());
+	    						eventToRegisterFor.getStandings().addDriver(p.getId(), p.getActiveDriver().getId());
 	    						dbh.updateRaceEvent(eventToRegisterFor);
 	    						if (!specifiedRaceEvent) {
 	    							// Update local race event
@@ -497,6 +493,9 @@ public class Commands extends ListenerAdapter {
 	    						event.getChannel().sendMessage("User now registered for the event").queue();
     	    				}
     					}
+	    			}
+	    			if (args[3].equalsIgnoreCase("view")) {
+	    				event.getChannel().sendMessage(this.raceEvent.toString()).queue();
 	    			}
 	    			if (args[3].equalsIgnoreCase("withdraw")) {
 	    				Player p = dbh.getPlayer(user.getId());
@@ -552,6 +551,7 @@ public class Commands extends ListenerAdapter {
 	    				
 	    				// Add the new driver
 	    				Driver createdDriver = new Driver(driverName);
+	    				createdDriver.setId(createdDriver.generateId());
 	    				createdDriver.setPlayer(p);
 	    				createdDriver.setPlayerId(user.getId());
 	    				p.getOwnedDrivers().add(createdDriver);

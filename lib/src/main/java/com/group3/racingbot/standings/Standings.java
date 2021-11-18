@@ -93,7 +93,7 @@ public class Standings {
 		Collections.sort(finished, timeCompletedComparator);
 		for (int i = 1, len = finished.size()-1; i < len; i++) {
 			if (finished.get(i-1).getTimeCompleted() == finished.get(i).getTimeCompleted()) {
-				int rand = ThreadLocalRandom.current().nextInt(0, 1);
+				int rand = ThreadLocalRandom.current().nextInt(0, 2);
 				if (rand == 1) {
 					Collections.swap(finished, i-1, i);
 				}
@@ -141,24 +141,25 @@ public class Standings {
 	 * Adds a driver to the race event.
 	 * @param driver the driver to add
 	 */
-	public void addDriver(Driver driver) {
+	public void addDriver(String playerId, String driverId) {
 		//Predicate<DriverStanding> condition = driverPosition -> driverPosition.getDriverId().equals(driver.getId());
+		
 		for (int i = 0, len = this.standings.size()-1; i < len; i++) {
-			if (!this.standings.get(i).getDriverId().equals(driver.getId())) {
-				this.standings.add(new DriverStanding(driver));
-				System.out.println("Driver added");
+			if (this.standings.get(i).getDriverId().equals(driverId)) {
+				System.out.println("Unable to add driver. Driver already exists in the event.");
 				return;
 			}
 		}
-		System.out.println("Unable to add driver. Driver already exists in the event.");
+		this.standings.add(new DriverStanding(playerId, driverId));
+		System.out.println("Driver added");
 	}
 
 	/**
 	 * Removes a driver from the race event.
 	 * @param driver the driver to remove
 	 */
-	public void removeDriver(Driver driver) {
-		Predicate<DriverStanding> condition = driverPosition -> driverPosition.getDriverId().equals(driver.getId());
+	public void removeDriver(String driverId) {
+		Predicate<DriverStanding> condition = driverPosition -> driverPosition.getDriverId().equals(driverId);
 		if (this.standings.removeIf(condition)) 
 			System.out.println("Driver removed");
 		System.out.println("Unable to remove driver. The specified driver is not in the race event.");

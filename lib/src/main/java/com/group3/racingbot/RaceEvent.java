@@ -26,7 +26,7 @@ public class RaceEvent {
 	
 	public RaceEvent() {
 		this.id = this.generateId();
-		this.raceTrack = new RaceTrack();
+		this.raceTrack = new RaceTrack(Long.parseLong(this.id, 36));
 		//this.drivers = new DriverInventory();
 		this.timeElapsed = 0;
 		this.grandPrize = 10000;
@@ -35,8 +35,8 @@ public class RaceEvent {
 	}
 	
 	private String generateId() {
-		String alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		int alphabetLength = 62;
+		String alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
+		int alphabetLength = 36;
 		int length = 6;
 		String result = "";
 		for (int i = 0; i < length; i++) {
@@ -224,6 +224,6 @@ public class RaceEvent {
 	
 	@Override
 	public String toString() {
-		return this.id;
+		return "**ID:** " + this.id + "\n**PRIZE:** " + this.grandPrize + "\n**TRACK INFO:**\n" + this.raceTrack;
 	}
 }

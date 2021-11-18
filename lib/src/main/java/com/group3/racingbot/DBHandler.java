@@ -28,13 +28,19 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.TrackNode;
 import com.group3.racingbot.shop.Shop;
+import com.group3.racingbot.standings.DriverStanding;
+import com.group3.racingbot.standings.Standings;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Sorts.descending;
 
 /**
  * Handles the requests and connections to the database.
@@ -62,6 +68,10 @@ public class DBHandler {
 		ClassModel<ComponentInventory> componenInventorytModel = ClassModel.builder(ComponentInventory.class).enableDiscriminator(true).build();
 		ClassModel<Component> componentModel = ClassModel.builder(Component.class).enableDiscriminator(true).build();
 		ClassModel<RaceEvent> raceEventModel = ClassModel.builder(RaceEvent.class).enableDiscriminator(true).build();
+		ClassModel<RaceTrack> raceTrackModel = ClassModel.builder(RaceTrack.class).enableDiscriminator(true).build();
+		ClassModel<Standings> standingsModel = ClassModel.builder(Standings.class).enableDiscriminator(true).build();
+		ClassModel<DriverStanding> driverStandingModel = ClassModel.builder(DriverStanding.class).enableDiscriminator(true).build();
+		//ClassModel<TrackNode> trackNodeModel = ClassModel.builder(TrackNode.class).enableDiscriminator(true).build();
 		// States
 		ClassModel<DriverState> driverStateModel = ClassModel.builder(DriverState.class).enableDiscriminator(true).build();
 		ClassModel<Racing> racingStateModel = ClassModel.builder(Racing.class).enableDiscriminator(true).build();
@@ -94,6 +104,9 @@ public class DBHandler {
 				 .register(finishedRaceStateModel)
 				 .register(finishedTrainingStateModel)
 				 .register(raceEventModel)
+				 .register(raceTrackModel)
+				 .register(standingsModel)
+				 .register(driverStandingModel)
 				 .automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),
@@ -153,12 +166,21 @@ public class DBHandler {
 	}
 	
 	/**
+	 * Retrieve the most recent race event from the database.
+	 */
+	public RaceEvent pullMostRecentRaceEvent() {
+		FindIterable<RaceEvent> iterable = raceEventCollection.find().limit(1).sort(descending("createdOn"));
+		return iterable.first();
+	}
+	
+	/**
 	 * Retrieve a race event's info from the database.
 	 * @param id RaceEvent id to use to obtain info from the database
 	 * @return RaceEvent object based on the id supplied
 	 */
 	public RaceEvent getRaceEvent(String id) {
-		return (RaceEvent) raceEventCollection.find(eq("_id",id)).first();
+		RaceEvent raceEvent = (RaceEvent) raceEventCollection.find(eq("_id",id)).first();
+		return raceEvent;
 	}
 	
 	/**

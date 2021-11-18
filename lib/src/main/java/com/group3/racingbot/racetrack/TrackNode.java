@@ -1,5 +1,7 @@
 package com.group3.racingbot.racetrack;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
+
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
@@ -9,6 +11,7 @@ import com.group3.racingbot.exceptions.RaceTrackEndException;
  *
  */
 public abstract class TrackNode {
+	@BsonIgnore
 	private TrackNode successor;
 	private int nodeLength;
 	private int distanceRemaining;
@@ -16,9 +19,14 @@ public abstract class TrackNode {
 	/**
 	 * Construct a piece of a race track.
 	 */
-	public TrackNode() {
+	public TrackNode(long seed) {
+		// Randomly pick a difficulty for the corner.
+    	ThreadLocal<Random> rand = new ThreadLocal<Random>(); // Utilize threads with the Random class
+    	rand.set(new Random());
+    	rand.get().setSeed(seed); // Set the seed for the random number generator.
+    	
 		this.successor = null;
-		this.nodeLength = ThreadLocalRandom.current().nextInt(1, 2000);
+		this.nodeLength = rand.get().nextInt(2000) + 1;
 		this.distanceRemaining = this.nodeLength;
 	}
 

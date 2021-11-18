@@ -17,7 +17,7 @@ import com.group3.racingbot.driverstate.Skill;
  *
  */
 public class Driver {
-	private final String id;
+	private String id;
 	@BsonIgnore
 	private Player player;
 	private String playerId;
@@ -40,7 +40,7 @@ public class Driver {
 	@BsonCreator
 	//@BsonProperty("name")
 	public Driver(@BsonProperty("name") String name) {
-		this.id = this.generateId();
+		this.id = "";
 		this.player = null;
 		this.playerId = null;
 		this.state = new Resting();
@@ -55,7 +55,7 @@ public class Driver {
 		this.cooldown = 0;
 	}
 	
-	private String generateId() {
+	public String generateId() {
 		String alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		int alphabetLength = 62;
 		int length = 20;
@@ -115,6 +115,16 @@ public class Driver {
 	//	this.lastRegisteredEvent = lastRegisteredEvent;
 	//}
 
+	
+
+	/**
+	 * Retrieve the id of the last race event that this Driver has registered for.
+	 * @return the lastRaceEventId
+	 */
+	public String getLastRaceEventId() {
+		return lastRaceEventId;
+	}
+
 	/**
 	 * Return the id which identifies this Driver
 	 * @return the id
@@ -124,11 +134,11 @@ public class Driver {
 	}
 
 	/**
-	 * Retrieve the id of the last race event that this Driver has registered for.
-	 * @return the lastRaceEventId
+	 * Set the id which identifies this Driver
+	 * @param id the id to set
 	 */
-	public String getLastRaceEventId() {
-		return lastRaceEventId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**

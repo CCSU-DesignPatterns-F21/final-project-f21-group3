@@ -6,6 +6,7 @@ package com.group3.racingbot.racetrack;
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
 /**
+ * Straight section of a race track
  * @author Nick Sabia
  *
  */
@@ -14,8 +15,8 @@ public class StraightNode extends TrackNode {
 	/**
 	 * Construct a straight node
 	 */
-	public StraightNode() {
-		super();
+	public StraightNode(long seed) {
+		super(seed);
 	}
 	
 	@Override
@@ -71,6 +72,6 @@ public class StraightNode extends TrackNode {
 	
 	@Override
 	public String toString() {
-		return "Straight: distance " + super.getNodeLength();
+		return "**Straight:** " + super.getNodeLength() + "ft long";
 	}
 }

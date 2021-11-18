@@ -6,7 +6,11 @@ package com.group3.racingbot.racetrack;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
+
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.exceptions.RaceTrackEndException;
@@ -17,13 +21,19 @@ import com.group3.racingbot.exceptions.RaceTrackEndException;
  *
  */
 public class RaceTrack {
+	@BsonIgnore
 	private List<TrackNode> trackNodes;
+	private long seed;
 	
 	/**
-	 * Construct a race track
+	 * Construct a race track based on a seed.
+	 * @param seed used to generate the track
 	 */
-	public RaceTrack() {
+	@BsonCreator
+	public RaceTrack(@BsonProperty("seed") long seed) {
 		this.trackNodes = new ArrayList<TrackNode>();
+		this.seed = seed;
+		generateRaceTrack(seed);
 	}
 	
 	/**
@@ -42,32 +52,57 @@ public class RaceTrack {
 		return trackNodes;
 	}
 	
+	
+	/**
+	 * Retrieve the seed used in generating the race track.
+	 * @return the seed
+	 */
+	public long getSeed() {
+		return seed;
+	}
+
+	/**
+	 * Set the seed used in generating the race track.
+	 * @param seed the seed to set
+	 */
+	public void setSeed(long seed) {
+		this.seed = seed;
+	}
+
 	/**
 	 * Retrieve the first track node in the track.
 	 * @return first track node
 	 */
-	public TrackNode getFirstNode() {
-		return trackNodes.get(0);
+	public TrackNode obtainFirstNode() {
+		if (trackNodes.size() > 0) {
+			return trackNodes.get(0);
+		}
+		System.out.println("obtainFirstNode: Cannot obtain first node. Track has no nodes.");
+		return null;
 	}
 	
 	/**
-	 * Create a new random race track
-	 * @param nodes pieces of the race track
+	 * Create a new random race track using a seed
+	 * @param seed seed to form the race track
 	 * @return List of track nodes which make up a race track
 	 */
-	public List<TrackNode> generateRaceTrack(int nodes) {
-		int maxNodes = Math.round(nodes / 2) * 2;
+	private List<TrackNode> generateRaceTrack(long seed) {
+		// Randomly pick a difficulty for the corner.
+    	ThreadLocal<Random> rand = new ThreadLocal<Random>(); // Utilize threads with the Random class
+    	rand.set(new Random());
+    	rand.get().setSeed(seed); // Set the seed for the random number generator.
+    	
+		int maxNodes = Math.round((rand.get().nextInt(21) + 1) / 2) * 2;
 		int currentNode = 0;
 		List<TrackNode> track = new ArrayList<TrackNode>();
 		while (track.size() < maxNodes) {
 		    if (currentNode % 2 == 0) {
-		    	track.add(new StraightNode());
+		    	track.add(new StraightNode(this.seed));
 		    }
 		    else {
-		    	// Randomly pick a difficulty for the corner.
-		    	int rand = ThreadLocalRandom.current().nextInt(0, 2);
+		    	int difficultyValue = rand.get().nextInt(3);
 		    	Difficulty difficulty = null;
-		    	switch (rand) {
+		    	switch (difficultyValue) {
 		    		case 0:
 		    			difficulty = Difficulty.EASY;
 		    			break;
@@ -81,7 +116,7 @@ public class RaceTrack {
 		    			difficulty = Difficulty.EASY;
 		    			break;
 		    	}
-		    	track.add(new CornerNode(difficulty));
+		    	track.add(new CornerNode(this.seed, difficulty));
 		    }
 		    currentNode++;
 		}
@@ -102,7 +137,7 @@ public class RaceTrack {
 	public void progressForward(Driver driver, int distance) {
 		// CoR
 		try {
-			this.getFirstNode().progressForward(distance);
+			this.obtainFirstNode().progressForward(distance);
 		} catch (RaceTrackEndException e) {
 			System.out.println("You have finished the race!");
 			driver.completedRace();
@@ -112,7 +147,7 @@ public class RaceTrack {
 	public String currentProgressToString() {
 		String result = "";
 		try {
-			result = this.getFirstNode().currentProgressToString(this, 1);
+			result = this.obtainFirstNode().currentProgressToString(this, 1);
 		} catch (RaceTrackEndException e) {
 			result = "Finished";
 		}
@@ -155,6 +190,12 @@ public class RaceTrack {
 
 	@Override
 	public String toString() {
-		return "RaceTrack [trackNodes=" + trackNodes + "]";
+		String track = "";
+		int totalLength = 0;
+		for (int i = 0, len = this.trackNodes.size(); i < len; i++) {
+			track += this.trackNodes.get(i).toString() + "\n";
+			totalLength += this.trackNodes.get(i).getNodeLength();
+		}
+		return "**TRACK LENGTH:** " + totalLength + "ft" + "\n" + track;
 	}
 }

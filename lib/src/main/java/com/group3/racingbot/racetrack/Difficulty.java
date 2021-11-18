@@ -32,11 +32,11 @@ public enum Difficulty {
 	 */
 	public String toString() {
 		switch (this.difficulty) {
-			case 1:
-				return "EASY";
 			case 0:
+				return "EASY";
+			case 1:
 				return "MEDIUM";
-			case -1:
+			case 2:
 				return "HARD";
 			default:
 				return "INVALID DIFFICULTY";

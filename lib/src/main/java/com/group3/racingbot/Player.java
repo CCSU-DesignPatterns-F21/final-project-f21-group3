@@ -50,7 +50,9 @@ public class Player {
 		setOwnedCars(new CarInventory());
 		setOwnedDrivers(new DriverInventory());
 		// Create a default driver.
-		getOwnedDrivers().add(new Driver("Stig"));
+		Driver defaultDriver = new Driver("Stig");
+		defaultDriver.setId(defaultDriver.generateId());
+		getOwnedDrivers().add(defaultDriver);
 		setActiveDriver(getOwnedDrivers().getItems().get(0));
 	}
 	

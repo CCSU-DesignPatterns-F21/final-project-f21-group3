@@ -6,6 +6,7 @@ package com.group3.racingbot.racetrack;
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
 /**
+ * Corner section of a race track
  * @author Nick Sabia
  *
  */
@@ -17,8 +18,8 @@ public class CornerNode extends TrackNode {
 	 * Construct a corner node
 	 * @param difficulty governs how quickly a driver can navigate through this track node
 	 */
-	public CornerNode(Difficulty difficulty) {
-		super();
+	public CornerNode(long seed, Difficulty difficulty) {
+		super(seed);
 		this.difficulty = difficulty;
 		switch (difficulty) {
 			case EASY:
@@ -120,6 +121,6 @@ public class CornerNode extends TrackNode {
 	
 	@Override
 	public String toString() {
-		return "Corner: distance " + super.getNodeLength() + " | difficulty: " + this.difficulty;
+		return "**Corner:** " + super.getNodeLength() + "ft long | difficulty: " + this.difficulty;
 	}
 }
