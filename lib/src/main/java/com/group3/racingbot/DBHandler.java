@@ -4,7 +4,9 @@ package com.group3.racingbot;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -137,6 +139,20 @@ public class DBHandler {
 	}
 	
 	/**
+	 * Utility function for generating an id.
+	 * @return id
+	 */
+	public String generateId(int length) {
+		String alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
+		int alphabetLength = 36;
+		String result = "";
+		for (int i = 0; i < length; i++) {
+			result += String.valueOf(alphabet.charAt(ThreadLocalRandom.current().nextInt(0, alphabetLength-1)));
+		}
+		return result;
+	}
+	
+	/**
 	 * Checks to see if a given race event exists within the database based on an event id.
 	 * @param id Race event ID
 	 * @return Whether or not the event exists within the database
@@ -166,11 +182,31 @@ public class DBHandler {
 	}
 	
 	/**
-	 * Retrieve the most recent race event from the database.
+	 * Retrieve the most recent race event from the database if possible. If not, then return a new race event.
 	 */
-	public RaceEvent pullMostRecentRaceEvent() {
+	public RaceEvent obtainRecentRaceEvent() {
 		FindIterable<RaceEvent> iterable = raceEventCollection.find().limit(1).sort(descending("createdOn"));
-		return iterable.first();
+		RaceEvent raceEvent = iterable.first();
+		if (raceEvent != null) {
+			// An event already exists, but we must check that it's recent (less than an hour old)
+			final int HOUR = 3600000; // One hour in milliseconds
+			Date now = new Date();
+			boolean isNotAnHourOld = (raceEvent.getCreatedOn() + HOUR) > now.getTime();
+			if (isNotAnHourOld) {
+				// This event from the database is recent. Recreate the track using the seed and return it.
+				long raceTrackSeed = raceEvent.getRaceTrack().getSeed();
+				raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(raceTrackSeed));
+				System.out.println("Existing race event found and used: " + raceEvent.getId());
+				return raceEvent;
+			}
+		}
+		// No recent event exists. Create a new one.
+		raceEvent = new RaceEvent();
+		raceEvent.setId(this.generateId(6));
+		raceEvent.setRaceTrack(raceEvent.generateRaceTrackFromId());
+		this.insertRaceEvent(raceEvent);
+		System.out.println("New race event created: " + raceEvent.getId());
+		return raceEvent;
 	}
 	
 	/**
@@ -227,6 +263,15 @@ public class DBHandler {
 	}
 	
 	/**
+	 * Update the active driver for a player. This updates both the active driver and the 
+	 * @param playerId
+	 * @param driver
+	 */
+	public void updateActiveDriver(String playerId, Driver driver) {
+		
+	}
+	
+	/**
 	 * Returns a Player object from the Database based on the Discord ID.
 	 * @param id Discord User ID, used for identifying and retrieving of stored Player objects.
 	 * @return Parsed Player object from the database.
@@ -234,7 +279,6 @@ public class DBHandler {
 	public Player getPlayer(String id) {
 		Player player = (Player) userCollection.find(eq("_id",id)).first();
 		return player;
-		
 	}
 	
 	public void insertShop(Shop shop)

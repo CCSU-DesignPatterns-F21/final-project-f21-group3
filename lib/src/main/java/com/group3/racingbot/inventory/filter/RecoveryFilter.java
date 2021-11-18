@@ -11,6 +11,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 public class RecoveryFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
 	private int recovery;
 	private FilterOperation operation;
+	private int current;
 	
 	/**
 	 * Applies the recovery filter to whatever inventory iterator is passed into it.
@@ -22,6 +23,12 @@ public class RecoveryFilter<T extends SkillFilterable> extends InventoryIterator
 		super(iterator);
 		this.recovery = recovery;
 		this.operation = op;
+		this.current = 0;
+	}
+	
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
 	}
 	
 	/**

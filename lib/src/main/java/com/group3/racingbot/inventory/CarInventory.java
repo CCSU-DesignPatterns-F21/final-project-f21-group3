@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.group3.racingbot.Car;
+import com.group3.racingbot.Driver;
 
 /**
  * Store and access cars
@@ -43,6 +44,38 @@ public class CarInventory implements Inventory<Car>{
 		if (this.items.remove(car)) 
 			return true;
 		return false;
+	}
+	
+	/**
+	 * Updates a car in the inventory
+	 * @param car
+	 * @throws NotFoundException 
+	 */
+	public void update(Car car) throws NotFoundException {
+		InventoryIterator<Car> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			Car currentCar = iterator.next();
+			if (currentCar.getId().equals(car.getId())) {
+				this.items.set(iterator.getCurrentIndex(), car);
+			}
+		}
+		throw new NotFoundException("Unable to find the driver with the id: " + car.getId());
+	}
+	
+	/**
+	 * Get a car from the inventory based on its id.
+	 * @param carId the id of the car
+	 * @throws NotFoundException 
+	 */
+	public Car getById(String carId) throws NotFoundException {
+		InventoryIterator<Car> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			Car currentCar = iterator.next();
+			if (currentCar.getId().equals(carId)) {
+				return currentCar;
+			}
+		}
+		throw new NotFoundException("Unable to find the driver with the id: " + carId);
 	}
 	
 	/**
@@ -115,6 +148,11 @@ public class CarInventory implements Inventory<Car>{
 		
 		private CarIterator() {
 			this.current = 0;
+		}
+		
+		@Override
+		public int getCurrentIndex() {
+			return current;
 		}
 		
 		/**

@@ -49,7 +49,24 @@ public class DriverInventory implements Inventory<Driver>{
 	}
 	
 	/**
+	 * Updates a driver in the inventory
+	 * @param driver
+	 * @throws NotFoundException 
+	 */
+	public void update(Driver driver) throws NotFoundException {
+		InventoryIterator<Driver> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			Driver currentDriver = iterator.next();
+			if (currentDriver.getId().equals(driver.getId())) {
+				this.items.set(iterator.getCurrentIndex(), driver);
+			}
+		}
+		throw new NotFoundException("Unable to find the driver with the id: " + driver.getId());
+	}
+	
+	/**
 	 * Get a driver from the inventory based on their ID.
+	 * @param driverId the id of the driver
 	 * @throws NotFoundException 
 	 */
 	public Driver getById(String driverId) throws NotFoundException {
@@ -135,9 +152,12 @@ public class DriverInventory implements Inventory<Driver>{
 			this.current = 0;
 		}
 		
-		/**
-		 * Verifies that there is another driver ahead of the current one.
-		 */
+		@Override
+		public int getCurrentIndex() {
+			return current;
+		}
+		
+		@Override
 		public boolean hasNext() {
 			if (this.current < DriverInventory.this.items.size()) {
 				return true;
@@ -145,9 +165,7 @@ public class DriverInventory implements Inventory<Driver>{
 			return false;
 		}
 		
-		/**
-		 * Grab the next driver.
-		 */
+		@Override
 		public Driver next() {
 			Driver item = null;
 			try {
@@ -160,9 +178,7 @@ public class DriverInventory implements Inventory<Driver>{
 			return item;
 		}
 		
-		/**
-		 * Print the entire inventory regardless of filter.
-		 */
+		@Override
 		public void printInventory() {
 			int tempCurrent = this.current;
 			this.current = 0;

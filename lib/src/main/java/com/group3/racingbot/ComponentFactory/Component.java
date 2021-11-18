@@ -22,11 +22,24 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
 public abstract class Component {
-	private String quality = "", name = "";
+	private String id = "", quality = "", name = "";
 	private int weight = 0, value = 0, durability = 0, rating = 0;
-	private int maxDurability = 100;				
-	
-	
+	private int maxDurability = 100;
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	/**
 	 * @return the rating
 	 */
@@ -186,7 +199,7 @@ public abstract class Component {
 
 	@Override
 	public String toString() {
-		return "Component [quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
+		return "Component [id=" + id + "quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
 				+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
 	}
 }

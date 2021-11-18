@@ -47,6 +47,38 @@ public class ComponentInventory implements Inventory<Component>{
 	}
 	
 	/**
+	 * Updates a component in the inventory
+	 * @param component
+	 * @throws NotFoundException 
+	 */
+	public void update(Component component) throws NotFoundException {
+		InventoryIterator<Component> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			Component currentComponent = iterator.next();
+			if (currentComponent.getId().equals(component.getId())) {
+				this.items.set(iterator.getCurrentIndex(), component);
+			}
+		}
+		throw new NotFoundException("Unable to find the driver with the id: " + component.getId());
+	}
+	
+	/**
+	 * Get a component from the inventory based on its id.
+	 * @param componentId
+	 * @throws NotFoundException 
+	 */
+	public Component getById(String componentId) throws NotFoundException {
+		InventoryIterator<Component> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			Component currentComponent = iterator.next();
+			if (currentComponent.getId().equals(componentId)) {
+				return currentComponent;
+			}
+		}
+		throw new NotFoundException("Unable to find the driver with the id: " + componentId);
+	}
+	
+	/**
 	 * Grab the entire list of items. This is necessary for MongoDB to work properly.
 	 * @return List<Component>
 	 */
@@ -116,6 +148,11 @@ public class ComponentInventory implements Inventory<Component>{
 		
 		private ComponentIterator() {
 			this.current = 0;
+		}
+		
+		@Override
+		public int getCurrentIndex() {
+			return current;
 		}
 		
 		/**

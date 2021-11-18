@@ -11,4 +11,10 @@ public interface InventoryIterator<T> extends Iterator<T> {
 	 * Print the entire inventory regardless of filter.
 	 */
 	public void printInventory();
+	
+	/**
+	 * Retrieve the current index which the iterator is on.
+	 * @return current index of the iterator
+	 */
+	public int getCurrentIndex();
 }

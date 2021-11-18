@@ -6,6 +6,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.ComponentInventory;
 import com.group3.racingbot.inventory.DriverInventory;
+import com.group3.racingbot.inventory.NotFoundException;
 
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
@@ -34,10 +35,10 @@ public class Player {
 	private CarInventory ownedCars;
 	@BsonProperty("ownedDrivers")
 	private DriverInventory ownedDrivers;
-	@BsonProperty("activeDriver")
-	private Driver activeDriver;
-	@BsonProperty("activeCar")
-	private Car activeCar;
+	@BsonProperty("activeDriverId")
+	private String activeDriverId;
+	@BsonProperty("activeCarId")
+	private String activeCarId;
 	
 	/**
 	 * Player class constructor.
@@ -51,9 +52,9 @@ public class Player {
 		setOwnedDrivers(new DriverInventory());
 		// Create a default driver.
 		Driver defaultDriver = new Driver("Stig");
-		defaultDriver.setId(defaultDriver.generateId());
+		defaultDriver.setId(DBHandler.getInstance().generateId(6));
 		getOwnedDrivers().add(defaultDriver);
-		setActiveDriver(getOwnedDrivers().getItems().get(0));
+		setActiveDriverId(getOwnedDrivers().getItems().get(0).getId());
 	}
 	
 	/**
@@ -203,40 +204,70 @@ public class Player {
 	 * Retrieve the driver which the player is currently using. 
 	 * 
 	 * This is what will be used in a race if the player decides to race.
-	 * @return the activeDriver
+	 * @return the activeDriverId
 	 */
-	public Driver getActiveDriver() {
-		return activeDriver;
+	public String getActiveDriverId() {
+		return activeDriverId;
 	}
 
 	/**
 	 * Set the driver which the player is currently using. 
 	 * 
 	 * This is what will be used in a race if the player decides to race.
-	 * @param activeDriver the activeDriver to set
+	 * @param activeDriverId the activeDriverId to set
 	 */
-	public void setActiveDriver(Driver activeDriver) {
-		this.activeDriver = activeDriver;
+	public void setActiveDriverId(String activeDriverId) {
+		this.activeDriverId = activeDriverId;
+	}
+	
+	/**
+	 * Retrieve the active driver from the driver inventory. If the driver cannot be found, return null.
+	 * @return active driver if successful, null otherwise.
+	 */
+	public Driver obtainActiveDriver() {
+		try {
+			Driver activeDriver = this.getOwnedDrivers().getById(this.getActiveDriverId());
+			return activeDriver;
+		}
+		catch(NotFoundException e) {
+			System.out.println("Active driver not found in inventory. Was the driver deleted while they were still active?");
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieve the active car from the car inventory. If the car cannot be found, return null.
+	 * @return active car if successful, null otherwise.
+	 */
+	public Car obtainActiveCar() {
+		try {
+			Car activeCar = this.getOwnedCars().getById(this.getActiveCarId());
+			return activeCar;
+		}
+		catch(NotFoundException e) {
+			System.out.println("Active car not found in inventory. Was the car deleted while it was still active?");
+			return null;
+		}
 	}
 
 	/**
 	 * Retrieve the car which the player is currently using. 
 	 * 
 	 * This is what will be used in a race if the player decides to race.
-	 * @return the activeCar
+	 * @return the activeCarId
 	 */
-	public Car getActiveCar() {
-		return activeCar;
+	public String getActiveCarId() {
+		return activeCarId;
 	}
 
 	/**
 	 * Set the car which the player is currently using. 
 	 * 
 	 * This is what will be used in a race if the player decides to race.
-	 * @param activeCar the activeCar to set
+	 * @param activeCarId the activeCar to set
 	 */
-	public void setActiveCar(Car activeCar) {
-		this.activeCar = activeCar;
+	public void setActiveCarId(String activeCarId) {
+		this.activeCarId = activeCarId;
 	}
 
 	/**

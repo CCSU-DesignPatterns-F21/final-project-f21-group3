@@ -16,6 +16,7 @@ import com.group3.racingbot.inventory.filter.MaterialFilterable;
  *
  */
 public class Car implements MaterialFilterable {
+	private String id;
 	private ChassisComponent chassis;
 	private EngineComponent engine;
 	private SuspensionComponent suspension;
@@ -26,6 +27,7 @@ public class Car implements MaterialFilterable {
 	 * Creates a car which can be equipped with different components.
 	 */
 	public Car() {
+		this.id = "";
 		this.chassis = null;
 		this.engine = null;
 		this.suspension = null;
@@ -34,6 +36,7 @@ public class Car implements MaterialFilterable {
 	}
 	
 	private Car(CarBuilder builder) {
+		this.id = "";
 		this.chassis = builder.chassis;
 		this.engine = builder.engine;
 		this.suspension = builder.suspension;
@@ -118,6 +121,20 @@ public class Car implements MaterialFilterable {
 		
 	}
 	
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	/**
 	 * @return the chassis
 	 */

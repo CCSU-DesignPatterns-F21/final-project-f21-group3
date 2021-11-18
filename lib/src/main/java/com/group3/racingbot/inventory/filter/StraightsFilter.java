@@ -11,6 +11,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 public class StraightsFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
 	private int straights;
 	private FilterOperation operation;
+	private int current;
 	
 	/**
 	 * Applies the straights filter to whatever inventory iterator is passed into it.
@@ -22,6 +23,12 @@ public class StraightsFilter<T extends SkillFilterable> extends InventoryIterato
 		super(iterator);
 		this.straights = straights;
 		this.operation = op;
+		this.current = 0;
+	}
+	
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
 	}
 	
 	/**

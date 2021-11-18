@@ -55,17 +55,6 @@ public class Driver {
 		this.cooldown = 0;
 	}
 	
-	public String generateId() {
-		String alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		int alphabetLength = 62;
-		int length = 20;
-		String result = "";
-		for (int i = 0; i < length; i++) {
-			result += String.valueOf(alphabet.charAt(ThreadLocalRandom.current().nextInt(0, alphabetLength-1)));
-		}
-		return result;
-	}
-	
 	/**
 	 * Retrieve the Driver's name. 
 	 * @return the name

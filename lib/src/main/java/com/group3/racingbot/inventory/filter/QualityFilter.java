@@ -9,8 +9,9 @@ import com.group3.racingbot.inventory.InventoryIterator;
  * @param <T>
  */
 public class QualityFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
-	
 	private String quality;
+	private int current;
+	
 	/**
 	 * Applies the quality filter to whatever inventory iterator is passed into it.
 	 * @param iterator
@@ -19,6 +20,12 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 	public QualityFilter(InventoryIterator<T> iterator, String label) {
 		super(iterator);
 		this.quality = label;
+		this.current = 0;
+	}
+	
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
 	}
 	
 	/**

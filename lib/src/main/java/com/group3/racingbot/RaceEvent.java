@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  */
 public class RaceEvent {
-	private final String id;
+	private String id;
 	private RaceTrack raceTrack;
 	//private DriverInventory drivers;
 	private final long createdOn;
@@ -25,8 +25,8 @@ public class RaceEvent {
 	private Standings standings;
 	
 	public RaceEvent() {
-		this.id = this.generateId();
-		this.raceTrack = new RaceTrack(Long.parseLong(this.id, 36));
+		this.id = "";
+		this.raceTrack = null;
 		//this.drivers = new DriverInventory();
 		this.timeElapsed = 0;
 		this.grandPrize = 10000;
@@ -34,15 +34,11 @@ public class RaceEvent {
 		this.standings = new Standings();
 	}
 	
-	private String generateId() {
-		String alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
-		int alphabetLength = 36;
-		int length = 6;
-		String result = "";
-		for (int i = 0; i < length; i++) {
-			result += String.valueOf(alphabet.charAt(ThreadLocalRandom.current().nextInt(0, alphabetLength-1)));
-		}
-		return result;
+	/**
+	 * Generates a race track using the ID of the race event as a seed
+	 */
+	public RaceTrack generateRaceTrackFromId() {
+		return new RaceTrack(Long.parseLong(this.id, 36));
 	}
 	
 	/**
@@ -140,13 +136,21 @@ public class RaceEvent {
 	public void setGrandPrize(int grandPrize) {
 		this.grandPrize = grandPrize;
 	}
-	
+
 	/**
 	 * Retrieve the ID for this race event.
-	 * @return the eventName
+	 * @return the id
 	 */
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * Set the ID for this race event.
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**

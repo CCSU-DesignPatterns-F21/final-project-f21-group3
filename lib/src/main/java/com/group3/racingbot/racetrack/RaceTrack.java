@@ -12,6 +12,7 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
@@ -86,7 +87,7 @@ public class RaceTrack {
 	 * @param seed seed to form the race track
 	 * @return List of track nodes which make up a race track
 	 */
-	private List<TrackNode> generateRaceTrack(long seed) {
+	public List<TrackNode> generateRaceTrack(long seed) {
 		// Randomly pick a difficulty for the corner.
     	ThreadLocal<Random> rand = new ThreadLocal<Random>(); // Utilize threads with the Random class
     	rand.set(new Random());
