@@ -2,7 +2,9 @@ package com.group3.racingbot.driverstate;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
@@ -26,7 +28,8 @@ public class Aggressive extends Racing {
 	 * @param car calculate how far the Driver will travel per time unit
 	 * @param raceEvent carries event reward info into the completed stages
 	 */
-	public Aggressive(String playerId, String driverId, String carId, String raceEventId, RaceTrack raceTrack) {
+	@BsonCreator
+	public Aggressive(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId, @BsonProperty("raceTrack") RaceTrack raceTrack) {
 		super(playerId, driverId, carId, raceEventId, raceTrack);
 		this.multiplier = 2.0;
 	}

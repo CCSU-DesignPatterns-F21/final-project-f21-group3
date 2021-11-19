@@ -12,7 +12,9 @@ import com.group3.racingbot.racetrack.StraightNode;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 /**
  * A state where the Driver is racing as they normally would. A Driver may leave this state once they finish the race.
@@ -28,7 +30,8 @@ public class Normal extends Racing {
 	 * @param car calculate how far the Driver will travel per time unit
 	 * @param raceEvent carries event reward info into the completed stages
 	 */
-	public Normal (String playerId, String driverId, String carId, String raceEventId, RaceTrack raceTrack) {
+	@BsonCreator
+	public Normal (@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId, @BsonProperty("raceTrack") RaceTrack raceTrack) {
 		super(playerId, driverId, carId, raceEventId, raceTrack);
 		this.multiplier = 1.0;
 	}

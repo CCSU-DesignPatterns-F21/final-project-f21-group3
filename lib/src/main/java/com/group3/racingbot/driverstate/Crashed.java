@@ -6,7 +6,9 @@ import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.racetrack.RaceTrack;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 /**
  * A state which the driver stays in one place on the track until they recover.
@@ -22,7 +24,8 @@ public class Crashed extends Racing {
 	 * @param car the car which is damaged by entering this state
 	 * @param raceEvent the driver stays put in one of the track nodes on the track in this event
 	 */
-	public Crashed(String playerId, String driverId, String carId, String raceEventId, RaceTrack raceTrack) {
+	@BsonCreator
+	public Crashed(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId, @BsonProperty("raceTrack") RaceTrack raceTrack) {
 		super(playerId, driverId, carId, raceEventId, raceTrack);
 	}
 

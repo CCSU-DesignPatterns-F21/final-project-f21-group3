@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 /**
  * A state where the Driver is currently racing. A Driver may leave this state once they finish the race.
@@ -54,7 +55,7 @@ public abstract class Racing implements DriverState {
 	private TrackNode currentNode;
 
 	@BsonCreator
-	public Racing(String playerId, String driverId, String carId, String raceEventId, RaceTrack raceTrack) {
+	public Racing(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId, @BsonProperty("raceTrack") RaceTrack raceTrack) {
 		this.player = null;
 		this.playerId = playerId;
 		this.driver = null;
