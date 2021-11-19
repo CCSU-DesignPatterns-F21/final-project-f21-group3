@@ -25,7 +25,7 @@ public abstract class Component {
 	private String quality = "", name = "";
 	private int weight = 0, value = 0, durability = 0;
 	private int maxDurability = 100;				
-	
+	private String thumbnailURL = "";
 
 	/**
 	 * @return the name
@@ -133,6 +133,21 @@ public abstract class Component {
 	}
 	
 	/**
+	 * @return the thumbnailURL
+	 */
+	public String getThumbnailURL() {
+		return thumbnailURL;
+	}
+
+	/**
+	 * @param thumbnailURL the thumbnailURL to set
+	 */
+	public void setThumbnailURL(String thumbnailURL) {
+		this.thumbnailURL = thumbnailURL;
+	}
+
+	
+	/**
 	 * @param returns hashCode for component
 	 */
 	
@@ -168,4 +183,6 @@ public abstract class Component {
 		return "Component [quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
 				+ ", durability=" + durability + ", maxDurability=" + maxDurability + "]";
 	}
+
+
 }

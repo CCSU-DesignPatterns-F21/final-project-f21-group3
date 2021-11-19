@@ -1,5 +1,6 @@
 package com.group3.racingbot.gameservice;
 
+import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -19,6 +20,7 @@ import com.group3.racingbot.shop.Importer;
 import com.group3.racingbot.shop.Junkyard;
 import com.group3.racingbot.shop.Shop;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -31,6 +33,7 @@ public class GameplayHandler {
 
 	private JDA jda;
 	private DBHandler db;
+	
 	//TODO: Might need to be changed into generic?
 	private List<CustomObserver> listeners = new ArrayList<CustomObserver>();
 	private ComponentFactory componentFactory;
@@ -108,10 +111,15 @@ public class GameplayHandler {
 		    public void run () {
 		        System.out.println("Running Hourly scheduled task...");
 		        notifyObservers();
-		        
-		        sendTextChannelMessage("Hourly Update! \n"
-		        		+ "Stores updated \n"
-		        		+ "New Race available!");
+		        EmbedBuilder eb = new EmbedBuilder();
+				eb.clear();
+				eb.setTitle("Hourly Update!");
+				eb.setColor(Color.red);
+				
+				eb.addField("Store Update", "New Components and Cars for sale at the Stores!", false);
+				eb.addField("Race Track Update", "New race event available!", false);
+				eb.addField("Race Results available", "If you registered for a race, you can now check the race results!", false);
+				sendEmbedChannelMessage(eb);
 		    }
 		};
 		
@@ -125,14 +133,9 @@ public class GameplayHandler {
 		timer.schedule(hourlyTask, firstScheduledTask, 1000*60*60);
 	}
 	
-	//TODO: Only for DEBUGGING, Remove before final release
-	public void debug() {
+	public void debug()
+	{
 		notifyObservers();
-        
-        sendTextChannelMessage("Hourly Update! \n"
-        		+ "Stores updated \n"
-        		+ "New Race available!");
-		
 	}
 	
 	/**
@@ -169,23 +172,27 @@ public class GameplayHandler {
 	}
 	
 	/**
-	 * 
+	 * Returns the list of CustomObservers
 	 * @return
 	 */
 	public List<CustomObserver> getObservers(){
 		return listeners;
 	}
 	
-	public void sendTextChannelMessage(String str) {
+	/**
+	 * Sends an embed message to every discord channel.
+	 * @param eb Embed Builder reference.
+	 */
+	public void sendEmbedChannelMessage(EmbedBuilder eb) {
 		List<Guild> guilds = jda.getGuilds();
 		for(int i =0; i<guilds.size();i++)
 		{
 			Guild guild = guilds.get(i);
-			guild.getSystemChannel().sendMessage(str).queue();
+			guild.getSystemChannel().sendMessage(eb.build()).queue();
 			
 		}
 	}
-	
+
 	/**
 	 * Custom hashCode method for GameplayHandler object
 	 * @return calculated hashcode

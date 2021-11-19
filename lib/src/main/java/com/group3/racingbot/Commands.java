@@ -150,21 +150,12 @@ public class Commands extends ListenerAdapter {
 	    	{
 	    		eb.clear();
 	    		try {
-	    			//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
-		    		if(dbh.userExists(user.getId())){
+	    			if(dbh.userExists(user.getId())){
+	    				event.getChannel().sendMessage("User Already Registered!").queue();
 		    			Player p = dbh.getPlayer(user.getId());
-		    			//eb.setImage(user.getUser().getAvatarUrl());
-		    			eb.setTitle("User Already Exists!");
-		    			eb.setColor(Color.green);
-		    			eb.setThumbnail(user.getUser().getAvatarUrl());
-		    			
-			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
-			    				+ "\n Total Losses: " + p.getTotalLosses()
-			    				+ "\n Credits: " + p.getCredits()
-			    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
-			    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
-			    		//eb.addField("Title of field", "test of field", false);
-			    		event.getChannel().sendMessage(eb.build()).queue();
+		    			EmbedBuilder playereb = printPlayer(p,event);
+	    				playereb.setThumbnail(user.getUser().getAvatarUrl());
+			    		event.getChannel().sendMessage(playereb.build()).queue();
 		    			
 		    		}else {
 		    			event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
@@ -173,13 +164,9 @@ public class Commands extends ListenerAdapter {
 		    			p.setUsername(user.getUser().getName());
 		    			p.setLastWorked(0);
 		    			dbh.insertUser(p);
-		    			eb.setThumbnail(user.getUser().getAvatarUrl());
-		    			eb.setTitle("User Already Exists!");
-		    			eb.setColor(Color.green);
-			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
-			    				+ "\n Total Losses: " + p.getTotalLosses()
-			    				+ "\n Credits: " + p.getCredits());
-			    		//eb.addField("Title of field", "test of field", false);
+		    			EmbedBuilder playereb = printPlayer(p,event);
+		    			playereb.setThumbnail(user.getUser().getAvatarUrl());
+			    		event.getChannel().sendMessage(playereb.build()).queue();
 		    		}	    	
 	    			
 	    		}catch(Exception e) {
@@ -228,13 +215,13 @@ public class Commands extends ListenerAdapter {
 		    		
 		    		
 		    		//Work for the first time regardless of time.
-		    		if(p.getLastWorked() == 0)
-		    		{
-		    			p.setCredits(p.getCredits() + randomWage);
-		    			p.setLastWorked(System.currentTimeMillis());
-		    			System.out.println(p.toString());
-		    			dbh.updateUser(p);
-		    		}
+//		    		if(p.getLastWorked() == 0)
+//		    		{
+//		    			p.setCredits(p.getCredits() + randomWage);
+//		    			p.setLastWorked(System.currentTimeMillis());
+//		    			System.out.println(p.toString());
+//		    			dbh.updateUser(p);
+//		    		}
 	    			if(timeNow.after(nextWork))
 		    		{
 		    			p.setCredits(p.getCredits() + randomWage);
@@ -265,18 +252,9 @@ public class Commands extends ListenerAdapter {
 	    			if(dbh.userExists(m.getId()))
 	    			{
 	    				Player p = dbh.getPlayer(m.getId());
-    					eb.clear();
-    					eb.setTitle("Profile: ");
-    					eb.setColor(Color.green);
-		    			eb.setThumbnail(m.getUser().getAvatarUrl());
-		    			
-			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
-			    				+ "\n Total Losses: " + p.getTotalLosses()
-			    				+ "\n Credits: " + p.getCredits()
-			    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
-			    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
-			    		//eb.addField("Title of field", "test of field", false);
-			    		event.getChannel().sendMessage(eb.build()).queue();
+	    				EmbedBuilder playereb = printPlayer(p,event);
+	    				playereb.setThumbnail(m.getUser().getAvatarUrl());
+			    		event.getChannel().sendMessage(playereb.build()).queue();
 	    				
 	    			}
 	    			else {
@@ -291,18 +269,8 @@ public class Commands extends ListenerAdapter {
 	    				if(dbh.userExists(id))
 	    				{
 	    					Player p = dbh.getPlayer(id);
-	    					eb.clear();
-	    					eb.setTitle("Profile: ");
-	    					eb.setColor(Color.green);
-			    			eb.setThumbnail(user.getUser().getAvatarUrl());
-			    			
-				    		eb.setDescription("Total Wins: "+ p.getTotalWins()
-				    				+ "\n Total Losses: " + p.getTotalLosses()
-				    				+ "\n Credits: " + p.getCredits()
-				    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
-				    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
-				    		//eb.addField("Title of field", "test of field", false);
-				    		event.getChannel().sendMessage(eb.build()).queue();
+	    					EmbedBuilder playereb = printPlayer(p,event);
+				    		event.getChannel().sendMessage(playereb.build()).queue();
 	    				}else {
 	    					
 	    					Player p = new Player();
@@ -311,18 +279,8 @@ public class Commands extends ListenerAdapter {
 			    			p.setLastWorked(0);
 			    			dbh.insertUser(p);
 			    			
-			    			eb.clear();
-	    					eb.setTitle("No Player found, so it was created!");
-	    					eb.setColor(Color.green);
-			    			eb.setThumbnail(user.getUser().getAvatarUrl());
-			    			
-				    		eb.setDescription("Total Wins: "+ p.getTotalWins()
-				    				+ "\n Total Losses: " + p.getTotalLosses()
-				    				+ "\n Credits: " + p.getCredits()
-				    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
-				    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
-				    		//eb.addField("Title of field", "test of field", false);
-				    		event.getChannel().sendMessage(eb.build()).queue();
+			    			EmbedBuilder playereb = printPlayer(p,event);
+				    		event.getChannel().sendMessage(playereb.build()).queue();
 	    				}
 	    				Player p = dbh.getPlayer(event.getAuthor().getId());
 	    				
@@ -384,10 +342,15 @@ public class Commands extends ListenerAdapter {
 	    								Player player = dbh.getPlayer(event.getAuthor().getId());
 		    							if(player.getCredits() >= components.get(id).getValue())
 		    							{
-		    								player.setCredits(player.getCredits()-components.get(id).getValue());
-		    								player.getOwnedComponents().add(components.get(id));
+		    								
+		    								Component component = components.get(id);
+		    								player.setCredits(player.getCredits()-component.getValue());
+		    								player.getOwnedComponents().add(component);
 		    								dbh.updateUser(player);
+		    								
 		    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
+		    								event.getChannel().sendMessage(printComponent(component,event).build()).queue();
+
 		    							}else {
 		    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
 		    							}
@@ -395,8 +358,6 @@ public class Commands extends ListenerAdapter {
 	    							}catch(Exception e){
 	    								System.out.println("Error performing transaction: "+ e.getMessage());
 	    							}
-	    							
-	    							event.getChannel().sendMessage(""+id).queue();
 	    							
 	    	    				}else {
 	    	    					event.getChannel().sendMessage("Please try again with an id.").queue();
@@ -410,7 +371,6 @@ public class Commands extends ListenerAdapter {
 			    			List<Component> components = shop.getComponentsForSale().getItems();
 			    			eb.setTitle(shop.getName());
 			    			eb.setDescription(shop.getDescription());
-			    			
 				    		for(int i=0; i<components.size();i++)
 				    		{
 				    			
@@ -430,69 +390,176 @@ public class Commands extends ListenerAdapter {
 	    		
 	    		if(args[2].equalsIgnoreCase("junkyard") || args[2].equalsIgnoreCase("j"))
 	    		{
-	    			Shop shop = dbh.getShop(1);
-		    		//System.out.println(shop.size());
-		    		eb.clear();
-	    			eb.setColor(Color.green);
-	    			List<Component> components = shop.getComponentsForSale().getItems();
-	    			eb.setTitle(shop.getName());
-	    			eb.setDescription(shop.getDescription());
-	    			
-		    		for(int i=0; i<components.size();i++)
-		    		{
+	    			if(args.length > 3)
+    				{
+    					if(args[3].equalsIgnoreCase("buy") || args[3].equalsIgnoreCase("b")) {
+    						if(args.length > 4)
+    	    				{
+    							int id = Integer.parseInt(args[4]);
+    							Shop shop = dbh.getShop(0);
+    							List<Component> components = shop.getComponentsForSale().getItems();
+    							try
+    							{
+    								Player player = dbh.getPlayer(event.getAuthor().getId());
+	    							if(player.getCredits() >= components.get(id).getValue())
+	    							{
+	    								Component component = components.get(id);
+	    								player.setCredits(player.getCredits()-component.getValue());
+	    								player.getOwnedComponents().add(component);
+	    								dbh.updateUser(player);
+	    								eb.clear();
+	    								eb.setTitle(component.getName());
+	    								eb.setThumbnail(component.getThumbnailURL());
+	    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
+	    								event.getChannel().sendMessage(eb.build()).queue();
+	    							}else {
+	    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
+	    							}
+    								
+    							}catch(Exception e){
+    								System.out.println("Error performing transaction: "+ e.getMessage());
+    							}
+    							
+    							event.getChannel().sendMessage(""+id).queue();
+    							
+    	    				}else {
+    	    					event.getChannel().sendMessage("Please try again with an id.").queue();
+    	    				}
+    					}
+    				}else {
+    					Shop shop = dbh.getShop(0);
+			    		//System.out.println(shop.size());
+			    		eb.clear();
+		    			eb.setColor(Color.green);
+		    			List<Component> components = shop.getComponentsForSale().getItems();
+		    			eb.setTitle(shop.getName());
+		    			eb.setDescription(shop.getDescription());
 		    			
-		    			//TODO: use the iterator function instead?
-		    			System.out.println(components.size());
-		    					
-		    			Field field = new Field(components.get(i).getName(), components.get(i).toString(), true);
-    					eb.addField(field);
-		    					
-		    		}
-		    		event.getChannel().sendMessage(eb.build()).queue();
+			    		for(int i=0; i<components.size();i++)
+			    		{
+			    			
+			    			//TODO: use the iterator function instead?
+			    			//System.out.println(components.size());
+			    					
+			    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+	    					eb.addField(field);
+			    					
+			    		}
+			    		event.getChannel().sendMessage(eb.build()).queue();
+    				}
+    					
 	    		}
 	    		if(args[2].equalsIgnoreCase("dealership") || args[2].equalsIgnoreCase("d"))
 	    		{
-	    			Shop shop = dbh.getShop(2);
-		    		//System.out.println(shop.size());
-		    		eb.clear();
-	    			eb.setColor(Color.green);
-	    			List<Component> components = shop.getComponentsForSale().getItems();
-	    			eb.setTitle(shop.getName());
-	    			eb.setDescription(shop.getDescription());
-	    			
-		    		for(int i=0; i<components.size();i++)
-		    		{
+	    			if(args.length > 3)
+    				{
+    					if(args[3].equalsIgnoreCase("buy") || args[3].equalsIgnoreCase("b")) {
+    						if(args.length > 4)
+    	    				{
+    							int id = Integer.parseInt(args[4]);
+    							Shop shop = dbh.getShop(0);
+    							List<Component> components = shop.getComponentsForSale().getItems();
+    							try
+    							{
+    								Player player = dbh.getPlayer(event.getAuthor().getId());
+	    							if(player.getCredits() >= components.get(id).getValue())
+	    							{
+	    								player.setCredits(player.getCredits()-components.get(id).getValue());
+	    								player.getOwnedComponents().add(components.get(id));
+	    								dbh.updateUser(player);
+	    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
+	    							}else {
+	    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
+	    							}
+    								
+    							}catch(Exception e){
+    								System.out.println("Error performing transaction: "+ e.getMessage());
+    							}
+    							
+    							event.getChannel().sendMessage(""+id).queue();
+    							
+    	    				}else {
+    	    					event.getChannel().sendMessage("Please try again with an id.").queue();
+    	    				}
+    					}
+    				}else {
+    					Shop shop = dbh.getShop(0);
+			    		//System.out.println(shop.size());
+			    		eb.clear();
+		    			eb.setColor(Color.green);
+		    			List<Component> components = shop.getComponentsForSale().getItems();
+		    			eb.setTitle(shop.getName());
+		    			eb.setDescription(shop.getDescription());
 		    			
-		    			//TODO: use the iterator function instead?
-		    			System.out.println(components.size());
-		    					
-		    			Field field = new Field(components.get(i).getName(), components.get(i).toString(), true);
-    					eb.addField(field);
-		    					
-		    		}
-		    		event.getChannel().sendMessage(eb.build()).queue();
+			    		for(int i=0; i<components.size();i++)
+			    		{
+			    			
+			    			//TODO: use the iterator function instead?
+			    			//System.out.println(components.size());
+			    					
+			    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+	    					eb.addField(field);
+			    					
+			    		}
+			    		event.getChannel().sendMessage(eb.build()).queue();
+    				}
+    					
 	    		}
 	    		if(args[2].equalsIgnoreCase("importer") || args[2].equalsIgnoreCase("i"))
 	    		{
-	    			Shop shop = dbh.getShop(3);
-		    		//System.out.println(shop.size());
-		    		eb.clear();
-	    			eb.setColor(Color.green);
-	    			List<Component> components = shop.getComponentsForSale().getItems();
-	    			eb.setTitle(shop.getName());
-	    			eb.setDescription(shop.getDescription());
-	    			
-		    		for(int i=0; i<components.size();i++)
-		    		{
+	    			if(args.length > 3)
+    				{
+    					if(args[3].equalsIgnoreCase("buy") || args[3].equalsIgnoreCase("b")) {
+    						if(args.length > 4)
+    	    				{
+    							int id = Integer.parseInt(args[4]);
+    							Shop shop = dbh.getShop(0);
+    							List<Component> components = shop.getComponentsForSale().getItems();
+    							try
+    							{
+    								Player player = dbh.getPlayer(event.getAuthor().getId());
+	    							if(player.getCredits() >= components.get(id).getValue())
+	    							{
+	    								player.setCredits(player.getCredits()-components.get(id).getValue());
+	    								player.getOwnedComponents().add(components.get(id));
+	    								dbh.updateUser(player);
+	    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
+	    							}else {
+	    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
+	    							}
+    								
+    							}catch(Exception e){
+    								System.out.println("Error performing transaction: "+ e.getMessage());
+    							}
+    							
+    							event.getChannel().sendMessage(""+id).queue();
+    							
+    	    				}else {
+    	    					event.getChannel().sendMessage("Please try again with an id.").queue();
+    	    				}
+    					}
+    				}else {
+    					Shop shop = dbh.getShop(0);
+			    		//System.out.println(shop.size());
+			    		eb.clear();
+		    			eb.setColor(Color.green);
+		    			List<Component> components = shop.getComponentsForSale().getItems();
+		    			eb.setTitle(shop.getName());
+		    			eb.setDescription(shop.getDescription());
 		    			
-		    			//TODO: use the iterator function instead?
-		    			System.out.println(components.size());
-		    					
-		    			Field field = new Field(components.get(i).getName(), components.get(i).toString(), true);
-    					eb.addField(field);
-		    					
-		    		}
-		    		event.getChannel().sendMessage(eb.build()).queue();
+			    		for(int i=0; i<components.size();i++)
+			    		{
+			    			
+			    			//TODO: use the iterator function instead?
+			    			//System.out.println(components.size());
+			    					
+			    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+	    					eb.addField(field);
+			    					
+			    		}
+			    		event.getChannel().sendMessage(eb.build()).queue();
+    				}
+    					
 	    		}
     		}
 	    	if (args[1].equalsIgnoreCase("event")) {
@@ -816,40 +883,61 @@ public class Commands extends ListenerAdapter {
 			}
 	 }
 	}
+	 /*
+	  * Fomat String using Markup language.
+	  */
 	 public String formatText(String style,String text)
 	 {
 		 String styledText = text;
+		 //Italic
 		 if(style == "i")
 		 {
 			 styledText = "*"+ text + "*";
 		 }
+		 //Bold
 		 if(style == "b")
 		 {
 			 styledText = "**"+ text + "**";
 		 }
+		 //Underline
 		 if(style == "u")
 		 {
 			 styledText = "__"+ text + "__";
 		 }
+		 //Strikethrough
 		 if(style == "s")
 		 {
 			 styledText = "~~"+ text + "~~";
 		 }
+		 //Bold Italics
 		 if(style == "bi")
 		 {
 			 styledText = "***"+ text + "***";
 		 }
+		 //Underline Italics
 		 if(style == "ui")
 		 {
 			 styledText = "___*"+ text + "*__";
 		 }
-		 if(style == "bi")
+		 //Underline Bold
+		 if(style == "ub")
 		 {
 			 styledText = "___**"+ text + "**__";
 		 }
+		 //Underline Bold Italics
 		 if(style == "ubi")
 		 {
 			 styledText = "___***"+ text + "***__";
+		 }
+		 //Code Text
+		 if(style == "c")
+		 {
+			 styledText = "`"+ text + "`";
+		 }
+		 //Code Block
+		 if(style == "cb")
+		 {
+			 styledText = "```"+ text + "```";
 		 }
 		 return styledText;
 	 }
@@ -862,6 +950,84 @@ public class Commands extends ListenerAdapter {
 	 {
 		 gph = gp;
 	 }
+	 
+	 
+	 /*
+	  * Convert a Player class into a formatted embed.
+	  */
+	 public EmbedBuilder printPlayer(Player p,GuildMessageReceivedEvent event)
+	 {
+		 eb.clear();
+			eb.setTitle(p.getUsername()+"'s Profile: ");
+			eb.setColor(Color.green);
+			eb.setThumbnail(event.getAuthor().getAvatarUrl());
+			eb.addField(formatText("b","Credits: "),formatText("cb",p.getCredits()+""),false);
+			
+			if(p.getActiveDriver() != null) {
+				eb.addField(formatText("b","Active Driver: "),
+						formatText("cb",p.getActiveDriver().getName()),true);
+			}
+			eb.addBlankField(true);
+			if(p.getActiveDriver() != null) {
+				eb.addField(formatText("b","Active Car: "),
+						formatText("cb","Active Car Set"),true);
+			}else {
+				eb.addField(formatText("b","Active Car: "),
+						formatText("cb","No Active Car Set"),true);
+			}
+			
+			eb.addField(formatText("b","Racing Stats: "),
+					formatText("cb","Total Wins: "+ p.getTotalWins()
+			+ "\nTotal Losses: " + p.getTotalLosses()),true);
+			
+			eb.addField(formatText("b","Number of items owned: "),
+					formatText("cb","# of Components: "+ p.getOwnedComponents().getItems().size() +
+							"\n# of Cars: "+p.getOwnedCars().getItems().size() +
+							"\n# of Drivers: "+p.getOwnedDrivers().getItems().size()),true);
+			
+
+ 		//eb.addField("Title of field", "test of field", false);
+ 		eb.setFooter("\u3000".repeat(50));
+		return eb; 
+	 }
+	 
+	 public EmbedBuilder printComponent(Component c, GuildMessageReceivedEvent event)
+	 {
+		eb.clear();
+		eb.setTitle(c.getName());
+		eb.setThumbnail(c.getThumbnailURL());
+		eb.addField("Quality: ", formatText("cb",c.getQuality()),false);
+		eb.addField("Durability: ",formatText("cb",c.getDurability() +"/"+c.getMaxDurability()) ,true);
+		eb.addField("Value: ", formatText("cb", c.getValue()+""),true);
+		eb.addField("Weight: ",formatText("cb", c.getWeight()+""),true);
+		if(c instanceof EngineComponent)
+		{
+			eb.addField("Speed: ",formatText("cb", ((EngineComponent) c).getSpeed()+""),true);	
+		}
+		if(c instanceof ChassisComponent)
+		{
+			eb.addField("Popularity Modifier: ",formatText("cb", ((ChassisComponent) c).getPopularityModifier()+""),true);
+			eb.addField("Acceleration Modifier: ",formatText("cb", ((ChassisComponent) c).getAccelerationModifier()+""),true);	
+			eb.addField("Speed Modifier: ",formatText("cb", ((ChassisComponent) c).getSpeedModifier()+""),true);	
+			eb.addField("Handling Modifier: ",formatText("cb", ((ChassisComponent) c).getHandlingModifier()+""),true);
+			eb.addField("Breaking Modifier: ",formatText("cb", ((ChassisComponent) c).getBrakingModifier()+""),true);	
+		}
+		if(c instanceof SuspensionComponent)
+		{
+			eb.addField("Handling: ",formatText("cb", ((SuspensionComponent) c).getHandling()+""),true);	
+		}
+		if(c instanceof TransmissionComponent)
+		{
+			eb.addField("Acceleration: ",formatText("cb", ((TransmissionComponent) c).getAcceleration()+""),true);	
+		}
+		if(c instanceof WheelComponent)
+		{
+			eb.addField("Breaking: ",formatText("cb", ((WheelComponent) c).getBraking()+""),true);	
+		}
+			
+		return eb;
+	 }
+	 
 	 /**
 	  * @return returns a short description of the object.
 	  */
