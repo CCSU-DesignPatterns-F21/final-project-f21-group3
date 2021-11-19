@@ -90,17 +90,19 @@ public class Standings {
 		
 		// Sort the racers who have finished by timeCompleted, then if there's a tie randomly pick one.
 		TimeCompletedComparator timeCompletedComparator = new TimeCompletedComparator();
-		Collections.sort(finished, timeCompletedComparator);
-		for (int i = 1, len = finished.size()-1; i < len; i++) {
-			if (finished.get(i-1).getTimeCompleted() == finished.get(i).getTimeCompleted()) {
-				int rand = ThreadLocalRandom.current().nextInt(0, 2);
-				if (rand == 1) {
-					Collections.swap(finished, i-1, i);
+		if (finished.size() > 0) {
+			Collections.sort(finished, timeCompletedComparator);
+			for (int i = 1, len = finished.size()-1; i < len; i++) {
+				if (finished.get(i-1).getTimeCompleted() == finished.get(i).getTimeCompleted()) {
+					int rand = ThreadLocalRandom.current().nextInt(0, 2);
+					if (rand == 1) {
+						Collections.swap(finished, i-1, i);
+					}
+					finished.get(i-1).setPosition(i); // Set the driver's position in the race
 				}
-				finished.get(i-1).setPosition(i); // Set the driver's position in the race
 			}
+			finished.get(finished.size()-1).setPosition(finished.size()-1);
 		}
-		finished.get(finished.size()-1).setPosition(finished.size()-1);
 		
 		// Sort the racers who are still currently racing.
 		DistanceTraveledComparator distanceTraveledComparator = new DistanceTraveledComparator();

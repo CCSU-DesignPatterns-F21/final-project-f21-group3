@@ -56,7 +56,6 @@ public class Normal extends Racing {
 	public void rollDriverState() {
 		super.refreshFromDB();
 		
-		// TODO Auto-generated method stub
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			// Driver has crashed
@@ -70,22 +69,24 @@ public class Normal extends Racing {
 		}
 		else if (roll < 60) {
 			// Driver remains in the Normal state.
-			this.raceStep(this.getDriver());
+			//this.raceStep(this.getDriver());
 		}
 		else if (roll < 80) {
 			// Driver is now driving defensively.
 			this.getDriver().setState(new Defensive(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack()));
-			this.getDriver().getState().raceStep(this.getDriver());
+			//this.getDriver().getState().raceStep(this.getDriver());
 		}
 		else {
 			// Driver is now driving aggressively.
 			this.getDriver().setState(new Aggressive(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack()));
-			this.getDriver().getState().raceStep(this.getDriver());
+			//this.getDriver().getState().raceStep(this.getDriver());
 		}
 	}
 
 	@Override
 	public String raceStep(Driver driver) {
+		super.refreshFromDB();
+		
 		int corneringDist = this.rollCornerDistance(this.getMultiplier());
 		int straightDist = this.rollStraightDistance(this.getMultiplier());
 		this.setCornerDistance(corneringDist);

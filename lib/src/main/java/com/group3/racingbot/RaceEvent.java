@@ -157,14 +157,19 @@ public class RaceEvent {
 	 * Lets each driver perform a step on the race track to advance forward or run down an idle timer.
 	 */
 	public String stepAllDrivers() {
+		DBHandler dbh = DBHandler.getInstance();
+		
 		this.incrementTimeElapsed(); // Advance time
 		Iterator<DriverStanding> driverIterator = standings.iterator();
 		String stepResult = "";
 		while (driverIterator.hasNext()) {
 			DriverStanding currentDriverStanding = driverIterator.next();
 			if (currentDriverStanding.getDriver().getState() instanceof Racing) {
-				// Allow the driver to make their move on the track
+				// First, roll to see which state the driver will fall into this step.
 				Racing currentDriverState = (Racing) currentDriverStanding.getDriver().getState();
+				currentDriverState.rollDriverState();
+				
+				// Allow the driver to make their move on the track
 				stepResult += currentDriverStanding.getDriver().raceStep() + "\n";
 				
 				// Update the total distance traveled to later find out the position of this driver in the race.
@@ -174,6 +179,8 @@ public class RaceEvent {
 				this.standings.updateStandings();
 			}	
 		}
+		// Update the db with the details of the standings.
+		dbh.updateRaceEvent(this);
 		return stepResult;
 	}
 	

@@ -54,7 +54,6 @@ public class Aggressive extends Racing {
 	public void rollDriverState() {
 		super.refreshFromDB();
 		
-		// TODO Auto-generated method stub
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			// Driver has crashed
@@ -84,7 +83,8 @@ public class Aggressive extends Racing {
 
 	@Override
 	public String raceStep(Driver driver) {
-		// TODO Auto-generated method stub
+		super.refreshFromDB();
+		
 		int corneringDist = this.rollCornerDistance(this.getMultiplier());
 		int straightDist = this.rollStraightDistance(this.getMultiplier());
 		this.setCornerDistance(corneringDist);

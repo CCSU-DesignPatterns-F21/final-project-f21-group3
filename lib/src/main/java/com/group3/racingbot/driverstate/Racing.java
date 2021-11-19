@@ -438,8 +438,8 @@ public abstract class Racing implements DriverState {
 			}
 		}
 		
-		// Sets both the race event and race track objects if needed.
-		if (this.raceEvent == null || this.raceTrack == null) {
+		// Sets the race event, race track, and current node objects if needed.
+		if (this.raceEvent == null || this.raceTrack == null || this.currentNode == null) {
 			// Verify that the race event still exists.
 			if (!dbh.raceEventExists(this.raceEventId)) {
 				System.out.println("Race event " + this.raceEventId + " does not exist. Attempting to change the state of Driver " + this.driverId + " to a resting state.");
@@ -460,6 +460,7 @@ public abstract class Racing implements DriverState {
 				// Get the race event's race event and race track
 				this.raceEvent = dbh.getRaceEvent(this.raceEventId);
 				this.raceTrack = this.raceEvent.getRaceTrack();
+				this.currentNode = this.raceTrack.obtainFirstNode();
 			}
 		}
 		

@@ -54,7 +54,8 @@ public class Defensive extends Racing {
 
 	@Override
 	public void rollDriverState() {
-		// TODO Auto-generated method stub
+		super.refreshFromDB();
+		
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			// Driver has crashed
@@ -84,7 +85,8 @@ public class Defensive extends Racing {
 
 	@Override
 	public String raceStep(Driver driver) {
-		// TODO Auto-generated method stub
+		super.refreshFromDB();
+		
 		int corneringDist = this.rollCornerDistance(this.getMultiplier());
 		int straightDist = this.rollStraightDistance(this.getMultiplier());
 		this.setCornerDistance(corneringDist);
@@ -98,7 +100,7 @@ public class Defensive extends Racing {
 		}
 		this.getRaceTrack().progressForward(super.getDriver(), distanceToCover);
 		super.setTotalDistanceTraveled(super.getTotalDistanceTraveled() + distanceToCover);
-		return "Driver: " + driver.getName() + " | " + this.getRaceTrack().currentProgressToString() + " | Distance covered this turn: " + distanceToCover;
+		return "Driver: " + driver.getName() + " | " + this.getRaceTrack().currentProgressToString() + " | Distance covered this turn: " + distanceToCover + " | Current state: " + super.getDriver().getState().toString();
 	}
 	
 	@Override
