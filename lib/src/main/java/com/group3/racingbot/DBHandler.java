@@ -309,7 +309,12 @@ public class DBHandler {
 	 * @param p Player object, will replace a Player database record with the one passed in. 
 	 */
 	public void updateUser(Player p) {
-		userCollection.findOneAndReplace(eq("_id",p.getId()), p);
+		try {
+			userCollection.findOneAndReplace(eq("_id",p.getId()), p);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

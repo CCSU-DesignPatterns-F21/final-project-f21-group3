@@ -437,25 +437,38 @@ public class Commands extends ListenerAdapter {
 	    			if(args[3].equalsIgnoreCase("register")) {
 	    				// Register a user to an event	
     					Player p = dbh.getPlayer(user.getId());
-    					if (p.obtainActiveDriver() == null) {
+    					Driver activeDriver = null;
+    					Car activeCar = null;
+    					if (p == null) {
+    						event.getChannel().sendMessage("User does not exist. Cannot sign up for race.").queue();
+    						return;
+    					}
+    					
+    					activeDriver = p.obtainActiveDriver();
+    					activeCar = p.obtainActiveCar();
+    					
+    					if (activeDriver == null) {
     						event.getChannel().sendMessage("User does not have an active driver or the driver doesn't exist in the inventory. Cannot sign up for race.").queue();
+    						return;
     					}
-    					else if (p.obtainActiveCar() == null) {
+    					else if (activeCar == null) {
     						event.getChannel().sendMessage("User does not have an active car or the car doesn't exist in the inventory. Cannot sign up for race.").queue();
+    						return;
     					}
-    					else if (p.obtainActiveCar().getDurability() == 0) {
+    					
+    					if (activeCar.getDurability() == 0) {
     						event.getChannel().sendMessage("User's car is currently totaled. Cannot sign up for race.").queue();
     					}
-    					else if (p.obtainActiveDriver().getState() instanceof Training) {
+    					else if (activeDriver.getState() instanceof Training) {
     						event.getChannel().sendMessage("User's driver is currently training. Cannot sign up for race.").queue();
     					}
-    					else if (p.obtainActiveDriver().getState() instanceof RacePending) {
+    					else if (activeDriver.getState() instanceof RacePending) {
     						event.getChannel().sendMessage("User's driver is currently signed up for an event. Cannot sign up for race.").queue();
     					}
-    					else if (p.obtainActiveDriver().getState() instanceof Completed) {
+    					else if (activeDriver.getState() instanceof Completed) {
     						event.getChannel().sendMessage("User's driver needs to collect reward from previous event. Cannot sign up for race.").queue();
     					}
-    					else if (p.obtainActiveDriver().getState() instanceof Racing) {
+    					else if (activeDriver.getState() instanceof Racing) {
     						event.getChannel().sendMessage("User's driver is currently racing. Cannot sign up for race.").queue();
     					}
     					else {
@@ -481,19 +494,30 @@ public class Commands extends ListenerAdapter {
     	    					event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
     	    				}
     	    				else {
-    	    					// Update the driver
-	    						Driver activeDriver = p.obtainActiveDriver();
-	    						Car activeCar = p.obtainActiveCar();
-	    						activeDriver.signUpForRace(activeCar, eventToRegisterFor);
-	    						if (p.getOwnedDrivers().update(activeDriver)) {
-	    							dbh.updateUser(p);
-	    						}
-	    						else {
-	    							event.getChannel().sendMessage("Unable to register user for the event").queue();
+    	    					try {
+	    	    					// Update the driver
+		    						activeDriver.signUpForRace(activeCar, eventToRegisterFor);
+		    						if (p.getOwnedDrivers().update(activeDriver)) {
+		    							dbh.updateUser(p);
+		    						}
+		    						else {
+		    							event.getChannel().sendMessage("Unable to register user for the event").queue();
+		    						}
+		    						
+		    						// Update the race event
+		    						
+		    						eventToRegisterFor.getStandings().addDriver(p.getId(), activeDriver.getId());
+	    						} catch (Exception e ) {
+	    							StackTraceElement[] stktrace = e.getStackTrace();
+	    							
+	    							String printResult = e.getCause().toString();
+		    			            // print element of stktrace
+		    			            for (int i = 0; i < stktrace.length; i++) {
+		    			            	printResult += "\nIndex " + i + " of stack trace" + " array conatins = " + stktrace[i].toString();
+		    			            }
+		    			            System.out.println(printResult);
 	    						}
 	    						
-	    						// Update the race event
-	    						eventToRegisterFor.getStandings().addDriver(p.getId(), activeDriver.getId());
 	    						dbh.updateRaceEvent(eventToRegisterFor);
 	    						if (!specifiedRaceEvent) {
 	    							// Update local race event

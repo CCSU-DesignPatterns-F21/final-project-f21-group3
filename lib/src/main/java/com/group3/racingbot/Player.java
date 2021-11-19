@@ -227,6 +227,7 @@ public class Player {
 	public Driver obtainActiveDriver() {
 		try {
 			Driver activeDriver = this.getOwnedDrivers().getById(this.getActiveDriverId());
+			System.out.println("Active driver " + activeDriver.getId() +  " found in inventory.");
 			return activeDriver;
 		}
 		catch(NotFoundException e) {

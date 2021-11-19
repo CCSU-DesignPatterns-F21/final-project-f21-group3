@@ -361,14 +361,14 @@ public class Driver {
 	 * @param intensity
 	 */
 	public void beginTraining(Skill skillToTrain, Intensity intensity) {
-		this.getState().beginTraining(this, skillToTrain, intensity);
+		this.state.beginTraining(this, skillToTrain, intensity);
 	}
 	
 	/**
 	 * Enters the driver into a racing state.
 	 */
 	public void beginRace() {
-		this.getState().beginRace();
+		this.state.beginRace();
 	}
 	
 	/**
@@ -376,14 +376,14 @@ public class Driver {
 	 */
 	public void signUpForRace(Car car, RaceEvent raceEvent) {
 		System.out.println(this);
-		//this.getState().signUpForRace(this, car, raceEvent);
+		this.state.signUpForRace(this, car, raceEvent);
 	}
 	
 	/**
 	 * When there is a reward to collect, the Driver will be in a Completed state. This will collect a reward and add the reward where it fits. For example, if the Driver finished training, then collecting the reward will add skill points to the Driver.
 	 */
 	public void collectReward() {
-		this.getState().collectReward();
+		this.state.collectReward();
 	}
 	
 	/**
@@ -391,7 +391,7 @@ public class Driver {
 	 * @return the success of race withdrawal
 	 */
 	public boolean withdrawFromRace() {
-		return this.getState().withdrawFromRace(this);
+		return this.state.withdrawFromRace(this);
 	}
 	
 	/**
@@ -399,21 +399,21 @@ public class Driver {
 	 * @return where the driver currently is on the track.
 	 */
 	public String raceStep() {
-		return this.getState().raceStep(this);
+		return this.state.raceStep(this);
 	}
 	
 	/**
 	 * Once the Driver completes the race, this will move the Driver to a Completed state.
 	 */
 	public void completedRace() {
-		this.getState().completedRace(this);
+		this.state.completedRace(this);
 	}
 	
 	/**
 	 * Once the Driver completes a training session, this will move the Driver to a Completed state.
 	 */
 	public void completedTraining() {
-		this.getState().completedTraining(this);
+		this.state.completedTraining(this);
 	}
 	
 	@Override

@@ -34,20 +34,20 @@ public class RacePending implements DriverState {
 	
 	/**
 	 * Commit a driver to a race that will start sometime soon.
-	 * @param driver
-	 * @param car
-	 * @param raceEvent
+	 * @param driverId
+	 * @param carId
+	 * @param raceEventId
 	 */
 	@BsonCreator
-	public RacePending(@BsonProperty("driver") Driver driver, @BsonProperty("car") Car car, @BsonProperty("raceEvent") RaceEvent raceEvent) {
-		this.player = driver.getPlayer();
-		this.playerId = driver.getPlayer().getId();
-		this.driver = driver;
-		this.driverId = driver.getId();
-		this.car = car;
-		this.carId = car.getId();
-		this.raceEvent = raceEvent;
-		this.raceEventId = raceEvent.getId();
+	public RacePending(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId) {
+		this.player = null;
+		this.playerId = playerId;
+		this.driver = null;
+		this.driverId = driverId;
+		this.car = null;
+		this.carId = carId;
+		this.raceEvent = null;
+		this.raceEventId = raceEventId;
 	}
 	
 	/**
@@ -210,40 +210,12 @@ public class RacePending implements DriverState {
 	
 	@Override
 	public void beginRace() {
-		DBHandler dbh = DBHandler.getInstance();
-		// If in RacePending state and all fields are not null, then race!
-		if (this.getDriver() == null) {
-			// The server could have restarted and the instance of this class may only hold the id's
-			// In this case, retrieve all necessary info from the database.
-			this.player = dbh.getPlayer(this.playerId);
-			//this.driver = this.player.getOwnedDrivers().getById(this.driverId);
-			
-			if (this.player != null && this.driver == null) {
-				System.out.println("Driver is missing from Database. Removing this ");
-				return;
-			}
-		}
-		
-		if (this.getCar() != null) {
-			if(this.getRaceEventId() != null) {
-				// TODO: get race track from the race event in the database.
-				RaceTrack raceTrack = null; // Initialize the race track
-				if (dbh.raceEventExists(this.getRaceEventId())) {
-					// We now know the event exists.
-					// Obtain the race track from the database.
-					raceTrack = dbh.getRaceEvent(this.getRaceEventId()).getRaceTrack();
-					this.getDriver().setState(new Normal(this.getDriver(), this.getCar(), raceTrack, this.getRaceEventId()));
-				}
-				else {
-					System.out.println("Cannot enter race, that race event does not exist.");
-				}
-			}
-			else {
-				System.out.println("Cannot enter race, no race event has been chosen."); 
-			}
+		// Ensure that all necessary data can be pulled using id's from the database.
+		if (refreshFromDB()) {
+			this.getDriver().setState(new Normal(this.playerId, this.driverId, this.carId, this.raceEventId, raceEvent.getRaceTrack()));
 		}
 		else {
-			System.out.println("Cannot enter race, no car has been chosen to race."); 
+			System.out.println("Unable to enter into a race, values in the database may have been deleted which prevents Driver " + this.driverId + " from participating in RaceEvent " + this.raceEventId + ".");
 		}
 	}
 
@@ -255,6 +227,8 @@ public class RacePending implements DriverState {
 
 	@Override
 	public boolean withdrawFromRace(Driver driver) {
+		refreshFromDB();
+		
 		DBHandler dbh = DBHandler.getInstance();
 		Player p = driver.getPlayer();
 		Driver updatedDriver = driver;

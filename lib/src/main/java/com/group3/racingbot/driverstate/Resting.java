@@ -58,7 +58,8 @@ public class Resting implements DriverState {
 		long now = d.getTime();
 		
 		if (now > driver.getCooldown()) {
-			driver.setState(new RacePending(driver, car, raceEvent));
+			DriverState racePendingState = new RacePending(driver.getPlayer().getId(), driver.getId(), car.getId(), raceEvent.getId());
+			driver.setState(racePendingState);
 		}
 	}
 	

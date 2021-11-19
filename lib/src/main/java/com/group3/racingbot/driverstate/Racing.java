@@ -17,6 +17,7 @@ import com.group3.racingbot.racetrack.TrackNode;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 
@@ -52,18 +53,20 @@ public abstract class Racing implements DriverState {
 	private int totalDistanceTraveled; // Used to compare with other drivers to determine position.
 	private TrackNode currentNode;
 
-	public Racing(Driver driver, Car car, RaceTrack raceTrack, String raceEventId) {
-		this.player = driver.getPlayer();
-		this.playerId = driver.getPlayer().getId();
-		this.driver = driver;
-		this.driverId = driver.getId();
-		this.car = car;
-		this.carId = car.getId();
+	@BsonCreator
+	public Racing(String playerId, String driverId, String carId, String raceEventId, RaceTrack raceTrack) {
+		this.player = null;
+		this.playerId = playerId;
+		this.driver = null;
+		this.driverId = driverId;
+		this.car = null;
+		this.carId = carId;
 		this.raceTrack = raceTrack;
 		this.raceEventId = raceEventId;
 		this.straightDistance = 0;
 		this.cornerDistance = 0;
 		this.totalDistanceTraveled = 0;
+		this.currentNode = null;
 		//this.position = 1;
 	}
 	

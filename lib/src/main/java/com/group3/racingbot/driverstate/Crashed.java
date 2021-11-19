@@ -22,8 +22,8 @@ public class Crashed extends Racing {
 	 * @param car the car which is damaged by entering this state
 	 * @param raceEvent the driver stays put in one of the track nodes on the track in this event
 	 */
-	public Crashed(Driver driver, Car car, RaceTrack raceTrack, String raceEventId) {
-		super(driver, car, raceTrack, raceEventId);
+	public Crashed(String playerId, String driverId, String carId, String raceEventId, RaceTrack raceTrack) {
+		super(playerId, driverId, carId, raceEventId, raceTrack);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class Crashed extends Racing {
 		int lowerBound = (int) Math.floor(this.getDriver().getRecovery()/5);
 		int recoveryRoll = ThreadLocalRandom.current().nextInt(lowerBound, 100);
 		if (recoveryRoll > 75) {
-			this.getDriver().setState(new Normal(this.getDriver(), this.getCar(), this.getRaceTrack(), this.getRaceEventId()));
+			this.getDriver().setState(new Normal(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack()));
 		}
 	}
 

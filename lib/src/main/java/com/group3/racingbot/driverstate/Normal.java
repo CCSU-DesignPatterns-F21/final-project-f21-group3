@@ -28,8 +28,8 @@ public class Normal extends Racing {
 	 * @param car calculate how far the Driver will travel per time unit
 	 * @param raceEvent carries event reward info into the completed stages
 	 */
-	public Normal(Driver driver, Car car, RaceTrack raceTrack, String raceEventId) {
-		super(driver, car, raceTrack, raceEventId);
+	public Normal (String playerId, String driverId, String carId, String raceEventId, RaceTrack raceTrack) {
+		super(playerId, driverId, carId, raceEventId, raceTrack);
 		this.multiplier = 1.0;
 	}
 	
@@ -51,13 +51,15 @@ public class Normal extends Racing {
 
 	@Override
 	public void rollDriverState() {
+		super.refreshFromDB();
+		
 		// TODO Auto-generated method stub
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			// Driver has crashed
 			crash(this.getCar());
 			if (this.getCar().getDurability() > 0) {
-				this.getDriver().setState(new Crashed(this.getDriver(), this.getCar(), this.getRaceTrack(), this.getRaceEventId()));
+				this.getDriver().setState(new Crashed(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack()));
 			}
 			else {
 				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEvent()));
@@ -69,12 +71,12 @@ public class Normal extends Racing {
 		}
 		else if (roll < 80) {
 			// Driver is now driving defensively.
-			this.getDriver().setState(new Defensive(this.getDriver(), this.getCar(), this.getRaceTrack(), this.getRaceEventId()));
+			this.getDriver().setState(new Defensive(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack()));
 			this.getDriver().getState().raceStep(this.getDriver());
 		}
 		else {
 			// Driver is now driving aggressively.
-			this.getDriver().setState(new Aggressive(this.getDriver(), this.getCar(), this.getRaceTrack(), this.getRaceEventId()));
+			this.getDriver().setState(new Aggressive(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack()));
 			this.getDriver().getState().raceStep(this.getDriver());
 		}
 	}

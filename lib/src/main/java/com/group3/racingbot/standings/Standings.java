@@ -147,12 +147,12 @@ public class Standings {
 		
 		for (int i = 0, len = this.standings.size()-1; i < len; i++) {
 			if (this.standings.get(i).getDriverId().equals(driverId)) {
-				System.out.println("Unable to add driver. Driver already exists in the event.");
+				System.out.println("Standings; addDriver method: Unable to add driver. Driver " + driverId + " already exists in the event.");
 				return;
 			}
 		}
 		this.standings.add(new DriverStanding(playerId, driverId));
-		System.out.println("Driver added");
+		System.out.println("Standings; addDriver method: Driver " + driverId + " added to the standings of a race event");
 	}
 
 	/**
