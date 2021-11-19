@@ -51,19 +51,43 @@ public class DriverInventory implements Inventory<Driver>{
 	/**
 	 * Updates a driver in the inventory
 	 * @param driver
-	 * @throws NotFoundException 
+	 * @return whether or not the update was successful
 	 */
-	public void update(Driver driver) throws NotFoundException {
+	public boolean update(Driver driver) {
 		InventoryIterator<Driver> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			int currentIndex = iterator.getCurrentIndex();
 			Driver currentDriver = iterator.next();
 			if (currentDriver.getId().equals(driver.getId())) {
 				this.items.set(currentIndex, driver);
-				return;
+				System.out.println("DriverInventory; update method: Driver " + driver.getId() + " has been updated in the driver inventory of Player " + driver.getPlayer().getId() + ".");
+				return true;
 			}
 		}
-		throw new NotFoundException("Unable to find the driver with the id: " + driver.getId());
+		System.out.println("DriverInventory; update method: Unable to find the driver with the id: " + driver.getId());
+		return false;
+		//throw new NotFoundException("Unable to find the driver with the id: " + driver.getId());
+	}
+	
+	/**
+	 * Updates a driver in the inventory at a specified index.
+	 * @param driver
+	 * @param index
+	 */
+	public boolean update(Driver driver, int index) {
+		try {
+			this.items.set(index, driver);
+			System.out.println("DriverInventory; update method: Driver " + driver.getId() + " has been updated in the driver inventory of Player " + driver.getPlayer().getId() + ".");
+			return true;
+		}
+		catch (IndexOutOfBoundsException e) {
+			System.out.println("DriverInventory; update method: Given index out of bounds. Unable update Driver at index " + index + " in the driver inventory of Player " + driver.getPlayer().getId() + ".");
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	/**

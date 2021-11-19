@@ -30,6 +30,7 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.TrackNode;
@@ -327,6 +328,22 @@ public class DBHandler {
 	 */
 	public Player getPlayer(String id) {
 		Player player = (Player) userCollection.find(eq("_id",id)).first();
+		if (player != null) {
+			// Add the player object to each item in the driver inventory.
+			// The player object isn't stored for every driver in the database, 
+			// so we must do it here to avoid the player attribute in each driver pointing to null.
+			InventoryIterator<Driver> driverIterator = player.getOwnedDrivers().iterator();
+			int i = 0;
+			Driver currentDriver = null;
+			while (driverIterator.hasNext()) {
+				i = driverIterator.getCurrentIndex();
+				currentDriver = driverIterator.next();
+				currentDriver.setPlayer(player);
+				if (!player.getOwnedDrivers().update(currentDriver, i)) {
+					System.out.println("Unable to update Driver " + currentDriver.getId() + " in the driver inventory with the Player object for Player " + player.getId());
+				}
+			}
+		}
 		return player;
 	}
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.group3.racingbot.Car;
+import com.group3.racingbot.Driver;
 import com.group3.racingbot.ComponentFactory.Component;
 
 /**
@@ -48,20 +49,44 @@ public class ComponentInventory implements Inventory<Component>{
 	
 	/**
 	 * Updates a component in the inventory
-	 * @param component
-	 * @throws NotFoundException 
+	 * @param car
+	 * @return whether or not the update was successful
+	 * @throws NotFoundException
 	 */
-	public void update(Component component) throws NotFoundException {
+	public boolean update(Component component) {
 		InventoryIterator<Component> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			int currentIndex = iterator.getCurrentIndex();
-			Component currentComponent = iterator.next();
-			if (currentComponent.getId().equals(component.getId())) {
+			Component currentCar = iterator.next();
+			if (currentCar.getId().equals(component.getId())) {
 				this.items.set(currentIndex, component);
-				return;
+				System.out.println("ComponentInventory; update method: Component " + component.getId() + " has been updated in a component inventory.");
+				return true;
 			}
 		}
-		throw new NotFoundException("Unable to find the driver with the id: " + component.getId());
+		System.out.println("ComponentInventory; update method: Unable to find the component with the id: " + component.getId());
+		return false;
+	}
+	
+	/**
+	 * Updates a component in the inventory at a specified index.
+	 * @param component
+	 * @param index
+	 */
+	public boolean update(Component component, int index) {
+		try {
+			this.items.set(index, component);
+			System.out.println("ComponentInventory; update method: Component " + component.getId() + " has been updated in a component inventory.");
+			return true;
+		}
+		catch (IndexOutOfBoundsException e) {
+			System.out.println("ComponentInventory; update method: Given index out of bounds. Unable update Component at index " + index + " in a component inventory.");
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	/**

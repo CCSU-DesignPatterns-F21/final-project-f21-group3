@@ -22,6 +22,7 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.CarInventory;
+import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.RaceTrack;
@@ -171,13 +172,24 @@ public class Commands extends ListenerAdapter {
 		    			
 		    		}else {
 		    			event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
+		    			
+		    			// Create the new player
 		    			Player p = new Player();
 		    			p.setId(user.getId());
 		    			p.setUsername(user.getUser().getName());
 		    			p.setLastWorked(0);
+		    			
+		    			// Attach the player id and player object to the default driver
+		    			DriverInventory driverInventory = p.getOwnedDrivers();
+		    			Driver defaultDriver = driverInventory.getItems().get(0);
+		    			defaultDriver.setPlayer(p);
+		    			defaultDriver.setPlayerId(p.getId());
+		    			driverInventory.getItems().set(0, defaultDriver);
+		    			p.setOwnedDrivers(driverInventory);
+		    			
 		    			dbh.insertUser(p);
 		    			eb.setThumbnail(user.getUser().getAvatarUrl());
-		    			eb.setTitle("User Already Exists!");
+		    			eb.setTitle("Welcome " + p.getUsername() + "!");
 		    			eb.setColor(Color.green);
 			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
 			    				+ "\n Total Losses: " + p.getTotalLosses()
@@ -473,12 +485,10 @@ public class Commands extends ListenerAdapter {
 	    						Driver activeDriver = p.obtainActiveDriver();
 	    						Car activeCar = p.obtainActiveCar();
 	    						activeDriver.signUpForRace(activeCar, eventToRegisterFor);
-	    						try {
-	    							p.getOwnedDrivers().update(activeDriver);
+	    						if (p.getOwnedDrivers().update(activeDriver)) {
 	    							dbh.updateUser(p);
 	    						}
-	    						catch(NotFoundException e) {
-	    							e.printStackTrace();
+	    						else {
 	    							event.getChannel().sendMessage("Unable to register user for the event").queue();
 	    						}
 	    						
@@ -501,12 +511,11 @@ public class Commands extends ListenerAdapter {
     					if (p.obtainActiveDriver() != null) {
     						Driver activeDriver = p.obtainActiveDriver();
     						activeDriver.withdrawFromRace();
-    						try {
-    							p.getOwnedDrivers().update(activeDriver);
+    						
+    						if (p.getOwnedDrivers().update(activeDriver)) {
     							dbh.updateUser(p);
     						}
-    						catch (NotFoundException e) {
-    							e.printStackTrace();
+    						else {
     							event.getChannel().sendMessage("Unable to withdraw user from the event").queue();
     						}
     						
@@ -522,12 +531,11 @@ public class Commands extends ListenerAdapter {
 	    				if (p.obtainActiveDriver() != null) {
     						Driver activeDriver = p.obtainActiveDriver();
     						activeDriver.setState(new Resting());
-    						try {
-    							p.getOwnedDrivers().update(activeDriver);
+    						
+    						if (p.getOwnedDrivers().update(activeDriver)) {
     							dbh.updateUser(p);
     						}
-    						catch (NotFoundException e) {
-    							e.printStackTrace();
+    						else {
     							event.getChannel().sendMessage("Unable to withdraw user from the event").queue();
     						}
     						
@@ -546,15 +554,13 @@ public class Commands extends ListenerAdapter {
 	    					Driver currentDriver = driverIterator.next().getDriver();
 	    					Player p = dbh.getPlayer(currentDriver.getPlayerId());
 	    					currentDriver.beginRace();
-	    					try {
-	    						p.getOwnedDrivers().update(currentDriver);
+	    					if (p.getOwnedDrivers().update(currentDriver)) {
     							dbh.updateUser(p);
-	    					}
-	    					catch (NotFoundException e) {
-	    						e.printStackTrace();
-	    						raceCanBegin = false;
-	    						event.getChannel().sendMessage("Unable to update driver with id: " + currentDriver.getId() +". Unable to begin race.").queue();
-	    					}
+    						}
+    						else {
+    							raceCanBegin = false;
+    							event.getChannel().sendMessage("Unable to update driver with id: " + currentDriver.getId() +". Unable to begin race.").queue();
+    						}
 	    				}
 	    				
 	    				// If there were any issues updating the states of any of the drivers, don't begin the race.
@@ -599,7 +605,7 @@ public class Commands extends ListenerAdapter {
 	    				Driver createdDriver = new Driver(driverName);
 	    				createdDriver.setId(dbh.generateId(6));
 	    				createdDriver.setPlayer(p);
-	    				createdDriver.setPlayerId(user.getId());
+	    				createdDriver.setPlayerId(p.getId());
 	    				p.getOwnedDrivers().add(createdDriver);
 	    				dbh.updateUser(p);
 	    				

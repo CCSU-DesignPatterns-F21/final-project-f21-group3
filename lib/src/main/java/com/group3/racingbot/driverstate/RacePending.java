@@ -269,13 +269,11 @@ public class RacePending implements DriverState {
 		
 		// Update the driver's state to the Resting state
 		updatedDriver.setState(new Resting());
-		try {
-			p.getOwnedDrivers().update(updatedDriver);
+		if (p.getOwnedDrivers().update(updatedDriver)) {
 			dbh.updateUser(p);
 			return true;
 		}
-		catch(NotFoundException e) {
-			e.printStackTrace();
+		else {
 			return false;
 		}
 	}

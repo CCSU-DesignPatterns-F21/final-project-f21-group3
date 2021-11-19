@@ -49,19 +49,43 @@ public class CarInventory implements Inventory<Car>{
 	/**
 	 * Updates a car in the inventory
 	 * @param car
-	 * @throws NotFoundException 
+	 * @return whether or not the update was successful
+	 * @throws NotFoundException
 	 */
-	public void update(Car car) throws NotFoundException {
+	public boolean update(Car car) {
 		InventoryIterator<Car> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			int currentIndex = iterator.getCurrentIndex();
 			Car currentCar = iterator.next();
 			if (currentCar.getId().equals(car.getId())) {
 				this.items.set(currentIndex, car);
-				return;
+				System.out.println("CarInventory; update method: Car " + car.getId() + " has been updated in a car inventory.");
+				return true;
 			}
 		}
-		throw new NotFoundException("Unable to find the driver with the id: " + car.getId());
+		System.out.println("CarInventory; update method: Unable to find the car with the id: " + car.getId());
+		return false;
+	}
+	
+	/**
+	 * Updates a car in the inventory at a specified index.
+	 * @param car
+	 * @param index
+	 */
+	public boolean update(Car car, int index) {
+		try {
+			this.items.set(index, car);
+			System.out.println("CarInventory; update method: Car " + car.getId() + " has been updated in a car inventory.");
+			return true;
+		}
+		catch (IndexOutOfBoundsException e) {
+			System.out.println("CarInventory; update method: Given index out of bounds. Unable update Car at index " + index + " in a car inventory.");
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	/**
