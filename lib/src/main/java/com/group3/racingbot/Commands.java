@@ -472,7 +472,7 @@ public class Commands extends ListenerAdapter {
     	    					// Update the driver
 	    						Driver activeDriver = p.obtainActiveDriver();
 	    						Car activeCar = p.obtainActiveCar();
-	    						activeDriver.signUpForRace(activeCar, eventToRegisterFor.getId());
+	    						activeDriver.signUpForRace(activeCar, eventToRegisterFor);
 	    						try {
 	    							p.getOwnedDrivers().update(activeDriver);
 	    							dbh.updateUser(p);
@@ -511,6 +511,10 @@ public class Commands extends ListenerAdapter {
     						}
     						
     	    				event.getChannel().sendMessage("User now withdrew from the event").queue();
+    	    				
+    					}
+    					else {
+    						event.getChannel().sendMessage("Player does not have an active driver").queue();
     					}
 	    			}
 	    			if (args[3].equalsIgnoreCase("forcewithdraw")) {
@@ -528,6 +532,9 @@ public class Commands extends ListenerAdapter {
     						}
     						
     						event.getChannel().sendMessage("User forced to withdraw from the event").queue();
+    					}
+	    				else {
+    						event.getChannel().sendMessage("Player does not have an active driver").queue();
     					}
 	    			}
 	    			if(args[3].equalsIgnoreCase("begin"))

@@ -2,7 +2,9 @@ package com.group3.racingbot.driverstate;
 
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.inventory.NotFoundException;
 
 /**
  * A state which the Driver moves into after completing a training session.
@@ -75,6 +77,43 @@ public class FinishedTraining extends Completed {
 		
 		// Return the driver to a resting state
 		this.getDriver().setState(new Resting());
+	}
+	
+	@Override
+	public boolean refreshFromDB() {
+		DBHandler dbh = DBHandler.getInstance();
+		
+		// Verify that the driver still exists.
+		if (super.getDriver() == null) {
+			// The server could have restarted and the instance of this class may only hold the id's
+			// In this case, retrieve all necessary info from the database.
+			super.setPlayer(dbh.getPlayer(super.getPlayerId()));
+			try {
+				if (super.getPlayer() != null) {
+					super.setDriver(super.getPlayer().getOwnedDrivers().getById(super.getDriverId()));
+				}
+				else {
+					System.out.println("Player " + super.getPlayerId() + " is missing from Database. Attempting to put Driver " + super.getPlayerId() + " into a resting state...");
+				}
+			}
+			catch(NotFoundException e) {
+				// Driver is missing from DB
+				System.out.println("Driver " + super.getPlayerId() + " is missing from Database. Attempting to put Driver " + super.getPlayerId() + " into a resting state...");
+			}
+			
+			if (super.getPlayer() == null || super.getDriver() == null) {
+				// Put the driver into a resting state
+				if (dbh.updateDriverStateInDB(super.getPlayerId(), super.getDriverId(), new Resting())) {
+					System.out.println("Driver " + super.getDriverId() + " is now in a resting state.");
+				}
+				else {
+					System.out.println("Unable to put Driver " + super.getDriverId() + " into a resting state.");
+				}
+
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

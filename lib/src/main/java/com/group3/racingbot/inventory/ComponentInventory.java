@@ -54,9 +54,11 @@ public class ComponentInventory implements Inventory<Component>{
 	public void update(Component component) throws NotFoundException {
 		InventoryIterator<Component> iterator = this.iterator();
 		while (iterator.hasNext()) {
+			int currentIndex = iterator.getCurrentIndex();
 			Component currentComponent = iterator.next();
 			if (currentComponent.getId().equals(component.getId())) {
-				this.items.set(iterator.getCurrentIndex(), component);
+				this.items.set(currentIndex, component);
+				return;
 			}
 		}
 		throw new NotFoundException("Unable to find the driver with the id: " + component.getId());

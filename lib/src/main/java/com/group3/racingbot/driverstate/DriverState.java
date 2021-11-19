@@ -49,9 +49,9 @@ public interface DriverState {
 	 * Registers this driver and their car for a racing event.
 	 * @param driver
 	 * @param car
-	 * @param raceEventId
+	 * @param raceEvent
 	 */
-	void signUpForRace(Driver driver, Car car, String raceEventId);
+	void signUpForRace(Driver driver, Car car, RaceEvent raceEvent);
 	
 	/**
 	 * Upon completion of training or a race, collect your reward (whether it's stat points or credits).
@@ -82,4 +82,10 @@ public interface DriverState {
 	 * @param driver
 	 */
 	void completedTraining(Driver driver);
+	
+	/**
+	 * In the event that this driver is in this state when the server shuts down, this will grab all necessary data from the database in order to get back up and running.
+	 * @return whether or not all missing objects were successfully obtained from the database.
+	 */
+	boolean refreshFromDB();
 }

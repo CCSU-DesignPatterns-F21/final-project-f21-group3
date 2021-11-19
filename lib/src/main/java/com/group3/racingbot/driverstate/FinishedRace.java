@@ -5,7 +5,10 @@ package com.group3.racingbot.driverstate;
 
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.RaceEvent;
+import com.group3.racingbot.inventory.NotFoundException;
 
 /**
  * A state which the Driver moves into after reaching the end of a race.
@@ -14,8 +17,9 @@ import com.group3.racingbot.Driver;
  */
 //@BsonDiscriminator(value="FinishedRace", key="_cls")
 public class FinishedRace extends Completed {
-	private final int position;
-	private final String raceEventId;
+	private RaceEvent raceEvent;
+	private String raceEventId;
+	private int position;
 	// When race is completed, use the race event ID to pull from the database to determine reward.
 	
 	/**
@@ -24,11 +28,12 @@ public class FinishedRace extends Completed {
 	 * @param reward the event reward for first place that gets added to the players balance. 
 	 * @param position the final pole position of the Driver in the race.
 	 */
-	public FinishedRace(Driver driver, String raceEventId) {
+	public FinishedRace(Driver driver, RaceEvent raceEvent) {
 		super(driver);
 		// TODO: call to database for position
 		this.position = 0;
-		this.raceEventId = raceEventId;
+		this.raceEvent = raceEvent;
+		this.raceEventId = raceEvent.getId();
 	}
 	
 	/**
@@ -57,6 +62,72 @@ public class FinishedRace extends Completed {
 		
 		// Return the driver to a resting state
 		this.getDriver().setState(new Resting());
+	}
+	
+	@Override
+	public boolean refreshFromDB() {
+		DBHandler dbh = DBHandler.getInstance();
+		
+		// Verify that the driver still exists.
+		// Sets both the driver and player objects if needed.
+		if (super.getDriver() == null) {
+			// The server could have restarted and the instance of this class may only hold the id's
+			// In this case, retrieve all necessary info from the database.
+			super.setPlayer(dbh.getPlayer(super.getPlayerId()));
+			try {
+				if (super.getPlayer() != null) {
+					super.setDriver(super.getPlayer().getOwnedDrivers().getById(super.getDriverId()));
+				}
+				else {
+					System.out.println("Player " + super.getPlayerId() + " is missing from Database. Attempting to put Driver " + super.getPlayerId() + " into a resting state...");
+				}
+			}
+			catch(NotFoundException e) {
+				// Driver is missing from DB
+				System.out.println("Driver " + super.getPlayerId() + " is missing from Database. Attempting to put Driver " + super.getPlayerId() + " into a resting state...");
+			}
+			
+			if (super.getPlayer() == null || super.getDriver() == null) {
+				if (dbh.removeDriverFromRaceEventInDB(super.getDriverId(), this.raceEventId)) {
+					System.out.println("Driver " + super.getDriverId() + " has been removed from race event " + this.raceEventId + ". Setting driver state to resting...");
+					if (dbh.updateDriverStateInDB(super.getPlayerId(), super.getDriverId(), new Resting())) {
+						System.out.println("Driver " + super.getDriverId() + " is now in a resting state.");
+					}
+					else {
+						System.out.println("Unable to put Driver " + super.getDriverId() + " into a resting state.");
+					}
+				}
+				else {
+					System.out.println("Race event " + this.raceEventId + " does not exist. No further actions taken.");
+				}
+				return false;
+			}
+		}
+		
+		// Sets the raceEvent object if needed.
+		if (this.raceEvent == null) {
+			// Verify that the race event still exists.
+			if (!dbh.raceEventExists(this.raceEventId)) {
+				System.out.println("Race event " + this.raceEventId + " does not exist. Attempting to change the state of Driver " + super.getDriverId() + " to a resting state.");
+				
+				// Update driver state in DB
+				if (dbh.updateDriverStateInDB(super.getPlayerId(), super.getDriverId(), new Resting())) {
+					System.out.println("Driver " + super.getDriverId() + " is now in a resting state.");
+				}
+				else {
+					System.out.println("Unable to change Driver " + super.getDriverId() + " to a resting state in the Database.");
+				}
+				
+				// Database updated, now update locally.
+				super.getDriver().setState(new Resting());
+				return false;
+			}
+			else {
+				// Get the race event
+				this.raceEvent = dbh.getRaceEvent(this.raceEventId);
+			}
+		}
+		return true;
 	}
 
 	@Override

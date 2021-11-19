@@ -374,8 +374,9 @@ public class Driver {
 	/**
 	 * Switch to the RacePending state.
 	 */
-	public void signUpForRace(Car car, String raceEventId) {
-		this.getState().signUpForRace(this, car, raceEventId);
+	public void signUpForRace(Car car, RaceEvent raceEvent) {
+		System.out.println(this);
+		//this.getState().signUpForRace(this, car, raceEvent);
 	}
 	
 	/**

@@ -52,13 +52,13 @@ public class Resting implements DriverState {
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, String raceEventId) {
+	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
 		// Check cooldown, if ok then sign up for race. Otherwise, remain resting. 
 		Date d = new Date();
 		long now = d.getTime();
 		
 		if (now > driver.getCooldown()) {
-			driver.setState(new RacePending(driver, car, raceEventId));
+			driver.setState(new RacePending(driver, car, raceEvent));
 		}
 	}
 	
@@ -105,5 +105,12 @@ public class Resting implements DriverState {
 	@Override
 	public String toString() {
 		return "Resting";
+	}
+
+	@Override
+	public boolean refreshFromDB() {
+		// If the server shuts down and boots back up, this function will grab all the missing objects from the database and insert them into the state as needed.
+		// Do nothing
+		return true;
 	}
 }

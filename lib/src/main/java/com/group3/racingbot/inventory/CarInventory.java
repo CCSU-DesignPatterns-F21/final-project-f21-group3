@@ -54,9 +54,11 @@ public class CarInventory implements Inventory<Car>{
 	public void update(Car car) throws NotFoundException {
 		InventoryIterator<Car> iterator = this.iterator();
 		while (iterator.hasNext()) {
+			int currentIndex = iterator.getCurrentIndex();
 			Car currentCar = iterator.next();
 			if (currentCar.getId().equals(car.getId())) {
-				this.items.set(iterator.getCurrentIndex(), car);
+				this.items.set(currentIndex, car);
+				return;
 			}
 		}
 		throw new NotFoundException("Unable to find the driver with the id: " + car.getId());
@@ -172,11 +174,11 @@ public class CarInventory implements Inventory<Car>{
 			Car item = null;
 			try {
 				item = CarInventory.this.items.get(this.current);
+				this.current++;
 			}
 			catch (IndexOutOfBoundsException e) {
 				System.out.println("End of the list has been reached.");
 			}
-			this.current++;
 			return item;
 		}
 		

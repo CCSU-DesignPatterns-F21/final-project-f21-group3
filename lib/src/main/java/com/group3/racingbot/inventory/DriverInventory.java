@@ -56,9 +56,11 @@ public class DriverInventory implements Inventory<Driver>{
 	public void update(Driver driver) throws NotFoundException {
 		InventoryIterator<Driver> iterator = this.iterator();
 		while (iterator.hasNext()) {
+			int currentIndex = iterator.getCurrentIndex();
 			Driver currentDriver = iterator.next();
 			if (currentDriver.getId().equals(driver.getId())) {
-				this.items.set(iterator.getCurrentIndex(), driver);
+				this.items.set(currentIndex, driver);
+				return;
 			}
 		}
 		throw new NotFoundException("Unable to find the driver with the id: " + driver.getId());
@@ -170,11 +172,11 @@ public class DriverInventory implements Inventory<Driver>{
 			Driver item = null;
 			try {
 				item = DriverInventory.this.items.get(this.current);
+				this.current++;
 			}
 			catch (IndexOutOfBoundsException e) {
 				System.out.println("End of the list has been reached.");
 			}
-			this.current++;
 			return item;
 		}
 		

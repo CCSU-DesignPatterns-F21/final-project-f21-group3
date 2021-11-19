@@ -139,7 +139,8 @@ public class Standings {
 	
 	/**
 	 * Adds a driver to the race event.
-	 * @param driver the driver to add
+	 * @param playerId
+	 * @param driverId
 	 */
 	public void addDriver(String playerId, String driverId) {
 		//Predicate<DriverStanding> condition = driverPosition -> driverPosition.getDriverId().equals(driver.getId());
@@ -160,9 +161,12 @@ public class Standings {
 	 */
 	public void removeDriver(String driverId) {
 		Predicate<DriverStanding> condition = driverPosition -> driverPosition.getDriverId().equals(driverId);
-		if (this.standings.removeIf(condition)) 
+		if (this.standings.removeIf(condition)) {
 			System.out.println("Driver removed");
-		System.out.println("Unable to remove driver. The specified driver is not in the race event.");
+		}
+		else {
+			System.out.println("Unable to remove driver. The specified driver is not in the race event.");
+		}
 	}
 	
 	/**

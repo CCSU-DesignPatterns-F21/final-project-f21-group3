@@ -60,7 +60,7 @@ public class Normal extends Racing {
 				this.getDriver().setState(new Crashed(this.getDriver(), this.getCar(), this.getRaceTrack(), this.getRaceEventId()));
 			}
 			else {
-				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEventId()));
+				this.getDriver().setState(new DNF(this.getDriver(), this.getRaceEvent()));
 			}
 		}
 		else if (roll < 60) {
@@ -105,7 +105,7 @@ public class Normal extends Racing {
 		final int TRANSMISSION = 3;
 		final int WHEEL = 4;
 		
-		int amountOfComponentsToDamage = ThreadLocalRandom.current().nextInt(1, 3);
+		int amountOfComponentsToDamage = ThreadLocalRandom.current().nextInt(1, 4);
 		for (int i = 0; i < amountOfComponentsToDamage; i++) {
 			int componentToDamage = ThreadLocalRandom.current().nextInt(0, 4);
 			int damage = ThreadLocalRandom.current().nextInt(0, 50);

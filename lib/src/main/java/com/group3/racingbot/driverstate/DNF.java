@@ -4,8 +4,13 @@
 package com.group3.racingbot.driverstate;
 
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.Player;
+import com.group3.racingbot.RaceEvent;
+import com.group3.racingbot.inventory.NotFoundException;
 
 /**
  * The state a driver moves into when their car gets totalled during a race.
@@ -14,21 +19,30 @@ import com.group3.racingbot.Driver;
  */
 //@BsonDiscriminator(value="DNF", key="_cls")
 public class DNF extends Completed {
-	
+	@BsonIgnore
+	private RaceEvent raceEvent;
 	private String raceEventId;
 	
 	/**
 	 * Constructs a DNF state.
 	 * @param driver allows this state to set the state of the driver
-	 * @param reward the event reward for first place.
+	 * @param raceEvent the event which the driver participated in.
 	 */
-	public DNF(Driver driver, String raceEventId) {
+	public DNF(Driver driver, RaceEvent raceEvent) {
 		super(driver);
-		this.raceEventId = raceEventId;
+		this.raceEvent = raceEvent;
+		this.raceEventId = raceEvent.getId();
 	}
 	
 	@Override
 	public void collectReward() {
+		DBHandler dbh = DBHandler.getInstance();
+		
+		// Ensure that we have all objects that we'd need.
+		refreshFromDB();
+		Player p = super.getPlayer();
+		p.setCredits(p.getCredits() + 50); // Pity money
+		dbh.updateUser(p);
 		this.getDriver().setState(new Resting());
 	}
 	
@@ -44,5 +58,69 @@ public class DNF extends Completed {
 	 */
 	public void setRaceEventId(String raceEventId) {
 		this.raceEventId = raceEventId;
+	}
+	
+	@Override
+	public boolean refreshFromDB() {
+		DBHandler dbh = DBHandler.getInstance();
+		
+		// Verify that the driver still exists.
+		if (super.getDriver() == null) {
+			// The server could have restarted and the instance of this class may only hold the id's
+			// In this case, retrieve all necessary info from the database.
+			super.setPlayer(dbh.getPlayer(super.getPlayerId()));
+			try {
+				if (super.getPlayer() != null) {
+					super.setDriver(super.getPlayer().getOwnedDrivers().getById(super.getDriverId()));
+				}
+				else {
+					System.out.println("Player " + super.getPlayerId() + " is missing from Database. Attempting to put Driver " + super.getPlayerId() + " into a resting state...");
+				}
+			}
+			catch(NotFoundException e) {
+				// Driver is missing from DB
+				System.out.println("Driver " + super.getPlayerId() + " is missing from Database. Attempting to put Driver " + super.getPlayerId() + " into a resting state...");
+			}
+			
+			if (super.getPlayer() == null || super.getDriver() == null) {
+				if (dbh.removeDriverFromRaceEventInDB(super.getDriverId(), this.raceEventId)) {
+					System.out.println("Driver " + super.getDriverId() + " has been removed from race event " + this.raceEventId + ". Setting driver state to resting...");
+					if (dbh.updateDriverStateInDB(super.getPlayerId(), super.getDriverId(), new Resting())) {
+						System.out.println("Driver " + super.getDriverId() + " is now in a resting state.");
+					}
+					else {
+						System.out.println("Unable to put Driver " + super.getDriverId() + " into a resting state.");
+					}
+				}
+				else {
+					System.out.println("Race event " + this.raceEventId + " does not exist. No further actions taken.");
+				}
+				return false;
+			}
+		}
+		
+		if (this.raceEvent == null) {
+			// Verify that the race event still exists.
+			if (!dbh.raceEventExists(this.raceEventId)) {
+				System.out.println("Race event " + this.raceEventId + " does not exist. Attempting to change the state of Driver " + super.getDriverId() + " to a resting state.");
+				
+				// Update driver state in DB
+				if (dbh.updateDriverStateInDB(super.getPlayerId(), super.getDriverId(), new Resting())) {
+					System.out.println("Driver " + super.getDriverId() + " is now in a resting state.");
+				}
+				else {
+					System.out.println("Unable to change Driver " + super.getDriverId() + " to a resting state in the Database.");
+				}
+				
+				// Database updated, now update locally.
+				super.getDriver().setState(new Resting());
+				return false;
+			}
+			else {
+				// Get the race event
+				this.raceEvent = dbh.getRaceEvent(this.raceEventId);
+			}
+		}
+		return true;
 	}
 }

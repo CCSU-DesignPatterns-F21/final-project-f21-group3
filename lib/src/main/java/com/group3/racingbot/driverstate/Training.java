@@ -5,8 +5,11 @@ import java.util.Date;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.group3.racingbot.Car;
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
+import com.group3.racingbot.inventory.NotFoundException;
 
 /**
  * A state which the Driver remains in once initiating a training session. Only when the training cooldown expires can the Driver move to another state.
@@ -15,7 +18,9 @@ import com.group3.racingbot.RaceEvent;
  */
 //@BsonDiscriminator(value="Training", key="_cls")
 public class Training implements DriverState {
-	private final Driver driver;
+	private String playerId;
+	private String driverId;
+	private Driver driver;
 	private Skill skillToTrain;
 	private int trainingReward;
 	
@@ -27,6 +32,7 @@ public class Training implements DriverState {
 	 */
 	public Training(Driver driver, Skill skillToTrain, Intensity intensity) {
 		this.driver = driver;
+		this.driverId = driver.getId();
 		this.skillToTrain = skillToTrain;
 		switch (intensity) {
 			case LIGHT:
@@ -42,11 +48,51 @@ public class Training implements DriverState {
 	}
 
 	/**
+	 * Retrieve the player id of the player who is training their driver.
+	 * @return the playerId
+	 */
+	public String getPlayerId() {
+		return playerId;
+	}
+
+	/**
+	 * Set the player id of the player who is training their driver.
+	 * @param playerId the playerId to set
+	 */
+	public void setPlayerId(String playerId) {
+		this.playerId = playerId;
+	}
+
+	/**
+	 * Retrieve the driver id of the driver being trained.
+	 * @return the driverId
+	 */
+	public String getDriverId() {
+		return driverId;
+	}
+
+	/**
+	 * Set the driver id of the driver being trained.
+	 * @param driverId the driverId to set
+	 */
+	public void setDriverId(String driverId) {
+		this.driverId = driverId;
+	}
+
+	/**
 	 * Retrieve the driver which is undergoing training.
 	 * @return the driver
 	 */
 	public Driver getDriver() {
 		return driver;
+	}
+	
+	/**
+	 * Set the driver which is undergoing training.
+	 * @param driver the driver to set
+	 */
+	public void setDriver(Driver driver) {
+		this.driver = driver;
 	}
 
 	/**
@@ -94,7 +140,7 @@ public class Training implements DriverState {
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, String raceEventId) {
+	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
 		// Check cooldown, if ok then sign up for race. Otherwise, remain resting. 
 		// Do nothing
 	}
@@ -135,12 +181,58 @@ public class Training implements DriverState {
 
 	@Override
 	public void completedTraining(Driver driver) {
+		DBHandler dbh = DBHandler.getInstance();
+		refreshFromDB();
+		
 		// Move to FinishedTraining state so long as the cooldown has expired.
 		Date d = new Date();
 		long now = d.getTime();
 		if (now > this.getDriver().getCooldown()) {
-			this.getDriver().setState(new FinishedTraining(this.getDriver(), this.getTrainingReward(), this.getSkillToTrain()));
+			if (dbh.updateDriverStateInDB(this.playerId, this.driverId, new FinishedTraining(this.getDriver(), this.getTrainingReward(), this.getSkillToTrain()))) {
+				this.driver.setState(new FinishedTraining(this.getDriver(), this.getTrainingReward(), this.getSkillToTrain()));
+				System.out.println("Driver " + this.driverId + " has completed training for " + getSkillToTrain().toString() + ".");
+			}
+			else {
+				System.out.println("Unable to set the state of Driver " + this.driverId + ".");
+			}
 		}
+	}
+	
+	@Override
+	public boolean refreshFromDB() {
+		DBHandler dbh = DBHandler.getInstance();
+		
+		// Verify that the driver still exists.
+		if (this.driver == null) {
+			// The server could have restarted and the instance of this class may only hold the id's
+			// In this case, retrieve all necessary info from the database.
+			Player p = dbh.getPlayer(this.playerId);
+			try {
+				if (p != null) {
+					this.driver = p.getOwnedDrivers().getById(this.driverId);
+				}
+				else {
+					System.out.println("Player " + this.playerId + " is missing from Database. Attempting to put Driver " + this.playerId + " into a resting state...");
+				}
+			}
+			catch(NotFoundException e) {
+				// Driver is missing from DB
+				System.out.println("Driver " + this.playerId + " is missing from Database. Attempting to put Driver " + this.playerId + " into a resting state...");
+			}
+			
+			if (this.driver == null) {
+				// Put the driver into a resting state
+				if (dbh.updateDriverStateInDB(this.playerId, this.driverId, new Resting())) {
+					System.out.println("Driver " + this.driverId + " is now in a resting state.");
+				}
+				else {
+					System.out.println("Unable to put Driver " + this.driverId + " into a resting state.");
+				}
+
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.TrackNode;
 import com.group3.racingbot.shop.Shop;
@@ -73,6 +74,8 @@ public class DBHandler {
 		ClassModel<RaceTrack> raceTrackModel = ClassModel.builder(RaceTrack.class).enableDiscriminator(true).build();
 		ClassModel<Standings> standingsModel = ClassModel.builder(Standings.class).enableDiscriminator(true).build();
 		ClassModel<DriverStanding> driverStandingModel = ClassModel.builder(DriverStanding.class).enableDiscriminator(true).build();
+		ClassModel<Player> playerModel = ClassModel.builder(Player.class).enableDiscriminator(true).build();
+		ClassModel<Driver> driverModel = ClassModel.builder(Driver.class).enableDiscriminator(true).build();
 		//ClassModel<TrackNode> trackNodeModel = ClassModel.builder(TrackNode.class).enableDiscriminator(true).build();
 		// States
 		ClassModel<DriverState> driverStateModel = ClassModel.builder(DriverState.class).enableDiscriminator(true).build();
@@ -109,6 +112,8 @@ public class DBHandler {
 				 .register(raceTrackModel)
 				 .register(standingsModel)
 				 .register(driverStandingModel)
+				 .register(playerModel)
+				 .register(driverModel)
 				 .automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),
@@ -220,6 +225,50 @@ public class DBHandler {
 	}
 	
 	/**
+	 * Remove a driver from both the database and local version of a race event.
+	 * @param driverId id of the driver to remove.
+	 * @param raceEventId id of the race event to remove the driver from.
+	 * @return whether or not the removal was successful.
+	 */
+	public boolean removeDriverFromRaceEventInDB(String driverId, String raceEventId) {
+		DBHandler dbh = DBHandler.getInstance();
+		if (dbh.raceEventExists(raceEventId)) {
+			RaceEvent raceEvent = dbh.getRaceEvent(raceEventId);
+			raceEvent.getStandings().removeDriver(driverId);
+			dbh.updateRaceEvent(raceEvent);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Update a Driver's state in the database.
+	 * @param playerId Player id of the driver getting updated.
+	 * @param driverId Driver id of the driver getting updated.
+	 * @param state The state to set the driver to.
+	 * @return whether or not the state change was successful.
+	 */
+	public boolean updateDriverStateInDB(String playerId, String driverId, DriverState state) {
+		DBHandler dbh = DBHandler.getInstance();
+		if (dbh.userExists(playerId)) {
+			Player p = dbh.getPlayer(playerId);
+			try {
+				Driver updatedDriver = p.getOwnedDrivers().getById(driverId);
+				updatedDriver.setState(state);
+				p.getOwnedDrivers().update(updatedDriver);
+				dbh.updateUser(p); // Driver's state is now updated.
+			}
+			catch (NotFoundException e) {
+				System.out.println("Driver " + driverId + " does not exist in the driver inventory of Player " + playerId);
+				return false;
+			}
+			return true;
+		}
+		System.out.println("Player " + playerId + " does not exist in the Database.");
+		return false;
+	}
+	
+	/**
 	 * @return the raceEventCollection
 	 */
 	public MongoCollection<RaceEvent> getRaceEventCollection() {
@@ -263,13 +312,13 @@ public class DBHandler {
 	}
 	
 	/**
-	 * Update the active driver for a player. This updates both the active driver and the 
+	 * Update the active driver for a player.
 	 * @param playerId
 	 * @param driver
 	 */
-	public void updateActiveDriver(String playerId, Driver driver) {
+	//public void updateActiveDriver(String playerId, Driver driver) {
 		
-	}
+	//}
 	
 	/**
 	 * Returns a Player object from the Database based on the Discord ID.
@@ -369,7 +418,6 @@ public class DBHandler {
 	public static MongoClientSettings getSettings() {
 		return settings;
 	}
-
 	
 	/**
 	 * @param settings the settings to set
