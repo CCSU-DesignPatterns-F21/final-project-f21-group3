@@ -487,10 +487,10 @@ public class Commands extends ListenerAdapter {
     							}
     						}
 							// Register driver for the given race event.
-							if (eventToRegisterFor.getRaceTrack().obtainFirstNode() == null) {
-    	    					event.getChannel().sendMessage("Event does not yet exist! Create a new one by performing the command: !iracer debug event generate").queue();
-    	    				}
-    	    				else if (eventToRegisterFor.getTimeElapsed() != 0) {
+							//if (eventToRegisterFor.getRaceTrack().obtainFirstNode() == null) {
+    	    				//	event.getChannel().sendMessage("Event does not yet exist! Create a new one by performing the command: !iracer debug event generate").queue();
+    	    				//}
+    	    				if (eventToRegisterFor.getTimeElapsed() != 0) {
     	    					event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
     	    				}
     	    				else {
@@ -574,9 +574,10 @@ public class Commands extends ListenerAdapter {
 	    				// The event has started! Move every registered driver into a racing state then begin moving the drivers.
 	    				Iterator<DriverStanding> driverIterator = raceEvent.getStandings().iterator();
 	    				boolean raceCanBegin = true;
+	    				Player p = null;
 	    				while (driverIterator.hasNext()) {
 	    					Driver currentDriver = driverIterator.next().getDriver();
-	    					Player p = dbh.getPlayer(currentDriver.getPlayerId());
+	    					p = dbh.getPlayer(currentDriver.getPlayerId());
 	    					currentDriver.beginRace();
 	    					if (p.getOwnedDrivers().update(currentDriver)) {
     							dbh.updateUser(p);

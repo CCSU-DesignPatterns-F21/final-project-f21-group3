@@ -130,7 +130,7 @@ public abstract class Completed implements DriverState{
 	}
 
 	@Override
-	public void beginRace() {
+	public void beginRace(Driver driver) {
 		// TODO Auto-generated method stub
 		// Do nothing
 	}

@@ -31,6 +31,7 @@ public class RacePending implements DriverState {
 	@BsonIgnore
 	private RaceEvent raceEvent;
 	private String raceEventId;
+	private RaceTrack raceTrack;
 	
 	/**
 	 * Commit a driver to a race that will start sometime soon.
@@ -48,6 +49,7 @@ public class RacePending implements DriverState {
 		this.carId = carId;
 		this.raceEvent = null;
 		this.raceEventId = raceEventId;
+		this.raceTrack = null;
 	}
 	
 	/**
@@ -175,20 +177,20 @@ public class RacePending implements DriverState {
 	}
 
 	/**
-	 * Retrieve the race event which the driver will take part in.
-	 * @return the raceEvent
+	 * Retrieve the race track which the Driver will drive on.
+	 * @return the raceTrack
 	 */
-	//public RaceEvent getRaceEvent() {
-	//	return raceEvent;
-	//}
+	public RaceTrack getRaceTrack() {
+		return raceTrack;
+	}
 
 	/**
-	 * Set the race event which the driver will take part in.
-	 * @param raceEvent the raceEvent to set
+	 * Set the race track which the Driver will drive on.
+	 * @param raceTrack the raceTrack to set
 	 */
-	//public void setRaceEvent(RaceEvent raceEvent) {
-	//	this.raceEvent = raceEvent;
-	//}
+	public void setRaceTrack(RaceTrack raceTrack) {
+		this.raceTrack = raceTrack;
+	}
 
 	@Override
 	public void rest() {
@@ -209,10 +211,10 @@ public class RacePending implements DriverState {
 	}
 	
 	@Override
-	public void beginRace() {
+	public void beginRace(Driver driver) {
 		// Ensure that all necessary data can be pulled using id's from the database.
 		if (refreshFromDB()) {
-			this.getDriver().setState(new Normal(this.playerId, this.driverId, this.carId, this.raceEventId, raceEvent.getRaceTrack()));
+			driver.setState(new Normal(this.playerId, this.driverId, this.carId, this.raceEventId, this.raceTrack));
 		}
 		else {
 			System.out.println("Unable to enter into a race, values in the database may have been deleted which prevents Driver " + this.driverId + " from participating in RaceEvent " + this.raceEventId + ".");
@@ -325,6 +327,11 @@ public class RacePending implements DriverState {
 			// Database updated, now update locally.
 			this.driver.setState(new Resting());
 			return false;
+		}
+		else {
+			// Get the race event from the DB and set it for the state
+			this.raceEvent = dbh.getRaceEvent(this.raceEventId);
+			this.raceTrack = this.raceEvent.getRaceTrack();
 		}
 		
 		if (this.car == null) {

@@ -33,9 +33,10 @@ public interface DriverState {
 	void rest();
 	
 	/**
-	 * The driver begins the race they've signed up for. 
+	 * The driver begins the race they've signed up for.
+	 * @param driver
 	 */
-	void beginRace();
+	void beginRace(Driver driver);
 	
 	/**
 	 * Puts the Driver into a training state to improve a skill.

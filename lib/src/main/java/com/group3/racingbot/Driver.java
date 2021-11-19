@@ -368,7 +368,7 @@ public class Driver {
 	 * Enters the driver into a racing state.
 	 */
 	public void beginRace() {
-		this.state.beginRace();
+		this.state.beginRace(this);
 	}
 	
 	/**

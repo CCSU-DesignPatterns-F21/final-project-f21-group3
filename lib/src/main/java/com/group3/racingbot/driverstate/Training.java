@@ -146,7 +146,7 @@ public class Training implements DriverState {
 	}
 
 	@Override
-	public void beginRace() {
+	public void beginRace(Driver driver) {
 		// If in RacePending state and all fields are not null, then race!
 		// Do nothing
 	}
