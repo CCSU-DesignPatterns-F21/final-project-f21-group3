@@ -18,7 +18,7 @@ public abstract class TrackNode {
 	private int nodeLength;
 	private int distanceRemaining;
 	private long seed;
-	private int index;
+	private int order;
 	
 	/**
 	 * Construct a piece of a race track.
@@ -34,23 +34,23 @@ public abstract class TrackNode {
 		this.nodeLength = rand.get().nextInt(2000) + 1;
 		this.distanceRemaining = this.nodeLength;
 		this.seed = seed;
-		this.index = 0;
+		this.order = 0;
 	}
 
 	/**
-	 * Retrieve the index of the track node. In other words, the number representing the order with which the track node appears on the track.
+	 * Retrieve the (index + 1) of the track node. In other words, the number representing the order with which the track node appears on the track.
 	 * @return the index
 	 */
-	public int getIndex() {
-		return index;
+	public int getOrder() {
+		return order;
 	}
 
 	/**
-	 * Set the index of the track node. In other words, the number representing the order with which the track node appears on the track.
+	 * Set the (index + 1) of the track node. In other words, the number representing the order with which the track node appears on the track.
 	 * @param index the index to set
 	 */
-	public void setIndex(int index) {
-		this.index = index;
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 	/**

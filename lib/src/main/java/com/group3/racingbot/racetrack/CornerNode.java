@@ -13,7 +13,6 @@ import com.group3.racingbot.exceptions.RaceTrackEndException;
  * @author Nick Sabia
  *
  */
-
 public class CornerNode extends TrackNode {
 	private Difficulty difficulty;
 	private double multiplier;

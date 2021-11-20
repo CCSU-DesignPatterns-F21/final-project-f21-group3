@@ -93,7 +93,7 @@ public class RaceTrack {
     	rand.set(new Random());
     	rand.get().setSeed(seed); // Set the seed for the random number generator.
     	
-		int maxNodes = Math.round((rand.get().nextInt(21) + 1) / 2) * 2;
+		int maxNodes = (int) (Math.ceil((rand.get().nextInt(21) + 2) / 2) * 2); // Ensure that we have an even number of track nodes.
 		int currentNode = 0;
 		List<TrackNode> track = new ArrayList<TrackNode>();
 		while (track.size() < maxNodes) {
@@ -121,11 +121,12 @@ public class RaceTrack {
 		    }
 		    currentNode++;
 		}
-		track.get(0).setIndex(1);
-		//settings successors for CoR and trackNode indices.
+
+		//settings successors for CoR and trackNode ordering.
+		track.get(0).setOrder(1);
 		for(int i = 1; i < track.size();i++)
 		{
-			track.get(i).setIndex(i+1); // Set index (starting from 1)
+			track.get(i).setOrder(i+1); // Set the order which this track node appears (starting from 1)
 			track.get(i-1).setSuccessor(track.get(i)); // Set successor
 		}
 		setTrackNodes(track);
@@ -142,7 +143,7 @@ public class RaceTrack {
 		try {
 			this.obtainFirstNode().progressForward(distance);
 		} catch (RaceTrackEndException e) {
-			System.out.println("You have finished the race!");
+			System.out.println("Driver " + driver.getId() + " has finished the race!");
 			driver.completedRace();
 		}
 	}

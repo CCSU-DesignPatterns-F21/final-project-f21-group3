@@ -53,6 +53,7 @@ public abstract class Racing implements DriverState {
 	private int straightDistance;
 	private int cornerDistance;
 	//private int position;
+	private int distanceTraveledThisStep; // How far the driver traveled this race step.
 	private int totalDistanceTraveled; // Used to compare with other drivers to determine position.
 	private TrackNode currentNode;
 	private double multiplier;
@@ -69,11 +70,28 @@ public abstract class Racing implements DriverState {
 		this.raceEventId = raceEventId;
 		this.straightDistance = 0;
 		this.cornerDistance = 0;
+		this.distanceTraveledThisStep = 0;
 		this.totalDistanceTraveled = 0;
 		this.currentNode = null;
 		this.multiplier = 1;
 	}
 	
+	/**
+	 * Retrieve how far the driver went in the last race step.
+	 * @return the distanceTraveledThisStep
+	 */
+	public int getDistanceTraveledThisStep() {
+		return distanceTraveledThisStep;
+	}
+
+	/**
+	 * Set how far the driver went in the last race step.
+	 * @param distanceTraveledThisStep the distanceTraveledThisStep to set
+	 */
+	public void setDistanceTraveledThisStep(int distanceTraveledThisStep) {
+		this.distanceTraveledThisStep = distanceTraveledThisStep;
+	}
+
 	/**
 	 * Retrieve a general purpose multiplier which governs how likely it is that the Driver crashes on each roll and how far the Driver travels.
 	 * @return the multiplier
@@ -293,22 +311,6 @@ public abstract class Racing implements DriverState {
 	public void setCornerDistance(int cornerDistance) {
 		this.cornerDistance = cornerDistance;
 	}
-	
-	/**
-	 * Retrieve the pole position of this driver in the race.
-	 * @return the position
-	 */
-	//public int getPosition() {
-	//	return position;
-	//}
-
-	/**
-	 * Set the pole position of this driver in the race.
-	 * @param position the position to set
-	 */
-	//public void setPosition(int position) {
-	//	this.position = position;
-	//}
 
 	/**
 	 * Retrieve the node which the Driver is currently on.
@@ -344,10 +346,12 @@ public abstract class Racing implements DriverState {
 		double straightSkillBonus = Math.log(this.getDriver().getStraights());
 		int lowerBound = (int) Math.floor((this.getCar().getAccelerationRating()/4)*straightSkillBonus * bonusMultiplier);
 		int upperBound = (int) Math.floor(this.getCar().getSpeedRating()*straightSkillBonus * bonusMultiplier);
-		if (lowerBound >= upperBound)
-			lowerBound = upperBound - 2;
-		int distance = ThreadLocalRandom.current().nextInt(lowerBound, upperBound);
-		return distance;
+		if (lowerBound >= upperBound) {
+			// Since the lower bound matches the upper bound, we can simply return the upper bound as the distance to travel.
+			return upperBound;
+		}
+		// Randomize the distance to travel based on the bounds defined above.
+		return ThreadLocalRandom.current().nextInt(lowerBound, upperBound);
 	}
 	
 	/**
@@ -362,10 +366,12 @@ public abstract class Racing implements DriverState {
 		double cornerSkillBonus = Math.log(this.getDriver().getCornering());
 		int lowerBound = (int) Math.floor((this.getCar().getBrakingRating()/4)*cornerSkillBonus * bonusMultiplier);
 		int upperBound = (int) Math.floor(this.getCar().getHandlingRating()*cornerSkillBonus * bonusMultiplier);
-		if (lowerBound >= upperBound)
-			lowerBound = upperBound - 2;
-		int distance = ThreadLocalRandom.current().nextInt(lowerBound, upperBound);
-		return distance;
+		if (lowerBound >= upperBound) {
+			// Since the lower bound matches the upper bound, we can simply return the upper bound as the distance to travel.
+			return upperBound;
+		}
+		// Randomize the distance to travel based on the bounds defined above.
+		return ThreadLocalRandom.current().nextInt(lowerBound, upperBound);
 	}
 	
 	@Override
@@ -410,41 +416,44 @@ public abstract class Racing implements DriverState {
 		DBHandler dbh = DBHandler.getInstance();
 		Player updatedPlayer = driver.getPlayer();
 		Driver updatedDriver = driver;
-		RaceTrack raceTrack = this.getRaceTrack();
 		
 		// Calculate the distances that the driver would travel on either type of track node.
 		// These will be used to calculate the actual distance traveled.
-		int corneringDist = this.rollCornerDistance(this.multiplier);
-		int straightDist = this.rollStraightDistance(this.multiplier);
-		this.setCornerDistance(corneringDist);
-		this.setStraightDistance(straightDist);
-		int distanceToCover = 0;
+		this.cornerDistance = this.rollCornerDistance(this.multiplier);
+		this.straightDistance = this.rollStraightDistance(this.multiplier);
 		
 		// Calculate the track node based on the type of track node.
 		if (this.getCurrentNode() instanceof StraightNode) {
-			distanceToCover = straightDist + (int) Math.floor(corneringDist/3);
+			this.distanceTraveledThisStep = this.straightDistance + (int) Math.floor(this.cornerDistance/3);
 		}
 		else if (this.getCurrentNode() instanceof CornerNode) {
-			distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
+			this.distanceTraveledThisStep = this.cornerDistance + (int) Math.floor(this.straightDistance/3);
 		}
 		
 		// Advance the driver forward along the track
-		raceTrack.progressForward(updatedDriver, distanceToCover);
-		this.setTotalDistanceTraveled(this.getTotalDistanceTraveled() + distanceToCover);
+		this.raceTrack.progressForward(updatedDriver, this.distanceTraveledThisStep);
+		
+		// Get the total distance traveled from the driver standings in order to prevent progress from being erased on driver state change.
+		this.totalDistanceTraveled += this.distanceTraveledThisStep;
 		
 		// Prepare the string to be printed
-		TrackNode currentNode = raceTrack.obtainCurrentNode();
-		String stepResult = "Driver: " + updatedDriver.getName() + " | " + currentNode.getIndex() + " of " + raceTrack.size() + " | Distance: " + (currentNode.getNodeLength() - currentNode.getDistanceRemaining()) + " / " + currentNode.getNodeLength() + " | Current state: " + updatedDriver.getState().toString();
+		this.currentNode = this.raceTrack.obtainCurrentNode();
+		String stepResult = "Driver: " + updatedDriver.getName() + " | " + this.currentNode.getOrder() + " of " + this.raceTrack.size() + " | Distance: " + (this.currentNode.getNodeLength() - this.currentNode.getDistanceRemaining()) + " / " + this.currentNode.getNodeLength() + " | Current state: " + updatedDriver.getState().toString();
 		
 		// Before printing the result of this step,
 		// roll to see what racing state the driver will be in next step.
 		DriverState rolledState = rollDriverState();
 		if (!this.equals(rolledState)) {
 			if (rolledState instanceof Racing) {
-				((Racing) rolledState).setCurrentNode(currentNode);
-				((Racing) rolledState).setRaceTrack(raceTrack);
+				((Racing) rolledState).setDistanceTraveledThisStep(this.distanceTraveledThisStep);
+				((Racing) rolledState).setTotalDistanceTraveled(this.totalDistanceTraveled);
+				((Racing) rolledState).setCurrentNode(this.currentNode);
+				((Racing) rolledState).setRaceTrack(this.raceTrack);
 			}
 			updatedDriver.setState(rolledState);
+		}
+		else {
+			updatedDriver.setState(this);
 		}
 		
 		// Update the driver within the player's inventory in the database

@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.driverstate.FinishedRace;
 import com.group3.racingbot.driverstate.Racing;
+import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
 //import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
@@ -66,7 +67,7 @@ public class Standings {
 	/**
 	 * Sorts the standings based on driver's distance traveled to find out their positions.
 	 */
-	public void updateStandings() {
+	public void sortStandings() {
 		// Create four lists.
 		List<DriverStanding> finished = new ArrayList<DriverStanding>(); // This list holds all drivers which have completed the race.
 		List<DriverStanding> racing = new ArrayList<DriverStanding>(); // This list holds all drivers who are currently racing.
@@ -172,6 +173,47 @@ public class Standings {
 	}
 	
 	/**
+	 * Updates a driver standing in the standings
+	 * @param driverStanding the driver standing to put into the list of standings.
+	 * @return whether or not the update was successful
+	 */
+	public boolean update(DriverStanding driverStanding) {
+		Iterator<DriverStanding> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			int currentIndex = iterator.getCurrentIndex();
+			DriverStanding currentDriver = iterator.next();
+			if (currentDriver.getDriverId().equals(driverStanding.getDriverId())) {
+				this.standings.set(currentIndex, driverStanding);
+				System.out.println("Standings; update method: Driver standing for Driver " + driverStanding.getDriverId() + " has been updated in the driver inventory of Player " + driverStanding.getPlayerId() + ".");
+				return true;
+			}
+		}
+		System.out.println("Standings; update method: Unable to find a driver standing for a driver with the id: " + driverStanding.getDriverId());
+		return false;
+	}
+	
+	/**
+	 * Updates a driver standing in the standings at a specified index.
+	 * @param driverStanding the driver standing to put into the list of standings.
+	 * @param index the index to update in standings
+	 */
+	public boolean update(DriverStanding driverStanding, int index) {
+		try {
+			this.standings.set(index, driverStanding);
+			System.out.println("Standings; update method: Driver standing for Driver " + driverStanding.getDriverId() + " has been updated in the driver inventory of Player " + driverStanding.getPlayerId() + ".");
+			return true;
+		}
+		catch (IndexOutOfBoundsException e) {
+			System.out.println("Standings; update method: Unable to find a driver standing for a driver with the id: " + driverStanding.getDriverId());
+			e.printStackTrace();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/**
 	 * Retrieve the DriverPosition from the race event's standings based on driver id.
 	 * @param driverId
 	 * @return the DriverPosition
@@ -207,9 +249,12 @@ public class Standings {
 			this.current = 0;
 		}
 		
-		/**
-		 * Verifies that there is another entry ahead of the current one.
-		 */
+		@Override
+		public int getCurrentIndex() {
+			return current;
+		}
+		
+		@Override
 		public boolean hasNext() {
 			if (this.current < Standings.this.standings.size()) {
 				return true;
@@ -217,9 +262,7 @@ public class Standings {
 			return false;
 		}
 		
-		/**
-		 * Grab the next entry.
-		 */
+		@Override
 		public DriverStanding next() {
 			DriverStanding item = null;
 			try {

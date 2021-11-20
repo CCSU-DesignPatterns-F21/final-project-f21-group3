@@ -3,6 +3,7 @@ package com.group3.racingbot;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.TrackNode;
 import com.group3.racingbot.standings.DriverStanding;
 import com.group3.racingbot.standings.Standings;
 
@@ -162,23 +163,25 @@ public class RaceEvent {
 		this.incrementTimeElapsed(); // Advance time
 		Iterator<DriverStanding> driverIterator = standings.iterator();
 		String stepResult = "";
-		//Player currentPlayer = null;
 		Driver currentDriver = null;
+		DriverStanding currentDriverStanding = null;
 		Racing currentRacingState = null;
+		//TrackNode currentNode = null;
 		while (driverIterator.hasNext()) {
-			DriverStanding currentDriverStanding = driverIterator.next();
-			if (currentDriverStanding.getDriver().getState() instanceof Racing) {
-				currentDriver = currentDriverStanding.getDriver();
-				currentRacingState = (Racing) currentDriver.getState();
-				
+			currentDriverStanding = driverIterator.next();
+			currentDriver = currentDriverStanding.getDriver();
+			if (currentDriver.getState() instanceof Racing) {
 				// Allow the driver to make their move on the track
 				stepResult += currentDriver.raceStep() + "\n";
 				
 				// Update the total distance traveled to later find out the position of this driver in the race.
+				currentRacingState = (Racing) currentDriver.getState();
+				//currentNode = currentRacingState.getCurrentNode();
 				currentDriverStanding.setDistanceTraveled(currentRacingState.getTotalDistanceTraveled()); 
+				this.standings.update(currentDriverStanding, currentDriverStanding.getPosition() - 1);
+				//this.setStandings()
 				
-				// Update the standings to reflect updated driver positions.
-				this.standings.updateStandings();
+				//currentStandings
 				
 				// Update the driver within the Player object to reflect state changes.
 				//currentPlayer = currentDriver.getPlayer();
@@ -186,6 +189,9 @@ public class RaceEvent {
 				//dbh.updateUser(currentPlayer);
 			}	
 		}
+		// Sort the standings to reflect updated driver positions.
+		this.standings.sortStandings();
+		
 		// Update the db with the details of the standings.
 		dbh.updateRaceEvent(this);
 		return stepResult;
