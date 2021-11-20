@@ -49,7 +49,7 @@ public class RaceTrack {
 	 * Retrieve the track nodes which will make up the race track.
 	 * @return track nodes in a list
 	 */
-	public List<TrackNode> getTrackNodes(){
+	public List<TrackNode> getTrackNodes() {
 		return trackNodes;
 	}
 	
@@ -121,10 +121,12 @@ public class RaceTrack {
 		    }
 		    currentNode++;
 		}
-		//settings successors for CoR
+		track.get(0).setIndex(1);
+		//settings successors for CoR and trackNode indices.
 		for(int i = 1; i < track.size();i++)
 		{
-			track.get(i-1).setSuccessor(track.get(i));
+			track.get(i).setIndex(i+1); // Set index (starting from 1)
+			track.get(i-1).setSuccessor(track.get(i)); // Set successor
 		}
 		setTrackNodes(track);
 		return track;
@@ -145,14 +147,20 @@ public class RaceTrack {
 		}
 	}
 	
-	public String currentProgressToString() {
-		String result = "";
-		try {
-			result = this.obtainFirstNode().currentProgressToString(this, 1);
-		} catch (RaceTrackEndException e) {
-			result = "Finished";
-		}
-		return result;
+	/**
+	 * Retrieve the track node which the driver is currently on. If the driver has reached the end of the track, returns the last track node of the race track.
+	 * @return the node which the driver is currently on.
+	 */
+	public TrackNode obtainCurrentNode() {
+		return this.obtainFirstNode().obtainCurrentNode();
+	}
+	
+	/**
+	 * Retrieve how many nodes the race track has.
+	 * @return the amount of nodes within the race track.
+	 */
+	public int size() {
+		return this.trackNodes.size();
 	}
 
 	@Override

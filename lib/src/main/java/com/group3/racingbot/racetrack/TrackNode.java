@@ -1,7 +1,9 @@
 package com.group3.racingbot.racetrack;
 import java.util.Random;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
@@ -15,11 +17,14 @@ public abstract class TrackNode {
 	private TrackNode successor;
 	private int nodeLength;
 	private int distanceRemaining;
+	private long seed;
+	private int index;
 	
 	/**
 	 * Construct a piece of a race track.
 	 */
-	public TrackNode(long seed) {
+	@BsonCreator
+	public TrackNode(@BsonProperty("seed") long seed) {
 		// Randomly pick a difficulty for the corner.
     	ThreadLocal<Random> rand = new ThreadLocal<Random>(); // Utilize threads with the Random class
     	rand.set(new Random());
@@ -28,6 +33,40 @@ public abstract class TrackNode {
 		this.successor = null;
 		this.nodeLength = rand.get().nextInt(2000) + 1;
 		this.distanceRemaining = this.nodeLength;
+		this.seed = seed;
+		this.index = 0;
+	}
+
+	/**
+	 * Retrieve the index of the track node. In other words, the number representing the order with which the track node appears on the track.
+	 * @return the index
+	 */
+	public int getIndex() {
+		return index;
+	}
+
+	/**
+	 * Set the index of the track node. In other words, the number representing the order with which the track node appears on the track.
+	 * @param index the index to set
+	 */
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	/**
+	 * Retrieve the seed used to generate this track node.
+	 * @return the seed
+	 */
+	public long getSeed() {
+		return seed;
+	}
+
+	/**
+	 * Set the seed used to generate this track node.
+	 * @param seed the seed to set
+	 */
+	public void setSeed(long seed) {
+		this.seed = seed;
 	}
 
 	/**
@@ -80,21 +119,15 @@ public abstract class TrackNode {
 	abstract protected void progressForward(int distance) throws RaceTrackEndException;
 	
 	/**
-	 * Prints what node the Driver is on out of the total number of track nodes.
-	 * @return the current node the Driver is on and the distance left in that node.
-	 * @throws RaceTrackEndException 
+	 * Retrieve the track node which the driver is currently on. If the driver has reached the end of the track, returns the last track node of the race track.
+	 * @return the node which the driver is currently on.
 	 */
-	public String currentProgressToString(RaceTrack raceTrack, int nodeCount) throws RaceTrackEndException {
-		if (this.getDistanceRemaining() <= 0) {
-			if (this.getSuccessor() != null) {
-				return this.getSuccessor().currentProgressToString(raceTrack, nodeCount + 1);
-			}
-			else {
-				throw new RaceTrackEndException("The driver has reached the end of the track");
-			}
+	protected TrackNode obtainCurrentNode() {
+		if (this.successor != null && this.distanceRemaining <= 0) {
+			return this.successor.obtainCurrentNode();
 		}
 		else {
-			return "Node " + nodeCount + " of " + raceTrack.getTrackNodes().size();
+			return this;
 		}
 	}
 	

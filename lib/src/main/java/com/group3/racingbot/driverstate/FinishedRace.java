@@ -133,8 +133,10 @@ public class FinishedRace extends Completed {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + position;
+		int result = super.getPlayerId().hashCode() + super.getDriverId().hashCode();
+		result = prime * result + ((raceEvent == null) ? 0 : raceEvent.hashCode());
+		result = prime * result + ((raceEventId == null) ? 0 : raceEventId.hashCode());
+		result *= position;
 		return result;
 	}
 
@@ -145,7 +147,9 @@ public class FinishedRace extends Completed {
 		else if (other instanceof FinishedRace) {
 			FinishedRace otherObj = (FinishedRace) other;
 			
-			if (this.getPosition() != otherObj.getPosition())
+			if (!(this.getPlayerId().equals(otherObj.getPlayerId())))
+				return false;
+			if (!(this.getDriverId().equals(otherObj.getDriverId())))
 				return false;
 			return true;
 		}

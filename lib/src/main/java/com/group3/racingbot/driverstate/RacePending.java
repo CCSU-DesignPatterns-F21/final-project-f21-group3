@@ -381,8 +381,10 @@ public class RacePending implements DriverState {
 		if (this == other) { return true; } // Same instance 
 		else if (other instanceof RacePending) {
 			RacePending otherObj = (RacePending) other;
-			// Check that the two race pending states are for the same race event.
-			if (!this.getRaceEventId().equals(otherObj.getRaceEventId()))
+			
+			if (!(this.getPlayerId().equals(otherObj.getPlayerId())))
+				return false;
+			if (!(this.getDriverId().equals(otherObj.getDriverId())))
 				return false;
 			return true;
 		}

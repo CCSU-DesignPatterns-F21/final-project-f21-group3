@@ -162,21 +162,28 @@ public class RaceEvent {
 		this.incrementTimeElapsed(); // Advance time
 		Iterator<DriverStanding> driverIterator = standings.iterator();
 		String stepResult = "";
+		//Player currentPlayer = null;
+		Driver currentDriver = null;
+		Racing currentRacingState = null;
 		while (driverIterator.hasNext()) {
 			DriverStanding currentDriverStanding = driverIterator.next();
 			if (currentDriverStanding.getDriver().getState() instanceof Racing) {
-				// First, roll to see which state the driver will fall into this step.
-				Racing currentDriverState = (Racing) currentDriverStanding.getDriver().getState();
-				currentDriverState.rollDriverState();
+				currentDriver = currentDriverStanding.getDriver();
+				currentRacingState = (Racing) currentDriver.getState();
 				
 				// Allow the driver to make their move on the track
-				stepResult += currentDriverStanding.getDriver().raceStep() + "\n";
+				stepResult += currentDriver.raceStep() + "\n";
 				
 				// Update the total distance traveled to later find out the position of this driver in the race.
-				currentDriverStanding.setDistanceTraveled(currentDriverState.getTotalDistanceTraveled()); 
+				currentDriverStanding.setDistanceTraveled(currentRacingState.getTotalDistanceTraveled()); 
 				
 				// Update the standings to reflect updated driver positions.
 				this.standings.updateStandings();
+				
+				// Update the driver within the Player object to reflect state changes.
+				//currentPlayer = currentDriver.getPlayer();
+				//currentPlayer.getOwnedDrivers().update(currentDriver);
+				//dbh.updateUser(currentPlayer);
 			}	
 		}
 		// Update the db with the details of the standings.

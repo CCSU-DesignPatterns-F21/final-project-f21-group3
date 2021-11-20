@@ -3,6 +3,9 @@
  */
 package com.group3.racingbot.racetrack;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
 /**
@@ -15,7 +18,8 @@ public class StraightNode extends TrackNode {
 	/**
 	 * Construct a straight node
 	 */
-	public StraightNode(long seed) {
+	@BsonCreator
+	public StraightNode(@BsonProperty("seed") long seed) {
 		super(seed);
 	}
 	

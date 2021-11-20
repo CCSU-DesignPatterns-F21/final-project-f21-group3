@@ -123,4 +123,34 @@ public class DNF extends Completed {
 		}
 		return true;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.getPlayerId().hashCode() + super.getDriverId().hashCode();
+		result = prime * result + ((raceEvent == null) ? 0 : raceEvent.hashCode());
+		result = prime * result + ((raceEventId == null) ? 0 : raceEventId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof DNF) {
+			DNF otherObj = (DNF) other;
+			
+			if (!(this.getPlayerId().equals(otherObj.getPlayerId())))
+				return false;
+			if (!(this.getDriverId().equals(otherObj.getDriverId())))
+				return false;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "DNF";
+	}
 }

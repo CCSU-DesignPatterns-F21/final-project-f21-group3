@@ -32,7 +32,9 @@ import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.ComponentInventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.StraightNode;
 import com.group3.racingbot.racetrack.TrackNode;
 import com.group3.racingbot.shop.Shop;
 import com.group3.racingbot.standings.DriverStanding;
@@ -77,7 +79,9 @@ public class DBHandler {
 		ClassModel<DriverStanding> driverStandingModel = ClassModel.builder(DriverStanding.class).enableDiscriminator(true).build();
 		ClassModel<Player> playerModel = ClassModel.builder(Player.class).enableDiscriminator(true).build();
 		ClassModel<Driver> driverModel = ClassModel.builder(Driver.class).enableDiscriminator(true).build();
-		//ClassModel<TrackNode> trackNodeModel = ClassModel.builder(TrackNode.class).enableDiscriminator(true).build();
+		ClassModel<TrackNode> trackNodeModel = ClassModel.builder(TrackNode.class).enableDiscriminator(true).build();
+		ClassModel<StraightNode> straightNodeModel = ClassModel.builder(StraightNode.class).enableDiscriminator(true).build();
+		ClassModel<CornerNode> cornerNodeModel = ClassModel.builder(CornerNode.class).enableDiscriminator(true).build();
 		// States
 		ClassModel<DriverState> driverStateModel = ClassModel.builder(DriverState.class).enableDiscriminator(true).build();
 		ClassModel<Racing> racingStateModel = ClassModel.builder(Racing.class).enableDiscriminator(true).build();
@@ -115,6 +119,9 @@ public class DBHandler {
 				 .register(driverStandingModel)
 				 .register(playerModel)
 				 .register(driverModel)
+				 .register(trackNodeModel)
+				 .register(straightNodeModel)
+				 .register(cornerNodeModel)
 				 .automatic(true).build();
 		 CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
 		            MongoClientSettings.getDefaultCodecRegistry(),

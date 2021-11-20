@@ -12,7 +12,9 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.StraightNode;
 import com.group3.racingbot.racetrack.TrackNode;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -53,6 +55,7 @@ public abstract class Racing implements DriverState {
 	//private int position;
 	private int totalDistanceTraveled; // Used to compare with other drivers to determine position.
 	private TrackNode currentNode;
+	private double multiplier;
 
 	@BsonCreator
 	public Racing(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId, @BsonProperty("raceTrack") RaceTrack raceTrack) {
@@ -68,9 +71,25 @@ public abstract class Racing implements DriverState {
 		this.cornerDistance = 0;
 		this.totalDistanceTraveled = 0;
 		this.currentNode = null;
-		//this.position = 1;
+		this.multiplier = 1;
 	}
 	
+	/**
+	 * Retrieve a general purpose multiplier which governs how likely it is that the Driver crashes on each roll and how far the Driver travels.
+	 * @return the multiplier
+	 */
+	public double getMultiplier() {
+		return multiplier;
+	}
+
+	/**
+	 * Set a general purpose multiplier which governs how likely it is that the Driver crashes on each roll and how far the Driver travels.
+	 * @param multiplier the multiplier to set
+	 */
+	public void setMultiplier(double multiplier) {
+		this.multiplier = multiplier;
+	}
+
 	/**
 	 * Retrieve the race event the driver is participating in.
 	 * @return the raceEvent
@@ -308,9 +327,10 @@ public abstract class Racing implements DriverState {
 	}
 
 	/**
-	 * Determines which state the driver will be in for the current unit of time.
+	 * Return a randomly rolled driver state. The likelihood of rolling a certain racing state depends on the racing state the driver is in. Has a chance to return a DNF state if the driver cannot finish the race.
+	 * @return a racing state
 	 */
-	abstract public void rollDriverState();
+	abstract public DriverState rollDriverState();
 	
 	/**
 	 * Determine how far the driver can go on straight nodes this turn based on the Driver's straights skill and the Car's speed and acceleration.
@@ -324,8 +344,8 @@ public abstract class Racing implements DriverState {
 		double straightSkillBonus = Math.log(this.getDriver().getStraights());
 		int lowerBound = (int) Math.floor((this.getCar().getAccelerationRating()/4)*straightSkillBonus * bonusMultiplier);
 		int upperBound = (int) Math.floor(this.getCar().getSpeedRating()*straightSkillBonus * bonusMultiplier);
-		if (lowerBound > upperBound)
-			lowerBound = upperBound - 1;
+		if (lowerBound >= upperBound)
+			lowerBound = upperBound - 2;
 		int distance = ThreadLocalRandom.current().nextInt(lowerBound, upperBound);
 		return distance;
 	}
@@ -342,8 +362,8 @@ public abstract class Racing implements DriverState {
 		double cornerSkillBonus = Math.log(this.getDriver().getCornering());
 		int lowerBound = (int) Math.floor((this.getCar().getBrakingRating()/4)*cornerSkillBonus * bonusMultiplier);
 		int upperBound = (int) Math.floor(this.getCar().getHandlingRating()*cornerSkillBonus * bonusMultiplier);
-		if (lowerBound > upperBound)
-			lowerBound = upperBound - 1;
+		if (lowerBound >= upperBound)
+			lowerBound = upperBound - 2;
 		int distance = ThreadLocalRandom.current().nextInt(lowerBound, upperBound);
 		return distance;
 	}
@@ -384,7 +404,55 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	abstract public String raceStep(Driver driver);
+	public String raceStep(Driver driver) {
+		this.refreshFromDB();
+		
+		DBHandler dbh = DBHandler.getInstance();
+		Player updatedPlayer = driver.getPlayer();
+		Driver updatedDriver = driver;
+		RaceTrack raceTrack = this.getRaceTrack();
+		
+		// Calculate the distances that the driver would travel on either type of track node.
+		// These will be used to calculate the actual distance traveled.
+		int corneringDist = this.rollCornerDistance(this.multiplier);
+		int straightDist = this.rollStraightDistance(this.multiplier);
+		this.setCornerDistance(corneringDist);
+		this.setStraightDistance(straightDist);
+		int distanceToCover = 0;
+		
+		// Calculate the track node based on the type of track node.
+		if (this.getCurrentNode() instanceof StraightNode) {
+			distanceToCover = straightDist + (int) Math.floor(corneringDist/3);
+		}
+		else if (this.getCurrentNode() instanceof CornerNode) {
+			distanceToCover = corneringDist + (int) Math.floor(straightDist/3);
+		}
+		
+		// Advance the driver forward along the track
+		raceTrack.progressForward(updatedDriver, distanceToCover);
+		this.setTotalDistanceTraveled(this.getTotalDistanceTraveled() + distanceToCover);
+		
+		// Prepare the string to be printed
+		TrackNode currentNode = raceTrack.obtainCurrentNode();
+		String stepResult = "Driver: " + updatedDriver.getName() + " | " + currentNode.getIndex() + " of " + raceTrack.size() + " | Distance: " + distanceToCover + " / " + currentNode.getDistanceRemaining() + " | Current state: " + updatedDriver.getState().toString();
+		
+		// Before printing the result of this step,
+		// roll to see what racing state the driver will be in next step.
+		DriverState rolledState = rollDriverState();
+		if (!this.equals(rolledState)) {
+			if (rolledState instanceof Racing) {
+				((Racing) rolledState).setCurrentNode(currentNode);
+				((Racing) rolledState).setRaceTrack(raceTrack);
+			}
+			updatedDriver.setState(rolledState);
+		}
+		
+		// Update the driver within the player's inventory in the database
+		updatedPlayer.getOwnedDrivers().update(updatedDriver);
+		dbh.updateUser(updatedPlayer);
+		
+		return stepResult;
+	}
 
 	@Override
 	public void completedRace(Driver driver) {
@@ -500,5 +568,61 @@ public abstract class Racing implements DriverState {
 	 * Apply a random amount of damage to at least 1 component and at most 3 components of the car.
 	 * @param car
 	 */
-	abstract public void crash(Car car);
+	public void crash(Car car) {
+		refreshFromDB();
+		
+		DBHandler dbh = DBHandler.getInstance();
+		Player updatedPlayer = this.player;
+		Car updatedCar = car;
+		
+		final int CHASSIS = 0;
+		final int ENGINE = 1;
+		final int SUSPENSION = 2;
+		final int TRANSMISSION = 3;
+		final int WHEEL = 4;
+		
+		int updatedDurability = 0;
+		int amountOfComponentsToDamage = ThreadLocalRandom.current().nextInt(1, 4);
+		for (int i = 0; i < amountOfComponentsToDamage; i++) {
+			int componentToDamage = ThreadLocalRandom.current().nextInt(0, 4);
+			int damage = ThreadLocalRandom.current().nextInt(0, 50);
+			switch (componentToDamage) {
+				case CHASSIS:
+					updatedDurability = updatedCar.getChassis().getDurability() - damage;
+					if (updatedDurability < 0)
+						updatedDurability = 0;
+					updatedCar.getChassis().setDurability(updatedDurability);
+					break;
+				case ENGINE:
+					updatedDurability = updatedCar.getEngine().getDurability();
+					if (updatedDurability < 0)
+						updatedDurability = 0;
+					updatedCar.getEngine().setDurability(updatedDurability);
+					break;
+				case SUSPENSION:
+					updatedDurability = updatedCar.getSuspension().getDurability();
+					if (updatedDurability < 0)
+						updatedDurability = 0;
+					updatedCar.getSuspension().setDurability(updatedDurability);
+					break;
+				case TRANSMISSION:
+					updatedDurability = updatedCar.getTransmission().getDurability();
+					if (updatedDurability < 0)
+						updatedDurability = 0;
+					this.getCar().getTransmission().setDurability(updatedDurability);
+					break;
+				case WHEEL:
+					updatedDurability = updatedCar.getWheels().getDurability();
+					if (updatedDurability < 0)
+						updatedDurability = 0;
+					updatedCar.getWheels().setDurability(updatedDurability);
+					break;
+				default:
+					break;
+			}
+		}
+		
+		updatedPlayer.getOwnedCars().update(updatedCar);
+		dbh.updateUser(updatedPlayer);
+	}
 }

@@ -121,6 +121,7 @@ public class FinishedTraining extends Completed {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((skill == null) ? 0 : skill.hashCode());
+		result *= reward;
 		return result;
 	}
 
@@ -131,7 +132,9 @@ public class FinishedTraining extends Completed {
 		else if (other instanceof FinishedTraining) {
 			FinishedTraining otherObj = (FinishedTraining) other;
 			
-			if (this.getSkill() != otherObj.getSkill())
+			if (!(this.getPlayerId().equals(otherObj.getPlayerId())))
+				return false;
+			if (!(this.getDriverId().equals(otherObj.getDriverId())))
 				return false;
 			return true;
 		}
