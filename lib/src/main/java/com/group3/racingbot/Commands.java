@@ -429,10 +429,9 @@ public class Commands extends ListenerAdapter {
 	    			if(args[3].equalsIgnoreCase("generate"))
 	    			{
 	    				this.raceEvent = new RaceEvent();
-	    				this.raceEvent.setId(dbh.generateId(6));
-	    				this.raceEvent.setRaceTrack(this.raceEvent.generateRaceTrackFromId());
+	    				this.raceEvent.initialize();
 	    				dbh.insertRaceEvent(this.raceEvent);
-	    				event.getChannel().sendMessage("New Event Created: " + this.raceEvent.getId()).queue();
+	    				event.getChannel().sendMessage("New Event Created: " + this.raceEvent.getId() + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength()).queue();
 	    			}
 	    			if(args[3].equalsIgnoreCase("register")) {
 	    				// Register a user to an event	

@@ -14,6 +14,7 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * A state where the driver completes something, whether that's an event or a training session.
@@ -142,10 +143,10 @@ public abstract class Completed implements DriverState{
 	}
 
 	@Override
-	public String raceStep(Driver driver) {
+	public DriverStanding raceStep(Driver driver, DriverStanding driverStanding) {
 		// TODO Auto-generated method stub
 		// Do nothing
-		return "Finished";
+		return null;
 	}
 
 	@Override

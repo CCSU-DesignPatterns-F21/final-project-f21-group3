@@ -32,11 +32,10 @@ public class Defensive extends Racing {
 	 * @param driverId used to grab the driver object from the DB. Allows this state to change the driver's state and helps calculate how far the Driver will travel per time unit.
 	 * @param carId used to grab the car object from the DB. This is the driver's vessel for traversing the track.
 	 * @param raceEventId used to grab the race event object from the DB.
-	 * @param raceTrack what the driver will be racing on.
 	 */
 	@BsonCreator
-	public Defensive(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId, @BsonProperty("raceTrack") RaceTrack raceTrack) {
-		super(playerId, driverId, carId, raceEventId, raceTrack);
+	public Defensive(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId) {
+		super(playerId, driverId, carId, raceEventId);
 		super.setMultiplier(0.75);
 	}
 
@@ -49,7 +48,7 @@ public class Defensive extends Racing {
 			// Driver has crashed
 			crash(this.getCar());
 			if (this.getCar().getDurability() > 0) {
-				return new Crashed(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack());
+				return new Crashed(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId());
 			}
 			else {
 				return new DNF(this.getDriver(), this.getRaceEvent());
@@ -61,11 +60,11 @@ public class Defensive extends Racing {
 		}
 		else if (roll < 80) {
 			// Driver is now driving normally.
-			return new Normal(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack());
+			return new Normal(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId());
 		}
 		else {
 			// Driver is now driving aggressively.
-			return new Aggressive(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack());
+			return new Aggressive(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId());
 		}
 	}
 	

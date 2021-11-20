@@ -10,6 +10,7 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * A state which the Driver remains in once initiating a training session. Only when the training cooldown expires can the Driver move to another state.
@@ -164,13 +165,13 @@ public class Training implements DriverState {
 	}
 
 	@Override
-	public String raceStep(Driver driver) {
+	public DriverStanding raceStep(Driver driver, DriverStanding driverStanding) {
 		// If in Racing state, calculate the distance which the driver can travel on straights and corners. 
 		// Next, randomize if a crash will occur this roll. If so, add to the idleTime and damage the Car. Otherwise, continue.
 		// Finally, if the Driver's on a straight node then travel the straight distance + Math.floor(cornerDistance/3). Otherwise, vice versa.
 		
 		// Do nothing
-		return "";
+		return null;
 	}
 
 	@Override

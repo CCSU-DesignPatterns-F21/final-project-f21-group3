@@ -10,6 +10,7 @@ import com.group3.racingbot.driverstate.DriverState;
 import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
+import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * Drives cars in races. A driver has their own stats that govern how well they do on the track.
@@ -396,10 +397,11 @@ public class Driver {
 	
 	/**
 	 * Allows the Driver to progress through the track.
-	 * @return where the driver currently is on the track.
+	 * @param driverStanding
+	 * @return an updated driver standing which holds the current node the driver is in on the track.
 	 */
-	public String raceStep() {
-		return this.state.raceStep(this);
+	public DriverStanding raceStep(DriverStanding driverStanding) {
+		return this.state.raceStep(this, driverStanding);
 	}
 	
 	/**

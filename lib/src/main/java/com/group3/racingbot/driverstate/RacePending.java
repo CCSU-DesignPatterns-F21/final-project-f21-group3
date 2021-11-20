@@ -11,6 +11,7 @@ import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * A state where the Driver is signed up for a race and is ready for it to start.
@@ -31,7 +32,6 @@ public class RacePending implements DriverState {
 	@BsonIgnore
 	private RaceEvent raceEvent;
 	private String raceEventId;
-	private RaceTrack raceTrack;
 	
 	/**
 	 * Commit a driver to a race that will start sometime soon.
@@ -49,7 +49,6 @@ public class RacePending implements DriverState {
 		this.carId = carId;
 		this.raceEvent = null;
 		this.raceEventId = raceEventId;
-		this.raceTrack = null;
 	}
 	
 	/**
@@ -176,22 +175,6 @@ public class RacePending implements DriverState {
 		this.raceEventId = raceEventId;
 	}
 
-	/**
-	 * Retrieve the race track which the Driver will drive on.
-	 * @return the raceTrack
-	 */
-	public RaceTrack getRaceTrack() {
-		return raceTrack;
-	}
-
-	/**
-	 * Set the race track which the Driver will drive on.
-	 * @param raceTrack the raceTrack to set
-	 */
-	public void setRaceTrack(RaceTrack raceTrack) {
-		this.raceTrack = raceTrack;
-	}
-
 	@Override
 	public void rest() {
 		// TODO Auto-generated method stub
@@ -214,7 +197,7 @@ public class RacePending implements DriverState {
 	public void beginRace(Driver driver) {
 		// Ensure that all necessary data can be pulled using id's from the database.
 		if (refreshFromDB()) {
-			driver.setState(new Normal(this.playerId, this.driverId, this.carId, this.raceEventId, this.raceTrack));
+			driver.setState(new Normal(this.playerId, this.driverId, this.carId, this.raceEventId));
 		}
 		else {
 			System.out.println("Unable to enter into a race, values in the database may have been deleted which prevents Driver " + this.driverId + " from participating in RaceEvent " + this.raceEventId + ".");
@@ -255,10 +238,10 @@ public class RacePending implements DriverState {
 	}
 
 	@Override
-	public String raceStep(Driver driver) {
+	public DriverStanding raceStep(Driver driver, DriverStanding driverStanding) {
 		// TODO Auto-generated method stub
 		// Do nothing
-		return "";
+		return null;
 	}
 
 	@Override
@@ -331,7 +314,6 @@ public class RacePending implements DriverState {
 		else {
 			// Get the race event from the DB and set it for the state
 			this.raceEvent = dbh.getRaceEvent(this.raceEventId);
-			this.raceTrack = this.raceEvent.getRaceTrack();
 		}
 		
 		if (this.car == null) {

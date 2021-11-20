@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.driverstate.FinishedRace;
 import com.group3.racingbot.driverstate.Racing;
@@ -23,46 +26,13 @@ import com.group3.racingbot.inventory.NotFoundException;
  */
 public class Standings {
 	private List<DriverStanding> standings;
-	//private int highestPositionRemaining; // For those still racing, this is the highest position which they can receive.
-	//private int lowestPositionRemaining; // For those still racing, this is the lowest position which they can receive.
+	private String raceEventId;
 	
-	public Standings() {
+	@BsonCreator
+	public Standings(@BsonProperty("raceEventId") String raceEventId) {
 		this.standings = new ArrayList<DriverStanding>();
-		//this.highestPositionRemaining = 1;
-		//this.lowestPositionRemaining = 1;
+		this.raceEventId = raceEventId;
 	}
-	
-	/**
-	 * Retrieve the highest position which currently racing drivers can achieve.
-	 * @return the highestPositionRemaining
-	 */
-	//public int getHighestPositionRemaining() {
-	//	return highestPositionRemaining;
-	//}
-
-	/**
-	 * Set the highest position which currently racing drivers can achieve.
-	 * @param highestPositionRemaining the highestPositionRemaining to set
-	 */
-	//public void setHighestPositionRemaining(int highestPositionRemaining) {
-	//	this.highestPositionRemaining = highestPositionRemaining;
-	//}
-	
-	/**
-	 * Retrieve the lowest position which currently racing drivers can achieve.
-	 * @return the highestPositionRemaining
-	 */
-	//public int getLowestPositionRemaining() {
-	//	return lowestPositionRemaining;
-	//}
-
-	/**
-	 * Set the lowest position which currently racing drivers can achieve.
-	 * @param highestPositionRemaining the highestPositionRemaining to set
-	 */
-	//public void setLowestPositionRemaining(int lowestPositionRemaining) {
-	//	this.lowestPositionRemaining = lowestPositionRemaining;
-	//}
 	
 	/**
 	 * Sorts the standings based on driver's distance traveled to find out their positions.
@@ -139,7 +109,7 @@ public class Standings {
 	public void setStandings(List<DriverStanding> standings) {
 		this.standings = standings;
 	}
-	
+
 	/**
 	 * Adds a driver to the race event.
 	 * @param playerId
@@ -154,7 +124,7 @@ public class Standings {
 				return;
 			}
 		}
-		this.standings.add(new DriverStanding(playerId, driverId));
+		this.standings.add(new DriverStanding(playerId, driverId, this.raceEventId));
 		System.out.println("Standings; addDriver method: Driver " + driverId + " added to the standings of a race event");
 	}
 
@@ -214,9 +184,9 @@ public class Standings {
 	}
 	
 	/**
-	 * Retrieve the DriverPosition from the race event's standings based on driver id.
+	 * Retrieve the DriverStanding from the race event's standings based on driver id.
 	 * @param driverId
-	 * @return the DriverPosition
+	 * @return the DriverStanding
 	 * @throws NotFoundException 
 	 */
 	public DriverStanding getDriverStandingById(String driverId) throws NotFoundException {

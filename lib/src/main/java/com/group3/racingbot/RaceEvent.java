@@ -32,7 +32,17 @@ public class RaceEvent {
 		this.timeElapsed = 0;
 		this.grandPrize = 10000;
 		this.createdOn = new Date().getTime();
-		this.standings = new Standings();
+		this.standings = null;
+	}
+	
+	/**
+	 * Assigns a randomly generated id to the race event and uses that id to setup the race event. Generates a race track and sets up the standings so that drivers may register.
+	 */
+	public void initialize() {
+		DBHandler dbh = DBHandler.getInstance();
+		this.id = dbh.generateId(6);
+		this.standings = new Standings(this.id);
+		this.raceTrack = this.generateRaceTrackFromId();
 	}
 	
 	/**
@@ -165,20 +175,24 @@ public class RaceEvent {
 		String stepResult = "";
 		Driver currentDriver = null;
 		DriverStanding currentDriverStanding = null;
-		Racing currentRacingState = null;
+		TrackNode currentNode = null;
 		//TrackNode currentNode = null;
 		while (driverIterator.hasNext()) {
 			currentDriverStanding = driverIterator.next();
 			currentDriver = currentDriverStanding.getDriver();
 			if (currentDriver.getState() instanceof Racing) {
 				// Allow the driver to make their move on the track
-				stepResult += currentDriver.raceStep() + "\n";
+				//stepResult += currentDriver.raceStep() + "\n";
+				currentDriverStanding = currentDriver.raceStep(currentDriverStanding);
+				this.standings.update(currentDriverStanding);
 				
+				currentNode = currentDriverStanding.getCurrentNode();
+				stepResult += "Driver: " + currentDriver.getName() + " | " + currentNode.getOrder() + " of " + this.raceTrack.size() + " | Distance: " + (currentNode.getNodeLength() - currentNode.getDistanceRemaining()) + " / " + currentNode.getNodeLength() + " | Current state: " + currentDriver.getState().toString() + "\n";
 				// Update the total distance traveled to later find out the position of this driver in the race.
-				currentRacingState = (Racing) currentDriver.getState();
+				//currentRacingState = (Racing) currentDriver.getState();
 				//currentNode = currentRacingState.getCurrentNode();
-				currentDriverStanding.setDistanceTraveled(currentRacingState.getTotalDistanceTraveled()); 
-				this.standings.update(currentDriverStanding, currentDriverStanding.getPosition() - 1);
+				//currentDriverStanding.setDistanceTraveled(currentRacingState.getTotalDistanceTraveled()); 
+				//this.standings.update(currentDriverStanding, currentDriverStanding.getPosition() - 1);
 				//this.setStandings()
 				
 				//currentStandings

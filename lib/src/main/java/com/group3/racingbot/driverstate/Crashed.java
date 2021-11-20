@@ -29,11 +29,10 @@ public class Crashed extends Racing {
 	 * @param driverId used to grab the driver object from the DB. Allows this state to change the driver's state and helps calculate how far the Driver will travel per time unit.
 	 * @param carId used to grab the car object from the DB. This is the driver's vessel for traversing the track.
 	 * @param raceEventId used to grab the race event object from the DB.
-	 * @param raceTrack what the driver will be racing on.
 	 */
 	@BsonCreator
-	public Crashed(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId, @BsonProperty("raceTrack") RaceTrack raceTrack) {
-		super(playerId, driverId, carId, raceEventId, raceTrack);
+	public Crashed(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId) {
+		super(playerId, driverId, carId, raceEventId);
 		super.setMultiplier(0);
 	}
 
@@ -43,7 +42,7 @@ public class Crashed extends Racing {
 		int lowerBound = (int) Math.floor(this.getDriver().getRecovery()/5);
 		int recoveryRoll = ThreadLocalRandom.current().nextInt(lowerBound, 100);
 		if (recoveryRoll > 75) {
-			return new Normal(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId(), super.getRaceTrack());
+			return new Normal(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId());
 		}
 		else {
 			return this;

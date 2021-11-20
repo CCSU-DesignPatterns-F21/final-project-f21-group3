@@ -209,16 +209,15 @@ public class DBHandler {
 				// This event from the database is recent. Recreate the track using the seed and return it.
 				long raceTrackSeed = raceEvent.getRaceTrack().getSeed();
 				raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(raceTrackSeed));
-				System.out.println("Existing race event found and used: " + raceEvent.getId());
+				System.out.println("Existing race event found and used: " + raceEvent.getId() + " | Total Nodes: " + raceEvent.getRaceTrack().size() + " | Total Distance: " + raceEvent.getRaceTrack().calculateTrackLength());
 				return raceEvent;
 			}
 		}
 		// No recent event exists. Create a new one.
 		raceEvent = new RaceEvent();
-		raceEvent.setId(this.generateId(6));
-		raceEvent.setRaceTrack(raceEvent.generateRaceTrackFromId());
+		raceEvent.initialize();
 		this.insertRaceEvent(raceEvent);
-		System.out.println("New race event created: " + raceEvent.getId());
+		System.out.println("New Event Created: " + raceEvent.getId() + " | Total Nodes: " + raceEvent.getRaceTrack().size() + " | Total Distance: " + raceEvent.getRaceTrack().calculateTrackLength());
 		return raceEvent;
 	}
 	

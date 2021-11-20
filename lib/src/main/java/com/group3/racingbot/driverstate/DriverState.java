@@ -12,6 +12,7 @@ import com.group3.racingbot.shop.ChopShop;
 import com.group3.racingbot.shop.Dealership;
 import com.group3.racingbot.shop.Importer;
 import com.group3.racingbot.shop.Junkyard;
+import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * Classes which implement this are considered states. A state for a Driver can offer bonuses or hindrances while racing, permanent skill improvements off the track, or simply resting/idling.
@@ -62,15 +63,17 @@ public interface DriverState {
 	/**
 	 * Lets the Driver withdraw from a race if they are in a race pending state.
 	 * @param driver
-	 * @return success or failure of race withdrawl.
+	 * @return success or failure of race withdrawal.
 	 */
 	boolean withdrawFromRace(Driver driver);
 	
 	/**
 	 * Allow the Driver to perform their turn to move on the track during a race.
 	 * @param driver
+	 * @param driverStanding
+	 * @return the updated driver standing.
 	 */
-	String raceStep(Driver driver);
+	DriverStanding raceStep(Driver driver, DriverStanding driverStanding);
 	
 	/**
 	 * Move to the finished race state upon race completion.

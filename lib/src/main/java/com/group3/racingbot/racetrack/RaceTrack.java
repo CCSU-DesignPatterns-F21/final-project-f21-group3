@@ -131,7 +131,18 @@ public class RaceTrack {
 		}
 		setTrackNodes(track);
 		return track;
-		
+	}
+	
+	/**
+	 * Calculate and retrieve the total distance of the race track across all track nodes.
+	 * @return the length of the track in distance.
+	 */
+	public int calculateTrackLength() {
+		int totalDistance = 0;
+		for (int i = 0, len = this.trackNodes.size(); i < len; i++) {
+			totalDistance += this.trackNodes.get(i).getNodeLength();
+		}
+		return totalDistance;
 	}
 	
 	/**
@@ -146,6 +157,23 @@ public class RaceTrack {
 			System.out.println("Driver " + driver.getId() + " has finished the race!");
 			driver.completedRace();
 		}
+	}
+	
+	/**
+	 * Given a track node (from the DB), restore the state of the race track. This allows a driver to resume from a node they left off on. For example, if given a track node with an order of 3 and a distance remaining of 200, then this will set track nodes before it to have a distance remaining of 0 and set the distance remaining of the track node at order 3 to have a distance remaining of 200. 
+	 * @param trackNode the track node to resume the race from.
+	 * @return whether or not the resuming was successful.
+	 */
+	public boolean resumeProgressFromTrackNode(TrackNode trackNode) {
+		if (trackNode.getSeed() == this.seed) {
+			int index = 0;
+			for (int len = trackNode.getOrder()-1; index < len; index++) {
+				this.trackNodes.get(index).setDistanceRemaining(0);
+			}
+			this.trackNodes.set(index, trackNode);
+			return true;
+		}
+		return false;
 	}
 	
 	/**
