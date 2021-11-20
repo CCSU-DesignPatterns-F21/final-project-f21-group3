@@ -98,7 +98,11 @@ public class RaceTrack {
 		List<TrackNode> track = new ArrayList<TrackNode>();
 		while (track.size() < maxNodes) {
 		    if (currentNode % 2 == 0) {
-		    	track.add(new StraightNode(this.seed));
+		    	track.add(new StraightNode(this.seed + currentNode)); // Add variation to the seed so that all generated nodes differ from one another.
+		    	if (currentNode != 0) {
+		    		// Set the successors for CoR
+		    		track.get(currentNode - 1).setSuccessor(track.get(currentNode));
+		    	}
 		    }
 		    else {
 		    	int difficultyValue = rand.get().nextInt(3);
@@ -117,8 +121,9 @@ public class RaceTrack {
 		    			difficulty = Difficulty.EASY;
 		    			break;
 		    	}
-		    	track.add(new CornerNode(this.seed, difficulty));
+		    	track.add(new CornerNode(this.seed + currentNode, difficulty)); // Add variation to the seed so that all generated nodes differ from one another.
 		    }
+		    track.get(currentNode).setOrder(currentNode + 1); // Set the order which this track node appears (starting from 1)
 		    currentNode++;
 		}
 
