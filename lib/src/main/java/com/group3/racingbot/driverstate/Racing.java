@@ -434,7 +434,7 @@ public abstract class Racing implements DriverState {
 		
 		// Prepare the string to be printed
 		TrackNode currentNode = raceTrack.obtainCurrentNode();
-		String stepResult = "Driver: " + updatedDriver.getName() + " | " + currentNode.getIndex() + " of " + raceTrack.size() + " | Distance: " + distanceToCover + " / " + currentNode.getDistanceRemaining() + " | Current state: " + updatedDriver.getState().toString();
+		String stepResult = "Driver: " + updatedDriver.getName() + " | " + currentNode.getIndex() + " of " + raceTrack.size() + " | Distance: " + (currentNode.getNodeLength() - currentNode.getDistanceRemaining()) + " / " + currentNode.getNodeLength() + " | Current state: " + updatedDriver.getState().toString();
 		
 		// Before printing the result of this step,
 		// roll to see what racing state the driver will be in next step.
