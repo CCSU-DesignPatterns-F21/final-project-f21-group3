@@ -1,9 +1,12 @@
 package com.group3.racingbot.driverstate;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.Player;
 import com.group3.racingbot.inventory.NotFoundException;
 
 /**
@@ -22,8 +25,9 @@ public class FinishedTraining extends Completed {
 	 * @param reward amount of skill points to add to the Driver
 	 * @param skill the Driver skill to add the skill points to.
 	 */
-	public FinishedTraining(Driver driver, int reward, Skill skill) {
-		super(driver);
+	@BsonCreator
+	public FinishedTraining(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("reward") int reward, @BsonProperty("skill") Skill skill) {
+		super(playerId, driverId);
 		this.reward = reward;
 		this.skill = skill;
 	}
@@ -46,37 +50,45 @@ public class FinishedTraining extends Completed {
 	
 	@Override
 	public void collectReward() {
+		this.refreshFromDB();
+		
+		DBHandler dbh = DBHandler.getInstance();
+		Player updatedPlayer = super.getPlayer();
+		Driver updatedDriver = super.getDriver();
+		
 		// Reward the player with skill points toward the skill the Driver trained for
 		int currentSkillPoints = 0;
 		switch (this.getSkill()) {
 		 case COMPOSURE: 
-			 currentSkillPoints = this.getDriver().getComposure();
-			 this.getDriver().setComposure(currentSkillPoints + this.getReward());
+			 currentSkillPoints = updatedDriver.getComposure();
+			 updatedDriver.setComposure(currentSkillPoints + this.getReward());
 			 break;
 		 case AWARENESS: 
-			 currentSkillPoints = this.getDriver().getAwareness();
-			 this.getDriver().setAwareness(currentSkillPoints + this.getReward());
+			 currentSkillPoints = updatedDriver.getAwareness();
+			 updatedDriver.setAwareness(currentSkillPoints + this.getReward());
 			 break;
 		 case DRAFTING: 
-			 currentSkillPoints = this.getDriver().getDrafting();
-			 this.getDriver().setDrafting(currentSkillPoints + this.getReward());
+			 currentSkillPoints = updatedDriver.getDrafting();
+			 updatedDriver.setDrafting(currentSkillPoints + this.getReward());
 			 break;
 		 case STRAIGHTS: 
-			 currentSkillPoints = this.getDriver().getStraights();
-			 this.getDriver().setStraights(currentSkillPoints + this.getReward());
+			 currentSkillPoints = updatedDriver.getStraights();
+			 updatedDriver.setStraights(currentSkillPoints + this.getReward());
 			 break;
 		 case CORNERING: 
-			 currentSkillPoints = this.getDriver().getCornering();
-			 this.getDriver().setCornering(currentSkillPoints + this.getReward());
+			 currentSkillPoints = updatedDriver.getCornering();
+			 updatedDriver.setCornering(currentSkillPoints + this.getReward());
 			 break;
 		 case RECOVERY: 
-			 currentSkillPoints = this.getDriver().getRecovery();
-			 this.getDriver().setRecovery(currentSkillPoints + this.getReward());
+			 currentSkillPoints = updatedDriver.getRecovery();
+			 updatedDriver.setRecovery(currentSkillPoints + this.getReward());
 			 break;
 		}
 		
-		// Return the driver to a resting state
-		this.getDriver().setState(new Resting());
+		// Return the driver to a resting state and save the skill point reward
+		updatedDriver.setState(new Resting());
+		updatedPlayer.getOwnedDrivers().update(updatedDriver);
+		dbh.updateUser(updatedPlayer);
 	}
 	
 	@Override
@@ -144,6 +156,11 @@ public class FinishedTraining extends Completed {
 	@Override
 	public String toString() {
 		return "FinishedTraining [skill=" + skill + "]";
+	}
+
+	@Override
+	public String driverStatus(Driver driver) {
+		return driver.getName() + "(" + driver.getId() + ") has completed training for " + this.skill.toString().toLowerCase() + ". You can now claim the skill reward. \nClaim a reward: !r debug driver reward";
 	}
 	
 }

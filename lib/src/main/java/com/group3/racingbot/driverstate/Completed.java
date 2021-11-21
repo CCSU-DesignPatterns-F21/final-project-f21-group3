@@ -3,8 +3,10 @@
  */
 package com.group3.racingbot.driverstate;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -40,11 +42,12 @@ public abstract class Completed implements DriverState{
 	 * @param driver allows this state to set the state of the driver
 	 * @param reward the event reward for first place that gets added to the players balance. 
 	 */
-	public Completed(Driver driver) {
-		this.player = driver.getPlayer();
-		this.playerId = driver.getPlayer().getId();
-		this.driver = driver;
-		this.driverId = driver.getId();
+	@BsonCreator
+	public Completed(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId) {
+		this.player = null;
+		this.playerId = playerId;
+		this.driver = null;
+		this.driverId = driverId;
 		//this.raceEventId = raceEventId;
 	}
 	
@@ -113,9 +116,8 @@ public abstract class Completed implements DriverState{
 	}
 
 	@Override
-	public void rest() {
-		// TODO Auto-generated method stub
-		// Do nothing
+	public String rest(Driver driver) {
+		return driver.getName() + "(" + driver.getId() + ") still has rewards to claim. May not rest until the reward has been claimed.\nClaim a reward: !r debug driver reward";
 	}
 
 	@Override

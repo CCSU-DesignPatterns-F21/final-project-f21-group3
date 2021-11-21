@@ -2,7 +2,10 @@ package com.group3.racingbot.driverstate;
 
 import java.util.Date;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.Car;
 import com.group3.racingbot.DBHandler;
@@ -21,8 +24,10 @@ import com.group3.racingbot.standings.DriverStanding;
 public class Training implements DriverState {
 	private String playerId;
 	private String driverId;
+	@BsonIgnore
 	private Driver driver;
 	private Skill skillToTrain;
+	private Intensity intensity;
 	private int trainingReward;
 	
 	/**
@@ -31,10 +36,13 @@ public class Training implements DriverState {
 	 * @param skillToTrain this is what skill will be added to after training completes.
 	 * @param intensity governs the length of the training session and the size of the reward.
 	 */
-	public Training(Driver driver, Skill skillToTrain, Intensity intensity) {
-		this.driver = driver;
-		this.driverId = driver.getId();
+	@BsonCreator
+	public Training(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("skillToTrain") Skill skillToTrain, @BsonProperty("intensity") Intensity intensity) {
+		this.driver = null;
+		this.playerId = playerId;
+		this.driverId = driverId;
 		this.skillToTrain = skillToTrain;
+		this.intensity = intensity;
 		switch (intensity) {
 			case LIGHT:
 				this.trainingReward = 1;
@@ -46,6 +54,22 @@ public class Training implements DriverState {
 				this.trainingReward = 5;
 				break;
 		}
+	}
+
+	/**
+	 * Retrieve the intensity of the training which the driver is enduring.
+	 * @return the intensity of the training session
+	 */
+	public Intensity getIntensity() {
+		return intensity;
+	}
+
+	/**
+	 * Set the intensity of the training which the driver is enduring.
+	 * @param intensity the intensity of the training session to set
+	 */
+	public void setIntensity(Intensity intensity) {
+		this.intensity = intensity;
 	}
 
 	/**
@@ -129,9 +153,12 @@ public class Training implements DriverState {
 	}
 
 	@Override
-	public void rest() {
+	public String rest(Driver driver) {
+		DBHandler dbh = DBHandler.getInstance();
 		// Cancels the training session.
-		// Do nothing
+		dbh.updateDriverStateInDB(playerId, driverId, new Resting());
+		driver.setState(new Resting());
+		return "Ended a traning session which " + driver.getName() + " (" + driver.getId() + ") was in the middle of. The driver will not recieve the training reward for this session.";
 	}
 
 	@Override
@@ -189,8 +216,8 @@ public class Training implements DriverState {
 		Date d = new Date();
 		long now = d.getTime();
 		if (now > this.getDriver().getCooldown()) {
-			if (dbh.updateDriverStateInDB(this.playerId, this.driverId, new FinishedTraining(this.getDriver(), this.getTrainingReward(), this.getSkillToTrain()))) {
-				this.driver.setState(new FinishedTraining(this.getDriver(), this.getTrainingReward(), this.getSkillToTrain()));
+			if (dbh.updateDriverStateInDB(this.playerId, this.driverId, new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()))) {
+				this.driver.setState(new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()));
 				System.out.println("Driver " + this.driverId + " has completed training for " + getSkillToTrain().toString() + ".");
 			}
 			else {
@@ -234,6 +261,11 @@ public class Training implements DriverState {
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public String driverStatus(Driver driver) {
+		return driver.getName() + " (" + driver.getId() + ") is currently training. You may cancel their training session, but " + driver.getName() + " will not earn a skill reward as a result.\n**Cancel**\n!r debug driver train withdraw";
 	}
 
 	@Override

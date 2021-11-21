@@ -60,7 +60,7 @@ public class DriverInventory implements Inventory<Driver>{
 			Driver currentDriver = iterator.next();
 			if (currentDriver.getId().equals(driver.getId())) {
 				this.items.set(currentIndex, driver);
-				System.out.println("DriverInventory; update method: Driver " + driver.getId() + " has been updated in the driver inventory of Player " + driver.getPlayer().getId() + ".");
+				System.out.println("DriverInventory; update method: Driver " + driver.getId() + " has been updated in the driver inventory of Player " + driver.getPlayerId() + ".");
 				return true;
 			}
 		}
@@ -93,6 +93,7 @@ public class DriverInventory implements Inventory<Driver>{
 	/**
 	 * Get a driver from the inventory based on their ID.
 	 * @param driverId the id of the driver
+	 * @return a driver
 	 * @throws NotFoundException 
 	 */
 	public Driver getById(String driverId) throws NotFoundException {
@@ -104,6 +105,23 @@ public class DriverInventory implements Inventory<Driver>{
 			}
 		}
 		throw new NotFoundException("Unable to find the driver with the id: " + driverId);
+	}
+	
+	/**
+	 * Get a driver from the inventory based on their ID.
+	 * @param driverName the name of the driver
+	 * @return a driver
+	 * @throws NotFoundException
+	 */
+	public Driver getByName(String driverName) throws NotFoundException {
+		InventoryIterator<Driver> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			Driver currentDriver = iterator.next();
+			if (currentDriver.getName().equals(driverName)) {
+				return currentDriver;
+			}
+		}
+		throw new NotFoundException("Unable to find the driver with the name: " + driverName);
 	}
 	
 	/**

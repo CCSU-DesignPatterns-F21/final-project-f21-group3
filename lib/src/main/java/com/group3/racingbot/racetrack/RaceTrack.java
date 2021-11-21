@@ -14,6 +14,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.Player;
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
 /**
@@ -153,14 +154,15 @@ public class RaceTrack {
 	/**
 	 * Makes the driver advance forward along the track.
 	 * @param distance distance to travel
+	 * @throws RaceTrackEndException 
 	 */
-	public void progressForward(Driver driver, int distance) {
+	public void progressForward(Driver driver, int distance) throws RaceTrackEndException {
 		// CoR
 		try {
 			this.obtainFirstNode().progressForward(distance);
 		} catch (RaceTrackEndException e) {
 			System.out.println("Driver " + driver.getId() + " has finished the race!");
-			driver.completedRace();
+			throw e;
 		}
 	}
 	

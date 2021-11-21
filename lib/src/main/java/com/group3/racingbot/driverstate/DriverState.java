@@ -30,8 +30,10 @@ import com.group3.racingbot.standings.DriverStanding;
 public interface DriverState {
 	/**
 	 * Puts the Driver into a Resting state.
+	 * @param driver the driver to switch into a resting state.
+	 * @return context for what state the user may have left.
 	 */
-	void rest();
+	String rest(Driver driver);
 	
 	/**
 	 * The driver begins the race they've signed up for.
@@ -92,4 +94,10 @@ public interface DriverState {
 	 * @return whether or not all missing objects were successfully obtained from the database.
 	 */
 	boolean refreshFromDB();
+	
+	/**
+	 * Gives helpful information about the current state of the driver.
+	 * @return a contextual string which offers helpful information about a particular driver.
+	 */
+	public String driverStatus(Driver driver);
 }

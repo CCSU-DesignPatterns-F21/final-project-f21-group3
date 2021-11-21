@@ -50,7 +50,7 @@ public class Normal extends Racing {
 				return new Crashed(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId());
 			}
 			else {
-				return new DNF(this.getDriver(), this.getRaceEvent());
+				return new DNF(super.getPlayerId(), super.getDriverId());
 			}
 		}
 		else if (roll < 60) {

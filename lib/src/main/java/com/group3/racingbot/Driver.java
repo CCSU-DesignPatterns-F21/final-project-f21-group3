@@ -87,25 +87,6 @@ public class Driver {
 	public void setState(DriverState state) {
 		this.state = state;
 	}
-	
-
-	/**
-	 * Retrieve the last event that this Driver has registered for.
-	 * @return the lastRegisteredEvent
-	 */
-	//public RaceEvent getLastRegisteredEvent() {
-	//	return lastRegisteredEvent;
-	//}
-
-	/**
-	 * Set the last event that this Driver has registered for.
-	 * @param lastRegisteredEvent the lastRegisteredEvent to set
-	 */
-	//public void setLastRegisteredEvent(RaceEvent lastRegisteredEvent) {
-	//	this.lastRegisteredEvent = lastRegisteredEvent;
-	//}
-
-	
 
 	/**
 	 * Retrieve the id of the last race event that this Driver has registered for.
@@ -350,9 +331,11 @@ public class Driver {
 	
 	/**
 	 * Puts the Driver into a Resting state.
+	 * @return context for what state the user may have left.
 	 */
-	public void rest() {
-		this.state = new Resting();
+	public String rest() {
+		//this.state = new Resting();
+		return this.state.rest(this);
 	}
 	
 	/**
@@ -416,6 +399,14 @@ public class Driver {
 	 */
 	public void completedTraining() {
 		this.state.completedTraining(this);
+	}
+	
+	/**
+	 * Gives helpful information about the current state of the driver.
+	 * @return a contextual string which offers helpful information about a particular driver.
+	 */
+	public String driverStatus() {
+		return this.state.driverStatus(this);
 	}
 	
 	@Override

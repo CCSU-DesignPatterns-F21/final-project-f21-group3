@@ -5,6 +5,7 @@ package com.group3.racingbot.driverstate;
 
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
@@ -28,22 +29,22 @@ public class DNF extends Completed {
 	 * @param driver allows this state to set the state of the driver
 	 * @param raceEvent the event which the driver participated in.
 	 */
-	public DNF(Driver driver, RaceEvent raceEvent) {
-		super(driver);
-		this.raceEvent = raceEvent;
-		this.raceEventId = raceEvent.getId();
+	public DNF(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId) {
+		super(playerId, driverId);
 	}
 	
 	@Override
 	public void collectReward() {
-		DBHandler dbh = DBHandler.getInstance();
+		this.refreshFromDB(); // Ensure that we have all objects that we'd need.
 		
-		// Ensure that we have all objects that we'd need.
-		refreshFromDB();
-		Player p = super.getPlayer();
-		p.setCredits(p.getCredits() + 50); // Pity money
-		dbh.updateUser(p);
-		this.getDriver().setState(new Resting());
+		DBHandler dbh = DBHandler.getInstance();
+		Player updatedPlayer = super.getPlayer();
+		Driver updatedDriver = super.getDriver();
+		
+		updatedDriver.setState(new Resting()); // Set driver to resting state
+		updatedPlayer.setCredits(updatedPlayer.getCredits() + 50); // Pity money
+		updatedPlayer.getOwnedDrivers().update(updatedDriver);
+		dbh.updateUser(updatedPlayer);
 	}
 	
 	/**
@@ -122,6 +123,11 @@ public class DNF extends Completed {
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public String driverStatus(Driver driver) {
+		return driver.getName() + "(" + driver.getId() + ") was unable to complete the race event " + this.raceEventId + ". You can now claim your participation reward. \nClaim a reward: !r debug driver reward";
 	}
 
 	@Override

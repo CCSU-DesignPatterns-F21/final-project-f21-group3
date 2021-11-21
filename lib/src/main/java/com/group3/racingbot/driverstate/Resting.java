@@ -22,8 +22,8 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 public class Resting implements DriverState {
 
 	@Override
-	public void rest() {
-		// do nothing
+	public String rest(Driver driver) {
+		return driver.getName() + "(" + driver.getId() + ") was already resting.";
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class Resting implements DriverState {
 		final long halfHour = 1800;
 		
 		if (now > driver.getCooldown()) {
-			driver.setState(new Training(driver, skillToTrain, intensity));
+			driver.setState(new Training(driver.getPlayer().getId(), driver.getId(), skillToTrain, intensity));
 			switch (intensity) {
 				case LIGHT:
 					driver.setCooldown(now + halfHour);
@@ -114,5 +114,12 @@ public class Resting implements DriverState {
 		// If the server shuts down and boots back up, this function will grab all the missing objects from the database and insert them into the state as needed.
 		// Do nothing
 		return true;
+	}
+	
+	@Override
+	public String driverStatus(Driver driver) {
+		String trainingSyntax = "!r debug driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)\n!r debug driver train (a | cor | com | d | s | r) (l | m | i)";
+		String registerSyntax = "!r debug event register";
+		return driver.getName() + " (" + driver.getId() + ") is currently resting. You can train " + driver.getName() + " or enter them into a race.\n**Train**\n" + trainingSyntax + "\n**Register for a race**\n" + registerSyntax;
 	}
 }

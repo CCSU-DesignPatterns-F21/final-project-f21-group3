@@ -265,4 +265,9 @@ public class DriverStanding {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		this.refreshFromDB();
+		return this.position + ". | Driver: " + this.driver.getName() + " (" + this.driverId + ") | Time Completed: " + this.timeCompleted;
+	}
 }

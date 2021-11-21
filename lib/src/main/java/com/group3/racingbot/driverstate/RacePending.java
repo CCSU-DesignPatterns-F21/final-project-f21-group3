@@ -176,9 +176,11 @@ public class RacePending implements DriverState {
 	}
 
 	@Override
-	public void rest() {
-		// TODO Auto-generated method stub
-		this.getDriver().setState(new Resting());
+	public String rest(Driver driver) {
+		DBHandler dbh = DBHandler.getInstance();
+		// Withdraws the driver from a race event.
+		this.withdrawFromRace(driver);
+		return driver.getName() + "(" + driver.getId() + ") withdrew from the race event " + this.raceEventId + ".";
 	}
 
 	@Override
@@ -345,6 +347,11 @@ public class RacePending implements DriverState {
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public String driverStatus(Driver driver) {
+		return driver.getName() + "(" + driver.getId() + ") is currently awaiting the start of race event " + this.raceEventId + ". You may withdraw " + driver.getName() + " from the race before the race starts.\n**Withdraw**\n!r debug driver withdraw";
 	}
 
 	@Override

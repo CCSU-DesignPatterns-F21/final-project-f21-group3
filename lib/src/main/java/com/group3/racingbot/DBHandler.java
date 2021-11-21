@@ -30,6 +30,7 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
@@ -238,11 +239,12 @@ public class DBHandler {
 	 * @return whether or not the removal was successful.
 	 */
 	public boolean removeDriverFromRaceEventInDB(String driverId, String raceEventId) {
-		DBHandler dbh = DBHandler.getInstance();
-		if (dbh.raceEventExists(raceEventId)) {
-			RaceEvent raceEvent = dbh.getRaceEvent(raceEventId);
+		// Check that the race event exists.
+		boolean raceEventExists = raceEventCollection.find(eq("_id",raceEventId)).first() != null;
+		if (raceEventExists) {
+			RaceEvent raceEvent = (RaceEvent) raceEventCollection.find(eq("_id",raceEventId)).first();
 			raceEvent.getStandings().removeDriver(driverId);
-			dbh.updateRaceEvent(raceEvent);
+			raceEventCollection.findOneAndReplace(eq("_id",raceEventId), raceEvent);
 			return true;
 		}
 		return false;
@@ -256,17 +258,29 @@ public class DBHandler {
 	 * @return whether or not the state change was successful.
 	 */
 	public boolean updateDriverStateInDB(String playerId, String driverId, DriverState state) {
-		DBHandler dbh = DBHandler.getInstance();
-		if (dbh.userExists(playerId)) {
-			Player p = dbh.getPlayer(playerId);
+		// Check if the player exists.
+		Player updatedPlayer = (Player) userCollection.find(eq("_id",playerId)).first();
+		boolean userExists = updatedPlayer != null;
+		if (userExists) {
+			Driver updatedDriver = null;
 			try {
-				Driver updatedDriver = p.getOwnedDrivers().getById(driverId);
-				updatedDriver.setState(state);
-				p.getOwnedDrivers().update(updatedDriver);
-				dbh.updateUser(p); // Driver's state is now updated.
+				updatedDriver = updatedPlayer.getOwnedDrivers().getById(driverId);
 			}
 			catch (NotFoundException e) {
 				System.out.println("Driver " + driverId + " does not exist in the driver inventory of Player " + playerId);
+				return false;
+			}
+			
+			updatedDriver.setState(state);
+			updatedPlayer.getOwnedDrivers().update(updatedDriver);
+			try {
+				// Driver's state is now updated.
+				userCollection.findOneAndReplace(eq("_id",playerId), updatedPlayer);
+				System.out.println("Successfully changed the state of Driver " + driverId + " to " + state.toString() + ".");
+			}
+			catch (Exception e) {
+				System.out.println("Unable to change the state of Driver " + driverId + " to " + state.toString() + ".");
+				e.printStackTrace();
 				return false;
 			}
 			return true;

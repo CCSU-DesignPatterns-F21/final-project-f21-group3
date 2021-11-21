@@ -3,10 +3,13 @@
  */
 package com.group3.racingbot.driverstate;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.inventory.NotFoundException;
 
@@ -28,12 +31,12 @@ public class FinishedRace extends Completed {
 	 * @param reward the event reward for first place that gets added to the players balance. 
 	 * @param position the final pole position of the Driver in the race.
 	 */
-	public FinishedRace(Driver driver, RaceEvent raceEvent) {
-		super(driver);
-		// TODO: call to database for position
+	@BsonCreator
+	public FinishedRace(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("raceEventId") String raceEventId) {
+		super(playerId, driverId);
 		this.position = 0;
-		this.raceEvent = raceEvent;
-		this.raceEventId = raceEvent.getId();
+		this.raceEvent = null;
+		this.raceEventId = raceEventId;
 	}
 	
 	/**
@@ -52,16 +55,30 @@ public class FinishedRace extends Completed {
 
 	@Override
 	public void collectReward() {
-		// TODO: Obtain reward from race event in database.
-		int reward = 10000;
+		this.refreshFromDB();
+
+		DBHandler dbh = DBHandler.getInstance();
+		Player updatedPlayer = super.getPlayer();
+		Driver updatedDriver = super.getDriver();
+		int reward = this.raceEvent.getGrandPrize();
 		
-		
-		// Reward the player with credits
-		int currentCredits = this.getDriver().getPlayer().getCredits();
-		this.getDriver().getPlayer().setCredits(currentCredits + (reward/this.getPosition()));
+		try {
+			this.position = this.raceEvent.getStandings().getDriverStandingById(super.getDriverId()).getPosition();
+		}
+		catch (NotFoundException e) {
+			System.out.println("FinishedRace; collectReward method: Unable to find Driver " + super.getDriverId() + " within the standings of Race Event " + this.raceEventId + ". Cannot determine the position which the driver placed.");
+			e.printStackTrace();
+			return;
+		}
 		
 		// Return the driver to a resting state
-		this.getDriver().setState(new Resting());
+		updatedDriver.setState(new Resting());
+		updatedPlayer.getOwnedDrivers().update(updatedDriver);
+		
+		// Reward the player with credits
+		int currentCredits = updatedPlayer.getCredits();
+		updatedPlayer.setCredits(currentCredits + (reward/this.position));
+		dbh.updateUser(updatedPlayer);
 	}
 	
 	@Override
@@ -129,6 +146,21 @@ public class FinishedRace extends Completed {
 		}
 		return true;
 	}
+	
+	@Override
+	public String driverStatus(Driver driver) {
+		String positionPostfix = "th";
+		if ((this.position % 10) == 1) {
+			positionPostfix = "st";
+		}
+		else if ((this.position % 10) == 2) {
+			positionPostfix = "nd";
+		}
+		else if ((this.position % 10) == 3) {
+			positionPostfix = "rd";
+		}
+		return driver.getName() + "(" + driver.getId() + ") has completed the race event " + this.raceEventId + ", finishing in " + this.position + positionPostfix + " place. You can now claim your winnings. \nClaim a reward: !r debug driver reward";
+	}
 
 	@Override
 	public int hashCode() {
@@ -158,7 +190,7 @@ public class FinishedRace extends Completed {
 
 	@Override
 	public String toString() {
-		return "FinishedRace [position=" + position + "]";
+		return "FinishedRace";
 	}
 	
 }

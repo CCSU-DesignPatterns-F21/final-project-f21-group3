@@ -90,7 +90,7 @@ public class Standings {
 		
 		// Finally, set the positions of each driver based on their index in the result list.
 		for (int i = 0, len = result.size()-1; i < len; i++) {
-			result.get(i).setPosition(i);
+			result.get(i).setPosition(i+1);
 		}
 		
 		this.setStandings(result);
@@ -244,5 +244,16 @@ public class Standings {
 			this.current++;
 			return item;
 		}
+	}
+	
+	@Override
+	public String toString() {
+		String results = "";
+		Iterator<DriverStanding> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			DriverStanding currentDriverStanding = iterator.next();
+			results += currentDriverStanding + "\n";
+		}
+		return results;
 	}
 }

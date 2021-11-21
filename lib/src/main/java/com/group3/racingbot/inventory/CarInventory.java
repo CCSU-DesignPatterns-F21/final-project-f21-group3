@@ -50,7 +50,6 @@ public class CarInventory implements Inventory<Car>{
 	 * Updates a car in the inventory
 	 * @param car
 	 * @return whether or not the update was successful
-	 * @throws NotFoundException
 	 */
 	public boolean update(Car car) {
 		InventoryIterator<Car> iterator = this.iterator();

@@ -11,6 +11,12 @@ import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
+import com.group3.racingbot.ComponentFactory.ChassisComponent;
+import com.group3.racingbot.ComponentFactory.EngineComponent;
+import com.group3.racingbot.ComponentFactory.SuspensionComponent;
+import com.group3.racingbot.ComponentFactory.TransmissionComponent;
+import com.group3.racingbot.ComponentFactory.WheelComponent;
+import com.group3.racingbot.exceptions.RaceTrackEndException;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
@@ -376,8 +382,8 @@ public abstract class Racing implements DriverState {
 	}
 	
 	@Override
-	public void rest() {
-		// do nothing
+	public String rest(Driver driver) {
+		return driver.getName() + "(" + driver.getId() + ") is currently racing and cannot rest until the race finishes.";
 	}
 
 	@Override
@@ -435,26 +441,42 @@ public abstract class Racing implements DriverState {
 		}
 		
 		// Advance the driver forward along the track
-		raceTrack.progressForward(updatedDriver, this.distanceTraveledThisStep);
+		boolean completedRace = false;
+		try {
+			raceTrack.progressForward(updatedDriver, this.distanceTraveledThisStep);
+		}
+		catch (RaceTrackEndException e) {
+			completedRace = true;
+		}
 		updatedDriverStanding.setRaceTrack(raceTrack);
 		
 		// Get the total distance traveled from the driver standings in order to prevent progress from being erased on driver state change.
 		updatedDriverStanding.setDistanceTraveled(updatedDriverStanding.getDistanceTraveled() + this.distanceTraveledThisStep);
 		updatedDriverStanding.setCurrentNode(raceTrack.obtainCurrentNode());
 		
-		// Before printing the result of this step,
-		// roll to see what racing state the driver will be in next step.
-		DriverState rolledState = rollDriverState();
-		if (!this.equals(rolledState)) {
-			if (rolledState instanceof Racing) {
-				((Racing) rolledState).setStraightDistance(this.straightDistance);
-				((Racing) rolledState).setCornerDistance(this.cornerDistance);
-				((Racing) rolledState).setDistanceTraveledThisStep(this.distanceTraveledThisStep);
+		if (!completedRace) {
+			// Before printing the result of this step,
+			// roll to see what racing state the driver will be in next step.
+			DriverState rolledState = rollDriverState();
+			if (!this.equals(rolledState)) {
+				if (rolledState instanceof Racing) {
+					((Racing) rolledState).setStraightDistance(this.straightDistance);
+					((Racing) rolledState).setCornerDistance(this.cornerDistance);
+					((Racing) rolledState).setDistanceTraveledThisStep(this.distanceTraveledThisStep);
+				}
+				else {
+					return updatedDriverStanding;
+				}
+				updatedDriver.setState(rolledState);
 			}
-			updatedDriver.setState(rolledState);
+			else {
+				updatedDriver.setState(this);
+			}
 		}
 		else {
-			updatedDriver.setState(this);
+			// The driver has completed the race
+			updatedDriver.completedRace();
+			updatedDriverStanding.setTimeCompleted(raceEvent.getTimeElapsed());
 		}
 		
 		// Update the driver within the player's inventory in the database
@@ -468,13 +490,18 @@ public abstract class Racing implements DriverState {
 	@Override
 	public void completedRace(Driver driver) {
 		// If in the Racing state, move to FinishedRace state.
-		this.getDriver().setState(new FinishedRace(this.getDriver(), this.getRaceEvent()));
+		driver.setState(new FinishedRace(this.playerId, this.driverId, this.raceEventId));
 	}
 
 	@Override
 	public void completedTraining(Driver driver) {
 		// If in the Training state, move to FinishedTraining state.
 		// Do nothing
+	}
+	
+	@Override
+	public String driverStatus(Driver driver) {
+		return driver.getName() + " (" + driver.getId() + ") is currently racing. Wait until the race has finished in order to interact with " + driver.getName() + ".";
 	}
 	
 	@Override
@@ -580,7 +607,7 @@ public abstract class Racing implements DriverState {
 	 * @param car
 	 */
 	public void crash(Car car) {
-		refreshFromDB();
+		this.refreshFromDB();
 		
 		DBHandler dbh = DBHandler.getInstance();
 		Player updatedPlayer = this.player;
@@ -600,33 +627,48 @@ public abstract class Racing implements DriverState {
 			switch (componentToDamage) {
 				case CHASSIS:
 					updatedDurability = updatedCar.getChassis().getDurability() - damage;
-					if (updatedDurability < 0)
+					if (updatedDurability < 0) {
 						updatedDurability = 0;
-					updatedCar.getChassis().setDurability(updatedDurability);
+					}
+					ChassisComponent updatedChassis = updatedCar.getChassis();
+					updatedChassis.setDurability(updatedDurability);
+					updatedCar.setChassis(updatedChassis);
 					break;
 				case ENGINE:
 					updatedDurability = updatedCar.getEngine().getDurability();
-					if (updatedDurability < 0)
+					if (updatedDurability < 0) {
 						updatedDurability = 0;
-					updatedCar.getEngine().setDurability(updatedDurability);
+					}
+					EngineComponent updatedEngine = updatedCar.getEngine();
+					updatedEngine.setDurability(updatedDurability);
+					updatedCar.setEngine(updatedEngine);
 					break;
 				case SUSPENSION:
 					updatedDurability = updatedCar.getSuspension().getDurability();
-					if (updatedDurability < 0)
+					if (updatedDurability < 0) {
 						updatedDurability = 0;
-					updatedCar.getSuspension().setDurability(updatedDurability);
+					}
+					SuspensionComponent updatedSuspension = updatedCar.getSuspension();
+					updatedSuspension.setDurability(updatedDurability);
+					updatedCar.setSuspension(updatedSuspension);
 					break;
 				case TRANSMISSION:
 					updatedDurability = updatedCar.getTransmission().getDurability();
-					if (updatedDurability < 0)
+					if (updatedDurability < 0) {
 						updatedDurability = 0;
-					this.getCar().getTransmission().setDurability(updatedDurability);
+					}
+					TransmissionComponent updatedTransmission = updatedCar.getTransmission();
+					updatedTransmission.setDurability(updatedDurability);
+					updatedCar.setTransmission(updatedTransmission);
 					break;
 				case WHEEL:
 					updatedDurability = updatedCar.getWheels().getDurability();
-					if (updatedDurability < 0)
+					if (updatedDurability < 0) {
 						updatedDurability = 0;
-					updatedCar.getWheels().setDurability(updatedDurability);
+					}
+					WheelComponent updatedWheels = updatedCar.getWheels();
+					updatedWheels.setDurability(updatedDurability);
+					updatedCar.setWheels(updatedWheels);
 					break;
 				default:
 					break;
