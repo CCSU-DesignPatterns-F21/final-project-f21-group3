@@ -127,6 +127,11 @@ public class FinishedTraining extends Completed {
 		}
 		return true;
 	}
+	
+	@Override
+	public String driverStatus(Driver driver) {
+		return driver.getName() + " (" + driver.getId() + ") has completed training for " + this.skill.toString().toLowerCase() + ". You can now claim the skill reward. \n**Claim a reward**\n!r debug claim";
+	}
 
 	@Override
 	public int hashCode() {
@@ -157,10 +162,4 @@ public class FinishedTraining extends Completed {
 	public String toString() {
 		return "FinishedTraining [skill=" + skill + "]";
 	}
-
-	@Override
-	public String driverStatus(Driver driver) {
-		return driver.getName() + "(" + driver.getId() + ") has completed training for " + this.skill.toString().toLowerCase() + ". You can now claim the skill reward. \nClaim a reward: !r debug driver reward";
-	}
-	
 }

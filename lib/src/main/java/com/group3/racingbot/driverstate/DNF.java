@@ -127,7 +127,7 @@ public class DNF extends Completed {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		return driver.getName() + "(" + driver.getId() + ") was unable to complete the race event " + this.raceEventId + ". You can now claim your participation reward. \nClaim a reward: !r debug driver reward";
+		return driver.getName() + " (" + driver.getId() + ") was unable to complete the race event " + this.raceEventId + ". You can now claim your participation reward.\n**Claim a reward**\n!r debug claim";
 	}
 
 	@Override

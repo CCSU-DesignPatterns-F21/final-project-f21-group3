@@ -159,7 +159,7 @@ public class FinishedRace extends Completed {
 		else if ((this.position % 10) == 3) {
 			positionPostfix = "rd";
 		}
-		return driver.getName() + "(" + driver.getId() + ") has completed the race event " + this.raceEventId + ", finishing in " + this.position + positionPostfix + " place. You can now claim your winnings. \nClaim a reward: !r debug driver reward";
+		return driver.getName() + " (" + driver.getId() + ") has completed the race event " + this.raceEventId + ", finishing in " + this.position + positionPostfix + " place. You can now claim your winnings.\n**Claim a reward**\\n!r debug claim";
 	}
 
 	@Override

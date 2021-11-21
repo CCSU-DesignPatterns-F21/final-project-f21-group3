@@ -824,6 +824,16 @@ public class Commands extends ListenerAdapter {
 	    				}
 	    			}
 	    		}
+	    		if(args[2].equalsIgnoreCase("claim")) {
+	    			Player p = dbh.getPlayer(user.getId());
+	    			try {
+	    				Driver activeDriver = p.getOwnedDrivers().getById(p.getActiveDriverId());
+	    				activeDriver.collectReward();
+	    			}
+	    			catch(NotFoundException e) {
+	    				event.getChannel().sendMessage("Unable to retrieve Driver " + p.getActiveDriverId() + ". Cannot claim a reward.").queue();
+	    			}
+	    		}
 	    	}
 	    	
 		    	// A test for filtering an inventory of cars.
