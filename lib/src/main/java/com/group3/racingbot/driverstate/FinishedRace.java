@@ -23,6 +23,7 @@ public class FinishedRace extends Completed {
 	private RaceEvent raceEvent;
 	private String raceEventId;
 	private int position;
+	private boolean verified;
 	// When race is completed, use the race event ID to pull from the database to determine reward.
 	
 	/**
@@ -37,24 +38,81 @@ public class FinishedRace extends Completed {
 		this.position = 0;
 		this.raceEvent = null;
 		this.raceEventId = raceEventId;
+		this.verified = false; // This is a flag which ensures that this state contains the correct finishing position of the driver.
 	}
 	
 	/**
+	 * Retrieve the race event which the driver participated in
+	 * @return the raceEvent
+	 */
+	public RaceEvent getRaceEvent() {
+		return raceEvent;
+	}
+
+	/**
+	 * Set the race event which the driver participated in
+	 * @param raceEvent the raceEvent to set
+	 */
+	public void setRaceEvent(RaceEvent raceEvent) {
+		this.raceEvent = raceEvent;
+	}
+
+	/**
+	 * Retrieve the id of the race event which the driver participated in
+	 * @return the raceEventId
+	 */
+	public String getRaceEventId() {
+		return raceEventId;
+	}
+
+	/**
+	 * Set the id of the race event which the driver participated in
+	 * @param raceEventId the raceEventId to set
+	 */
+	public void setRaceEventId(String raceEventId) {
+		this.raceEventId = raceEventId;
+	}
+
+	/**
+	 * Retrieve the position which the driver finished the event in.
 	 * @return the final pole position of the Driver in the race
 	 */
 	public int getPosition() {
 		return this.position;
 	}
-	
+
+	/**
+	 * Set the position which the driver finished the event in.
+	 * @param position the final pole position to set for the Driver
+	 */
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	/**
+	 * Retrieve the verified flag. This flag indicates whether or not the details within the state are up to date with the latest 
+	 * @return whether or not the details in this state are accurate.
+	 */
+	public boolean isVerified() {
+		return verified;
+	}
+
+	/**
+	 * @param verified the verified to set
+	 */
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
+
 	/**
 	 * @return the id of the race event which the driver completed.
 	 */
-	public String getRaceEventId() {
-		return this.raceEventId;
-	}
+	//public String getRaceEventId() {
+	//	return this.raceEventId;
+	//}
 
 	@Override
-	public void collectReward() {
+	public String collectReward() {
 		this.refreshFromDB();
 
 		DBHandler dbh = DBHandler.getInstance();
@@ -68,7 +126,7 @@ public class FinishedRace extends Completed {
 		catch (NotFoundException e) {
 			System.out.println("FinishedRace; collectReward method: Unable to find Driver " + super.getDriverId() + " within the standings of Race Event " + this.raceEventId + ". Cannot determine the position which the driver placed.");
 			e.printStackTrace();
-			return;
+			return "Unable to find Driver " + super.getDriverId() + " within the standings of Race Event " + this.raceEventId + ". Cannot determine the position which the driver placed.";
 		}
 		
 		// Return the driver to a resting state
@@ -77,8 +135,11 @@ public class FinishedRace extends Completed {
 		
 		// Reward the player with credits
 		int currentCredits = updatedPlayer.getCredits();
-		updatedPlayer.setCredits(currentCredits + (reward/this.position));
+		int earnedCredits = (int) ((reward/this.position) * (1 - this.getDriver().getPayPercentage()));
+		int driverCredits = (int) ((reward/this.position) * this.getDriver().getPayPercentage());
+		updatedPlayer.setCredits(currentCredits + earnedCredits);
 		dbh.updateUser(updatedPlayer);
+		return "Claimed " + earnedCredits + " credits. " + this.getDriver().getName() + " took their cut of " + driverCredits + " credits from the total winnings of " + (reward/this.position) + " credits";
 	}
 	
 	@Override
@@ -121,27 +182,31 @@ public class FinishedRace extends Completed {
 			}
 		}
 		
-		// Sets the raceEvent object if needed.
-		if (this.raceEvent == null) {
-			// Verify that the race event still exists.
-			if (!dbh.raceEventExists(this.raceEventId)) {
-				System.out.println("Race event " + this.raceEventId + " does not exist. Attempting to change the state of Driver " + super.getDriverId() + " to a resting state.");
-				
-				// Update driver state in DB
-				if (dbh.updateDriverStateInDB(super.getPlayerId(), super.getDriverId(), new Resting())) {
-					System.out.println("Driver " + super.getDriverId() + " is now in a resting state.");
-				}
-				else {
-					System.out.println("Unable to change Driver " + super.getDriverId() + " to a resting state in the Database.");
-				}
-				
-				// Database updated, now update locally.
-				super.getDriver().setState(new Resting());
-				return false;
+		// Always update the race event object in order to get the driver's position in the race once the race has ended.
+		// Verify that the race event still exists.
+		if (!dbh.raceEventExists(this.raceEventId)) {
+			System.out.println("Race event " + this.raceEventId + " does not exist. Attempting to change the state of Driver " + super.getDriverId() + " to a resting state.");
+			
+			// Update driver state in DB
+			if (dbh.updateDriverStateInDB(super.getPlayerId(), super.getDriverId(), new Resting())) {
+				System.out.println("Driver " + super.getDriverId() + " is now in a resting state.");
 			}
 			else {
-				// Get the race event
-				this.raceEvent = dbh.getRaceEvent(this.raceEventId);
+				System.out.println("Unable to change Driver " + super.getDriverId() + " to a resting state in the Database.");
+			}
+			
+			// Database updated, now update locally.
+			super.getDriver().setState(new Resting());
+			return false;
+		}
+		else {
+			// Get the race event
+			this.raceEvent = dbh.getRaceEvent(this.raceEventId);
+			try {
+				this.position = this.raceEvent.getStandings().getDriverStandingById(this.getDriverId()).getPosition();
+			}
+			catch (NotFoundException e) {
+				System.out.println("Unable to get standings info for Driver " + super.getDriverId() + ". The driver was not found in the event standings.");
 			}
 		}
 		return true;
@@ -149,6 +214,8 @@ public class FinishedRace extends Completed {
 	
 	@Override
 	public String driverStatus(Driver driver) {
+		this.refreshFromDB();
+		
 		String positionPostfix = "th";
 		if ((this.position % 10) == 1) {
 			positionPostfix = "st";
@@ -159,7 +226,7 @@ public class FinishedRace extends Completed {
 		else if ((this.position % 10) == 3) {
 			positionPostfix = "rd";
 		}
-		return driver.getName() + " (" + driver.getId() + ") has completed the race event " + this.raceEventId + ", finishing in " + this.position + positionPostfix + " place. You can now claim your winnings.\n**Claim a reward**\\n!r debug claim";
+		return driver.getName() + " (" + driver.getId() + ") has completed the race event " + this.raceEventId + ", finishing in " + this.position + positionPostfix + " place. You can now claim your winnings.\n**Claim a reward**\n!r debug claim";
 	}
 
 	@Override

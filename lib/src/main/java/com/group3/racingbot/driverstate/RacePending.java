@@ -207,9 +207,10 @@ public class RacePending implements DriverState {
 	}
 
 	@Override
-	public void collectReward() {
-		// TODO Auto-generated method stub
+	public String collectReward() {
+		// If in completed state, execute this and go to resting state. Otherwise, do nothing.
 		// Do nothing
+		return "";
 	}
 
 	@Override

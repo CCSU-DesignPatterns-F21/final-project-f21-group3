@@ -32,7 +32,7 @@ public class Driver {
 	private int cornering;
 	private int recovery;
 	private float payPercentage; // Percentage of money deducted from each event's cash prize.
-	private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
+	//private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
 	
 	/**
 	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
@@ -53,7 +53,6 @@ public class Driver {
 		this.cornering = 10;
 		this.recovery = 10;
 		this.payPercentage = (float) 0.15;
-		this.cooldown = 0;
 	}
 	
 	/**
@@ -259,26 +258,6 @@ public class Driver {
 	public void setPayPercentage(float payPercentage) {
 		this.payPercentage = payPercentage;
 	}
-
-	/**
-	 * Retrieve the Driver's cooldown.
-	 * 
-	 * If training or racing is performed, then the cooldown is the time to wait until you can use this Driver again.
-	 * @return the cooldown
-	 */
-	public long getCooldown() {
-		return cooldown;
-	}
-
-	/**
-	 * Set the Driver's cooldown.
-	 * 
-	 * If training or racing is performed, then the cooldown is the time to wait until you can use this Driver again.
-	 * @param cooldown the cooldown to set
-	 */
-	public void setCooldown(long cooldown) {
-		this.cooldown = cooldown;
-	}
 	
 	/**
 	 * Retrieve the Player who uses this Driver.
@@ -366,8 +345,8 @@ public class Driver {
 	/**
 	 * When there is a reward to collect, the Driver will be in a Completed state. This will collect a reward and add the reward where it fits. For example, if the Driver finished training, then collecting the reward will add skill points to the Driver.
 	 */
-	public void collectReward() {
-		this.state.collectReward();
+	public String collectReward() {
+		return this.state.collectReward();
 	}
 	
 	/**
@@ -415,7 +394,6 @@ public class Driver {
 		int result = 1;
 		result = prime * result + awareness;
 		result = prime * result + composure;
-		result = prime * result + (int) (cooldown ^ (cooldown >>> 32));
 		result = prime * result + cornering;
 		result = prime * result + drafting;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -445,8 +423,6 @@ public class Driver {
 				return false;
 			if (this.getRecovery() != otherObj.getRecovery())
 				return false;
-			if (this.getCooldown() != otherObj.getCooldown())
-				return false;
 			if (this.getPayPercentage() != otherObj.getPayPercentage())
 				return false;
 			if (!this.getName().equals(otherObj.getName()))
@@ -458,7 +434,7 @@ public class Driver {
 
 	@Override
 	public String toString() {
-		return "Driver's Name: " + this.getName() + " | Pay Percentage: " + this.getPayPercentage() + " | Current State: " + this.getState() + " | Cooldown: " + this.getCooldown()
+		return "Driver's Name: " + this.getName() + " | Pay Percentage: " + this.getPayPercentage() + " | Current State: " + this.getState()
 		     + "\nComposure: " + this.getComposure() + " | Awareness: " + this.getAwareness() + " | Drafting: " + this.getDrafting() + " | Straights: " + this.getStraights() + " | Cornering: " + this.getCornering() + " | Recovery: " + this.getRecovery();
 	}
 }

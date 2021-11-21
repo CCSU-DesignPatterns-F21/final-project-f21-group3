@@ -164,6 +164,9 @@ public abstract class Completed implements DriverState{
 	}
 	
 	@Override
+	abstract public String collectReward();
+	
+	@Override
 	abstract public boolean refreshFromDB();
 	
 	@Override

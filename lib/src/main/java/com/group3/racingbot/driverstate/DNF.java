@@ -34,17 +34,25 @@ public class DNF extends Completed {
 	}
 	
 	@Override
-	public void collectReward() {
+	public String collectReward() {
 		this.refreshFromDB(); // Ensure that we have all objects that we'd need.
 		
 		DBHandler dbh = DBHandler.getInstance();
 		Player updatedPlayer = super.getPlayer();
 		Driver updatedDriver = super.getDriver();
+		int pityReward = 50;
+		
+		int currentCredits = updatedPlayer.getCredits();
+		int earnedCredits = (int) (pityReward * (1 - this.getDriver().getPayPercentage()));
+		int driverCredits = (int) (pityReward * this.getDriver().getPayPercentage());
+		updatedPlayer.setCredits(currentCredits + earnedCredits);
+		dbh.updateUser(updatedPlayer);
 		
 		updatedDriver.setState(new Resting()); // Set driver to resting state
 		updatedPlayer.setCredits(updatedPlayer.getCredits() + 50); // Pity money
 		updatedPlayer.getOwnedDrivers().update(updatedDriver);
 		dbh.updateUser(updatedPlayer);
+		return "Claimed " + earnedCredits + " credits. " + this.getDriver().getName() + " took their cut of " + driverCredits + " credits from the total winnings of " + pityReward + " credits";
 	}
 	
 	/**

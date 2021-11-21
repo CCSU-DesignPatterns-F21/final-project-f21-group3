@@ -63,16 +63,19 @@ public class Standings {
 		TimeCompletedComparator timeCompletedComparator = new TimeCompletedComparator();
 		if (finished.size() > 0) {
 			Collections.sort(finished, timeCompletedComparator);
-			for (int i = 1, len = finished.size()-1; i < len; i++) {
-				if (finished.get(i-1).getTimeCompleted() == finished.get(i).getTimeCompleted()) {
-					int rand = ThreadLocalRandom.current().nextInt(0, 2);
-					if (rand == 1) {
-						Collections.swap(finished, i-1, i);
+			for (int i = 0, len = finished.size(); i < len; i++) {
+				if (i > 0) {
+					boolean isTied = finished.get(i-1).getTimeCompleted() == finished.get(i).getTimeCompleted();
+					if (isTied) {
+						int rand = ThreadLocalRandom.current().nextInt(0, 2);
+						if (rand == 1) {
+							Collections.swap(finished, i-1, i);
+						}
 					}
-					finished.get(i-1).setPosition(i); // Set the driver's position in the race
 				}
+				//finished.get(i).setPosition(i+1); // Set the driver's position in the race
 			}
-			finished.get(finished.size()-1).setPosition(finished.size()-1);
+			//finished.get(finished.size()-1).setPosition(finished.size()); // Set last place
 		}
 		
 		// Sort the racers who are still currently racing.
@@ -89,7 +92,7 @@ public class Standings {
 		result.addAll(dnf);
 		
 		// Finally, set the positions of each driver based on their index in the result list.
-		for (int i = 0, len = result.size()-1; i < len; i++) {
+		for (int i = 0, len = result.size(); i < len; i++) {
 			result.get(i).setPosition(i+1);
 		}
 		

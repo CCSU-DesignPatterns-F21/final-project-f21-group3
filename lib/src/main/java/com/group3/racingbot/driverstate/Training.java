@@ -29,6 +29,7 @@ public class Training implements DriverState {
 	private Skill skillToTrain;
 	private Intensity intensity;
 	private int trainingReward;
+	private long cooldown;
 	
 	/**
 	 * Constructs the training state.
@@ -38,6 +39,9 @@ public class Training implements DriverState {
 	 */
 	@BsonCreator
 	public Training(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("skillToTrain") Skill skillToTrain, @BsonProperty("intensity") Intensity intensity) {
+		final long THIRTY_MINS = 1800000; // 30 minutes in milliseconds.
+		final Date d = new Date();
+		final long now = d.getTime();
 		this.driver = null;
 		this.playerId = playerId;
 		this.driverId = driverId;
@@ -46,14 +50,41 @@ public class Training implements DriverState {
 		switch (intensity) {
 			case LIGHT:
 				this.trainingReward = 1;
+				this.cooldown = now + THIRTY_MINS;
 				break;
 			case MEDIUM:
 				this.trainingReward = 3;
+				this.cooldown = now + (THIRTY_MINS * 2);
 				break;
 			case INTENSE:
 				this.trainingReward = 5;
+				this.cooldown = now + (THIRTY_MINS * 3);
+				break;
+			default:
+				this.trainingReward = 1;
+				this.cooldown = now + THIRTY_MINS;
 				break;
 		}
+	}
+	
+	/**
+	 * Retrieve the Driver's cooldown.
+	 * 
+	 * If training or racing is performed, then the cooldown is the time to wait until you can use this Driver again.
+	 * @return the cooldown
+	 */
+	public long getCooldown() {
+		return cooldown;
+	}
+
+	/**
+	 * Set the Driver's cooldown.
+	 * 
+	 * If training or racing is performed, then the cooldown is the time to wait until you can use this Driver again.
+	 * @param cooldown the cooldown to set
+	 */
+	public void setCooldown(long cooldown) {
+		this.cooldown = cooldown;
 	}
 
 	/**
@@ -180,9 +211,10 @@ public class Training implements DriverState {
 	}
 
 	@Override
-	public void collectReward() {
+	public String collectReward() {
 		// If in completed state, execute this and go to resting state. Otherwise, do nothing.
 		// Do nothing
+		return "";
 	}
 
 	@Override
@@ -215,7 +247,7 @@ public class Training implements DriverState {
 		// Move to FinishedTraining state so long as the cooldown has expired.
 		Date d = new Date();
 		long now = d.getTime();
-		if (now > this.getDriver().getCooldown()) {
+		if (now > this.cooldown) {
 			if (dbh.updateDriverStateInDB(this.playerId, this.driverId, new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()))) {
 				this.driver.setState(new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()));
 				System.out.println("Driver " + this.driverId + " has completed training for " + getSkillToTrain().toString() + ".");

@@ -405,9 +405,10 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	public void collectReward() {
+	public String collectReward() {
 		// If in completed state, execute this and go to resting state. Otherwise, do nothing.
 		// Do nothing
+		return "";
 	}
 
 	@Override
@@ -475,8 +476,8 @@ public abstract class Racing implements DriverState {
 		}
 		else {
 			// The driver has completed the race
-			updatedDriver.completedRace();
 			updatedDriverStanding.setTimeCompleted(raceEvent.getTimeElapsed());
+			updatedDriver.completedRace();
 		}
 		
 		// Update the driver within the player's inventory in the database

@@ -49,7 +49,7 @@ public class FinishedTraining extends Completed {
 	}
 	
 	@Override
-	public void collectReward() {
+	public String collectReward() {
 		this.refreshFromDB();
 		
 		DBHandler dbh = DBHandler.getInstance();
@@ -57,31 +57,31 @@ public class FinishedTraining extends Completed {
 		Driver updatedDriver = super.getDriver();
 		
 		// Reward the player with skill points toward the skill the Driver trained for
-		int currentSkillPoints = 0;
+		int previousSkillPoints = 0;
 		switch (this.getSkill()) {
 		 case COMPOSURE: 
-			 currentSkillPoints = updatedDriver.getComposure();
-			 updatedDriver.setComposure(currentSkillPoints + this.getReward());
+			 previousSkillPoints = updatedDriver.getComposure();
+			 updatedDriver.setComposure(previousSkillPoints + this.getReward());
 			 break;
 		 case AWARENESS: 
-			 currentSkillPoints = updatedDriver.getAwareness();
-			 updatedDriver.setAwareness(currentSkillPoints + this.getReward());
+			 previousSkillPoints = updatedDriver.getAwareness();
+			 updatedDriver.setAwareness(previousSkillPoints + this.getReward());
 			 break;
 		 case DRAFTING: 
-			 currentSkillPoints = updatedDriver.getDrafting();
-			 updatedDriver.setDrafting(currentSkillPoints + this.getReward());
+			 previousSkillPoints = updatedDriver.getDrafting();
+			 updatedDriver.setDrafting(previousSkillPoints + this.getReward());
 			 break;
 		 case STRAIGHTS: 
-			 currentSkillPoints = updatedDriver.getStraights();
-			 updatedDriver.setStraights(currentSkillPoints + this.getReward());
+			 previousSkillPoints = updatedDriver.getStraights();
+			 updatedDriver.setStraights(previousSkillPoints + this.getReward());
 			 break;
 		 case CORNERING: 
-			 currentSkillPoints = updatedDriver.getCornering();
-			 updatedDriver.setCornering(currentSkillPoints + this.getReward());
+			 previousSkillPoints = updatedDriver.getCornering();
+			 updatedDriver.setCornering(previousSkillPoints + this.getReward());
 			 break;
 		 case RECOVERY: 
-			 currentSkillPoints = updatedDriver.getRecovery();
-			 updatedDriver.setRecovery(currentSkillPoints + this.getReward());
+			 previousSkillPoints = updatedDriver.getRecovery();
+			 updatedDriver.setRecovery(previousSkillPoints + this.getReward());
 			 break;
 		}
 		
@@ -89,6 +89,7 @@ public class FinishedTraining extends Completed {
 		updatedDriver.setState(new Resting());
 		updatedPlayer.getOwnedDrivers().update(updatedDriver);
 		dbh.updateUser(updatedPlayer);
+		return updatedDriver.getName() + " has improved their " + this.getSkill().toString().toLowerCase() + " skill from " + previousSkillPoints + " to " + previousSkillPoints + this.getReward() + ".";
 	}
 	
 	@Override

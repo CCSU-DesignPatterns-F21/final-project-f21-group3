@@ -436,21 +436,39 @@ public class Commands extends ListenerAdapter {
 	    					// Create an event using an id the user specifies.
 	    					String customEventId = args[4];
 	    					customEventId = customEventId.toLowerCase();
+	    					
 	    					if (customEventId.length() > 6) {
 	    						customEventId = customEventId.substring(0, 5);
 	    					}
+	    					
 	    					this.raceEvent = new RaceEvent();
     						this.raceEvent.setId(customEventId);
     						this.raceEvent.setStandings(new Standings(customEventId));
     						this.raceEvent.setRaceTrack(this.raceEvent.generateRaceTrackFromId());
-    						dbh.insertRaceEvent(this.raceEvent);
+    						this.raceEvent.setGrandPrize(((this.raceEvent.getRaceTrack().calculateTrackLength() + 99) / 100) * 100); // Uses the distance of the track to calculate the grand prize. Rounds to nearest hundred.;
+    						if (dbh.raceEventExists(customEventId)) {
+	    						// Overwrite the old event and insert the new one.
+    							dbh.updateRaceEvent(this.raceEvent);
+	    					}
+    						else {
+    							// Insert new event.
+    							dbh.insertRaceEvent(this.raceEvent);
+    						}
+    						
     						event.getChannel().sendMessage("New Event Created: " + customEventId + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength()).queue();
 	    				}
 	    				else {
 	    					// Create an event with a randomized id.
 	    					this.raceEvent = new RaceEvent();
 		    				this.raceEvent.initialize();
-		    				dbh.insertRaceEvent(this.raceEvent);
+		    				if (dbh.raceEventExists(this.raceEvent.getId())) {
+	    						// Overwrite the old event and insert the new one.
+    							dbh.updateRaceEvent(this.raceEvent);
+	    					}
+    						else {
+    							// Insert new event.
+    							dbh.insertRaceEvent(this.raceEvent);
+    						}
 		    				event.getChannel().sendMessage("New Event Created: " + this.raceEvent.getId() + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength()).queue();
 	    				}
 	    				
@@ -828,7 +846,7 @@ public class Commands extends ListenerAdapter {
 	    			Player p = dbh.getPlayer(user.getId());
 	    			try {
 	    				Driver activeDriver = p.getOwnedDrivers().getById(p.getActiveDriverId());
-	    				activeDriver.collectReward();
+	    				event.getChannel().sendMessage(activeDriver.collectReward()).queue();
 	    			}
 	    			catch(NotFoundException e) {
 	    				event.getChannel().sendMessage("Unable to retrieve Driver " + p.getActiveDriverId() + ". Cannot claim a reward.").queue();

@@ -30,7 +30,7 @@ public class RaceEvent {
 		this.raceTrack = null;
 		//this.drivers = new DriverInventory();
 		this.timeElapsed = 0;
-		this.grandPrize = 10000;
+		this.grandPrize = 1000;
 		this.createdOn = new Date().getTime();
 		this.standings = null;
 	}
@@ -43,6 +43,7 @@ public class RaceEvent {
 		this.id = dbh.generateId(6);
 		this.standings = new Standings(this.id);
 		this.raceTrack = this.generateRaceTrackFromId();
+		this.grandPrize = ((this.raceTrack.calculateTrackLength() + 99) / 100) * 100; // Uses the distance of the track to calculate the grand prize. Rounds to nearest hundred.
 	}
 	
 	/**
@@ -201,7 +202,7 @@ public class RaceEvent {
 				//currentPlayer = currentDriver.getPlayer();
 				//currentPlayer.getOwnedDrivers().update(currentDriver);
 				//dbh.updateUser(currentPlayer);
-			}	
+			}
 		}
 		// Sort the standings to reflect updated driver positions.
 		this.standings.sortStandings();

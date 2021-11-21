@@ -29,13 +29,13 @@ public class Resting implements DriverState {
 	@Override
 	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
 		// Check cooldown, if ok then train. Otherwise, remain resting. 
-		Date d = new Date();
-		long now = d.getTime();
-		final long halfHour = 1800;
+		//Date d = new Date();
+		//long now = d.getTime();
+		//final long halfHour = 1800;
 		
-		if (now > driver.getCooldown()) {
+		//if (now > driver.getCooldown()) {
 			driver.setState(new Training(driver.getPlayer().getId(), driver.getId(), skillToTrain, intensity));
-			switch (intensity) {
+			/*switch (intensity) {
 				case LIGHT:
 					driver.setCooldown(now + halfHour);
 					break;
@@ -48,20 +48,14 @@ public class Resting implements DriverState {
 				default:
 					// Do nothing
 					break;
-			}
-		}
+			}*/
+		//}
 	}
 
 	@Override
 	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
-		// Check cooldown, if ok then sign up for race. Otherwise, remain resting. 
-		Date d = new Date();
-		long now = d.getTime();
-		
-		if (now > driver.getCooldown()) {
-			DriverState racePendingState = new RacePending(driver.getPlayer().getId(), driver.getId(), car.getId(), raceEvent.getId());
-			driver.setState(racePendingState);
-		}
+		DriverState racePendingState = new RacePending(driver.getPlayer().getId(), driver.getId(), car.getId(), raceEvent.getId());
+		driver.setState(racePendingState);
 	}
 	
 	@Override
@@ -71,9 +65,10 @@ public class Resting implements DriverState {
 	}
 
 	@Override
-	public void collectReward() {
+	public String collectReward() {
 		// If in completed state, execute this and go to resting state. Otherwise, do nothing.
 		// Do nothing
+		return "";
 	}
 
 	@Override

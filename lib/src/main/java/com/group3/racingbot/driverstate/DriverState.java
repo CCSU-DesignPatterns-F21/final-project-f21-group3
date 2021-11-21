@@ -60,7 +60,7 @@ public interface DriverState {
 	/**
 	 * Upon completion of training or a race, collect your reward (whether it's stat points or credits).
 	 */
-	void collectReward();
+	String collectReward();
 	
 	/**
 	 * Lets the Driver withdraw from a race if they are in a race pending state.
