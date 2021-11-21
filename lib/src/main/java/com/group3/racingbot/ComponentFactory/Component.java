@@ -6,6 +6,7 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.group3.racingbot.inventory.Unique;
 
 /**
  * @author Jack Gola
@@ -21,21 +22,17 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = ChassisComponent.class),
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
-public abstract class Component {
+public abstract class Component implements Unique {
 	private String id = "", quality = "", name = "";
 	private int weight = 0, value = 0, durability = 0, rating = 0;
 	private int maxDurability = 100;
 
-	/**
-	 * @return the id
-	 */
+	@Override
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * @param id the id to set
-	 */
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}

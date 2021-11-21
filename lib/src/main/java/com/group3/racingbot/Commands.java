@@ -22,8 +22,7 @@ import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
 import com.group3.racingbot.driverstate.Training;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.DriverInventory;
+import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.gameservice.GameplayHandler;
@@ -181,7 +180,7 @@ public class Commands extends ListenerAdapter {
 		    			p.setLastWorked(0);
 		    			
 		    			// Attach the player id and player object to the default driver
-		    			DriverInventory driverInventory = p.getOwnedDrivers();
+		    			Inventory<Driver> driverInventory = p.getOwnedDrivers();
 		    			Driver defaultDriver = driverInventory.getItems().get(0);
 		    			defaultDriver.setPlayer(p);
 		    			defaultDriver.setPlayerId(p.getId());
@@ -646,23 +645,23 @@ public class Commands extends ListenerAdapter {
 	    				}
 	    				
 	    				// Check that a driver with the same name doesn't already exist.
-	    				try {
+	    				//try {
 	    					// If this doesn't throw anything, the driver already exists.
-	    					p.getOwnedDrivers().getByName(driverName);
-	    				}
-	    				catch (NotFoundException e) {
+	    				//	p.getOwnedDrivers().getByName(driverName);
+	    				//}
+	    				//catch (NotFoundException e) {
 	    					// That driver does not yet exist.
 	    					// Add the new driver
-		    				Driver createdDriver = new Driver(driverName);
-		    				createdDriver.setId(dbh.generateId(6));
-		    				createdDriver.setPlayer(p);
-		    				createdDriver.setPlayerId(p.getId());
-		    				p.getOwnedDrivers().add(createdDriver);
-		    				dbh.updateUser(p);
-		    				
-		    				String capitalizedDriverName = driverName.substring(0, 1).toUpperCase() + driverName.substring(1);
-		    				event.getChannel().sendMessage("Driver created! " + capitalizedDriverName + " is now a part of your team.").queue();
-	    				}
+	    				Driver createdDriver = new Driver(driverName);
+	    				createdDriver.setId(dbh.generateId(6));
+	    				createdDriver.setPlayer(p);
+	    				createdDriver.setPlayerId(p.getId());
+	    				p.getOwnedDrivers().add(createdDriver);
+	    				dbh.updateUser(p);
+	    				
+	    				String capitalizedDriverName = driverName.substring(0, 1).toUpperCase() + driverName.substring(1);
+	    				event.getChannel().sendMessage("Driver created! " + capitalizedDriverName + " is now a part of your team.").queue();
+	    				//}
 		    		}
 	    			if(args[3].equalsIgnoreCase("set"))
 		    		{
@@ -843,7 +842,7 @@ public class Commands extends ListenerAdapter {
 	    				{
 	    					try {
 	    						int index = Integer.parseInt(args[4].toString());
-	    						CarInventory updatedInventory = p.getOwnedCars();
+	    						Inventory<Car> updatedInventory = p.getOwnedCars();
 	    						Car removedCar = updatedInventory.getItems().get(index);
 	    						updatedInventory.getItems().remove(index);
 	    						p.setOwnedCars(updatedInventory);

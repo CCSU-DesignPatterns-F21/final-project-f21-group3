@@ -6,6 +6,7 @@ import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
 import com.group3.racingbot.ComponentFactory.WheelComponent;
+import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.inventory.filter.MaterialFilterable;
 
 /**
@@ -15,7 +16,7 @@ import com.group3.racingbot.inventory.filter.MaterialFilterable;
  * @author Nick Sabia
  *
  */
-public class Car implements MaterialFilterable {
+public class Car implements MaterialFilterable, Unique {
 	private String id;
 	private ChassisComponent chassis;
 	private EngineComponent engine;

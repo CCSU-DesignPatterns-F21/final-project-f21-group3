@@ -1,22 +1,21 @@
 package com.group3.racingbot;
 
-import com.group3.racingbot.driverstate.Crashed;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.Iterator;
+import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.TrackNode;
 import com.group3.racingbot.standings.DriverStanding;
 import com.group3.racingbot.standings.Standings;
 
 import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * An event which a Driver can sign up for and participate in for rewards.
  * @author Nick Sabia
  *
  */
-public class RaceEvent {
+public class RaceEvent implements Unique {
 	private String id;
 	private RaceTrack raceTrack;
 	//private DriverInventory drivers;

@@ -3,10 +3,10 @@ package com.group3.racingbot;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.ComponentInventory;
-import com.group3.racingbot.inventory.DriverInventory;
+import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.inventory.Unique;
 
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
@@ -14,7 +14,7 @@ import com.group3.racingbot.inventory.NotFoundException;
  *
  */
 
-public class Player {
+public class Player implements Unique {
     @BsonProperty("_id")
 	private String id;
 	@BsonProperty("username")
@@ -30,11 +30,11 @@ public class Player {
 	@BsonProperty("lastWorked")
 	private long lastWorked = 0;
 	@BsonProperty("ownedComponents")
-	private ComponentInventory ownedComponents;
+	private Inventory<Component> ownedComponents;
 	@BsonProperty("ownedCars")
-	private CarInventory ownedCars;
+	private Inventory<Car> ownedCars;
 	@BsonProperty("ownedDrivers")
-	private DriverInventory ownedDrivers;
+	private Inventory<Driver> ownedDrivers;
 	@BsonProperty("activeDriverId")
 	private String activeDriverId;
 	@BsonProperty("activeCarId")
@@ -47,9 +47,9 @@ public class Player {
 	public Player() {
 		this.id = "";
 		this.username = "";
-		setOwnedComponents(new ComponentInventory());
-		setOwnedCars(new CarInventory());
-		setOwnedDrivers(new DriverInventory());
+		setOwnedComponents(new Inventory<Component>());
+		setOwnedCars(new Inventory<Car>());
+		setOwnedDrivers(new Inventory<Driver>());
 		// Create a default driver.
 		Driver defaultDriver = new Driver("Stig");
 		defaultDriver.setId(DBHandler.getInstance().generateId(6));
@@ -57,18 +57,12 @@ public class Player {
 		setActiveDriverId(getOwnedDrivers().getItems().get(0).getId());
 	}
 	
-	/**
-	 * 
-	 * @return Player id
-	 */
-	
+	@Override
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * @param id the id to set
-	 */
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -161,42 +155,42 @@ public class Player {
 	/**
 	 * @return the ownedCars
 	 */
-	public CarInventory getOwnedCars() {
+	public Inventory<Car> getOwnedCars() {
 		return ownedCars;
 	}
 
 	/**
 	 * @param ownedCars the ownedCars to set
 	 */
-	public void setOwnedCars(CarInventory ownedCars) {
+	public void setOwnedCars(Inventory<Car> ownedCars) {
 		this.ownedCars = ownedCars;
 	}
 
 	/**
 	 * @return the ownedComponents
 	 */
-	public ComponentInventory getOwnedComponents() {
+	public Inventory<Component> getOwnedComponents() {
 		return ownedComponents;
 	}
 
 	/**
 	 * @param ownedComponents the ownedComponents to set
 	 */
-	public void setOwnedComponents(ComponentInventory ownedComponents) {
+	public void setOwnedComponents(Inventory<Component> ownedComponents) {
 		this.ownedComponents = ownedComponents;
 	}
 	
 	/**
 	 * @return the ownedDrivers
 	 */
-	public DriverInventory getOwnedDrivers() {
+	public Inventory<Driver> getOwnedDrivers() {
 		return ownedDrivers;
 	}
 
 	/**
 	 * @param ownedDrivers the ownedDrivers to set
 	 */
-	public void setOwnedDrivers(DriverInventory ownedDrivers) {
+	public void setOwnedDrivers(Inventory<Driver> ownedDrivers) {
 		this.ownedDrivers = ownedDrivers;
 	}
 

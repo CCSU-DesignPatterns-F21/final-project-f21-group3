@@ -1,7 +1,5 @@
 package com.group3.racingbot;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
@@ -10,15 +8,14 @@ import com.group3.racingbot.driverstate.DriverState;
 import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
-import com.group3.racingbot.driverstate.Training;
+import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * Drives cars in races. A driver has their own stats that govern how well they do on the track.
  * @author Nick Sabia
- *
  */
-public class Driver {
+public class Driver implements Unique {
 	private String id;
 	@BsonIgnore
 	private Player player;

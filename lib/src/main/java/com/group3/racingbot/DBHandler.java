@@ -29,8 +29,7 @@ import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
-import com.group3.racingbot.inventory.ComponentInventory;
-import com.group3.racingbot.inventory.DriverInventory;
+import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
@@ -72,7 +71,7 @@ public class DBHandler {
 		ClassModel<Shop> shopModel = ClassModel.builder(Shop.class).enableDiscriminator(true).build();
 		ClassModel<ComponentFactory> componentFactoryModel = ClassModel.builder(ComponentFactory.class).enableDiscriminator(true).build();
 		ClassModel<ConcreteComponentFactory> concreteComponentFactoryModel = ClassModel.builder(ConcreteComponentFactory.class).enableDiscriminator(true).build();
-		ClassModel<ComponentInventory> componenInventorytModel = ClassModel.builder(ComponentInventory.class).enableDiscriminator(true).build();
+		//ClassModel<Inventory> componentInventoryModel = ClassModel.builder(Inventory.class).enableDiscriminator(true).build();
 		ClassModel<Component> componentModel = ClassModel.builder(Component.class).enableDiscriminator(true).build();
 		ClassModel<RaceEvent> raceEventModel = ClassModel.builder(RaceEvent.class).enableDiscriminator(true).build();
 		ClassModel<RaceTrack> raceTrackModel = ClassModel.builder(RaceTrack.class).enableDiscriminator(true).build();
@@ -102,7 +101,7 @@ public class DBHandler {
 				 .register(shopModel)
 				 .register(componentFactoryModel)
 				 .register(concreteComponentFactoryModel)
-				 .register(componenInventorytModel)
+				 //.register(componentInventoryModel)
 				 .register(componentModel)
 				 .register(restingStateModel)
 				 .register(trainingStateModel)

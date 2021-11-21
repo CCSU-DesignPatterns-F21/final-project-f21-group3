@@ -2,9 +2,9 @@ package com.group3.racingbot.shop;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
+import com.group3.racingbot.Car;
 import com.group3.racingbot.ComponentFactory.Component;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.Inventory;
 
 /**
  * @author Maciej Bregisz
@@ -15,8 +15,8 @@ public class Junkyard extends Shop {
 	
 	@BsonCreator
 	public Junkyard() {
-		setCarsForSale(new CarInventory());
-		setComponentsForSale(new ComponentInventory());
+		setCarsForSale(new Inventory<Car>());
+		setComponentsForSale(new Inventory<Component>());
 		setId(1);
 		setName("Junkyard");
 		setDescription("What you see is what you get, pal! Rusty parts and even rustier components, some hidden gems too!");
@@ -34,6 +34,4 @@ public class Junkyard extends Shop {
 		getComponentsForSale().getItems().clear();
 		getComponentsForSale().add(getFactory().createComponent("engine", 100));
 	}
-	
-
 }
