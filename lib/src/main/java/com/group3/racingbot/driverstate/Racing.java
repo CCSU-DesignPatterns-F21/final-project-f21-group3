@@ -12,6 +12,7 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.ComponentFactory.ChassisComponent;
+import com.group3.racingbot.ComponentFactory.ComponentType;
 import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
@@ -387,21 +388,21 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
+	public String beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
 		// Check cooldown, if ok then train. Otherwise, remain resting. 
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
+	public String signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
 		// Check cooldown, if ok then sign up for race. Otherwise, remain resting. 
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 	
 	@Override
-	public void beginRace(Driver driver) {
+	public String beginRace(Driver driver) {
 		// If in RacePending state and all fields are not null, then race!
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 
 	@Override
@@ -425,6 +426,7 @@ public abstract class Racing implements DriverState {
 		DBHandler dbh = DBHandler.getInstance();
 		Player updatedPlayer = driver.getPlayer();
 		Driver updatedDriver = driver;
+		Car updatedCar = this.car;
 		DriverStanding updatedDriverStanding = driverStanding;
 		RaceTrack raceTrack = updatedDriverStanding.getRaceTrack();
 		
@@ -455,15 +457,26 @@ public abstract class Racing implements DriverState {
 		updatedDriverStanding.setDistanceTraveled(updatedDriverStanding.getDistanceTraveled() + this.distanceTraveledThisStep);
 		updatedDriverStanding.setCurrentNode(raceTrack.obtainCurrentNode());
 		
+		//boolean isDamaged = false; // Flag showing if the car gets damaged this step.
 		if (!completedRace) {
 			// Before printing the result of this step,
 			// roll to see what racing state the driver will be in next step.
 			DriverState rolledState = rollDriverState();
 			if (!this.equals(rolledState)) {
 				if (rolledState instanceof Racing) {
+					// Update distance values
 					((Racing) rolledState).setStraightDistance(this.straightDistance);
 					((Racing) rolledState).setCornerDistance(this.cornerDistance);
 					((Racing) rolledState).setDistanceTraveledThisStep(this.distanceTraveledThisStep);
+					
+					// Check if the driver crashed
+					if (rolledState instanceof Crashed) {
+						updatedCar = this.crash(updatedCar);
+						if (updatedCar.getDurability() <= 0) {
+							// The car is wrecked, the driver is unable to continue.
+							rolledState = new DNF(playerId, driverId);
+						}
+					}
 				}
 				else {
 					return updatedDriverStanding;
@@ -480,7 +493,8 @@ public abstract class Racing implements DriverState {
 			updatedDriver.completedRace();
 		}
 		
-		// Update the driver within the player's inventory in the database
+		// Update the driver and car within the player's inventory in the database
+		updatedPlayer.getOwnedCars().update(updatedCar);
 		updatedPlayer.getOwnedDrivers().update(updatedDriver);
 		dbh.updateUser(updatedPlayer);
 		
@@ -489,15 +503,17 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	public void completedRace(Driver driver) {
+	public String completedRace(Driver driver) {
 		// If in the Racing state, move to FinishedRace state.
 		driver.setState(new FinishedRace(this.playerId, this.driverId, this.raceEventId));
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void completedTraining(Driver driver) {
+	public String completedTraining(Driver driver) {
 		// If in the Training state, move to FinishedTraining state.
 		// Do nothing
+		return "";
 	}
 	
 	@Override
@@ -606,77 +622,59 @@ public abstract class Racing implements DriverState {
 	/**
 	 * Apply a random amount of damage to at least 1 component and at most 3 components of the car.
 	 * @param car
+	 * @return car with damage applied to its components
 	 */
-	public void crash(Car car) {
-		this.refreshFromDB();
-		
-		DBHandler dbh = DBHandler.getInstance();
-		Player updatedPlayer = this.player;
+	public Car crash(Car car) {
 		Car updatedCar = car;
-		
-		final int CHASSIS = 0;
-		final int ENGINE = 1;
-		final int SUSPENSION = 2;
-		final int TRANSMISSION = 3;
-		final int WHEEL = 4;
 		
 		int updatedDurability = 0;
 		int amountOfComponentsToDamage = ThreadLocalRandom.current().nextInt(1, 4);
+		System.out.print("Driver crashed! ");
 		for (int i = 0; i < amountOfComponentsToDamage; i++) {
-			int componentToDamage = ThreadLocalRandom.current().nextInt(0, 4);
+			ComponentType damagedComponent = ComponentType.random();
 			int damage = ThreadLocalRandom.current().nextInt(0, 50);
-			switch (componentToDamage) {
+			System.out.println(damage + " points of damage inflicted on the " + damagedComponent.toString().toLowerCase());
+			switch (damagedComponent) {
 				case CHASSIS:
 					updatedDurability = updatedCar.getChassis().getDurability() - damage;
 					if (updatedDurability < 0) {
 						updatedDurability = 0;
 					}
-					ChassisComponent updatedChassis = updatedCar.getChassis();
-					updatedChassis.setDurability(updatedDurability);
-					updatedCar.setChassis(updatedChassis);
+					updatedCar.getChassis().setDurability(updatedDurability);
 					break;
 				case ENGINE:
-					updatedDurability = updatedCar.getEngine().getDurability();
+					updatedDurability = updatedCar.getEngine().getDurability() - damage;
 					if (updatedDurability < 0) {
 						updatedDurability = 0;
 					}
-					EngineComponent updatedEngine = updatedCar.getEngine();
-					updatedEngine.setDurability(updatedDurability);
-					updatedCar.setEngine(updatedEngine);
+					updatedCar.getEngine().setDurability(updatedDurability);
 					break;
 				case SUSPENSION:
-					updatedDurability = updatedCar.getSuspension().getDurability();
+					updatedDurability = updatedCar.getSuspension().getDurability() - damage;
 					if (updatedDurability < 0) {
 						updatedDurability = 0;
 					}
-					SuspensionComponent updatedSuspension = updatedCar.getSuspension();
-					updatedSuspension.setDurability(updatedDurability);
-					updatedCar.setSuspension(updatedSuspension);
+					updatedCar.getSuspension().setDurability(updatedDurability);
 					break;
 				case TRANSMISSION:
-					updatedDurability = updatedCar.getTransmission().getDurability();
+					updatedDurability = updatedCar.getTransmission().getDurability() - damage;
 					if (updatedDurability < 0) {
 						updatedDurability = 0;
 					}
-					TransmissionComponent updatedTransmission = updatedCar.getTransmission();
-					updatedTransmission.setDurability(updatedDurability);
-					updatedCar.setTransmission(updatedTransmission);
+					updatedCar.getTransmission().setDurability(updatedDurability);
 					break;
-				case WHEEL:
-					updatedDurability = updatedCar.getWheels().getDurability();
+				case WHEELS:
+					updatedDurability = updatedCar.getWheels().getDurability() - damage;
 					if (updatedDurability < 0) {
 						updatedDurability = 0;
 					}
-					WheelComponent updatedWheels = updatedCar.getWheels();
-					updatedWheels.setDurability(updatedDurability);
-					updatedCar.setWheels(updatedWheels);
+					updatedCar.getWheels().setDurability(updatedDurability);
 					break;
 				default:
 					break;
 			}
 		}
 		
-		updatedPlayer.getOwnedCars().update(updatedCar);
-		dbh.updateUser(updatedPlayer);
+		return updatedCar;
 	}
 }

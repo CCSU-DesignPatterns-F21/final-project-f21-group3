@@ -89,7 +89,7 @@ public class FinishedTraining extends Completed {
 		updatedDriver.setState(new Resting());
 		updatedPlayer.getOwnedDrivers().update(updatedDriver);
 		dbh.updateUser(updatedPlayer);
-		return updatedDriver.getName() + " has improved their " + this.getSkill().toString().toLowerCase() + " skill from " + previousSkillPoints + " to " + previousSkillPoints + this.getReward() + ".";
+		return updatedDriver.getName() + " has improved their " + this.getSkill().toString().toLowerCase() + " skill from " + previousSkillPoints + " to " + (previousSkillPoints + this.getReward()) + ".";
 	}
 	
 	@Override

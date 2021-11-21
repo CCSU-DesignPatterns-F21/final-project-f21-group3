@@ -184,25 +184,25 @@ public class RacePending implements DriverState {
 	}
 
 	@Override
-	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
-		// TODO Auto-generated method stub
-		// Do nothing
+	public String beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
-		// TODO Auto-generated method stub
-		System.out.println("Already registed for a race event. Withdraw from the event currently registered for then try again."); 
+	public String signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
+		return this.driverStatus(driver); 
 	}
 	
 	@Override
-	public void beginRace(Driver driver) {
+	public String beginRace(Driver driver) {
 		// Ensure that all necessary data can be pulled using id's from the database.
 		if (refreshFromDB()) {
 			driver.setState(new Normal(this.playerId, this.driverId, this.carId, this.raceEventId));
+			return driver.getName() + " is now racing.";
 		}
 		else {
 			System.out.println("Unable to enter into a race, values in the database may have been deleted which prevents Driver " + this.driverId + " from participating in RaceEvent " + this.raceEventId + ".");
+			return driver.getName() + " is unable to begin racing for event " + this.raceEventId + ".";
 		}
 	}
 
@@ -248,15 +248,16 @@ public class RacePending implements DriverState {
 	}
 
 	@Override
-	public void completedRace(Driver driver) {
+	public String completedRace(Driver driver) {
 		// TODO Auto-generated method stub
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void completedTraining(Driver driver) {
-		// TODO Auto-generated method stub
+	public String completedTraining(Driver driver) {
+		// If in the Training state, move to FinishedTraining state.
 		// Do nothing
+		return "";
 	}
 	
 	@Override

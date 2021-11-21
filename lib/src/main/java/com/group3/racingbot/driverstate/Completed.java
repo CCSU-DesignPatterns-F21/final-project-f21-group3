@@ -121,21 +121,18 @@ public abstract class Completed implements DriverState{
 	}
 
 	@Override
-	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
-		// TODO Auto-generated method stub
-		// Do nothing
+	public String beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
-		// TODO Auto-generated method stub
-		// Do nothing
+	public String signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void beginRace(Driver driver) {
-		// TODO Auto-generated method stub
-		// Do nothing
+	public String beginRace(Driver driver) {
+		return this.driverStatus(driver);
 	}
 
 	@Override
@@ -152,15 +149,15 @@ public abstract class Completed implements DriverState{
 	}
 
 	@Override
-	public void completedRace(Driver driver) {
+	public String completedRace(Driver driver) {
 		// TODO Auto-generated method stub
-		// Do nothing
+		return driverStatus(driver);
 	}
 
 	@Override
-	public void completedTraining(Driver driver) {
-		// TODO Auto-generated method stub
-		// Do nothing
+	public String completedTraining(Driver driver) {
+		// If in the Training state, move to FinishedTraining state.
+		return driverStatus(driver);
 	}
 	
 	@Override

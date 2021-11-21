@@ -1,9 +1,14 @@
 package com.group3.racingbot.driverstate;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
@@ -14,6 +19,8 @@ import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.standings.DriverStanding;
+
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  * A state which the Driver remains in once initiating a training session. Only when the training cooldown expires can the Driver move to another state.
@@ -29,7 +36,7 @@ public class Training implements DriverState {
 	private Skill skillToTrain;
 	private Intensity intensity;
 	private int trainingReward;
-	private long cooldown;
+	private String cooldown;
 	
 	/**
 	 * Constructs the training state.
@@ -39,9 +46,8 @@ public class Training implements DriverState {
 	 */
 	@BsonCreator
 	public Training(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("skillToTrain") Skill skillToTrain, @BsonProperty("intensity") Intensity intensity) {
-		final long THIRTY_MINS = 1800000; // 30 minutes in milliseconds.
-		final Date d = new Date();
-		final long now = d.getTime();
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime cooldownAt = null;
 		this.driver = null;
 		this.playerId = playerId;
 		this.driverId = driverId;
@@ -50,30 +56,31 @@ public class Training implements DriverState {
 		switch (intensity) {
 			case LIGHT:
 				this.trainingReward = 1;
-				this.cooldown = now + THIRTY_MINS;
+				cooldownAt = now.plusMinutes(30).truncatedTo(ChronoUnit.SECONDS);
 				break;
 			case MEDIUM:
 				this.trainingReward = 3;
-				this.cooldown = now + (THIRTY_MINS * 2);
+				cooldownAt = now.plusHours(1).truncatedTo(ChronoUnit.SECONDS);
 				break;
 			case INTENSE:
 				this.trainingReward = 5;
-				this.cooldown = now + (THIRTY_MINS * 3);
+				cooldownAt = now.plusMinutes(90).truncatedTo(ChronoUnit.SECONDS);
 				break;
 			default:
 				this.trainingReward = 1;
-				this.cooldown = now + THIRTY_MINS;
+				cooldownAt = now.plusMinutes(30).truncatedTo(ChronoUnit.SECONDS);
 				break;
 		}
+		this.cooldown = cooldownAt.toString();
 	}
 	
 	/**
 	 * Retrieve the Driver's cooldown.
 	 * 
 	 * If training or racing is performed, then the cooldown is the time to wait until you can use this Driver again.
-	 * @return the cooldown
+	 * @return the cooldown as a string in the ISO-8601 calendar system
 	 */
-	public long getCooldown() {
+	public String getCooldown() {
 		return cooldown;
 	}
 
@@ -81,9 +88,9 @@ public class Training implements DriverState {
 	 * Set the Driver's cooldown.
 	 * 
 	 * If training or racing is performed, then the cooldown is the time to wait until you can use this Driver again.
-	 * @param cooldown the cooldown to set
+	 * @param cooldown the cooldown to set as a string in the ISO-8601 calendar system
 	 */
-	public void setCooldown(long cooldown) {
+	public void setCooldown(String cooldown) {
 		this.cooldown = cooldown;
 	}
 
@@ -182,6 +189,61 @@ public class Training implements DriverState {
 	public void setTrainingReward(int trainingReward) {
 		this.trainingReward = trainingReward;
 	}
+	
+	/**
+	 * Triggers the start of the training task.
+	 */
+	public void activateTimer(GuildMessageReceivedEvent event) {
+		// This timer will go off once the user has waited long enough for the training session to be done.
+		Timer timer = new Timer ();
+		TimerTask trainingTask = new TimerTask () {
+		    @Override
+		    public void run () {
+		        // Training has completed
+		    	event.getChannel().sendMessage(completedTraining()).queue();
+		    }
+		};
+		
+		LocalDateTime cooldownAt = LocalDateTime.parse(this.cooldown);
+		Date trainingCompletedTime = Date.from(cooldownAt.atZone(ZoneId.systemDefault()).toInstant());
+		timer.schedule(trainingTask, trainingCompletedTime);
+	}
+	
+	/**
+	 * Retrieve a string which indicates how long it is until the training session of the driver finishes.
+	 * @return a string containing how much longer the user must wait until the training session is complete.
+	 */
+	public String printTimeRemaining() {
+		// Extract the total hours and minutes left from the difference between now and the cooldown.
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime cooldownAt = LocalDateTime.parse(this.cooldown);
+		Duration diff = Duration.between(now, cooldownAt);
+		long totalSeconds = diff.getSeconds();
+		int minutes = (int) totalSeconds / 60;
+		totalSeconds %= 60;
+		int hours = (int) totalSeconds / 60;
+		
+		// Check whether to append an 's' to the end of the words hour and minute.
+		String hourWord = "hours";
+		if (hours == 1) {
+			hourWord = "hour";
+		}
+		String minuteWord = "minutes";
+		if (minutes == 1) {
+			minuteWord = "minute";
+		}
+		
+		if (hours > 0) {
+			return hours + " " + hourWord + " and " + minutes + " " + minuteWord;
+		}
+		else if (minutes > 0) {
+			return minutes + " " + minuteWord;
+		}
+		else {
+			return "a moment";
+		}
+		
+	}
 
 	@Override
 	public String rest(Driver driver) {
@@ -193,21 +255,21 @@ public class Training implements DriverState {
 	}
 
 	@Override
-	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
+	public String beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
 		// Check cooldown, if ok then train. Otherwise, remain resting. 
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
+	public String signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
 		// Check cooldown, if ok then sign up for race. Otherwise, remain resting. 
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void beginRace(Driver driver) {
+	public String beginRace(Driver driver) {
 		// If in RacePending state and all fields are not null, then race!
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 
 	@Override
@@ -234,27 +296,31 @@ public class Training implements DriverState {
 	}
 
 	@Override
-	public void completedRace(Driver driver) {
+	public String completedRace(Driver driver) {
 		// If in the Racing state, move to FinishedRace state.
-		// Do nothing
+		return this.driverStatus(driver);
+	}
+	
+	/**
+	 * Move to the finished training state upon training completion. This serves as a helper function for the timer declared in the Training constructor.
+	 * @return String which contains info about the training session being complete and that the user should claim their reward.
+	 */
+	private String completedTraining() {
+		this.refreshFromDB();
+		return this.driver.completedTraining();
 	}
 
 	@Override
-	public void completedTraining(Driver driver) {
+	public String completedTraining(Driver driver) {
+		this.refreshFromDB(); 
 		DBHandler dbh = DBHandler.getInstance();
-		refreshFromDB();
-		
-		// Move to FinishedTraining state so long as the cooldown has expired.
-		Date d = new Date();
-		long now = d.getTime();
-		if (now > this.cooldown) {
-			if (dbh.updateDriverStateInDB(this.playerId, this.driverId, new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()))) {
-				this.driver.setState(new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()));
-				System.out.println("Driver " + this.driverId + " has completed training for " + getSkillToTrain().toString() + ".");
-			}
-			else {
-				System.out.println("Unable to set the state of Driver " + this.driverId + ".");
-			}
+
+		if (dbh.updateDriverStateInDB(this.playerId, this.driverId, new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()))) {
+			this.driver.setState(new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()));
+			return "Driver " + this.driverId + " has completed training for " + getSkillToTrain().toString() + ". The reward for completing this training session can now be claimed.\n**Claim a reward**\n!r debug claim";
+		}
+		else {
+			return "Unable to set the state of Driver " + this.driverId + ". Unable to offer a training reward.";
 		}
 	}
 	
@@ -297,7 +363,7 @@ public class Training implements DriverState {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		return driver.getName() + " (" + driver.getId() + ") is currently training. You may cancel their training session, but " + driver.getName() + " will not earn a skill reward as a result.\n**Cancel**\n!r debug driver train withdraw";
+		return driver.getName() + " (" + driver.getId() + ") is currently performing a " + this.intensity.toString().toLowerCase() + " training session to improve their " + this.skillToTrain.toString().toLowerCase() + " skill. Training will be completed in " + this.printTimeRemaining() + ". You may cancel their training session, but " + driver.getName() + " will not earn a skill reward as a result.\n**Cancel**\n!r debug driver train withdraw";
 	}
 
 	@Override

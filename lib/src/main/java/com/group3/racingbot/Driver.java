@@ -10,6 +10,7 @@ import com.group3.racingbot.driverstate.DriverState;
 import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
+import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.standings.DriverStanding;
 
 /**
@@ -319,12 +320,12 @@ public class Driver {
 	
 	/**
 	 * Puts the Driver into a training state to improve a skill.
-	 * @param driver
 	 * @param skillToTrain
 	 * @param intensity
+	 * @return String containing contextual info about beginning training.
 	 */
-	public void beginTraining(Skill skillToTrain, Intensity intensity) {
-		this.state.beginTraining(this, skillToTrain, intensity);
+	public String beginTraining(Skill skillToTrain, Intensity intensity) {
+		return this.state.beginTraining(this, skillToTrain, intensity);
 	}
 	
 	/**
@@ -374,10 +375,11 @@ public class Driver {
 	}
 	
 	/**
-	 * Once the Driver completes a training session, this will move the Driver to a Completed state.
+	 * Move to the finished training state upon training completion.
+	 * @return String indicating that the user can now claim a reward.
 	 */
-	public void completedTraining() {
-		this.state.completedTraining(this);
+	public String completedTraining() {
+		return this.state.completedTraining(this);
 	}
 	
 	/**

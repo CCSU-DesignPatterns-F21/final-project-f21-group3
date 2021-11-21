@@ -45,13 +45,13 @@ public class Normal extends Racing {
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			// Driver has crashed
-			crash(this.getCar());
-			if (this.getCar().getDurability() > 0) {
+			//crash(this.getCar());
+			//if (this.getCar().getDurability() > 0) {
 				return new Crashed(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId());
-			}
-			else {
-				return new DNF(super.getPlayerId(), super.getDriverId());
-			}
+			//}
+			//else {
+			//	return new DNF(super.getPlayerId(), super.getDriverId());
+			//}
 		}
 		else if (roll < 60) {
 			// Driver remains in the Normal state.

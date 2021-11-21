@@ -23,51 +23,32 @@ public class Resting implements DriverState {
 
 	@Override
 	public String rest(Driver driver) {
-		return driver.getName() + "(" + driver.getId() + ") was already resting.";
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
-		// Check cooldown, if ok then train. Otherwise, remain resting. 
-		//Date d = new Date();
-		//long now = d.getTime();
-		//final long halfHour = 1800;
-		
-		//if (now > driver.getCooldown()) {
-			driver.setState(new Training(driver.getPlayer().getId(), driver.getId(), skillToTrain, intensity));
-			/*switch (intensity) {
-				case LIGHT:
-					driver.setCooldown(now + halfHour);
-					break;
-				case MEDIUM:
-					driver.setCooldown(now + (halfHour*2));
-					break;
-				case INTENSE:
-					driver.setCooldown(now + (halfHour*3));
-					break;
-				default:
-					// Do nothing
-					break;
-			}*/
-		//}
+	public String beginTraining(Driver driver, Skill skillToTrain, Intensity intensity) {
+		// Begin a training session to improve a driver skill.
+		driver.setState(new Training(driver.getPlayer().getId(), driver.getId(), skillToTrain, intensity));
+		return driver.getName() + " is now performing " + intensity.toString().toLowerCase() + " training for their " + skillToTrain.toString().toLowerCase() + " skill. " + driver.getName() + " will complete training in " + ((Training) driver.getState()).printTimeRemaining() + ".";
 	}
 
 	@Override
-	public void signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
+	public String signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
 		DriverState racePendingState = new RacePending(driver.getPlayer().getId(), driver.getId(), car.getId(), raceEvent.getId());
 		driver.setState(racePendingState);
+		return driver.getName() + " is now signed up for the race event " + raceEvent.getId() + ". You may withdraw " + driver.getName() + " from the race before the race starts.\n**Withdraw**\n!r debug driver withdraw";
 	}
 	
 	@Override
-	public void beginRace(Driver driver) {
+	public String beginRace(Driver driver) {
 		// If in RacePending state and all fields are not null, then race!
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 
 	@Override
 	public String collectReward() {
 		// If in completed state, execute this and go to resting state. Otherwise, do nothing.
-		// Do nothing
 		return "";
 	}
 
@@ -88,15 +69,15 @@ public class Resting implements DriverState {
 	}
 
 	@Override
-	public void completedRace(Driver driver) {
+	public String completedRace(Driver driver) {
 		// If in the Racing state, move to FinishedRace state.
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 
 	@Override
-	public void completedTraining(Driver driver) {
+	public String completedTraining(Driver driver) {
 		// If in the Training state, move to FinishedTraining state.
-		// Do nothing
+		return this.driverStatus(driver);
 	}
 	
 	@Override

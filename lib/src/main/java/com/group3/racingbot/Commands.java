@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -16,10 +18,7 @@ import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
 import com.group3.racingbot.ComponentFactory.WheelComponent;
-import com.group3.racingbot.driverstate.Completed;
 import com.group3.racingbot.driverstate.Intensity;
-import com.group3.racingbot.driverstate.RacePending;
-import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
 import com.group3.racingbot.driverstate.Training;
@@ -27,7 +26,6 @@ import com.group3.racingbot.inventory.CarInventory;
 import com.group3.racingbot.inventory.DriverInventory;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
-import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -607,19 +605,24 @@ public class Commands extends ListenerAdapter {
 	    					return;
 	    				}
 	    				
-	    				// Advance the race until it completes.
-	    				while (!raceEvent.isFinished()) {
-	    					try {
-	    						TimeUnit.SECONDS.sleep(2);
-	    						System.out.println("Race Step");
-	    						event.getChannel().sendMessage(raceEvent.stepAllDrivers()).queue();
-	    					}
-	    					catch (InterruptedException e) {
-	    						e.printStackTrace();
-	    					}
-	    				}
-	    				
-	    				event.getChannel().sendMessage("RaceEvent " + this.raceEvent.getId() + " is complete!\n_____\n" + this.raceEvent.getStandings().toString()).queue();
+	    				// This timer will go off every 2 seconds until the race is done.
+	    				Timer timer = new Timer();
+	    				TimerTask raceStepAllTask = new TimerTask () {
+	    				    @Override
+	    				    public void run () {
+	    				    	if (!raceEvent.isFinished()) {
+		    						System.out.println("Race Step");
+		    						event.getChannel().sendMessage(raceEvent.stepAllDrivers()).queue();
+	    				    	}
+	    				    	else {
+	    				    		event.getChannel().sendMessage(printRaceResults()).queue();
+	    				    		this.cancel(); // End the task so that it doesn't keep running.
+	    				    	}
+	    				    }
+	    				};
+
+	    				final int TWO_SECONDS = 1000 * 2;
+	    				timer.scheduleAtFixedRate(raceStepAllTask, 1000, TWO_SECONDS);
 	    			}
 	    		}
 	    		
@@ -714,6 +717,12 @@ public class Commands extends ListenerAdapter {
 	    				}
 	    			}
 	    			if (args[3].equalsIgnoreCase("train")) {
+	    				String inputErrorHelpText = "Invalid input. The syntax for training is as follows:\n!r debug driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)\n!r debug driver train (a | cor | com | d | s | r) (l | m | i)";
+	    				// Check to make sure there is more to the command. If not, print the instructions for how to properly use the command.
+	    				if (args.length <= 4) { 
+	    					event.getChannel().sendMessage(inputErrorHelpText).queue();
+	    					return;
+	    				}
 	    				Driver activeDriver = null;
 	    				try {
 	    					activeDriver = p.getOwnedDrivers().getById(p.getActiveDriverId());
@@ -727,8 +736,13 @@ public class Commands extends ListenerAdapter {
 	    					p.getOwnedDrivers().update(activeDriver);
 							dbh.updateUser(p);
 	    				}
-	    				else if (args.length > 4 && args[4] != null) {
-	    					String inputErrorHelpText = "Invalid input. The syntax for training is as follows:\n!r debug driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)\n!r debug driver train (a | cor | com | d | s | r) (l | m | i)";
+	    				else {
+	    					// Check to make sure there is more to the command. If not, print the instructions for how to properly use the command.
+	    					if (args.length <= 5) { 
+		    					event.getChannel().sendMessage(inputErrorHelpText).queue();
+		    					return;
+		    				}
+	    					
 	    					boolean isAwareness = args[4].equals("a") || args[4].equals("awa") || args[4].equals("awareness"),
 	    							isCornering = args[4].equals("cor") || args[4].equals("cornering"),
 	    							isComposure = args[4].equals("com") || args[4].equals("composure"),
@@ -736,7 +750,7 @@ public class Commands extends ListenerAdapter {
 	    							isStraights = args[4].equals("s") || args[4].equals("str") || args[4].equals("straights"),
 	    							isRecovery  = args[4].equals("r") || args[4].equals("rec") || args[4].equals("recovery"),
 	    							isValidSkill = isAwareness || isCornering || isComposure || isDrafting || isStraights || isRecovery;
-	    					if (isValidSkill && args.length > 5 && args[5] != null) {
+	    					if (isValidSkill) {
 	    						boolean isLight   = args[5].equals("l") || args[5].equals("light"),
 		    							isMedium  = args[5].equals("m") || args[5].equals("medium"),
 		    							isIntense = args[5].equals("i") || args[5].equals("intense"),
@@ -769,7 +783,8 @@ public class Commands extends ListenerAdapter {
 	    							
 	    							// Set the driver into a training state
 	    							activeDriver.beginTraining(skillToTrain, trainingIntensity);
-	    							event.getChannel().sendMessage(activeDriver.driverStatus()).queue();
+	    							((Training) activeDriver.getState()).activateTimer(event); // Starts the clock for how long the user should wait until training completes. The user will be notified once training is complete.
+	    							event.getChannel().sendMessage(activeDriver.getName() + " is now performing " + trainingIntensity.toString().toLowerCase() + " training for their " + skillToTrain.toString().toLowerCase() + " skill. " + activeDriver.getName() + " will complete training in " + ((Training) activeDriver.getState()).printTimeRemaining() + ".").queue();
 	    							p.getOwnedDrivers().update(activeDriver);
 	    							dbh.updateUser(p);
 	    						}
@@ -934,6 +949,14 @@ public class Commands extends ListenerAdapter {
 			}
 	 }
 	}
+	 
+	 /**
+	  * Retrieve a string which prints the results of a race. This is a helper function which lets the results get printed from within the race task.
+	  * @return string containing info about the final standings of the race.
+	  */
+	 private String printRaceResults() {
+		 return "RaceEvent " + this.raceEvent.getId() + " is complete!\n_____\n" + this.raceEvent.getStandings().toString();
+	 }
 
 	 /**
 	  * 

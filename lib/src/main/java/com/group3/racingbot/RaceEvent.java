@@ -1,5 +1,6 @@
 package com.group3.racingbot;
 
+import com.group3.racingbot.driverstate.Crashed;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.racetrack.RaceTrack;
@@ -183,6 +184,7 @@ public class RaceEvent {
 			currentDriver = currentDriverStanding.getDriver();
 			if (currentDriver.getState() instanceof Racing) {
 				// Allow the driver to make their move on the track
+				
 				//stepResult += currentDriver.raceStep() + "\n";
 				currentDriverStanding = currentDriver.raceStep(currentDriverStanding);
 				this.standings.update(currentDriverStanding);

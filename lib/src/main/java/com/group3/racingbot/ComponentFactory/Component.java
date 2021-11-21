@@ -148,7 +148,7 @@ public abstract class Component {
 	 */
 	
 	public int getMaxDurability() {
-		return durability;
+		return maxDurability;
 	}
 	/**
 	 * @param returns rating

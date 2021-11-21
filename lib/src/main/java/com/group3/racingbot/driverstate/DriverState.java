@@ -39,23 +39,25 @@ public interface DriverState {
 	 * The driver begins the race they've signed up for.
 	 * @param driver
 	 */
-	void beginRace(Driver driver);
+	String beginRace(Driver driver);
 	
 	/**
 	 * Puts the Driver into a training state to improve a skill.
 	 * @param driver
 	 * @param skillToTrain
 	 * @param intensity
+	 * @return String containing contextual info about beginning training.
 	 */
-	void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity);
+	String beginTraining(Driver driver, Skill skillToTrain, Intensity intensity);
 	
 	/**
 	 * Registers this driver and their car for a racing event.
 	 * @param driver
 	 * @param car
 	 * @param raceEvent
+	 * @return String containing contextual info about signing up for a race.
 	 */
-	void signUpForRace(Driver driver, Car car, RaceEvent raceEvent);
+	String signUpForRace(Driver driver, Car car, RaceEvent raceEvent);
 	
 	/**
 	 * Upon completion of training or a race, collect your reward (whether it's stat points or credits).
@@ -80,14 +82,16 @@ public interface DriverState {
 	/**
 	 * Move to the finished race state upon race completion.
 	 * @param driver
+	 * @return String containing contextual info about completing a race.
 	 */
-	void completedRace(Driver driver);
+	String completedRace(Driver driver);
 	
 	/**
 	 * Move to the finished training state upon training completion.
-	 * @param driver
+	 * @param driver the driver to switch into a completed state.
+	 * @return String indicating that the user can now claim a reward.
 	 */
-	void completedTraining(Driver driver);
+	String completedTraining(Driver driver);
 	
 	/**
 	 * In the event that this driver is in this state when the server shuts down, this will grab all necessary data from the database in order to get back up and running.
