@@ -561,25 +561,6 @@ public class Commands extends ListenerAdapter {
     						event.getChannel().sendMessage("Player does not have an active driver").queue();
     					}
 	    			}
-	    			if (args[3].equalsIgnoreCase("forcewithdraw")) {
-	    				Player p = dbh.getPlayer(user.getId());
-	    				if (p.obtainActiveDriver() != null) {
-    						Driver activeDriver = p.obtainActiveDriver();
-    						activeDriver.setState(new Resting());
-    						
-    						if (p.getOwnedDrivers().update(activeDriver)) {
-    							dbh.updateUser(p);
-    						}
-    						else {
-    							event.getChannel().sendMessage("Unable to withdraw user from the event").queue();
-    						}
-    						
-    						event.getChannel().sendMessage("User forced to withdraw from the event").queue();
-    					}
-	    				else {
-    						event.getChannel().sendMessage("Player does not have an active driver").queue();
-    					}
-	    			}
 	    			if(args[3].equalsIgnoreCase("begin"))
 	    			{
 	    				// The event has started! Move every registered driver into a racing state then begin moving the drivers.
@@ -852,7 +833,6 @@ public class Commands extends ListenerAdapter {
 	    					catch (Exception e) {
 	    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not remove a car.").queue();
 	    					}
-	    					
 	    				}
 	    			}
 	    		}
