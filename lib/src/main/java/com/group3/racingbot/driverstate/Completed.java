@@ -136,14 +136,7 @@ public abstract class Completed implements DriverState{
 	}
 
 	@Override
-	public boolean withdrawFromRace(Driver driver) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public DriverStanding raceStep(Driver driver, DriverStanding driverStanding) {
-		// TODO Auto-generated method stub
 		// Do nothing
 		return null;
 	}

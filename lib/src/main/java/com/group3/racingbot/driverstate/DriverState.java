@@ -65,13 +65,6 @@ public interface DriverState {
 	String collectReward();
 	
 	/**
-	 * Lets the Driver withdraw from a race if they are in a race pending state.
-	 * @param driver
-	 * @return success or failure of race withdrawal.
-	 */
-	boolean withdrawFromRace(Driver driver);
-	
-	/**
 	 * Allow the Driver to perform their turn to move on the track during a race.
 	 * @param driver
 	 * @param driverStanding

@@ -53,12 +53,6 @@ public class Resting implements DriverState {
 	}
 
 	@Override
-	public boolean withdrawFromRace(Driver driver) {
-		// If in RacePending state, execute this, go to resting state, and return true. Otherwise do nothing and return false.
-		return false;
-	}
-
-	@Override
 	public DriverStanding raceStep(Driver driver, DriverStanding driverStanding) {
 		// If in Racing state, calculate the distance which the driver can travel on straights and corners. 
 		// Next, randomize if a crash will occur this roll. If so, add to the idleTime and damage the Car. Otherwise, continue.

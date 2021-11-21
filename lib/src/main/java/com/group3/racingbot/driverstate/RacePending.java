@@ -177,9 +177,25 @@ public class RacePending implements DriverState {
 
 	@Override
 	public String rest(Driver driver) {
+		refreshFromDB();
+		
 		DBHandler dbh = DBHandler.getInstance();
-		// Withdraws the driver from a race event.
-		this.withdrawFromRace(driver);
+		Player p = driver.getPlayer();
+		Driver updatedDriver = driver;
+		
+		// Check that the event hasn't been deleted.
+		if (dbh.raceEventExists(raceEventId)) {
+			// Remove the driver from the event in the DB
+			RaceEvent updatedRaceEvent = dbh.getRaceEvent(this.raceEventId);
+			updatedRaceEvent.getStandings().removeDriver(this.driver.getId());
+			dbh.updateRaceEvent(updatedRaceEvent);
+		}
+		
+		// Update the driver's state to a Resting state
+		updatedDriver.setState(new Resting());
+		p.getOwnedDrivers().update(updatedDriver);
+		dbh.updateUser(p);
+		
 		return driver.getName() + "(" + driver.getId() + ") withdrew from the race event " + this.raceEventId + ".";
 	}
 
@@ -211,33 +227,6 @@ public class RacePending implements DriverState {
 		// If in completed state, execute this and go to resting state. Otherwise, do nothing.
 		// Do nothing
 		return "";
-	}
-
-	@Override
-	public boolean withdrawFromRace(Driver driver) {
-		refreshFromDB();
-		
-		DBHandler dbh = DBHandler.getInstance();
-		Player p = driver.getPlayer();
-		Driver updatedDriver = driver;
-		
-		// Check that the event hasn't been deleted.
-		if (dbh.raceEventExists(raceEventId)) {
-			// Remove the driver from the event in the DB
-			RaceEvent updatedRaceEvent = dbh.getRaceEvent(this.raceEventId);
-			updatedRaceEvent.getStandings().removeDriver(this.driver.getId());
-			dbh.updateRaceEvent(updatedRaceEvent);
-		}
-		
-		// Update the driver's state to the Resting state
-		updatedDriver.setState(new Resting());
-		if (p.getOwnedDrivers().update(updatedDriver)) {
-			dbh.updateUser(p);
-			return true;
-		}
-		else {
-			return false;
-		}
 	}
 
 	@Override

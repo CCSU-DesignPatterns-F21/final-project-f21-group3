@@ -307,11 +307,10 @@ public class Driver implements Unique {
 	}
 	
 	/**
-	 * Puts the Driver into a Resting state.
+	 * Puts the Driver into a Resting state. If the Driver is currently registered for an event, this allows the Driver to back out of the event.
 	 * @return context for what state the user may have left.
 	 */
 	public String rest() {
-		//this.state = new Resting();
 		return this.state.rest(this);
 	}
 	
@@ -345,14 +344,6 @@ public class Driver implements Unique {
 	 */
 	public String collectReward() {
 		return this.state.collectReward();
-	}
-	
-	/**
-	 * If the Driver is currently registered for an event, this allows the Driver to back out of the event.
-	 * @return the success of race withdrawal
-	 */
-	public boolean withdrawFromRace() {
-		return this.state.withdrawFromRace(this);
 	}
 	
 	/**

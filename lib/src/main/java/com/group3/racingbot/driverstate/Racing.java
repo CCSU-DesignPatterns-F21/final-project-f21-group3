@@ -413,12 +413,6 @@ public abstract class Racing implements DriverState {
 	}
 
 	@Override
-	public boolean withdrawFromRace(Driver driver) {
-		// If in RacePending state, execute this, go to resting state, and return true. Otherwise do nothing and return false.
-		return false;
-	}
-
-	@Override
 	// Calculate the distance the driver will travel this turn
 	public DriverStanding raceStep(Driver driver, DriverStanding driverStanding) {
 		this.refreshFromDB();
