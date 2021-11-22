@@ -9,7 +9,8 @@ import com.group3.racingbot.inventory.InventoryIterator;
  * @param <T>
  */
 public class QualityFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
-	private String quality;
+	private Quality quality;
+	private FilterOperation operation;
 	private int current;
 	
 	/**
@@ -17,9 +18,10 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 	 * @param iterator
 	 * @param label
 	 */
-	public QualityFilter(InventoryIterator<T> iterator, String label) {
+	public QualityFilter(InventoryIterator<T> iterator, FilterOperation op, Quality quality) {
 		super(iterator);
-		this.quality = label.toLowerCase();
+		this.quality = quality;
+		this.operation = op;
 		this.current = 0;
 	}
 	
@@ -36,8 +38,24 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 	@Override
 	public T next() {
 		T item = this.inventoryIterator.next();
-		if (item != null && !this.quality.equals(item.getQuality().toLowerCase())) {
-			// If the quality doesn't match, we don't want to return this as a result. 
+		boolean itemMatchesContraints = false;
+		switch (this.operation) {
+			case IS_GREATER_THAN:
+				itemMatchesContraints = item != null 
+					&& item.getQuality().getQuality() > this.quality.getQuality();
+				break;
+			case IS_LESS_THAN:
+				itemMatchesContraints = item != null 
+					&& item.getQuality().getQuality() < this.quality.getQuality();
+				break;
+			case IS_EQUAL: default:
+				itemMatchesContraints = item != null 
+					&& item.getQuality().getQuality() == this.quality.getQuality();
+				break;
+		}
+		if (!itemMatchesContraints) {
+			// If the item doesn't match the given criteria, 
+			// we don't want to return this as a result. 
 			item = null;
 		}
 		return item;
@@ -48,7 +66,7 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.quality;
+		return this.quality.toString();
 	}
 	
 	@Override

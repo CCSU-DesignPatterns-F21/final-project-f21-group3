@@ -20,7 +20,7 @@ public interface MaterialFilterable {
 	 * Retrieves the quality label.
 	 * @return String
 	 */
-	public String getQuality();
+	public Quality getQuality();
 	/**
 	 * Retrieves the weight value.
 	 * @return int

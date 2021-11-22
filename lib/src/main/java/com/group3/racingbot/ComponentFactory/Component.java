@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.IClonable;
 import com.group3.racingbot.inventory.Unique;
+import com.group3.racingbot.inventory.filter.Quality;
 
 /**
  * @author Jack Gola
@@ -26,7 +27,9 @@ import com.group3.racingbot.inventory.Unique;
 
 
 public abstract class Component implements Unique {
-	private String id = "", quality = "", name = "";
+	private String id = "", 
+			name = "";
+	private Quality quality = Quality.LEMON;
 	private int weight = 0, value = 0, durability = 0, rating = 0;
 	private int maxDurability = 100;
 	private String thumbnailURL = "";
@@ -64,7 +67,7 @@ public abstract class Component implements Unique {
 	/**
 	 * @param quality the quality to set
 	 */
-	public void setQuality(String quality) {
+	public void setQuality(Quality quality) {
 		this.quality = quality;
 	}
 
@@ -108,7 +111,7 @@ public abstract class Component implements Unique {
 	 * @param returns Quality
 	 */
 	
-	public String getQuality() {
+	public Quality getQuality() {
 		return quality;
 	}
 	

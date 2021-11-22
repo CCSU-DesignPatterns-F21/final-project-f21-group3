@@ -921,7 +921,10 @@ public class Commands extends ListenerAdapter {
 	    		Player p = dbh.getPlayer(user.getId());
 				//InventoryIterator<Driver> originalIterator = p.getOwnedDrivers().iterator();
 	    		if (args[2].equalsIgnoreCase("add")) {
-	    			if (args.length == 5) {
+	    			// !r filter add ((filter operator number) | (filter string))
+	    			if (args.length == 5) { 
+	    				// !r filter add [filter] String
+	    				// !r filter add String String_to_
 						if (args[3] == null || args[4] == null) {
 							return;
 						}
@@ -1261,7 +1264,7 @@ public class Commands extends ListenerAdapter {
 		eb.clear();
 		eb.setTitle(c.getName());
 		eb.setThumbnail(c.getThumbnailURL());
-		eb.addField("Quality: ", formatText("cb",c.getQuality()),false);
+		eb.addField("Quality: ", formatText("cb",c.getQuality().toString().toLowerCase()),false);
 		eb.addField("Durability: ",formatText("cb",c.getDurability() +"/"+c.getMaxDurability()) ,true);
 		eb.addField("Value: ", formatText("cb", c.getValue()+""),true);
 		eb.addField("Weight: ",formatText("cb", c.getWeight()+""),true);

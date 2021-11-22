@@ -10,6 +10,7 @@ import com.group3.racingbot.ComponentFactory.TransmissionComponent;
 import com.group3.racingbot.ComponentFactory.WheelComponent;
 import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.inventory.filter.MaterialFilterable;
+import com.group3.racingbot.inventory.filter.Quality;
 
 /**
  * A car which contains five car components: A chassis, engine, suspension, transmission, and wheels.
@@ -271,18 +272,18 @@ public class Car implements MaterialFilterable, Unique {
 	 * 
 	 * Classifies the quality of the car based on the car's rating.
 	 */
-	public String getQuality() {
+	public Quality getQuality() {
 		int carRating = this.getRating();
 		if (carRating < 200)
-			return "Lemon";
+			return Quality.LEMON;
 		else if (carRating < 500) 
-			return "Junkyard";
+			return Quality.JUNKYARD;
 		else if (carRating < 1000) 
-			return "OEM";
+			return Quality.OEM;
 		else if (carRating < 3000) 
-			return "Sports";
+			return Quality.SPORTS;
 		else {
-			return "Racing";
+			return Quality.RACING;
 		}
 	}
 	
