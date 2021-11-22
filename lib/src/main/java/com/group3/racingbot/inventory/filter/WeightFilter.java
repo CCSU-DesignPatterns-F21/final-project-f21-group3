@@ -11,6 +11,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 public class WeightFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
 	private int weight;
 	private FilterOperation operation;
+	private int current;
 	
 	/**
 	 * Applies the durability filter to whatever inventory iterator is passed into it.
@@ -22,6 +23,12 @@ public class WeightFilter<T extends MaterialFilterable> extends InventoryIterato
 		super(iterator);
 		this.weight = weight;
 		this.operation = op;
+		this.current = 0;
+	}
+	
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
 	}
 	
 	/**
@@ -64,7 +71,7 @@ public class WeightFilter<T extends MaterialFilterable> extends InventoryIterato
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.weight;
+		return this.operation.toString().toLowerCase() + " " + this.weight;
 	}
 	
 	@Override
