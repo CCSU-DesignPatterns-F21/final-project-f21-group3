@@ -66,7 +66,7 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.quality.toString();
+		return this.operation.toString().toLowerCase() + " " + this.quality.toString().toLowerCase();
 	}
 	
 	@Override

@@ -398,12 +398,6 @@ public class Car implements MaterialFilterable, Unique {
 	
 	@Override
 	public String toString() {
-		return "Durability: " + this.getDurability() + " | Price: " + this.getValue() + " | Quality: " + this.getQuality() + " | Weight: " + this.getWeight();
-	}
-
-	@Override
-	public int getPrice() {
-		// TODO Auto-generated method stub
-		return 0;
+		return "id: " + this.id + " | Durability: " + this.getDurability() + " | Value: " + this.getValue() + " | Quality: " + this.getQuality() + " | Weight: " + this.getWeight();
 	}
 }

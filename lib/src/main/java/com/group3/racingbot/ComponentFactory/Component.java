@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.IClonable;
 import com.group3.racingbot.inventory.Unique;
+import com.group3.racingbot.inventory.filter.MaterialFilterable;
 import com.group3.racingbot.inventory.filter.Quality;
 
 /**
@@ -26,7 +27,7 @@ import com.group3.racingbot.inventory.filter.Quality;
 @BsonDiscriminator
 
 
-public abstract class Component implements Unique {
+public abstract class Component implements Unique, MaterialFilterable {
 	private String id = "", 
 			name = "";
 	private Quality quality = Quality.LEMON;

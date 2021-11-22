@@ -87,15 +87,17 @@ public class FilterManager<T> {
 	 */
 	public InventoryIteratorDecorator<T> performMaterialFilter(InventoryIterator<T> originalIterator) {
 		//String resultStr = "";
-		FilterIterator iterator = new FilterIterator();
+		Iterator<InventoryIteratorDecorator<T>> iterator = this.iterator();
 		//Iterator<? extends MaterialFilterable> prevIterator = originalIterator; // This is the iterator which will go into the parameters of the next iterator we find.
 		ArrayList<InventoryIteratorDecorator<T>> appliedFilters = new ArrayList<InventoryIteratorDecorator<T>>(); // Iterators which actually get used.
+		
 		// Connect each iterator with one another.
 		int index = 0;
 		while (iterator.hasNext()) {
 			InventoryIteratorDecorator<T> currentFilter = iterator.next();
+			//System.out.println("performMaterialFilter: Filter found: " + currentFilter);
 			// Ensure that only the material filterable filters apply.
-			if (currentFilter.getClass().isAssignableFrom(MaterialFilterable.class)) {
+			//if (currentFilter.getClass().isAssignableFrom(MaterialFilterable.class)) {
 				/*QualityFilter<Car> filterA = new QualityFilter<Car>(carIterator, "Lemon");
 	    		DurabilityFilter<Car> filterB = new DurabilityFilter<Car>(filterA, FilterOperation.IS_GREATER_THAN, 40);*/
 				if (appliedFilters.size() == 0) {
@@ -106,7 +108,13 @@ public class FilterManager<T> {
 					index++;
 				}
 				appliedFilters.add(currentFilter);
-			}
+				//System.out.println("performMaterialFilter: Filter found: " + appliedFilters.get(index));
+			//}
+		}
+		System.out.println("performMaterialFilter: Final filter: " + appliedFilters.get(index));
+		// Handle when applied filters is empty
+		if (appliedFilters.size() == 0) {
+			return null;
 		}
 		return appliedFilters.get(index);
 	}
