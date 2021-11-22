@@ -2,9 +2,9 @@ package com.group3.racingbot.shop;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
+import com.group3.racingbot.Car;
 import com.group3.racingbot.ComponentFactory.Component;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.Inventory;
 
 /**
  * 
@@ -16,8 +16,8 @@ public class Importer extends Shop  {
 	
 	@BsonCreator
 	public Importer() {
-		setCarsForSale(new CarInventory());
-		setComponentsForSale(new ComponentInventory());
+		setCarsForSale(new Inventory<Car>());
+		setComponentsForSale(new Inventory<Component>());
 		setId(3);
 		setName("Importer");
 		setDescription("Foreign cars and parts. Exotic, Overengineered, Expensive");

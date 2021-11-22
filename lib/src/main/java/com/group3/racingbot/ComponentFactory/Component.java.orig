@@ -22,7 +22,13 @@ import com.group3.racingbot.inventory.Unique;
         @JsonSubTypes.Type(value = ChassisComponent.class),
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
-
+<<<<<<< HEAD
+public abstract class Component {
+	private String quality = "", name = "";
+	private int weight = 0, value = 0, durability = 0;
+	private int maxDurability = 100;				
+	
+=======
 public abstract class Component implements Unique {
 	private String id = "", quality = "", name = "";
 	private int weight = 0, value = 0, durability = 0, rating = 0;
@@ -44,6 +50,7 @@ public abstract class Component implements Unique {
 	public int getRating() {
 		return rating;
 	}
+>>>>>>> d5ba05d491f2805ac2a395c721c3bd3fd2964fd2
 
 	/**
 	 * @return the name
@@ -183,9 +190,12 @@ public abstract class Component implements Unique {
 
 	@Override
 	public String toString() {
-
+<<<<<<< HEAD
+		return "Component [quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
+				+ ", durability=" + durability + ", maxDurability=" + maxDurability + "]";
+=======
 		return "Component [id=" + id + "quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
 				+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
-
+>>>>>>> d5ba05d491f2805ac2a395c721c3bd3fd2964fd2
 	}
 }

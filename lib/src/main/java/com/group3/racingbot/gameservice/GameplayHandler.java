@@ -99,7 +99,7 @@ public class GameplayHandler {
 			this.subscribe(importer);
 		}
 
-		//Instanciate the stores, racetrack generator, etc. This is responsible for handling gameplay related tasks.
+		//Instantiate the stores, racetrack generator, etc. This is responsible for handling gameplay related tasks.
 		jda = j;
 		Timer timer = new Timer ();
 		

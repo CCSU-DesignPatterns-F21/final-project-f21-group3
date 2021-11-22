@@ -3,9 +3,13 @@
  */
 package com.group3.racingbot.racetrack;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
 /**
+ * Corner section of a race track
  * @author Nick Sabia
  *
  */
@@ -17,8 +21,9 @@ public class CornerNode extends TrackNode {
 	 * Construct a corner node
 	 * @param difficulty governs how quickly a driver can navigate through this track node
 	 */
-	public CornerNode(Difficulty difficulty) {
-		super();
+	@BsonCreator
+	public CornerNode(@BsonProperty("seed") long seed, @BsonProperty("difficulty") Difficulty difficulty) {
+		super(seed);
 		this.difficulty = difficulty;
 		switch (difficulty) {
 			case EASY:
@@ -120,6 +125,6 @@ public class CornerNode extends TrackNode {
 	
 	@Override
 	public String toString() {
-		return "Corner: distance " + super.getNodeLength() + " | difficulty: " + this.difficulty;
+		return "**Corner:** " + super.getNodeLength() + "ft long | difficulty: " + this.difficulty;
 	}
 }

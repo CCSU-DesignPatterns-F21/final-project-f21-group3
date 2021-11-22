@@ -11,6 +11,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 public class PriceFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
 	private int price;
 	private FilterOperation operation;
+	private int current;
 	
 	/**
 	 * Applies the price filter to whatever inventory iterator is passed into it.
@@ -22,6 +23,12 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 		super(iterator);
 		this.price = price;
 		this.operation = op;
+		this.current = 0;
+	}
+	
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
 	}
 	
 	/**
@@ -64,7 +71,7 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.price;
+		return this.operation.toString().toLowerCase() + " " + this.price;
 	}
 	
 	@Override

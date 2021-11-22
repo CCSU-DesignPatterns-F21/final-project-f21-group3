@@ -11,9 +11,16 @@ public interface Iterator<T> {
 	 * Verifies that there is another item ahead of the current one.
 	 */
 	public boolean hasNext();
+	
 	/**
 	 * Grab the next item.
 	 * @return T
 	 */
 	public T next();
+	
+	/**
+	 * Retrieve the current index which the iterator is on.
+	 * @return current index of the iterator
+	 */
+	public int getCurrentIndex();
 }

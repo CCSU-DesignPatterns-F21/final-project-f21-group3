@@ -8,6 +8,7 @@ import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
 import com.group3.racingbot.ComponentFactory.TransmissionComponent;
 import com.group3.racingbot.ComponentFactory.WheelComponent;
+import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.inventory.filter.MaterialFilterable;
 
 /**
@@ -17,7 +18,8 @@ import com.group3.racingbot.inventory.filter.MaterialFilterable;
  * @author Nick Sabia
  *
  */
-public class Car implements MaterialFilterable {
+public class Car implements MaterialFilterable, Unique {
+	private String id;
 	private ChassisComponent chassis;
 	private EngineComponent engine;
 	private SuspensionComponent suspension;
@@ -28,6 +30,7 @@ public class Car implements MaterialFilterable {
 	 * Creates a car which can be equipped with different components.
 	 */
 	public Car() {
+		this.id = "";
 		this.chassis = null;
 		this.engine = null;
 		this.suspension = null;
@@ -36,6 +39,7 @@ public class Car implements MaterialFilterable {
 	}
 	
 	private Car(CarBuilder builder) {
+		this.id = "";
 		this.chassis = builder.chassis;
 		this.engine = builder.engine;
 		this.suspension = builder.suspension;
@@ -120,6 +124,20 @@ public class Car implements MaterialFilterable {
 		
 	}
 	
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	/**
 	 * @return the chassis
 	 */
@@ -338,8 +356,6 @@ public class Car implements MaterialFilterable {
 			return this.wheels.getBraking() * this.chassis.getBrakingModifier();
 		return 0;
 	}
-	
-	
 	
 	@Override
 	public int hashCode() {
