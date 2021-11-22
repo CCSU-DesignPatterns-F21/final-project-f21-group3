@@ -173,16 +173,29 @@ public class Commands extends ListenerAdapter {
 		    			p.setId(user.getId());
 		    			p.setUsername(user.getUser().getName());
 		    			p.setLastWorked(0);
+		    			
+		    			// Attach the player id and player object to the default driver
 		    			Inventory<Driver> driverInventory = p.getOwnedDrivers();
 		    			Driver defaultDriver = driverInventory.getItems().get(0);
 		    			defaultDriver.setPlayer(p);
 		    			defaultDriver.setPlayerId(p.getId());
 		    			driverInventory.getItems().set(0, defaultDriver);
 		    			p.setOwnedDrivers(driverInventory);
+		    			
 		    			dbh.insertUser(p);
+<<<<<<< HEAD
 		    			EmbedBuilder playereb = printPlayer(p,event);
 		    			playereb.setThumbnail(user.getUser().getAvatarUrl());
 			    		event.getChannel().sendMessage(playereb.build()).queue();
+=======
+		    			eb.setThumbnail(user.getUser().getAvatarUrl());
+		    			eb.setTitle("Welcome " + p.getUsername() + "!");
+		    			eb.setColor(Color.green);
+			    		eb.setDescription("Total Wins: "+ p.getTotalWins()
+			    				+ "\n Total Losses: " + p.getTotalLosses()
+			    				+ "\n Credits: " + p.getCredits());
+			    		//eb.addField("Title of field", "test of field", false);
+>>>>>>> development
 		    		}	    	
 	    			
 	    		}catch(Exception e) {
@@ -267,16 +280,10 @@ public class Commands extends ListenerAdapter {
 	    			Member m = event.getMessage().getMentionedMembers().get(0);
 	    			if(dbh.userExists(m.getId()))
 	    			{
-	    				try
-	    				{
-	    					Player p = dbh.getPlayer(m.getId());
-		    				EmbedBuilder playereb = printPlayer(p,event);
-		    				playereb.setThumbnail(m.getUser().getAvatarUrl());
-				    		event.getChannel().sendMessage(playereb.build()).queue();
-	    				}
-	    				catch(Exception e) {
-	    					event.getChannel().sendMessage("Error!, Issues getting player profile").queue();
-	    				}
+	    				Player p = dbh.getPlayer(m.getId());
+	    				EmbedBuilder playereb = printPlayer(p,event);
+	    				playereb.setThumbnail(m.getUser().getAvatarUrl());
+			    		event.getChannel().sendMessage(playereb.build()).queue();
 	    				
 	    			}
 	    			else {
@@ -978,6 +985,94 @@ public class Commands extends ListenerAdapter {
 
 	    	if(args[1].equalsIgnoreCase("debug"))
 	    	{
+<<<<<<< HEAD
+	    	
+	    		if(args[2].equalsIgnoreCase("event"))
+	    		{
+	    			if(args[3].equalsIgnoreCase("generate"))
+	    			{
+	    				int totalNodes = 2; // initialize totalNodes
+	    				if(args.length > 4 && args[4] != null)
+	    				{
+	    					totalNodes = Integer.parseInt(args[4]);
+	    				}
+	    				else {
+	    					totalNodes = ThreadLocalRandom.current().nextInt(5, 20);
+	    				}
+	    				this.raceEvent.getRaceTrack().setTrackNodes(raceEvent.getRaceTrack().generateRaceTrack(totalNodes)); // Create the new track
+	    				event.getChannel().sendMessage("Number of Nodes in Track: "+totalNodes).queue();
+	    			}
+	    			if(args[3].equalsIgnoreCase("register")) {
+	    				// Register a user to an event
+	    				if (raceEvent.getRaceTrack().getFirstNode() == null) {
+	    					event.getChannel().sendMessage("Event does not yet exist! Create a random one by performing the command: !iracer debug event generate").queue();
+	    				}
+	    				else if (raceEvent.getTimeElapsed() != 0) {
+	    					event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
+	    				}
+	    				else {
+	    					Player p = dbh.getPlayer(user.getId());
+	    					if (p.getActiveDriver() == null) {
+	    						event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveCar() == null) {
+	    						event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveCar().getDurability() == 0) {
+	    						event.getChannel().sendMessage("User's car is currently totaled. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveDriver().getState() instanceof Training) {
+	    						event.getChannel().sendMessage("User's driver is currently training. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveDriver().getState() instanceof RacePending) {
+	    						event.getChannel().sendMessage("User's driver is currently signed up for an event. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveDriver().getState() instanceof Completed) {
+	    						event.getChannel().sendMessage("User's driver needs to collect reward from previous event. Cannot sign up for race.").queue();
+	    					}
+	    					else if (p.getActiveDriver().getState() instanceof Racing) {
+	    						event.getChannel().sendMessage("User's driver is currently racing. Cannot sign up for race.").queue();
+	    					}
+	    					else {
+	    						p.getActiveDriver().signUpForRace(p.getActiveCar(), raceEvent);
+	    						event.getChannel().sendMessage("User now registered for the event").queue();
+	    					}
+	    				}
+	    				if (raceEvent.getRaceTrack().getFirstNode() != null) {
+	    					if (raceEvent.getTimeElapsed() == 0) {
+	    						Player p = dbh.getPlayer(user.getId());
+	    						if (p.getActiveDriver() != null) {
+	    							if (p.getActiveCar() != null) {
+	    								event.getChannel().sendMessage("User now registered for the event").queue();
+	    							}
+	    							else {
+	    								event.getChannel().sendMessage("User does not have an active car. Cannot sign up for race.").queue();
+	    							}
+	    						}
+	    						else {
+	    							event.getChannel().sendMessage("User does not have an active driver. Cannot sign up for race.").queue();
+	    						}
+	    					}
+	    					else {
+	    						event.getChannel().sendMessage("Event is currently in progress. Unable to join the race.").queue();
+	    					}
+	    				}
+	    				else {
+	    					event.getChannel().sendMessage("Event does not yet exist! Create a random one by performing the command: !iracer debug event generate").queue();
+	    				}
+	    			}
+	    			if(args[3].equalsIgnoreCase("begin"))
+	    			{
+	    				// The event has started! Move every registered driver into a racing state then begin moving the drivers.
+	    				Iterator<Driver> driverIterator = raceEvent.getDrivers().iterator();
+	    				while (driverIterator.hasNext()) {
+	    					driverIterator.next().beginRace();
+	    				}
+	    			}
+	    		}
+	    		
+=======
+>>>>>>> development
 	    		if(args[2].equalsIgnoreCase("shop"))
 	    		{
 	    			if(args[3].equalsIgnoreCase("update"))
@@ -1048,6 +1143,9 @@ public class Commands extends ListenerAdapter {
 	    				}
 	    			}
 	    		}
+<<<<<<< HEAD
+	    		
+=======
 	    		if(args[2].equalsIgnoreCase("claim")) {
 	    			Player p = dbh.getPlayer(user.getId());
 	    			try {
@@ -1058,6 +1156,7 @@ public class Commands extends ListenerAdapter {
 	    				event.getChannel().sendMessage("Unable to retrieve Driver " + p.getActiveDriverId() + ". Cannot claim a reward.").queue();
 	    			}
 	    		}
+>>>>>>> development
 	    	}
 	    	
 		    	// A test for filtering an inventory of cars.
@@ -1140,14 +1239,7 @@ public class Commands extends ListenerAdapter {
 			}
 	 }
 	}
-	 
-	 /**
-	  * Retrieve a string which prints the results of a race. This is a helper function which lets the results get printed from within the race task.
-	  * @return string containing info about the final standings of the race.
-	  */
-	 private String printRaceResults() {
-		 return "RaceEvent " + this.raceEvent.getId() + " is complete!\n_____\n" + this.raceEvent.getStandings().toString();
-	 }
+<<<<<<< HEAD
 	 /*
 	  * Fomat String using Markup language.
 	  */
@@ -1205,6 +1297,15 @@ public class Commands extends ListenerAdapter {
 			 styledText = "```"+ text + "```";
 		 }
 		 return styledText;
+=======
+	 
+	 /**
+	  * Retrieve a string which prints the results of a race. This is a helper function which lets the results get printed from within the race task.
+	  * @return string containing info about the final standings of the race.
+	  */
+	 private String printRaceResults() {
+		 return "RaceEvent " + this.raceEvent.getId() + " is complete!\n_____\n" + this.raceEvent.getStandings().toString();
+>>>>>>> development
 	 }
 
 	 /**
@@ -1220,7 +1321,7 @@ public class Commands extends ListenerAdapter {
 	 /*
 	  * Convert a Player class into a formatted embed.
 	  */
-	 public EmbedBuilder printPlayer(Player p,GuildMessageReceivedEvent event) throws NotFoundException
+	 public EmbedBuilder printPlayer(Player p,GuildMessageReceivedEvent event)
 	 {
 		 eb.clear();
 			eb.setTitle(p.getUsername()+"'s Profile: ");
@@ -1228,12 +1329,12 @@ public class Commands extends ListenerAdapter {
 			eb.setThumbnail(event.getAuthor().getAvatarUrl());
 			eb.addField(formatText("b","Credits: "),formatText("cb",p.getCredits()+""),false);
 			
-			if(p.getActiveDriverId() != null) {
+			if(p.getActiveDriver() != null) {
 				eb.addField(formatText("b","Active Driver: "),
-						formatText("cb",p.getOwnedDrivers().getById(p.getActiveDriverId()).getName()),true);
+						formatText("cb",p.getActiveDriver().getName()),true);
 			}
 			eb.addBlankField(true);
-			if(p.getActiveDriverId() != null) {
+			if(p.getActiveDriver() != null) {
 				eb.addField(formatText("b","Active Car: "),
 						formatText("cb","Active Car Set"),true);
 			}else {

@@ -38,6 +38,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((EngineComponent)createdComponent).setSpeed(25);
 			((EngineComponent)createdComponent).setMaxDurability(50);
 			((EngineComponent)createdComponent).setDurability(50);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/05MDTfJ.gif");
 		}
 		else if(type == "engine" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new EngineComponent();
@@ -47,6 +48,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((EngineComponent)createdComponent).setSpeed(50);
 			((EngineComponent)createdComponent).setMaxDurability(75);
 			((EngineComponent)createdComponent).setDurability(75);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/MvTEeFx.gif");
 		}
 			
 		else if(type == "engine" && (cost >= 301 && cost <= 750)) {
@@ -57,6 +59,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((EngineComponent)createdComponent).setSpeed(100);
 			((EngineComponent)createdComponent).setMaxDurability(100);
 			((EngineComponent)createdComponent).setDurability(100);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/icdEzy8.gif");
 		}
 			
 		else if(type == "engine" && (cost >= 751 && cost <= 3000)) {
@@ -67,6 +70,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((EngineComponent)createdComponent).setSpeed(150);
 			((EngineComponent)createdComponent).setMaxDurability(150);
 			((EngineComponent)createdComponent).setDurability(150);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/2ReaUsE.gif");
 		}
 		else if(type == "engine" && cost >= 3001) {
 			createdComponent = new EngineComponent();
@@ -76,6 +80,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((EngineComponent)createdComponent).setSpeed(250);
 			((EngineComponent)createdComponent).setMaxDurability(200);
 			((EngineComponent)createdComponent).setDurability(200);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/RvNggMb.gif");
 		}
 			
 		
@@ -90,6 +95,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((WheelComponent)createdComponent).setBraking(25);
 			((WheelComponent)createdComponent).setMaxDurability(50);
 			((WheelComponent)createdComponent).setDurability(50);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/EUfjaRO.gif");
 		}
 		else if(type == "wheel" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new WheelComponent();
@@ -99,6 +105,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((WheelComponent)createdComponent).setBraking(50);
 			((WheelComponent)createdComponent).setMaxDurability(75);
 			((WheelComponent)createdComponent).setDurability(75);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/Cj4uzaG.gif");
 		}
 			
 		else if(type == "wheel" && (cost >= 301 && cost <= 750)) {
@@ -109,6 +116,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((WheelComponent)createdComponent).setBraking(100);
 			((WheelComponent)createdComponent).setMaxDurability(100);
 			((WheelComponent)createdComponent).setDurability(100);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/CL9YO3r.gif");
 		}
 			
 		else if(type == "wheel" && (cost >= 751 && cost <= 3000)) {
@@ -119,6 +127,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((WheelComponent)createdComponent).setBraking(150);
 			((WheelComponent)createdComponent).setMaxDurability(150);
 			((WheelComponent)createdComponent).setDurability(150);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/vf8TLae.gif");
 		}
 		else if(type == "wheel" && cost >= 3001) {
 			createdComponent = new WheelComponent();
@@ -128,6 +137,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((WheelComponent)createdComponent).setBraking(250);
 			((WheelComponent)createdComponent).setMaxDurability(200);
 			((WheelComponent)createdComponent).setDurability(200);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/PXNATz9.gif");
 		}
 			
 		
@@ -142,6 +152,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((SuspensionComponent)createdComponent).setHandling(25);
 			((SuspensionComponent)createdComponent).setMaxDurability(50);
 			((SuspensionComponent)createdComponent).setDurability(50);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/8CcL7lZ.gif");
 		}
 		else if(type == "suspension" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new SuspensionComponent();
@@ -151,6 +162,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((SuspensionComponent)createdComponent).setHandling(50);
 			((SuspensionComponent)createdComponent).setMaxDurability(75);
 			((SuspensionComponent)createdComponent).setDurability(75);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/7fPDxsL.gif");
 		}
 		else if(type == "suspension" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new SuspensionComponent();
@@ -160,6 +172,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((SuspensionComponent)createdComponent).setHandling(100);
 			((SuspensionComponent)createdComponent).setMaxDurability(100);
 			((SuspensionComponent)createdComponent).setDurability(100);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/raznbJH.gif");
 		}
 		else if(type == "suspension" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new SuspensionComponent();
@@ -169,6 +182,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((SuspensionComponent)createdComponent).setHandling(150);
 			((SuspensionComponent)createdComponent).setMaxDurability(150);
 			((SuspensionComponent)createdComponent).setDurability(150);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/4cM3ye9.gif");
 		}
 		else if(type == "suspension" && cost >= 3001) {
 			createdComponent = new SuspensionComponent();
@@ -178,6 +192,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((SuspensionComponent)createdComponent).setHandling(250);
 			((SuspensionComponent)createdComponent).setMaxDurability(200);
 			((SuspensionComponent)createdComponent).setDurability(200);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/trs3NPs.gif");
 		}
 		
 		//returns Chassis with placeholder stats depending on cost
@@ -190,6 +205,12 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setWeight(800);
 			((ChassisComponent)createdComponent).setDurability(50);
 			((ChassisComponent)createdComponent).setMaxDurability(50);
+			((ChassisComponent)createdComponent).setAccelerationModifier(1.0);
+			((ChassisComponent)createdComponent).setBrakingModifier(1.0);
+			((ChassisComponent)createdComponent).setHandlingModifier(1.0);
+			((ChassisComponent)createdComponent).setPopularityModifier(1.0);
+			((ChassisComponent)createdComponent).setSpeedModifier(1.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/zzj97p0.gif");
 		}
 		else if(type == "chassis" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new ChassisComponent();
@@ -203,6 +224,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setHandlingModifier(2.0);
 			((ChassisComponent)createdComponent).setPopularityModifier(2.0);
 			((ChassisComponent)createdComponent).setSpeedModifier(2.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/aXBH7lN.gif");
 		}
 		else if(type == "chassis" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new ChassisComponent();
@@ -216,6 +238,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setHandlingModifier(3.0);
 			((ChassisComponent)createdComponent).setPopularityModifier(3.0);
 			((ChassisComponent)createdComponent).setSpeedModifier(3.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/xdX3WUG.gif");
 		}
 		else if(type == "chassis" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new ChassisComponent();
@@ -229,6 +252,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setHandlingModifier(4.0);
 			((ChassisComponent)createdComponent).setPopularityModifier(4.0);
 			((ChassisComponent)createdComponent).setSpeedModifier(4.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/DSEcXJL.gif");
 		}
 		else if(type == "chassis" && cost >= 3001) {
 			createdComponent = new ChassisComponent();
@@ -242,6 +266,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((ChassisComponent)createdComponent).setHandlingModifier(5.0);
 			((ChassisComponent)createdComponent).setPopularityModifier(5.0);
 			((ChassisComponent)createdComponent).setSpeedModifier(5.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/LDCvKV2.gif");
 		}
 		
 		//returns Transmission with placeholder stats depending on cost
@@ -255,6 +280,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setAcceleration(25);
 			((TransmissionComponent)createdComponent).setDurability(50);
 			((TransmissionComponent)createdComponent).setMaxDurability(50);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/8CcL7lZ.gif");
 		}
 		else if(type == "transmission" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new TransmissionComponent();
@@ -264,6 +290,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setAcceleration(50);
 			((TransmissionComponent)createdComponent).setDurability(75);
 			((TransmissionComponent)createdComponent).setMaxDurability(75);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/7fPDxsL.gif");
 		}
 		else if(type == "transmission" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new TransmissionComponent();
@@ -273,6 +300,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setAcceleration(100);
 			((TransmissionComponent)createdComponent).setDurability(100);
 			((TransmissionComponent)createdComponent).setMaxDurability(100);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/raznbJH.gif");
 		}
 		else if(type == "transmission" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new TransmissionComponent();
@@ -282,6 +310,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setAcceleration(150);
 			((TransmissionComponent)createdComponent).setDurability(150);
 			((TransmissionComponent)createdComponent).setMaxDurability(150);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/4cM3ye9.gif");
 		}
 		else if(type == "transmission" && cost >= 3001) {
 			createdComponent = new TransmissionComponent();
@@ -291,6 +320,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setAcceleration(250);
 			((TransmissionComponent)createdComponent).setDurability(200);
 			((TransmissionComponent)createdComponent).setMaxDurability(200);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/trs3NPs.gif");
 		}
 		return createdComponent;
 		
