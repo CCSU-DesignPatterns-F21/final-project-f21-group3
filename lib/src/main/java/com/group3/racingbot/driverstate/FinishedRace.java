@@ -23,8 +23,6 @@ public class FinishedRace extends Completed {
 	private RaceEvent raceEvent;
 	private String raceEventId;
 	private int position;
-	private boolean verified;
-	// When race is completed, use the race event ID to pull from the database to determine reward.
 	
 	/**
 	 * Constructs a finished race state
@@ -38,7 +36,6 @@ public class FinishedRace extends Completed {
 		this.position = 0;
 		this.raceEvent = null;
 		this.raceEventId = raceEventId;
-		this.verified = false; // This is a flag which ensures that this state contains the correct finishing position of the driver.
 	}
 	
 	/**
@@ -87,21 +84,6 @@ public class FinishedRace extends Completed {
 	 */
 	public void setPosition(int position) {
 		this.position = position;
-	}
-
-	/**
-	 * Retrieve the verified flag. This flag indicates whether or not the details within the state are up to date with the latest 
-	 * @return whether or not the details in this state are accurate.
-	 */
-	public boolean isVerified() {
-		return verified;
-	}
-
-	/**
-	 * @param verified the verified to set
-	 */
-	public void setVerified(boolean verified) {
-		this.verified = verified;
 	}
 
 	/**

@@ -124,14 +124,6 @@ public class RaceEvent implements Unique {
 	public void setTimeElapsed(int time) {
 		this.timeElapsed = time;
 	}
-	
-	/**
-	 * Add one time unit to the current amount of time elapsed during the race.
-	 * @param totalTime the totalTime to set
-	 */
-	public void incrementTimeElapsed() {
-		this.timeElapsed++;
-	}
 
 	/**
 	 * Retrieve the grand prize amount for placing first in the event.
@@ -171,13 +163,12 @@ public class RaceEvent implements Unique {
 	public String stepAllDrivers() {
 		DBHandler dbh = DBHandler.getInstance();
 		
-		this.incrementTimeElapsed(); // Advance time
+		this.timeElapsed++; // Advance time
 		Iterator<DriverStanding> driverIterator = standings.iterator();
 		String stepResult = "";
 		Driver currentDriver = null;
 		DriverStanding currentDriverStanding = null;
 		TrackNode currentNode = null;
-		//TrackNode currentNode = null;
 		while (driverIterator.hasNext()) {
 			currentDriverStanding = driverIterator.next();
 			currentDriver = currentDriverStanding.getDriver();

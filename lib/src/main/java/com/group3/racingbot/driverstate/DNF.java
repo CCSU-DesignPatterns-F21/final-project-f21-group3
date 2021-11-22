@@ -3,6 +3,7 @@
  */
 package com.group3.racingbot.driverstate;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
@@ -29,6 +30,7 @@ public class DNF extends Completed {
 	 * @param driver allows this state to set the state of the driver
 	 * @param raceEvent the event which the driver participated in.
 	 */
+	@BsonCreator
 	public DNF(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId) {
 		super(playerId, driverId);
 	}
