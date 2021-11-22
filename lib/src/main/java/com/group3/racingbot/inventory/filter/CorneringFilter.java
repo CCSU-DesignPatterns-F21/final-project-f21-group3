@@ -71,7 +71,7 @@ public class CorneringFilter<T extends SkillFilterable> extends InventoryIterato
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.cornering;
+		return this.operation.toString().toLowerCase() + " " + this.cornering;
 	}
 	
 	@Override

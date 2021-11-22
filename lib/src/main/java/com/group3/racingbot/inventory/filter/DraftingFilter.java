@@ -71,7 +71,7 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.drafting;
+		return this.operation.toString().toLowerCase() + " " + this.drafting;
 	}
 	
 	@Override

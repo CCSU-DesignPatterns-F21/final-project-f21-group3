@@ -71,7 +71,7 @@ public class DurabilityFilter<T extends MaterialFilterable> extends InventoryIte
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.durability;
+		return this.operation.toString().toLowerCase() + " " + this.durability;
 	}
 	
 	@Override

@@ -10,6 +10,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.inventory.filter.FilterManager;
 
 /**
  * Store and access items
@@ -19,14 +20,30 @@ import com.group3.racingbot.ComponentFactory.Component;
 public class Inventory<T extends Unique> {
 	@JsonBackReference
 	private List<T> items;
+	private FilterManager<T> filterManager;
 	
 	/**
 	 * Creates a list to store the items into.
 	 */
 	public Inventory() {
 		this.items = new ArrayList<T>();
+		this.filterManager = new FilterManager<T>();
 	}
-	
+
+	/**
+	 * @return the filterManager
+	 */
+	public FilterManager<T> getFilterManager() {
+		return filterManager;
+	}
+
+	/**
+	 * @param filterManager the filterManager to set
+	 */
+	public void setFilterManager(FilterManager<T> filterManager) {
+		this.filterManager = filterManager;
+	}
+
 	/**
 	 * Creates an instance of an iterator which can be used to traverse the inventory of drivers.
 	 */

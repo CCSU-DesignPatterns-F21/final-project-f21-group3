@@ -71,7 +71,7 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.price;
+		return this.operation.toString().toLowerCase() + " " + this.price;
 	}
 	
 	@Override

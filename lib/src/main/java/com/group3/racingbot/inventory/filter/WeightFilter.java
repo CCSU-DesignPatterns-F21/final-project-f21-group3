@@ -71,7 +71,7 @@ public class WeightFilter<T extends MaterialFilterable> extends InventoryIterato
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.weight;
+		return this.operation.toString().toLowerCase() + " " + this.weight;
 	}
 	
 	@Override

@@ -1,12 +1,17 @@
 package com.group3.racingbot;
 
+import java.util.ArrayList;
+
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.inventory.Inventory;
+import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.inventory.Unique;
+import com.group3.racingbot.inventory.filter.FilterManager;
+import com.group3.racingbot.inventory.filter.InventoryIteratorDecorator;
 
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
@@ -55,8 +60,30 @@ public class Player implements Unique {
 		defaultDriver.setId(DBHandler.getInstance().generateId(6));
 		getOwnedDrivers().add(defaultDriver);
 		setActiveDriverId(getOwnedDrivers().getItems().get(0).getId());
+		//this.filters = new ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>>();
 	}
 	
+	/**
+	 * @return the filters
+	 */
+	//public ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>> getFilters() {
+	//	return filters;
+	//}
+
+	/**
+	 * @param filters the filters to set
+	 */
+	//public void setFilters(ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>> filters) {
+	//	this.filters = filters;
+	//}
+	
+	
+	//public void addFilter(InventoryIterator<? extends InventoryIteratorDecorator<?>> filter) {
+	//	this.filters.add(filter);
+	//}
+	
+	
+
 	@Override
 	public String getId() {
 		return id;

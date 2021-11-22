@@ -71,7 +71,7 @@ public class ComposureFilter<T extends SkillFilterable> extends InventoryIterato
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.composure;
+		return this.operation.toString().toLowerCase() + " " + this.composure;
 	}
 	
 	@Override

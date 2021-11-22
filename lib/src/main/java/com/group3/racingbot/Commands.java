@@ -23,8 +23,12 @@ import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.inventory.Inventory;
+import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.inventory.filter.InventoryIteratorDecorator;
+import com.group3.racingbot.inventory.filter.MaterialFilterable;
+import com.group3.racingbot.inventory.filter.QualityFilter;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -737,6 +741,54 @@ public class Commands extends ListenerAdapter {
 					event.getChannel().sendMessage("Player does not have an active driver").queue();
 				}
 			}
+	    	if (args[1].equalsIgnoreCase("filter"))
+    		{
+	    		Player p = dbh.getPlayer(user.getId());
+				//InventoryIterator<Driver> originalIterator = p.getOwnedDrivers().iterator();
+	    		if (args[2].equalsIgnoreCase("add")) {
+	    			if (args.length == 5) {
+						if (args[3] == null || args[4] == null) {
+							return;
+						}
+						switch (args[3].toLowerCase()) {
+							case "quality": case "q": {
+								InventoryIteratorDecorator<?> filterToAdd = null;
+								switch (args[3].toLowerCase()) {
+									case "lemon": case "l": {
+										//filterToAdd = new QualityFilter(null, "Lemon");
+										
+										//p.addFilter(new Inventory);
+									}
+								}
+							}
+						}
+					}
+	    		}
+	    		else if (args[2].equalsIgnoreCase("remove")) {
+	    			
+	    		}
+	    		else {
+	    			// Display help text
+	    		}
+				if (args.length == 4) {
+					if (args[2] == null || args[3] == null || args[4] == null) {
+						return;
+					}
+					switch (args[2].toLowerCase()) {
+						case "quality": case "q": {
+							switch (args[4].toLowerCase()) {
+								case "lemon": case "l": {
+									
+								}
+							}
+						}
+					}
+				}
+				else if (args.length == 5) {
+					
+				}
+				
+    		}
 	    	
 	    	/*
 				 ____      _           
@@ -764,15 +816,19 @@ public class Commands extends ListenerAdapter {
 	    			Player p = dbh.getPlayer(user.getId());
 	    			if (args[3].equalsIgnoreCase("free"))
 		    		{
+	    				int value = 100;
+	    				if (args.length > 4 && args[4] != null) {
+	    					value = Integer.parseInt(args[4]);
+	    				}
 	    				// Create the car
 	    				Car freeCar = new Car();
 	    				freeCar.setId(dbh.generateId(6));
 	    				ConcreteComponentFactory componentFactory = new ConcreteComponentFactory();
-	    				EngineComponent engine = (EngineComponent) componentFactory.createComponent("engine", 200);
-	    				TransmissionComponent transmission = (TransmissionComponent) componentFactory.createComponent("transmission", 200);
-	    				SuspensionComponent suspension = (SuspensionComponent) componentFactory.createComponent("suspension", 200);
-	    				ChassisComponent chassis = (ChassisComponent) componentFactory.createComponent("chassis", 200);
-	    				WheelComponent wheels = (WheelComponent) componentFactory.createComponent("wheel", 200);
+	    				EngineComponent engine = (EngineComponent) componentFactory.createComponent("engine", value);
+	    				TransmissionComponent transmission = (TransmissionComponent) componentFactory.createComponent("transmission", value);
+	    				SuspensionComponent suspension = (SuspensionComponent) componentFactory.createComponent("suspension", value);
+	    				ChassisComponent chassis = (ChassisComponent) componentFactory.createComponent("chassis", value);
+	    				WheelComponent wheels = (WheelComponent) componentFactory.createComponent("wheel", value);
 	    				freeCar.setEngine(engine);
 	    				freeCar.setChassis(chassis);
 	    				freeCar.setSuspension(suspension);
