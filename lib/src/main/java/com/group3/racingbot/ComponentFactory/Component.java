@@ -6,6 +6,7 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.group3.racingbot.IClonable;
 
 /**
  * @author Jack Gola
@@ -21,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = ChassisComponent.class),
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
-public abstract class Component {
+public abstract class Component{
 	private String quality = "", name = "";
 	private int weight = 0, value = 0, durability = 0;
 	private int maxDurability = 100;				
@@ -183,6 +184,4 @@ public abstract class Component {
 		return "Component [quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
 				+ ", durability=" + durability + ", maxDurability=" + maxDurability + "]";
 	}
-
-
 }
