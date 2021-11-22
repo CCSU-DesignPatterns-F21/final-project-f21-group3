@@ -48,7 +48,7 @@ public class Inventory<T extends Unique> {
 	 * Creates an instance of an iterator which can be used to traverse the inventory of drivers.
 	 */
 	public InventoryIterator<T> iterator() {
-		return new Iterator();
+		return new ConcreteIterator();
 	}
 	
 	/**
@@ -192,10 +192,10 @@ public class Inventory<T extends Unique> {
 	 * @author Nick Sabia
 	 *
 	 */
-	private class Iterator implements InventoryIterator<T> {
+	private class ConcreteIterator implements InventoryIterator<T> {
 		private int current;
 		
-		private Iterator() {
+		private ConcreteIterator() {
 			this.current = 0;
 		}
 		

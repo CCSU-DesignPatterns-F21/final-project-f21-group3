@@ -21,7 +21,6 @@ public class Driver implements Unique {
 	private Player player;
 	private String playerId;
 	private DriverState state;
-	private String lastRaceEventId;
 	private String name;
 	private int composure;
 	private int awareness;
@@ -86,14 +85,6 @@ public class Driver implements Unique {
 	}
 
 	/**
-	 * Retrieve the id of the last race event that this Driver has registered for.
-	 * @return the lastRaceEventId
-	 */
-	public String getLastRaceEventId() {
-		return lastRaceEventId;
-	}
-
-	/**
 	 * Return the id which identifies this Driver
 	 * @return the id
 	 */
@@ -107,14 +98,6 @@ public class Driver implements Unique {
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	/**
-	 * Set the id of the last race event that this Driver has registered for.
-	 * @param lastRaceEventId the lastRaceEventId to set
-	 */
-	public void setLastRaceEventId(String lastRaceEventId) {
-		this.lastRaceEventId = lastRaceEventId;
 	}
 
 	/**
@@ -271,23 +254,6 @@ public class Driver implements Unique {
 	 */
 	public void setPlayer(Player player) {
 		this.player = player;
-	}
-	
-	/**
-	 * Sets the player for the driver based on a discord user id.
-	 * @param db database which holds all drivers.
-	 * @param userId user id within the database.
-	 */
-	public void setPlayerFromDB(DBHandler db, String userId) {
-		if(db.userExists(userId)) {
-			Player p = db.getPlayer(userId);
-			this.setPlayer(p);
-    		
-			System.out.println("Player found and paired with the Driver.");
-		}
-		else {
-			System.out.println("Could not find user in the database.");
-		}
 	}
 	
 	/**

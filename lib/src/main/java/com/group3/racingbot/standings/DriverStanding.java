@@ -12,6 +12,7 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.driverstate.Resting;
+import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.TrackNode;
@@ -263,6 +264,40 @@ public class DriverStanding {
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result += Long.parseLong(this.playerId, 36);
+		result += Long.parseLong(this.driverId, 36);
+		result += Long.parseLong(this.raceEventId, 36);
+		result += this.position;
+		result += this.distanceTraveled;
+		result += this.timeCompleted;
+		result *= prime;
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof DriverStanding) {
+			DriverStanding otherObj = (DriverStanding) other;
+			
+			if (!(this.getPlayerId().equals(otherObj.getPlayerId())))
+				return false;
+			if (!(this.getDriverId().equals(otherObj.getDriverId())))
+				return false;
+			if (!(this.getRaceEventId().equals(otherObj.getRaceEventId())))
+				return false;
+			if (this.getPosition() != otherObj.getPosition())
+				return false;
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

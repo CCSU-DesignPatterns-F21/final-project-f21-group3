@@ -327,7 +327,4 @@ public class Player implements Unique {
 		}
 		return false;
 	}
-	
-
-	
 }

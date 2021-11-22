@@ -58,6 +58,20 @@ public class DNF extends Completed {
 	}
 	
 	/**
+	 * @return the raceEvent
+	 */
+	public RaceEvent getRaceEvent() {
+		return raceEvent;
+	}
+
+	/**
+	 * @param raceEvent the raceEvent to set
+	 */
+	public void setRaceEvent(RaceEvent raceEvent) {
+		this.raceEvent = raceEvent;
+	}
+
+	/**
 	 * @return the raceEventId
 	 */
 	public String getRaceEventId() {

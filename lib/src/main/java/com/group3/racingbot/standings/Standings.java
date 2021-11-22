@@ -13,6 +13,7 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.Driver;
+import com.group3.racingbot.driverstate.Crashed;
 import com.group3.racingbot.driverstate.FinishedRace;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.InventoryIterator;
@@ -97,6 +98,20 @@ public class Standings {
 		}
 		
 		this.setStandings(result);
+	}
+
+	/**
+	 * @return the raceEventId
+	 */
+	public String getRaceEventId() {
+		return raceEventId;
+	}
+
+	/**
+	 * @param raceEventId the raceEventId to set
+	 */
+	public void setRaceEventId(String raceEventId) {
+		this.raceEventId = raceEventId;
 	}
 
 	/**
@@ -247,6 +262,42 @@ public class Standings {
 			this.current++;
 			return item;
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		Iterator<DriverStanding> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			result += iterator.next().hashCode();
+		}
+		result *= prime;
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Standings) {
+			Standings otherObj = (Standings) other;
+			
+			Iterator<DriverStanding> thisIterator = this.iterator();
+			Iterator<DriverStanding> otherIterator = otherObj.iterator();
+			while (thisIterator.hasNext() && otherIterator.hasNext()) {
+				if (!thisIterator.next().equals(otherIterator.next())) {
+					return false;
+				}
+			}
+			if (thisIterator.hasNext() || otherIterator.hasNext()) {
+				return false;
+			}
+			if (!(this.getRaceEventId().equals(otherObj.getRaceEventId())))
+				return false;
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
