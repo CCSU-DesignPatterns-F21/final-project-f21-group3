@@ -11,6 +11,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 public class AwarenessFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
 	private int awareness;
 	private FilterOperation operation;
+	private int current;
 	
 	/**
 	 * Applies the awareness filter to whatever inventory iterator is passed into it.
@@ -22,6 +23,12 @@ public class AwarenessFilter<T extends SkillFilterable> extends InventoryIterato
 		super(iterator);
 		this.awareness = awareness;
 		this.operation = op;
+		this.current = 0;
+	}
+	
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
 	}
 	
 	/**
@@ -64,7 +71,7 @@ public class AwarenessFilter<T extends SkillFilterable> extends InventoryIterato
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.awareness;
+		return this.operation.toString().toLowerCase() + " " + this.awareness;
 	}
 	
 	@Override

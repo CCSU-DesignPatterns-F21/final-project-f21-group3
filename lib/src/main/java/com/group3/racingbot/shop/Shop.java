@@ -5,10 +5,10 @@ import org.bson.codecs.pojo.annotations.BsonId;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.group3.racingbot.Car;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.Inventory;
 /**
  * Abstract class for shops.
  * @author Maciej Bregisz
@@ -26,8 +26,8 @@ public abstract class Shop implements CustomObserver{
 	private String name;
 	private String description;
 	private int id;
-	private CarInventory carsForSale;
-	private ComponentInventory componentsForSale;
+	private Inventory<Car> carsForSale;
+	private Inventory<Component> componentsForSale;
 	private ComponentFactory factory;
 
 	public abstract Component createComponent();
@@ -77,25 +77,25 @@ public abstract class Shop implements CustomObserver{
 	/**
 	 * @return the list of cars for sale
 	 */
-	public CarInventory getCarsForSale() {
+	public Inventory<Car> getCarsForSale() {
 		return carsForSale;
 	}
 	/**
 	 * @param carsForSale set the list of cars for sale
 	 */
-	public void setCarsForSale(CarInventory carsForSale) {
+	public void setCarsForSale(Inventory<Car> carsForSale) {
 		this.carsForSale = carsForSale;
 	}
 	/**
 	 * @return the list of components for sale
 	 */
-	public ComponentInventory getComponentsForSale() {
+	public Inventory<Component> getComponentsForSale() {
 		return componentsForSale;
 	}
 	/**
 	 * @param componentsForSale the list of components for sale to set
 	 */
-	public void setComponentsForSale(ComponentInventory componentsForSale) {
+	public void setComponentsForSale(Inventory<Component> componentsForSale) {
 		this.componentsForSale = componentsForSale;
 	}
 	

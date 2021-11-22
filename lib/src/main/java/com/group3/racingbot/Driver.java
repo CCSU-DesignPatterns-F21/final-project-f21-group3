@@ -8,18 +8,20 @@ import com.group3.racingbot.driverstate.DriverState;
 import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
+import com.group3.racingbot.inventory.Unique;
+import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * Drives cars in races. A driver has their own stats that govern how well they do on the track.
  * @author Nick Sabia
- *
  */
-public class Driver {
+public class Driver implements Unique {
+	private String id;
 	@BsonIgnore
 	private Player player;
 	private String playerId;
 	private DriverState state;
-	private RaceEvent lastRegisteredEvent;
+	private String lastRaceEventId;
 	private String name;
 	private int composure;
 	private int awareness;
@@ -28,7 +30,7 @@ public class Driver {
 	private int cornering;
 	private int recovery;
 	private float payPercentage; // Percentage of money deducted from each event's cash prize.
-	private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
+	//private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
 	
 	/**
 	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
@@ -37,6 +39,7 @@ public class Driver {
 	@BsonCreator
 	//@BsonProperty("name")
 	public Driver(@BsonProperty("name") String name) {
+		this.id = "";
 		this.player = null;
 		this.playerId = null;
 		this.state = new Resting();
@@ -48,7 +51,6 @@ public class Driver {
 		this.cornering = 10;
 		this.recovery = 10;
 		this.payPercentage = (float) 0.15;
-		this.cooldown = 0;
 	}
 	
 	/**
@@ -82,22 +84,37 @@ public class Driver {
 	public void setState(DriverState state) {
 		this.state = state;
 	}
-	
 
 	/**
-	 * Retrieve the last event that this Driver has registered for.
-	 * @return the lastRegisteredEvent
+	 * Retrieve the id of the last race event that this Driver has registered for.
+	 * @return the lastRaceEventId
 	 */
-	public RaceEvent getLastRegisteredEvent() {
-		return lastRegisteredEvent;
+	public String getLastRaceEventId() {
+		return lastRaceEventId;
 	}
 
 	/**
-	 * Set the last event that this Driver has registered for.
-	 * @param lastRegisteredEvent the lastRegisteredEvent to set
+	 * Return the id which identifies this Driver
+	 * @return the id
 	 */
-	public void setLastRegisteredEvent(RaceEvent lastRegisteredEvent) {
-		this.lastRegisteredEvent = lastRegisteredEvent;
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * Set the id which identifies this Driver
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * Set the id of the last race event that this Driver has registered for.
+	 * @param lastRaceEventId the lastRaceEventId to set
+	 */
+	public void setLastRaceEventId(String lastRaceEventId) {
+		this.lastRaceEventId = lastRaceEventId;
 	}
 
 	/**
@@ -239,26 +256,6 @@ public class Driver {
 	public void setPayPercentage(float payPercentage) {
 		this.payPercentage = payPercentage;
 	}
-
-	/**
-	 * Retrieve the Driver's cooldown.
-	 * 
-	 * If training or racing is performed, then the cooldown is the time to wait until you can use this Driver again.
-	 * @return the cooldown
-	 */
-	public long getCooldown() {
-		return cooldown;
-	}
-
-	/**
-	 * Set the Driver's cooldown.
-	 * 
-	 * If training or racing is performed, then the cooldown is the time to wait until you can use this Driver again.
-	 * @param cooldown the cooldown to set
-	 */
-	public void setCooldown(long cooldown) {
-		this.cooldown = cooldown;
-	}
 	
 	/**
 	 * Retrieve the Player who uses this Driver.
@@ -310,70 +307,75 @@ public class Driver {
 	}
 	
 	/**
-	 * Puts the Driver into a Resting state.
+	 * Puts the Driver into a Resting state. If the Driver is currently registered for an event, this allows the Driver to back out of the event.
+	 * @return context for what state the user may have left.
 	 */
-	public void rest() {
-		this.state = new Resting();
+	public String rest() {
+		return this.state.rest(this);
 	}
 	
 	/**
 	 * Puts the Driver into a training state to improve a skill.
-	 * @param driver
 	 * @param skillToTrain
 	 * @param intensity
+	 * @return String containing contextual info about beginning training.
 	 */
-	public void beginTraining(Skill skillToTrain, Intensity intensity) {
-		this.getState().beginTraining(this, skillToTrain, intensity);
+	public String beginTraining(Skill skillToTrain, Intensity intensity) {
+		return this.state.beginTraining(this, skillToTrain, intensity);
 	}
 	
 	/**
 	 * Enters the driver into a racing state.
 	 */
 	public void beginRace() {
-		this.getState().beginRace();
+		this.state.beginRace(this);
 	}
 	
 	/**
 	 * Switch to the RacePending state.
 	 */
 	public void signUpForRace(Car car, RaceEvent raceEvent) {
-		this.getState().signUpForRace(this, car, raceEvent);
+		System.out.println(this);
+		this.state.signUpForRace(this, car, raceEvent);
 	}
 	
 	/**
 	 * When there is a reward to collect, the Driver will be in a Completed state. This will collect a reward and add the reward where it fits. For example, if the Driver finished training, then collecting the reward will add skill points to the Driver.
 	 */
-	public void collectReward() {
-		this.getState().collectReward();
-	}
-	
-	/**
-	 * If the Driver is currently registered for an event, this allows the Driver to back out of the event.
-	 * @return the success of race withdrawal
-	 */
-	public boolean withdrawFromRace() {
-		return this.getState().withdrawFromRace(this);
+	public String collectReward() {
+		return this.state.collectReward();
 	}
 	
 	/**
 	 * Allows the Driver to progress through the track.
+	 * @param driverStanding
+	 * @return an updated driver standing which holds the current node the driver is in on the track.
 	 */
-	public void raceStep() {
-		this.getState().raceStep(this);
+	public DriverStanding raceStep(DriverStanding driverStanding) {
+		return this.state.raceStep(this, driverStanding);
 	}
 	
 	/**
 	 * Once the Driver completes the race, this will move the Driver to a Completed state.
 	 */
 	public void completedRace() {
-		this.getState().completedRace(this, this.getLastRegisteredEvent());
+		this.state.completedRace(this);
 	}
 	
 	/**
-	 * Once the Driver completes a training session, this will move the Driver to a Completed state.
+	 * Move to the finished training state upon training completion.
+	 * @return String indicating that the user can now claim a reward.
 	 */
-	public void completedTraining() {
-		this.getState().completedTraining(this);
+	public String completedTraining() {
+		return this.state.completedTraining(this);
+	}
+	
+	/**
+	 * Gives helpful information about the current state of the driver.
+	 * @return a contextual string which offers helpful information about a particular driver.
+	 */
+	public String driverStatus() {
+		return this.state.driverStatus(this);
 	}
 	
 	@Override
@@ -382,7 +384,6 @@ public class Driver {
 		int result = 1;
 		result = prime * result + awareness;
 		result = prime * result + composure;
-		result = prime * result + (int) (cooldown ^ (cooldown >>> 32));
 		result = prime * result + cornering;
 		result = prime * result + drafting;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -412,8 +413,6 @@ public class Driver {
 				return false;
 			if (this.getRecovery() != otherObj.getRecovery())
 				return false;
-			if (this.getCooldown() != otherObj.getCooldown())
-				return false;
 			if (this.getPayPercentage() != otherObj.getPayPercentage())
 				return false;
 			if (!this.getName().equals(otherObj.getName()))
@@ -425,7 +424,7 @@ public class Driver {
 
 	@Override
 	public String toString() {
-		return "Driver's Name: " + this.getName() + " | Pay Percentage: " + this.getPayPercentage() + " | Current State: " + this.getState() + " | Cooldown: " + this.getCooldown()
+		return "Driver's Name: " + this.getName() + " | Pay Percentage: " + this.getPayPercentage() + " | Current State: " + this.getState()
 		     + "\nComposure: " + this.getComposure() + " | Awareness: " + this.getAwareness() + " | Drafting: " + this.getDrafting() + " | Straights: " + this.getStraights() + " | Cornering: " + this.getCornering() + " | Recovery: " + this.getRecovery();
 	}
 }

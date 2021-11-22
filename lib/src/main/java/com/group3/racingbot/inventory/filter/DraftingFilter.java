@@ -11,6 +11,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 public class DraftingFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
 	private int drafting;
 	private FilterOperation operation;
+	private int current;
 	
 	/**
 	 * Applies the drafting filter to whatever inventory iterator is passed into it.
@@ -22,6 +23,12 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 		super(iterator);
 		this.drafting = drafting;
 		this.operation = op;
+		this.current = 0;
+	}
+	
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
 	}
 	
 	/**
@@ -64,7 +71,7 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.drafting;
+		return this.operation.toString().toLowerCase() + " " + this.drafting;
 	}
 	
 	@Override

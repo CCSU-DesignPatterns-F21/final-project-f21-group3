@@ -1,11 +1,17 @@
 package com.group3.racingbot;
 
+import java.util.ArrayList;
+
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.ComponentInventory;
-import com.group3.racingbot.inventory.DriverInventory;
+import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.inventory.Inventory;
+import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.inventory.Unique;
+import com.group3.racingbot.inventory.filter.FilterManager;
+import com.group3.racingbot.inventory.filter.InventoryIteratorDecorator;
 
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
@@ -13,7 +19,7 @@ import com.group3.racingbot.inventory.DriverInventory;
  *
  */
 
-public class Player {
+public class Player implements Unique {
     @BsonProperty("_id")
 	private String id;
 	@BsonProperty("username")
@@ -29,15 +35,15 @@ public class Player {
 	@BsonProperty("lastWorked")
 	private long lastWorked = 0;
 	@BsonProperty("ownedComponents")
-	private ComponentInventory ownedComponents;
+	private Inventory<Component> ownedComponents;
 	@BsonProperty("ownedCars")
-	private CarInventory ownedCars;
+	private Inventory<Car> ownedCars;
 	@BsonProperty("ownedDrivers")
-	private DriverInventory ownedDrivers;
-	@BsonProperty("activeDriver")
-	private Driver activeDriver;
-	@BsonProperty("activeCar")
-	private Car activeCar;
+	private Inventory<Driver> ownedDrivers;
+	@BsonProperty("activeDriverId")
+	private String activeDriverId;
+	@BsonProperty("activeCarId")
+	private String activeCarId;
 	
 	/**
 	 * Player class constructor.
@@ -46,26 +52,44 @@ public class Player {
 	public Player() {
 		this.id = "";
 		this.username = "";
-		setOwnedComponents(new ComponentInventory());
-		setOwnedCars(new CarInventory());
-		setOwnedDrivers(new DriverInventory());
+		setOwnedComponents(new Inventory<Component>());
+		setOwnedCars(new Inventory<Car>());
+		setOwnedDrivers(new Inventory<Driver>());
 		// Create a default driver.
-		getOwnedDrivers().add(new Driver("Stig"));
-		setActiveDriver(getOwnedDrivers().getItems().get(0));
+		Driver defaultDriver = new Driver("Stig");
+		defaultDriver.setId(DBHandler.getInstance().generateId(6));
+		getOwnedDrivers().add(defaultDriver);
+		setActiveDriverId(getOwnedDrivers().getItems().get(0).getId());
+		//this.filters = new ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>>();
 	}
 	
 	/**
-	 * 
-	 * @return Player id
+	 * @return the filters
 	 */
+	//public ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>> getFilters() {
+	//	return filters;
+	//}
+
+	/**
+	 * @param filters the filters to set
+	 */
+	//public void setFilters(ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>> filters) {
+	//	this.filters = filters;
+	//}
 	
+	
+	//public void addFilter(InventoryIterator<? extends InventoryIteratorDecorator<?>> filter) {
+	//	this.filters.add(filter);
+	//}
+	
+	
+
+	@Override
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * @param id the id to set
-	 */
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -158,42 +182,42 @@ public class Player {
 	/**
 	 * @return the ownedCars
 	 */
-	public CarInventory getOwnedCars() {
+	public Inventory<Car> getOwnedCars() {
 		return ownedCars;
 	}
 
 	/**
 	 * @param ownedCars the ownedCars to set
 	 */
-	public void setOwnedCars(CarInventory ownedCars) {
+	public void setOwnedCars(Inventory<Car> ownedCars) {
 		this.ownedCars = ownedCars;
 	}
 
 	/**
 	 * @return the ownedComponents
 	 */
-	public ComponentInventory getOwnedComponents() {
+	public Inventory<Component> getOwnedComponents() {
 		return ownedComponents;
 	}
 
 	/**
 	 * @param ownedComponents the ownedComponents to set
 	 */
-	public void setOwnedComponents(ComponentInventory ownedComponents) {
+	public void setOwnedComponents(Inventory<Component> ownedComponents) {
 		this.ownedComponents = ownedComponents;
 	}
 	
 	/**
 	 * @return the ownedDrivers
 	 */
-	public DriverInventory getOwnedDrivers() {
+	public Inventory<Driver> getOwnedDrivers() {
 		return ownedDrivers;
 	}
 
 	/**
 	 * @param ownedDrivers the ownedDrivers to set
 	 */
-	public void setOwnedDrivers(DriverInventory ownedDrivers) {
+	public void setOwnedDrivers(Inventory<Driver> ownedDrivers) {
 		this.ownedDrivers = ownedDrivers;
 	}
 
@@ -201,40 +225,71 @@ public class Player {
 	 * Retrieve the driver which the player is currently using. 
 	 * 
 	 * This is what will be used in a race if the player decides to race.
-	 * @return the activeDriver
+	 * @return the activeDriverId
 	 */
-	public Driver getActiveDriver() {
-		return activeDriver;
+	public String getActiveDriverId() {
+		return activeDriverId;
 	}
 
 	/**
 	 * Set the driver which the player is currently using. 
 	 * 
 	 * This is what will be used in a race if the player decides to race.
-	 * @param activeDriver the activeDriver to set
+	 * @param activeDriverId the activeDriverId to set
 	 */
-	public void setActiveDriver(Driver activeDriver) {
-		this.activeDriver = activeDriver;
+	public void setActiveDriverId(String activeDriverId) {
+		this.activeDriverId = activeDriverId;
+	}
+	
+	/**
+	 * Retrieve the active driver from the driver inventory. If the driver cannot be found, return null.
+	 * @return active driver if successful, null otherwise.
+	 */
+	public Driver obtainActiveDriver() {
+		try {
+			Driver activeDriver = this.getOwnedDrivers().getById(this.getActiveDriverId());
+			System.out.println("Active driver " + activeDriver.getId() +  " found in inventory.");
+			return activeDriver;
+		}
+		catch(NotFoundException e) {
+			System.out.println("Active driver not found in inventory. Was the driver deleted while they were still active?");
+			return null;
+		}
+	}
+	
+	/**
+	 * Retrieve the active car from the car inventory. If the car cannot be found, return null.
+	 * @return active car if successful, null otherwise.
+	 */
+	public Car obtainActiveCar() {
+		try {
+			Car activeCar = this.getOwnedCars().getById(this.getActiveCarId());
+			return activeCar;
+		}
+		catch(NotFoundException e) {
+			System.out.println("Active car not found in inventory. Was the car deleted while it was still active?");
+			return null;
+		}
 	}
 
 	/**
 	 * Retrieve the car which the player is currently using. 
 	 * 
 	 * This is what will be used in a race if the player decides to race.
-	 * @return the activeCar
+	 * @return the activeCarId
 	 */
-	public Car getActiveCar() {
-		return activeCar;
+	public String getActiveCarId() {
+		return activeCarId;
 	}
 
 	/**
 	 * Set the car which the player is currently using. 
 	 * 
 	 * This is what will be used in a race if the player decides to race.
-	 * @param activeCar the activeCar to set
+	 * @param activeCarId the activeCar to set
 	 */
-	public void setActiveCar(Car activeCar) {
-		this.activeCar = activeCar;
+	public void setActiveCarId(String activeCarId) {
+		this.activeCarId = activeCarId;
 	}
 
 	/**

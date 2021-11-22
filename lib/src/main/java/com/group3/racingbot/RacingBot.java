@@ -51,7 +51,7 @@ public class RacingBot {
 		jda.getPresence().setStatus(OnlineStatus.IDLE);
 		jda.getPresence().setActivity(Activity.watching("for participants!"));
 	
-		db = new DBHandler();
+		db = DBHandler.getInstance();
 
 		Commands commandHandler = new Commands(db);
 		jda.addEventListener(commandHandler);
