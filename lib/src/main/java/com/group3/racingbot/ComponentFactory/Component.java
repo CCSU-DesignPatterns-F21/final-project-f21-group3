@@ -2,23 +2,30 @@ package com.group3.racingbot.ComponentFactory;
 
 import java.util.Objects;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * @author Jack Gola
  * Defines the abstract class of component, defines getters and setters for common variables
  * alongside common functionality
  */
+
+@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = EngineComponent.class),
+        @JsonSubTypes.Type(value = SuspensionComponent.class),
+        @JsonSubTypes.Type(value = TransmissionComponent.class),
+        @JsonSubTypes.Type(value = ChassisComponent.class),
+        @JsonSubTypes.Type(value = WheelComponent.class)})
+@BsonDiscriminator
 public abstract class Component {
-	private String quality, name;
-	private int weight, value, durability, rating;
+	private String quality = "", name = "";
+	private int weight = 0, value = 0, durability = 0;
 	private int maxDurability = 100;				
 	
-	
-	/**
-	 * @return the rating
-	 */
-	public int getRating() {
-		return rating;
-	}
 
 	/**
 	 * @return the name
@@ -32,13 +39,6 @@ public abstract class Component {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @param rating the rating to set
-	 */
-	public void setRating(int rating) {
-		this.rating = rating;
 	}
 
 	/**
@@ -123,18 +123,12 @@ public abstract class Component {
 	public int getMaxDurability() {
 		return durability;
 	}
-	/**
-	 * @param returns rating
-	 */
-	
-	public int computeRating() {
-		return rating;
-	}
 	
 	/**
+	 * Returns a percentage representing how worn down this component is.
 	 * @param returns durability ratio
 	 */
-	public int getDurabilityRatio() {
+	public double calculateDurabilityRatio() {
 		return  durability / maxDurability;
 	}
 	
@@ -144,7 +138,7 @@ public abstract class Component {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(durability, maxDurability, name, quality, rating, value, weight);
+		return Objects.hash(durability, maxDurability, name, quality, value, weight);
 	}
 	
 	/**
@@ -161,7 +155,7 @@ public abstract class Component {
 			return false;
 		Component other = (Component) obj;
 		return durability == other.durability && maxDurability == other.maxDurability
-				&& Objects.equals(name, other.name) && Objects.equals(quality, other.quality) && rating == other.rating
+				&& Objects.equals(name, other.name) && Objects.equals(quality, other.quality)
 				&& value == other.value && weight == other.weight;
 	}
 	
@@ -172,6 +166,6 @@ public abstract class Component {
 	@Override
 	public String toString() {
 		return "Component [quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
-				+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
+				+ ", durability=" + durability + ", maxDurability=" + maxDurability + "]";
 	}
 }

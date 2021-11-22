@@ -3,6 +3,7 @@ package com.group3.racingbot.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.group3.racingbot.Car;
 import com.group3.racingbot.ComponentFactory.Component;
 
 /**
@@ -11,7 +12,7 @@ import com.group3.racingbot.ComponentFactory.Component;
  *
  */
 public class ComponentInventory implements Inventory<Component>{
-	private List<Component> items;
+	private List<Component> items =  new ArrayList<Component>();
 	
 	/**
 	 * Creates a list to store the components into.
@@ -19,7 +20,7 @@ public class ComponentInventory implements Inventory<Component>{
 	public ComponentInventory() {
 		// TODO: Get this list of components from the database upon class creation.
 		// For now, creates a list that the user can add to.
-		this.items = new ArrayList<Component>();
+		//this.items = new ArrayList<Component>();
 	}
 	
 	/**
@@ -34,6 +35,15 @@ public class ComponentInventory implements Inventory<Component>{
 	 */
 	public void add(Component component) {
 		this.items.add(component);
+	}
+	
+	/**
+	 * Remove a component from the inventory.
+	 */
+	public boolean remove(Component component) {
+		if (this.items.remove(component)) 
+			return true;
+		return false;
 	}
 	
 	/**

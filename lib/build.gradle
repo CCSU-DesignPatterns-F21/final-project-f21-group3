@@ -26,12 +26,19 @@ repositories {
   maven { // on kotlin dsl use `maven("https://m2.dv8tion.net/releases")` instead
       url "https://m2.dv8tion.net/releases"
   }
+  maven { url 'https://jitpack.io' }
+  jcenter()
 }
 
 dependencies {
   compile "org.slf4j:slf4j-simple:1.7.9" 
   compile 'org.mongodb:mongodb-driver-sync:4.3.3'
+  //compile 'com.jagrosh:jda-utilities:JDA-UTILITIES-VERSION'
+  
   implementation("net.dv8tion:JDA:4.3.0_277")
+  implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
+  implementation group: 'com.github.ygimenez', name: 'Pagination-Utils', version: '2.3.0'
+  
 }
 
 compileJava.options.encoding = "UTF-8"

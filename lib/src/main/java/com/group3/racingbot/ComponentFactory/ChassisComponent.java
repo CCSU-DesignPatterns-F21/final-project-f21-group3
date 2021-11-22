@@ -2,52 +2,47 @@ package com.group3.racingbot.ComponentFactory;
 
 import java.util.Objects;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
  * defines specialized variables for chassis component
  */
-
+//@BsonDiscriminator(value="ChassisComponent", key="_cls")
 public class ChassisComponent extends Component {
-	
-	private int popularity;
-	private float popularityModifier, accelerationModifier, speedModifier, handlingModifier, brakingModifier;
+	//@BsonProperty("popularity")
+	private int popularity = 0;
+	//@BsonProperty("popularityModifier")
+	private double popularityModifier = 1.0;
+	//@BsonProperty("accelerationModifier")
+	private double accelerationModifier = 1.0;
+	//@BsonProperty("speedModifier")
+	private double speedModifier = 1.0;
+	//@BsonProperty("handlingModifier")
+	private double handlingModifier = 1.0;
+	//@BsonProperty("brakingModifier")
+	private double brakingModifier = 1.0;
 	
 	/**
 	 * Constructor for chassis component
-	 * @param quality
-	 * @param value
-	 * @param durability
-	 * @param popularityModifier
-	 * @param accelerationModifier
-	 * @param speedModifier
-	 * @param handlingModifier
-	 * @param brakingModifier
 	 */
-	
-	public ChassisComponent(String quality, int value, int durability, int popularity, float popularityModifier, float accelerationModifier, float speedModifier, float handlingModifier, float brakingModifier) {
+	@BsonCreator
+	public ChassisComponent() {
 		this.setName("Chassis");
-		this.setQuality(quality);
-		this.setValue(value);
-		this.setDurability(durability);
-		this.setPopularityModifier(popularityModifier);
-		this.setAccelerationModifier(accelerationModifier);
-		this.setSpeedModifier(speedModifier);
-		this.setHandlingModifier(handlingModifier);
-		this.setBrakingModifier(brakingModifier);
 	}
 
 	/**
 	 * @return the brakingModifier
 	 */
-	public float getBrakingModifier() {
+	public double getBrakingModifier() {
 		return brakingModifier;
 	}
 
 	/**
 	 * @param brakingModifier the brakingModifier to set
 	 */
-	public void setBrakingModifier(float brakingModifier) {
+	public void setBrakingModifier(double brakingModifier) {
 		this.brakingModifier = brakingModifier;
 	}
 	
@@ -68,56 +63,56 @@ public class ChassisComponent extends Component {
 	/**
 	 * @return the popularityModifier
 	 */
-	public float getPopularityModifier() {
+	public double getPopularityModifier() {
 		return popularityModifier;
 	}
 
 	/**
 	 * @param popularityModifier the popularityModifier to set
 	 */
-	public void setPopularityModifier(float popularityModifier) {
+	public void setPopularityModifier(double popularityModifier) {
 		this.popularityModifier = popularityModifier;
 	}
 
 	/**
 	 * @return the accelerationModifier
 	 */
-	public float getAccelerationModifier() {
+	public double getAccelerationModifier() {
 		return accelerationModifier;
 	}
 
 	/**
 	 * @param accelerationModifier the accelerationModifier to set
 	 */
-	public void setAccelerationModifier(float accelerationModifier) {
+	public void setAccelerationModifier(double accelerationModifier) {
 		this.accelerationModifier = accelerationModifier;
 	}
 
 	/**
 	 * @return the speedModifier
 	 */
-	public float getSpeedModifier() {
+	public double getSpeedModifier() {
 		return speedModifier;
 	}
 
 	/**
 	 * @param speedModifier the speedModifier to set
 	 */
-	public void setSpeedModifier(float speedModifier) {
+	public void setSpeedModifier(double speedModifier) {
 		this.speedModifier = speedModifier;
 	}
 
 	/**
 	 * @return the handlingModifier
 	 */
-	public float getHandlingModifier() {
+	public double getHandlingModifier() {
 		return handlingModifier;
 	}
 
 	/**
 	 * @param handlingModifier the handlingModifier to set
 	 */
-	public void setHandlingModifier(float handlingModifier) {
+	public void setHandlingModifier(double handlingModifier) {
 		this.handlingModifier = handlingModifier;
 	}
 	
@@ -131,24 +126,31 @@ public class ChassisComponent extends Component {
 	}
 	
 	/**
-	 * returns equals() for chassis component
+	 * Checks to see if the modifiers and max durability between two chassis components are equal
 	 */
 	
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof ChassisComponent) {
+			ChassisComponent otherObj = (ChassisComponent) other;
+			
+			if (this.getBrakingModifier() != otherObj.getBrakingModifier())
+				return false;
+			if (this.getPopularityModifier() != otherObj.getPopularityModifier())
+				return false;
+			if (this.getHandlingModifier() != otherObj.getHandlingModifier())
+				return false;
+			if (this.getAccelerationModifier() != otherObj.getAccelerationModifier())
+				return false;
+			if (this.getSpeedModifier() != otherObj.getSpeedModifier())
+				return false;
+			if (this.getMaxDurability() != otherObj.getMaxDurability())
+				return false;
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ChassisComponent other = (ChassisComponent) obj;
-		return Float.floatToIntBits(accelerationModifier) == Float.floatToIntBits(other.accelerationModifier)
-				&& Float.floatToIntBits(brakingModifier) == Float.floatToIntBits(other.brakingModifier)
-				&& Float.floatToIntBits(handlingModifier) == Float.floatToIntBits(other.handlingModifier)
-				&& popularity == other.popularity
-				&& Float.floatToIntBits(popularityModifier) == Float.floatToIntBits(other.popularityModifier)
-				&& Float.floatToIntBits(speedModifier) == Float.floatToIntBits(other.speedModifier);
+		}
+		return false;
 	}
 
 	/**

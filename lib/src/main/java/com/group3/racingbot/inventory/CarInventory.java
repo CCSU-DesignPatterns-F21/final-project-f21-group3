@@ -37,6 +37,15 @@ public class CarInventory implements Inventory<Car>{
 	}
 	
 	/**
+	 * Remove a car from the inventory.
+	 */
+	public boolean remove(Car car) {
+		if (this.items.remove(car)) 
+			return true;
+		return false;
+	}
+	
+	/**
 	 * Grab the entire list of items. This is necessary for MongoDB to work properly.
 	 * @return List<Car>
 	 */
