@@ -9,13 +9,14 @@ import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
 import com.group3.racingbot.inventory.Unique;
+import com.group3.racingbot.inventory.filter.SkillFilterable;
 import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * Drives cars in races. A driver has their own stats that govern how well they do on the track.
  * @author Nick Sabia
  */
-public class Driver implements Unique {
+public class Driver implements Unique, SkillFilterable {
 	private String id;
 	@BsonIgnore
 	private Player player;

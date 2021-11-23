@@ -81,32 +81,30 @@ public class FilterManager<T> {
 	}
 	
 	/**
-	 * Apply material filters to a material filterable iterator.
+	 * Apply filters to a filterable iterator.
 	 * @param originalIterator the unaltered iterator.
 	 * @return string containing the results of the filter.
 	 */
-	public InventoryIteratorDecorator<T> performMaterialFilter(InventoryIterator<T> originalIterator) {
-		//String resultStr = "";
-		FilterIterator iterator = new FilterIterator();
-		//Iterator<? extends MaterialFilterable> prevIterator = originalIterator; // This is the iterator which will go into the parameters of the next iterator we find.
+	public InventoryIteratorDecorator<T> applyFilters(InventoryIterator<T> originalIterator) {
+		Iterator<InventoryIteratorDecorator<T>> iterator = this.iterator();
 		ArrayList<InventoryIteratorDecorator<T>> appliedFilters = new ArrayList<InventoryIteratorDecorator<T>>(); // Iterators which actually get used.
+		
 		// Connect each iterator with one another.
 		int index = 0;
 		while (iterator.hasNext()) {
 			InventoryIteratorDecorator<T> currentFilter = iterator.next();
-			// Ensure that only the material filterable filters apply.
-			if (currentFilter.getClass().isAssignableFrom(MaterialFilterable.class)) {
-				/*QualityFilter<Car> filterA = new QualityFilter<Car>(carIterator, "Lemon");
-	    		DurabilityFilter<Car> filterB = new DurabilityFilter<Car>(filterA, FilterOperation.IS_GREATER_THAN, 40);*/
-				if (appliedFilters.size() == 0) {
-					currentFilter.setInventoryIterator(originalIterator);
-				}
-				else {
-					currentFilter.setInventoryIterator(appliedFilters.get(index));
-					index++;
-				}
-				appliedFilters.add(currentFilter);
+			if (appliedFilters.size() == 0) {
+				currentFilter.setInventoryIterator(originalIterator);
 			}
+			else {
+				currentFilter.setInventoryIterator(appliedFilters.get(index));
+				index++;
+			}
+			appliedFilters.add(currentFilter);
+		}
+		// Handle when applied filters is empty
+		if (appliedFilters.size() == 0) {
+			return null;
 		}
 		return appliedFilters.get(index);
 	}

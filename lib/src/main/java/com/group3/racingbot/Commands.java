@@ -26,9 +26,20 @@ import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.inventory.filter.ComposureFilter;
+import com.group3.racingbot.inventory.filter.CorneringFilter;
+import com.group3.racingbot.inventory.filter.DraftingFilter;
+import com.group3.racingbot.inventory.filter.DurabilityFilter;
+import com.group3.racingbot.inventory.filter.FilterManager;
+import com.group3.racingbot.inventory.filter.FilterOperation;
 import com.group3.racingbot.inventory.filter.InventoryIteratorDecorator;
 import com.group3.racingbot.inventory.filter.MaterialFilterable;
+import com.group3.racingbot.inventory.filter.Quality;
 import com.group3.racingbot.inventory.filter.QualityFilter;
+import com.group3.racingbot.inventory.filter.RecoveryFilter;
+import com.group3.racingbot.inventory.filter.StraightsFilter;
+import com.group3.racingbot.inventory.filter.ValueFilter;
+import com.group3.racingbot.inventory.filter.WeightFilter;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -745,6 +756,64 @@ public class Commands extends ListenerAdapter {
     				timer.scheduleAtFixedRate(raceStepAllTask, 1000, TWO_SECONDS);
     			}
     		}
+	    	if(args[1].equalsIgnoreCase("component")) {
+	    		Player p = dbh.getPlayer(user.getId());
+	    		if (args[2].equalsIgnoreCase("view")) {
+    				String results = "";
+    				InventoryIterator<Component> iterator = p.getOwnedComponents().iterator();
+    				
+    				int index = 1;
+					while (iterator.hasNext()) {
+						results += index + ". | " + iterator.next() + "\n";
+						index++;
+					}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("Inventory is empty.").queue();
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("filterBy")) {
+    				String errorMsg = "Invalid command. The syntax for the add filter command is as follows:\n!r driver filterBy filterType operator (number | String) [filterType operator (number | String)]";
+    				Player updatedPlayer = p;
+    				
+    				// If there are enough args for one filter or if there are a correct amount of args for more filters, then continue.
+    				boolean validAmountOfArgs = args.length >= 6 && args.length % 3 == 0;
+    				if (validAmountOfArgs) {
+    					int totalFilters = (args.length - 3) / 3;
+    					for (int i = 0; i < totalFilters; i++) {
+    						int referenceArg = (i+1)*3;
+    						updatedPlayer = addFilter(p, event, referenceArg, errorMsg);
+    					}
+    				}
+    				InventoryIterator<Component> originalIterator = updatedPlayer.getOwnedComponents().iterator();
+    				InventoryIteratorDecorator<Component> filteredIterator = updatedPlayer.getOwnedComponents().getFilterManager().applyFilters(originalIterator);
+    				
+    				// There were no results.
+    				if (filteredIterator == null) {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    					return;
+    				}
+    				
+    				String results = "";
+    				
+    				while (filteredIterator.hasNext()) {
+    					Component current = filteredIterator.next();
+    					if (current != null) {
+    						results += current.toString() + "\n";
+    					}
+    				}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    				}
+    			}
+	    	}
 	    	if(args[1].equalsIgnoreCase("driver"))
     		{
     			Player p = dbh.getPlayer(user.getId());
@@ -803,15 +872,61 @@ public class Commands extends ListenerAdapter {
     					event.getChannel().sendMessage("No driver name specified! Set an active driver using the command: !iracer debug driver set [driver's name]").queue();
     				}
 	    		}
-    			if(args[2].equalsIgnoreCase("view"))
-	    		{
-    				String message = "";
-    				Iterator<Driver> ownedDrivers = p.getOwnedDrivers().iterator();
-    				while (ownedDrivers.hasNext()) {
-    					message += ownedDrivers.next() + "\n_____________________\n";
+    			if (args[2].equalsIgnoreCase("view")) {
+    				String results = "";
+    				InventoryIterator<Driver> iterator = p.getOwnedDrivers().iterator();
+    				
+    				int index = 1;
+					while (iterator.hasNext()) {
+						results += index + ". | " + iterator.next() + "\n";
+						index++;
+					}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
     				}
-    				event.getChannel().sendMessage(message).queue();
-	    		}
+    				else {
+    					event.getChannel().sendMessage("Inventory is empty.").queue();
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("filterBy")) {
+    				String errorMsg = "Invalid command. The syntax for the add filter command is as follows:\n!r driver filterBy filterType operator (number | String) [filterType operator (number | String)]";
+    				Player updatedPlayer = p;
+    				
+    				// If there are enough args for one filter or if there are a correct amount of args for more filters, then continue.
+    				boolean validAmountOfArgs = args.length >= 6 && args.length % 3 == 0;
+    				if (validAmountOfArgs) {
+    					int totalFilters = (args.length - 3) / 3;
+    					for (int i = 0; i < totalFilters; i++) {
+    						int referenceArg = (i+1)*3;
+    						updatedPlayer = addFilter(p, event, referenceArg, errorMsg);
+    					}
+    				}
+    				InventoryIterator<Driver> originalIterator = updatedPlayer.getOwnedDrivers().iterator();
+    				InventoryIteratorDecorator<Driver> filteredIterator = updatedPlayer.getOwnedDrivers().getFilterManager().applyFilters(originalIterator);
+    				
+    				// There were no results.
+    				if (filteredIterator == null) {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    					return;
+    				}
+    				
+    				String results = "";
+    				
+    				while (filteredIterator.hasNext()) {
+    					Driver current = filteredIterator.next();
+    					if (current != null) {
+    						results += current.toString() + "\n";
+    					}
+    				}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    				}
+    			}
     			if(args[2].equalsIgnoreCase("active"))
 	    		{
     				event.getChannel().sendMessage(p.getActiveDriverId().toString()).queue();
@@ -916,53 +1031,122 @@ public class Commands extends ListenerAdapter {
 					event.getChannel().sendMessage("Player does not have an active driver").queue();
 				}
 			}
-	    	if (args[1].equalsIgnoreCase("filter"))
+	    	if(args[1].equalsIgnoreCase("car")) 
     		{
-	    		Player p = dbh.getPlayer(user.getId());
-				//InventoryIterator<Driver> originalIterator = p.getOwnedDrivers().iterator();
-	    		if (args[2].equalsIgnoreCase("add")) {
-	    			if (args.length == 5) {
-						if (args[3] == null || args[4] == null) {
-							return;
-						}
-						switch (args[3].toLowerCase()) {
-							case "quality": case "q": {
-								InventoryIteratorDecorator<?> filterToAdd = null;
-								switch (args[3].toLowerCase()) {
-									case "lemon": case "l": {
-										//filterToAdd = new QualityFilter(null, "Lemon");
-										
-										//p.addFilter(new Inventory);
-									}
-								}
-							}
-						}
-					}
+    			Player p = dbh.getPlayer(user.getId());
+    			if (args[2].equalsIgnoreCase("free"))
+	    		{
+    				int value = 100;
+    				if (args.length > 3 && args[3] != null) {
+    					value = Integer.parseInt(args[3]);
+    				}
+    				// Create the car
+    				Car freeCar = new Car();
+    				freeCar.setId(dbh.generateId(6));
+    				ConcreteComponentFactory componentFactory = new ConcreteComponentFactory();
+    				EngineComponent engine = (EngineComponent) componentFactory.createComponent("engine", value);
+    				TransmissionComponent transmission = (TransmissionComponent) componentFactory.createComponent("transmission", value);
+    				SuspensionComponent suspension = (SuspensionComponent) componentFactory.createComponent("suspension", value);
+    				ChassisComponent chassis = (ChassisComponent) componentFactory.createComponent("chassis", value);
+    				WheelComponent wheels = (WheelComponent) componentFactory.createComponent("wheel", value);
+    				freeCar.setEngine(engine);
+    				freeCar.setChassis(chassis);
+    				freeCar.setSuspension(suspension);
+    				freeCar.setTransmission(transmission);
+    				freeCar.setWheels(wheels);
+    				p.getOwnedCars().add(freeCar);
+    				dbh.updateUser(p);
+    				event.getChannel().sendMessage("A free car was added to your garage.").queue();
 	    		}
-	    		else if (args[2].equalsIgnoreCase("remove")) {
-	    			
-	    		}
-	    		else {
-	    			// Display help text
-	    		}
-				if (args.length == 4) {
-					if (args[2] == null || args[3] == null || args[4] == null) {
-						return;
+    			if (args[2].equalsIgnoreCase("set")) {
+    				if(args.length > 3 && args[3] != null)
+    				{
+    					try {
+    						int index = Integer.parseInt(args[3].toString());
+    						Car activeCar = p.getOwnedCars().getItems().get(index);
+    						p.setActiveCarId(activeCar.getId());
+    						dbh.updateUser(p);
+    						event.getChannel().sendMessage("Active car set!\n" + activeCar).queue();
+    					}
+    					catch (Exception e) {
+    						e.printStackTrace();
+    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not change active car.").queue();
+    					}
+    					
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("remove")) {
+    				if(args.length > 3 && args[3] != null)
+    				{
+    					try {
+    						int index = Integer.parseInt(args[4].toString());
+    						Inventory<Car> updatedInventory = p.getOwnedCars();
+    						Car removedCar = updatedInventory.getItems().get(index);
+    						updatedInventory.getItems().remove(index);
+    						p.setOwnedCars(updatedInventory);
+    						dbh.updateUser(p);
+    						event.getChannel().sendMessage("Car removed!\n" + removedCar).queue();
+    					}
+    					catch (Exception e) {
+    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not remove a car.").queue();
+    					}
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("view")) {
+    				String results = "";
+    				InventoryIterator<Car> iterator = p.getOwnedCars().iterator();
+    				
+    				int index = 1;
+					while (iterator.hasNext()) {
+						results += index + ". | " + iterator.next() + "\n";
+						index++;
 					}
-					switch (args[2].toLowerCase()) {
-						case "quality": case "q": {
-							switch (args[4].toLowerCase()) {
-								case "lemon": case "l": {
-									
-								}
-							}
-						}
-					}
-				}
-				else if (args.length == 5) {
-					
-				}
-				
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("Inventory is empty.").queue();
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("filterBy")) {
+    				String errorMsg = "Invalid command. The syntax for the add filter command is as follows:\n!r car filterBy filterType operator (number | String) [filterType operator (number | String)]";
+    				Player updatedPlayer = p;
+    				
+    				// If there are enough args for one filter or if there are a correct amount of args for more filters, then continue.
+    				boolean validAmountOfArgs = args.length >= 6 && args.length % 3 == 0;
+    				if (validAmountOfArgs) {
+    					int totalFilters = (args.length - 3) / 3;
+    					for (int i = 0; i < totalFilters; i++) {
+    						int referenceArg = (i+1)*3;
+    						updatedPlayer = addFilter(p, event, referenceArg, errorMsg);
+    					}
+    				}
+    				InventoryIterator<Car> originalIterator = updatedPlayer.getOwnedCars().iterator();
+    				InventoryIteratorDecorator<Car> filteredIterator = updatedPlayer.getOwnedCars().getFilterManager().applyFilters(originalIterator);
+    				
+    				// There were no results.
+    				if (filteredIterator == null) {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    					return;
+    				}
+    				
+    				String results = "";
+    				
+    				while (filteredIterator.hasNext()) {
+    					Car current = filteredIterator.next();
+    					if (current != null) {
+    						results += current.toString() + "\n";
+    					}
+    				}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    				}
+    			}
     		}
 	    	
 	    	/*
@@ -975,7 +1159,6 @@ public class Commands extends ListenerAdapter {
 				                                     
                TODO: Remove before final release, DEBUG ONLY FUNCTIONS any relationships with other classes in this case are not to be represented in the UML.                                                                                        
 	    	 */
-
 	    	if(args[1].equalsIgnoreCase("debug"))
 	    	{
 	    		if(args[2].equalsIgnoreCase("shop"))
@@ -985,68 +1168,6 @@ public class Commands extends ListenerAdapter {
 	    				gph.debug();
 	    			}
 	    			
-	    		}
-	    		if(args[2].equalsIgnoreCase("car")) 
-	    		{
-	    			Player p = dbh.getPlayer(user.getId());
-	    			if (args[3].equalsIgnoreCase("free"))
-		    		{
-	    				int value = 100;
-	    				if (args.length > 4 && args[4] != null) {
-	    					value = Integer.parseInt(args[4]);
-	    				}
-	    				// Create the car
-	    				Car freeCar = new Car();
-	    				freeCar.setId(dbh.generateId(6));
-	    				ConcreteComponentFactory componentFactory = new ConcreteComponentFactory();
-	    				EngineComponent engine = (EngineComponent) componentFactory.createComponent("engine", value);
-	    				TransmissionComponent transmission = (TransmissionComponent) componentFactory.createComponent("transmission", value);
-	    				SuspensionComponent suspension = (SuspensionComponent) componentFactory.createComponent("suspension", value);
-	    				ChassisComponent chassis = (ChassisComponent) componentFactory.createComponent("chassis", value);
-	    				WheelComponent wheels = (WheelComponent) componentFactory.createComponent("wheel", value);
-	    				freeCar.setEngine(engine);
-	    				freeCar.setChassis(chassis);
-	    				freeCar.setSuspension(suspension);
-	    				freeCar.setTransmission(transmission);
-	    				freeCar.setWheels(wheels);
-	    				p.getOwnedCars().add(freeCar);
-	    				dbh.updateUser(p);
-	    				event.getChannel().sendMessage("A free car was added to your garage.").queue();
-		    		}
-	    			if (args[3].equalsIgnoreCase("set")) {
-	    				if(args.length > 4 && args[4] != null)
-	    				{
-	    					try {
-	    						int index = Integer.parseInt(args[4].toString());
-	    						Car activeCar = p.getOwnedCars().getItems().get(index);
-	    						p.setActiveCarId(activeCar.getId());
-	    						dbh.updateUser(p);
-	    						event.getChannel().sendMessage("Active car set!\n" + activeCar).queue();
-	    					}
-	    					catch (Exception e) {
-	    						e.printStackTrace();
-	    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not change active car.").queue();
-	    					}
-	    					
-	    				}
-	    			}
-	    			if (args[3].equalsIgnoreCase("remove")) {
-	    				if(args.length > 4 && args[4] != null)
-	    				{
-	    					try {
-	    						int index = Integer.parseInt(args[4].toString());
-	    						Inventory<Car> updatedInventory = p.getOwnedCars();
-	    						Car removedCar = updatedInventory.getItems().get(index);
-	    						updatedInventory.getItems().remove(index);
-	    						p.setOwnedCars(updatedInventory);
-	    						dbh.updateUser(p);
-	    						event.getChannel().sendMessage("Car removed!\n" + removedCar).queue();
-	    					}
-	    					catch (Exception e) {
-	    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not remove a car.").queue();
-	    					}
-	    				}
-	    			}
 	    		}
 	    		if(args[2].equalsIgnoreCase("claim")) {
 	    			Player p = dbh.getPlayer(user.getId());
@@ -1059,6 +1180,41 @@ public class Commands extends ListenerAdapter {
 	    			}
 	    		}
 	    	}
+	    	if (args[1].equalsIgnoreCase("test")) {
+				
+				eb.clear();
+				eb.setColor(Color.ORANGE);
+				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
+				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
+				
+				Component engine = component.createComponent("engine", 5000);
+				Component suspension = component.createComponent("suspension", 2999);
+				Component wheel = component.createComponent("wheel", 700);
+				Component transmission = component.createComponent("transmission", 299);
+				Component chassis = component.createComponent("chassis", 99);
+				
+				CarBuilder car = new Car.CarBuilder();
+				
+				//suspension and transmission not added to car for testing
+				
+				car.addEngine(engine);
+				//car.addSuspension(suspension);
+				car.addWheels(wheel);
+				//car.addTransmission(transmission);
+				car.addChassis(chassis);
+				
+				car.build();
+				
+				//prints out all the generated components
+				//eb.setDescription(engine.toString() + suspension.toString() + wheel.toString() + transmission.toString() + chassis.toString());
+				
+				//prints out the assembled car with ONLY added components
+				eb.setDescription(car.toString());	
+
+	
+				event.getChannel().sendMessage(eb.build()).queue();
+			}
+		}
 	    	
 		    	// A test for filtering an inventory of cars.
 		    	/*if(args[1].equalsIgnoreCase("inventory")) {
@@ -1102,52 +1258,137 @@ public class Commands extends ListenerAdapter {
 				//OEM: 301 - 750
 				//Sports: 751 - 3000
 				//Racing: 3001 - 20000
-			
-
-			if (args[1].equalsIgnoreCase("test")) {
-				
-				eb.clear();
-				eb.setColor(Color.ORANGE);
-				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
-				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
-				
-				Component engine = component.createComponent("engine", 5000);
-				Component suspension = component.createComponent("suspension", 2999);
-				Component wheel = component.createComponent("wheel", 700);
-				Component transmission = component.createComponent("transmission", 299);
-				Component chassis = component.createComponent("chassis", 99);
-				
-				CarBuilder car = new Car.CarBuilder();
-				
-				//suspension and transmission not added to car for testing
-				
-				car.addEngine(engine);
-				//car.addSuspension(suspension);
-				car.addWheels(wheel);
-				//car.addTransmission(transmission);
-				car.addChassis(chassis);
-				
-				car.build();
-				
-				//prints out all the generated components
-				//eb.setDescription(engine.toString() + suspension.toString() + wheel.toString() + transmission.toString() + chassis.toString());
-				
-				//prints out the assembled car with ONLY added components
-				eb.setDescription(car.toString());	
-
-	
-				event.getChannel().sendMessage(eb.build()).queue();
-			}
-	 }
 	}
 	 
-	 /**
-	  * Retrieve a string which prints the results of a race. This is a helper function which lets the results get printed from within the race task.
-	  * @return string containing info about the final standings of the race.
-	  */
-	 private String printRaceResults() {
-		 return "RaceEvent " + this.raceEvent.getId() + " is complete!\n_____\n" + this.raceEvent.getStandings().toString();
-	 }
+	/**
+	 * Retrieve a string which prints the results of a race. This is a helper function which lets the results get printed from within the race task.
+	 * @return string containing info about the final standings of the race.
+	 */
+	private String printRaceResults() {
+		return "RaceEvent " + this.raceEvent.getId() + " is complete!\n_____\n" + this.raceEvent.getStandings().toString();
+	}
+	
+	/**
+	 * Add a filter to a player's inventories
+	 * @param player
+	 * @param event
+	 * @return
+	 */
+	private Player addFilter(Player p, GuildMessageReceivedEvent event, int referenceArg, String errorMsg) {
+		String[] args = event.getMessage().getContentRaw().split(" ");
+		
+		// !r filter add [filter] String
+		// !r filter add String String_to_
+		if (args[referenceArg] == null || args[referenceArg + 1] == null || args[referenceArg + 2] == null) {
+			event.getChannel().sendMessage("arg null error: " + errorMsg).queue();
+			return p;
+		}
+		
+		// Grab the filter operation to perform.
+		FilterOperation filterOp = null;
+		switch (args[referenceArg + 1].toString()) {
+			case ">":
+				filterOp = FilterOperation.IS_GREATER_THAN;
+				break;
+			case "<":
+				filterOp = FilterOperation.IS_LESS_THAN;
+				break;
+			case "=": case "==":
+				filterOp = FilterOperation.IS_EQUAL;
+				break;
+			default:
+				break;
+		}
+		if (filterOp == null) {
+			// If the filter operation wasn't successfully parsed, then return.
+			event.getChannel().sendMessage("filterOp error: " + errorMsg).queue();
+			return p;
+		}
+		
+		// Grab the numeric (or string) criteria for the filtering
+		String criteriaStr = args[referenceArg + 2].toString();
+		int criteriaNum = -1;
+		try {
+			criteriaNum = Integer.parseInt(criteriaStr);
+		}
+		catch (NumberFormatException e) {
+			// Do nothing
+		}
+		
+		if (criteriaNum >= 0) {
+			switch (args[referenceArg].toLowerCase()) {
+				case "durability":
+					p.getOwnedCars().getFilterManager().add(new DurabilityFilter<Car>(null, filterOp, criteriaNum));
+					p.getOwnedComponents().getFilterManager().add(new DurabilityFilter<Component>(null, filterOp, criteriaNum));
+					break;
+				case "value":
+					p.getOwnedCars().getFilterManager().add(new ValueFilter<Car>(null, filterOp, criteriaNum));
+					p.getOwnedComponents().getFilterManager().add(new ValueFilter<Component>(null, filterOp, criteriaNum));
+					break;
+				case "weight":
+					p.getOwnedCars().getFilterManager().add(new WeightFilter<Car>(null, filterOp, criteriaNum));
+					p.getOwnedComponents().getFilterManager().add(new WeightFilter<Component>(null, filterOp, criteriaNum));
+					break;
+				case "composure":
+					p.getOwnedDrivers().getFilterManager().add(new ComposureFilter<Driver>(null, filterOp, criteriaNum));
+					break;
+				case "awareness":
+					p.getOwnedDrivers().getFilterManager().add(new ComposureFilter<Driver>(null, filterOp, criteriaNum));
+					break;
+				case "drafting":
+					p.getOwnedDrivers().getFilterManager().add(new DraftingFilter<Driver>(null, filterOp, criteriaNum));
+					break;
+				case "straights": case "straight":
+					p.getOwnedDrivers().getFilterManager().add(new StraightsFilter<Driver>(null, filterOp, criteriaNum));
+					break;
+				case "cornering": case "corner":
+					p.getOwnedDrivers().getFilterManager().add(new CorneringFilter<Driver>(null, filterOp, criteriaNum));
+					break;
+				case "recovery":
+					p.getOwnedDrivers().getFilterManager().add(new RecoveryFilter<Driver>(null, filterOp, criteriaNum));
+					break;
+				default:
+					event.getChannel().sendMessage("invalid string for numeric criteria error: " + errorMsg).queue();
+					break;
+			}
+			return p;
+		}
+		else {
+			// Assume the user has entered a string
+			switch (args[referenceArg + 2].toLowerCase()) {
+				case "lemon": case "l": 
+					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.LEMON));
+					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.LEMON));
+					break;
+				case "junkyard": case "j": case "junk": 
+					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.JUNKYARD));
+					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.JUNKYARD));
+					break;
+				case "oem": case "o": 
+					FilterManager<Car> filterManager = p.getOwnedCars().getFilterManager();
+					filterManager.add(new QualityFilter<Car>(null, filterOp, Quality.OEM));
+					p.getOwnedCars().setFilterManager(filterManager);
+					//p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.OEM));
+					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.OEM));
+					break;
+				case "sports": case "s": case "sport":
+					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.SPORTS));
+					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.SPORTS));
+					break;
+				case "racing": case "r":
+					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.RACING));
+					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.RACING));
+					break;
+				default:
+					event.getChannel().sendMessage("invalid string for string criteria error: " + errorMsg).queue();
+					return p;
+			}
+			event.getChannel().sendMessage("Filter has been added.").queue();
+			//dbh.updateUser(p);
+			return p;
+		}
+	}
+	 
 	 /*
 	  * Fomat String using Markup language.
 	  */
@@ -1261,7 +1502,7 @@ public class Commands extends ListenerAdapter {
 		eb.clear();
 		eb.setTitle(c.getName());
 		eb.setThumbnail(c.getThumbnailURL());
-		eb.addField("Quality: ", formatText("cb",c.getQuality()),false);
+		eb.addField("Quality: ", formatText("cb",c.getQuality().toString().toLowerCase()),false);
 		eb.addField("Durability: ",formatText("cb",c.getDurability() +"/"+c.getMaxDurability()) ,true);
 		eb.addField("Value: ", formatText("cb", c.getValue()+""),true);
 		eb.addField("Weight: ",formatText("cb", c.getWeight()+""),true);
