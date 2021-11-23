@@ -5,9 +5,12 @@ package com.group3.racingbot.inventory.filter;
 
 import java.util.ArrayList;
 
+import com.group3.racingbot.driverstate.Defensive;
 import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
+import com.group3.racingbot.standings.DriverStanding;
+import com.group3.racingbot.standings.Standings;
 
 /**
  * Used to store and use filters on inventories.
@@ -145,5 +148,48 @@ public class FilterManager<T> {
 			}
 			return item;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((filters == null) ? 0 : filters.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof FilterManager) {
+			@SuppressWarnings("unchecked")
+			FilterManager<T> otherObj = (FilterManager<T>) other;
+			
+			ArrayList<InventoryIteratorDecorator<T>> otherFilters = otherObj.getFilters();
+			
+			if (otherFilters.size() != this.filters.size()) {
+				return false;
+			}
+			
+			try {
+				for (int i = 0, len = this.filters.size(); i < len; i++) {
+					if (otherFilters.get(i) == null || !otherFilters.get(i).equals(this.filters.get(i))) {
+						return false;
+					}
+				}
+			}
+			catch (IndexOutOfBoundsException e) {
+				return false;
+			}
+
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return this.printFilters();
 	}
 }
