@@ -29,7 +29,7 @@ import com.group3.racingbot.inventory.filter.Quality;
 
 
 public abstract class Component implements Unique, IClonable,MaterialFilterable {
-	private String id = "", quality = "", name = "";
+	private String id = "", name = "";
 
 	private Quality quality = Quality.LEMON;
 

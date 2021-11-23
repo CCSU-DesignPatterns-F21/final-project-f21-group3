@@ -24,6 +24,7 @@ import com.group3.racingbot.driverstate.Skill;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.gameservice.GameplayHandler;
 import com.group3.racingbot.inventory.Inventory;
+import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.inventory.filter.ComposureFilter;
