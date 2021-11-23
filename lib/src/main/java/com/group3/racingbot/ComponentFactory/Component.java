@@ -25,7 +25,7 @@ import com.group3.racingbot.inventory.Unique;
 @BsonDiscriminator
 
 
-public abstract class Component implements Unique {
+public abstract class Component implements Unique, IClonable {
 	private String id = "", quality = "", name = "";
 	private int weight = 0, value = 0, durability = 0, rating = 0;
 	private int maxDurability = 100;
@@ -166,6 +166,7 @@ public abstract class Component implements Unique {
 		this.thumbnailURL = thumbnailURL;
 	}
 
+	abstract public IClonable clone();
 	
 	/**
 	 * @param returns hashCode for component

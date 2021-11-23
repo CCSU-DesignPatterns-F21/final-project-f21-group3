@@ -18,7 +18,7 @@ import com.group3.racingbot.inventory.filter.MaterialFilterable;
  * @author Nick Sabia
  *
  */
-public class Car implements MaterialFilterable, Unique {
+public class Car implements MaterialFilterable, Unique, IClonable {
 	private String id;
 	private ChassisComponent chassis;
 	private EngineComponent engine;
@@ -45,6 +45,15 @@ public class Car implements MaterialFilterable, Unique {
 		this.suspension = builder.suspension;
 		this.transmission = builder.transmission;
 		this.wheels = builder.wheels;
+	}
+	
+	public Car(Car car) {
+		this.id = car.getId();
+		this.chassis = car.getChassis();
+		this.engine = car.getEngine();
+		this.suspension = car.getSuspension();
+		this.transmission = car.getTransmission();
+		this.wheels = car.getWheels();
 	}
 	
 	/**
@@ -404,5 +413,16 @@ public class Car implements MaterialFilterable, Unique {
 	public int getPrice() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+
+	/**
+	 * Creates a clone of this exact object
+	 * @return a IClonable object, an exact copy.
+	 */
+	@Override
+	public IClonable clone() {
+		// TODO Auto-generated method stub
+		return new Car(this);
 	}
 }

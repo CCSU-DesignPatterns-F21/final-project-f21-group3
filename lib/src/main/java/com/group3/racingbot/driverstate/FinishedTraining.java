@@ -1,7 +1,6 @@
 package com.group3.racingbot.driverstate;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.DBHandler;

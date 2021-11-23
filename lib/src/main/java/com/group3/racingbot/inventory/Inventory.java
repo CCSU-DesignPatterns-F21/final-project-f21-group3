@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.group3.racingbot.Driver;
-import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.inventory.filter.FilterManager;
 
 /**

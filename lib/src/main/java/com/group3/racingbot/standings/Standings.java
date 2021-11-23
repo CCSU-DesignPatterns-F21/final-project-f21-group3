@@ -12,11 +12,8 @@ import java.util.function.Predicate;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import com.group3.racingbot.Driver;
-import com.group3.racingbot.driverstate.Crashed;
 import com.group3.racingbot.driverstate.FinishedRace;
 import com.group3.racingbot.driverstate.Racing;
-import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
 //import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;

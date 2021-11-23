@@ -3,35 +3,25 @@
  */
 package com.group3.racingbot.driverstate;
 
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
-import com.group3.racingbot.ComponentFactory.ChassisComponent;
 import com.group3.racingbot.ComponentFactory.ComponentType;
-import com.group3.racingbot.ComponentFactory.EngineComponent;
-import com.group3.racingbot.ComponentFactory.SuspensionComponent;
-import com.group3.racingbot.ComponentFactory.TransmissionComponent;
-import com.group3.racingbot.ComponentFactory.WheelComponent;
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.StraightNode;
-import com.group3.racingbot.racetrack.TrackNode;
 import com.group3.racingbot.standings.DriverStanding;
-import com.group3.racingbot.standings.Standings;
-
-import java.util.concurrent.ThreadLocalRandom;
-
-import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-import org.bson.codecs.pojo.annotations.BsonIgnore;
-import org.bson.codecs.pojo.annotations.BsonProperty;
 
 /**
  * A state where the Driver is currently racing. A Driver may leave this state once they finish the race.
