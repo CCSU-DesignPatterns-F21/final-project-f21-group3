@@ -756,6 +756,64 @@ public class Commands extends ListenerAdapter {
     				timer.scheduleAtFixedRate(raceStepAllTask, 1000, TWO_SECONDS);
     			}
     		}
+	    	if(args[1].equalsIgnoreCase("component")) {
+	    		Player p = dbh.getPlayer(user.getId());
+	    		if (args[2].equalsIgnoreCase("view")) {
+    				String results = "";
+    				InventoryIterator<Component> iterator = p.getOwnedComponents().iterator();
+    				
+    				int index = 1;
+					while (iterator.hasNext()) {
+						results += index + ". | " + iterator.next() + "\n";
+						index++;
+					}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("Inventory is empty.").queue();
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("filterBy")) {
+    				String errorMsg = "Invalid command. The syntax for the add filter command is as follows:\n!r driver filterBy filterType operator (number | String) [filterType operator (number | String)]";
+    				Player updatedPlayer = p;
+    				
+    				// If there are enough args for one filter or if there are a correct amount of args for more filters, then continue.
+    				boolean validAmountOfArgs = args.length >= 6 && args.length % 3 == 0;
+    				if (validAmountOfArgs) {
+    					int totalFilters = (args.length - 3) / 3;
+    					for (int i = 0; i < totalFilters; i++) {
+    						int referenceArg = (i+1)*3;
+    						updatedPlayer = addFilter(p, event, referenceArg, errorMsg);
+    					}
+    				}
+    				InventoryIterator<Component> originalIterator = updatedPlayer.getOwnedComponents().iterator();
+    				InventoryIteratorDecorator<Component> filteredIterator = updatedPlayer.getOwnedComponents().getFilterManager().applyFilters(originalIterator);
+    				
+    				// There were no results.
+    				if (filteredIterator == null) {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    					return;
+    				}
+    				
+    				String results = "";
+    				
+    				while (filteredIterator.hasNext()) {
+    					Component current = filteredIterator.next();
+    					if (current != null) {
+    						results += current.toString() + "\n";
+    					}
+    				}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    				}
+    			}
+	    	}
 	    	if(args[1].equalsIgnoreCase("driver"))
     		{
     			Player p = dbh.getPlayer(user.getId());
@@ -814,15 +872,61 @@ public class Commands extends ListenerAdapter {
     					event.getChannel().sendMessage("No driver name specified! Set an active driver using the command: !iracer debug driver set [driver's name]").queue();
     				}
 	    		}
-    			if(args[2].equalsIgnoreCase("view"))
-	    		{
-    				String message = "";
-    				Iterator<Driver> ownedDrivers = p.getOwnedDrivers().iterator();
-    				while (ownedDrivers.hasNext()) {
-    					message += ownedDrivers.next() + "\n_____________________\n";
+    			if (args[2].equalsIgnoreCase("view")) {
+    				String results = "";
+    				InventoryIterator<Driver> iterator = p.getOwnedDrivers().iterator();
+    				
+    				int index = 1;
+					while (iterator.hasNext()) {
+						results += index + ". | " + iterator.next() + "\n";
+						index++;
+					}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
     				}
-    				event.getChannel().sendMessage(message).queue();
-	    		}
+    				else {
+    					event.getChannel().sendMessage("Inventory is empty.").queue();
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("filterBy")) {
+    				String errorMsg = "Invalid command. The syntax for the add filter command is as follows:\n!r driver filterBy filterType operator (number | String) [filterType operator (number | String)]";
+    				Player updatedPlayer = p;
+    				
+    				// If there are enough args for one filter or if there are a correct amount of args for more filters, then continue.
+    				boolean validAmountOfArgs = args.length >= 6 && args.length % 3 == 0;
+    				if (validAmountOfArgs) {
+    					int totalFilters = (args.length - 3) / 3;
+    					for (int i = 0; i < totalFilters; i++) {
+    						int referenceArg = (i+1)*3;
+    						updatedPlayer = addFilter(p, event, referenceArg, errorMsg);
+    					}
+    				}
+    				InventoryIterator<Driver> originalIterator = updatedPlayer.getOwnedDrivers().iterator();
+    				InventoryIteratorDecorator<Driver> filteredIterator = updatedPlayer.getOwnedDrivers().getFilterManager().applyFilters(originalIterator);
+    				
+    				// There were no results.
+    				if (filteredIterator == null) {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    					return;
+    				}
+    				
+    				String results = "";
+    				
+    				while (filteredIterator.hasNext()) {
+    					Driver current = filteredIterator.next();
+    					if (current != null) {
+    						results += current.toString() + "\n";
+    					}
+    				}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    				}
+    			}
     			if(args[2].equalsIgnoreCase("active"))
 	    		{
     				event.getChannel().sendMessage(p.getActiveDriverId().toString()).queue();
@@ -990,37 +1094,28 @@ public class Commands extends ListenerAdapter {
     			}
     			if (args[2].equalsIgnoreCase("view")) {
     				String results = "";
-    				int index = 1;
     				InventoryIterator<Car> iterator = p.getOwnedCars().iterator();
-    				if (args.length == 3) {
-    					while (iterator.hasNext()) {
-    						results += index + ". | " + iterator.next() + "\n";
-    						index++;
-    					}
-    				}
-    				else if (args.length > 3 && args[3].equalsIgnoreCase("filter")) {
-    					InventoryIteratorDecorator<Car> filteredIterator = p.getOwnedCars().getFilterManager().performMaterialFilter(iterator);
-    					if (filteredIterator != null) {
-    						while (filteredIterator.hasNext()) {
-        						results += index + ". | " + filteredIterator.next() + "\n";
-        						index++;
-        					}
-    					}
-    					else {
-    						results = "No results found.";
-    					}
+    				
+    				int index = 1;
+					while (iterator.hasNext()) {
+						results += index + ". | " + iterator.next() + "\n";
+						index++;
+					}
+    				
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
     				}
     				else {
-    					event.getChannel().sendMessage("Invalid syntax. Any filtered which have been added using the command *!r filter add (filterType) (< | > | =) (positiveNumber)* will be applied when the filtered view is used. Some valid commands include:\n**View cars**\n!r car view\n**Filtered view of cars**\n!r car view filter").queue();
-    					return;
+    					event.getChannel().sendMessage("Inventory is empty.").queue();
     				}
-    				event.getChannel().sendMessage(results).queue();
     			}
     			if (args[2].equalsIgnoreCase("filterBy")) {
     				String errorMsg = "Invalid command. The syntax for the add filter command is as follows:\n!r car filterBy filterType operator (number | String) [filterType operator (number | String)]";
     				Player updatedPlayer = p;
+    				
     				// If there are enough args for one filter or if there are a correct amount of args for more filters, then continue.
-    				if (args.length >= 6 && args.length % 3 == 0) {
+    				boolean validAmountOfArgs = args.length >= 6 && args.length % 3 == 0;
+    				if (validAmountOfArgs) {
     					int totalFilters = (args.length - 3) / 3;
     					for (int i = 0; i < totalFilters; i++) {
     						int referenceArg = (i+1)*3;
@@ -1028,7 +1123,7 @@ public class Commands extends ListenerAdapter {
     					}
     				}
     				InventoryIterator<Car> originalIterator = updatedPlayer.getOwnedCars().iterator();
-    				InventoryIteratorDecorator<Car> filteredIterator = updatedPlayer.getOwnedCars().getFilterManager().performMaterialFilter(originalIterator);
+    				InventoryIteratorDecorator<Car> filteredIterator = updatedPlayer.getOwnedCars().getFilterManager().applyFilters(originalIterator);
     				
     				// There were no results.
     				if (filteredIterator == null) {
@@ -1039,38 +1134,19 @@ public class Commands extends ListenerAdapter {
     				String results = "";
     				
     				while (filteredIterator.hasNext()) {
-    					results += filteredIterator.next().toString() + "\n";
+    					Car current = filteredIterator.next();
+    					if (current != null) {
+    						results += current.toString() + "\n";
+    					}
     				}
     				
-    				event.getChannel().sendMessage(results).queue();
+    				if (results != "") {
+    					event.getChannel().sendMessage(results).queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("No results for that filtered query.").queue();
+    				}
     			}
-    		}
-	    	if (args[1].equalsIgnoreCase("filter"))
-    		{
-	    		Player p = dbh.getPlayer(user.getId());
-				//InventoryIterator<Driver> originalIterator = p.getOwnedDrivers().iterator();
-	    		if (args[2].equalsIgnoreCase("add")) {
-	    			//InventoryIteratorDecorator<Car> carFilterToAdd = null;
-	    			//InventoryIteratorDecorator<Component> componentFilterToAdd = null;
-	    			//InventoryIteratorDecorator<Driver> driverFilterToAdd = null;
-	    			// !r filter add (filter operator (number | String)
-	    			if (args.length == 6) {
-	    				
-					}
-				}
-	    		else if (args[2].equalsIgnoreCase("clear")) {
-	    			// Clear all filters.
-	    			p.getOwnedCars().setFilterManager(new FilterManager<Car>());
-	    			p.getOwnedComponents().setFilterManager(new FilterManager<Component>());
-	    			p.getOwnedDrivers().setFilterManager(new FilterManager<Driver>());
-	    			event.getChannel().sendMessage("All existing filters have been cleared.").queue();
-	    		}
-    			else {
-    				//event.getChannel().sendMessage(errorMsg).queue();
-    			}
-    		}
-    		else {
-    			// Display help text
     		}
 	    	
 	    	/*
@@ -1104,6 +1180,40 @@ public class Commands extends ListenerAdapter {
 	    			}
 	    		}
 	    	}
+	    	if (args[1].equalsIgnoreCase("test")) {
+				
+				eb.clear();
+				eb.setColor(Color.ORANGE);
+				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
+				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
+				
+				Component engine = component.createComponent("engine", 5000);
+				Component suspension = component.createComponent("suspension", 2999);
+				Component wheel = component.createComponent("wheel", 700);
+				Component transmission = component.createComponent("transmission", 299);
+				Component chassis = component.createComponent("chassis", 99);
+				
+				CarBuilder car = new Car.CarBuilder();
+				
+				//suspension and transmission not added to car for testing
+				
+				car.addEngine(engine);
+				//car.addSuspension(suspension);
+				car.addWheels(wheel);
+				//car.addTransmission(transmission);
+				car.addChassis(chassis);
+				
+				car.build();
+				
+				//prints out all the generated components
+				//eb.setDescription(engine.toString() + suspension.toString() + wheel.toString() + transmission.toString() + chassis.toString());
+				
+				//prints out the assembled car with ONLY added components
+				eb.setDescription(car.toString());	
+
+	
+				event.getChannel().sendMessage(eb.build()).queue();
+			}
 		}
 	    	
 		    	// A test for filtering an inventory of cars.
@@ -1148,42 +1258,6 @@ public class Commands extends ListenerAdapter {
 				//OEM: 301 - 750
 				//Sports: 751 - 3000
 				//Racing: 3001 - 20000
-			
-
-			if (args[1].equalsIgnoreCase("test")) {
-				
-				eb.clear();
-				eb.setColor(Color.ORANGE);
-				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
-				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
-				
-				Component engine = component.createComponent("engine", 5000);
-				Component suspension = component.createComponent("suspension", 2999);
-				Component wheel = component.createComponent("wheel", 700);
-				Component transmission = component.createComponent("transmission", 299);
-				Component chassis = component.createComponent("chassis", 99);
-				
-				CarBuilder car = new Car.CarBuilder();
-				
-				//suspension and transmission not added to car for testing
-				
-				car.addEngine(engine);
-				//car.addSuspension(suspension);
-				car.addWheels(wheel);
-				//car.addTransmission(transmission);
-				car.addChassis(chassis);
-				
-				car.build();
-				
-				//prints out all the generated components
-				//eb.setDescription(engine.toString() + suspension.toString() + wheel.toString() + transmission.toString() + chassis.toString());
-				
-				//prints out the assembled car with ONLY added components
-				eb.setDescription(car.toString());	
-
-	
-				event.getChannel().sendMessage(eb.build()).queue();
-			}
 	}
 	 
 	/**
