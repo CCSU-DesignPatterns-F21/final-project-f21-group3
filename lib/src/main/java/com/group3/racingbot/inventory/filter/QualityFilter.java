@@ -9,32 +9,53 @@ import com.group3.racingbot.inventory.InventoryIterator;
  * @param <T>
  */
 public class QualityFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
+	private Quality quality;
+	private FilterOperation operation;
+	private int current;
 	
-	private String quality;
 	/**
 	 * Applies the quality filter to whatever inventory iterator is passed into it.
 	 * @param iterator
 	 * @param label
 	 */
-	public QualityFilter(InventoryIterator<T> iterator, String label) {
+	public QualityFilter(InventoryIterator<T> iterator, FilterOperation op, Quality quality) {
 		super(iterator);
-		this.quality = label;
+		this.quality = quality;
+		this.operation = op;
+		this.current = 0;
 	}
 	
-	/**
-	 * Verifies that there is another item ahead of the current one.
-	 */
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
+	}
+	
+	@Override
 	public boolean hasNext() {
 		return this.inventoryIterator.hasNext();
 	}
 	
-	/**
-	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified durability.
-	 */
+	@Override
 	public T next() {
 		T item = this.inventoryIterator.next();
-		if (item != null && !this.quality.equals(item.getQuality())) {
-			// If the quality doesn't match, we don't want to return this as a result. 
+		boolean itemMatchesContraints = false;
+		switch (this.operation) {
+			case IS_GREATER_THAN:
+				itemMatchesContraints = item != null 
+					&& item.getQuality().getQuality() > this.quality.getQuality();
+				break;
+			case IS_LESS_THAN:
+				itemMatchesContraints = item != null 
+					&& item.getQuality().getQuality() < this.quality.getQuality();
+				break;
+			case IS_EQUAL: default:
+				itemMatchesContraints = item != null 
+					&& item.getQuality().getQuality() == this.quality.getQuality();
+				break;
+		}
+		if (!itemMatchesContraints) {
+			// If the item doesn't match the given criteria, 
+			// we don't want to return this as a result. 
 			item = null;
 		}
 		return item;
@@ -45,7 +66,7 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.quality;
+		return this.operation.toString().toLowerCase() + " " + this.quality.toString().toLowerCase();
 	}
 	
 	@Override
@@ -74,9 +95,7 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 		return "QualityFilter which filters for " + this.quality;
 	}
 	
-	/**
-	 * Print the entire inventory regardless of filter.
-	 */
+	@Override
 	public void printInventory() {
 		
 	}

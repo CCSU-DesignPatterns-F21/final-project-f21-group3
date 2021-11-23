@@ -2,9 +2,9 @@ package com.group3.racingbot.shop;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
+import com.group3.racingbot.Car;
 import com.group3.racingbot.ComponentFactory.Component;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.Inventory;
 
 /**
  * Concrete class extending abstract class Shop. Sells lowest quality components.
@@ -17,8 +17,8 @@ public class ChopShop extends Shop  {
 	@BsonCreator
 	public ChopShop() {
 		setId(0);
-		setCarsForSale(new CarInventory());
-		setComponentsForSale(new ComponentInventory());
+		setCarsForSale(new Inventory<Car>());
+		setComponentsForSale(new Inventory<Component>());
 		setName("Chop Shop");
 		setDescription("You never know what you will find at the Chop Shop, stolen catalytic converters, wheels, rims and more! No questions asked, no refunds!");
 	}

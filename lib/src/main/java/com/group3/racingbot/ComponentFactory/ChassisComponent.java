@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
+import com.group3.racingbot.IClonable;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -31,6 +33,32 @@ public class ChassisComponent extends Component {
 	public ChassisComponent() {
 		this.setName("Chassis");
 	}
+	
+	/**
+	 * Alternate constructor, takes an existing object of the same type, for use with prototype.
+	 * @param cc ChassisComponent object reference
+	 */
+	public ChassisComponent(ChassisComponent cc)
+	{
+		this.setName(cc.getName());
+		this.setId(cc.getId());
+		this.setQuality(cc.getQuality());
+		this.setWeight(cc.getWeight());
+		this.setValue(cc.getValue());
+		this.setDurability(cc.getDurability());
+		this.setMaxDurability(cc.getMaxDurability());
+		this.setThumbnailURL(cc.getThumbnailURL());
+		
+		this.setPopularity(cc.getPopularity());
+		this.setPopularityModifier(cc.getPopularityModifier());
+		this.setAccelerationModifier(cc.getAccelerationModifier());
+		this.setSpeedModifier(cc.getSpeedModifier());
+		this.setHandlingModifier(cc.getHandlingModifier());
+		this.setBrakingModifier(cc.getBrakingModifier());
+		this.getRating();
+		
+	}
+	
 
 	/**
 	 * @return the brakingModifier
@@ -115,7 +143,7 @@ public class ChassisComponent extends Component {
 	public void setHandlingModifier(double handlingModifier) {
 		this.handlingModifier = handlingModifier;
 	}
-	
+
 	/**
 	 * returns hashCode() for chassis component
 	 */
@@ -162,5 +190,15 @@ public class ChassisComponent extends Component {
 		+ "\nAcceleration Modifier: " + getAccelerationModifier() + "\nSpeed Modifier: " + getSpeedModifier() + "\nHandling Modifier: " + getHandlingModifier() + "\nBraking Modifier: " + getBrakingModifier() + "\n\n";
 	}
 	
+	/**
+	 * Creates a clone of this exact object
+	 * @return a IClonable object, an exact copy.
+	 */
+	@Override
+	public IClonable clone() {
+		// TODO Auto-generated method stub
+		return new ChassisComponent(this);
+	}
 	
+
 }

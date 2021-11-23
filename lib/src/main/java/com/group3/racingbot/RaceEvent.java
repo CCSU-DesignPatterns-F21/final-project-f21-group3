@@ -1,31 +1,80 @@
 package com.group3.racingbot;
 
 import com.group3.racingbot.driverstate.Racing;
-import com.group3.racingbot.inventory.DriverInventory;
-import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.Iterator;
+import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.TrackNode;
+import com.group3.racingbot.standings.DriverStanding;
+import com.group3.racingbot.standings.Standings;
+
+import java.util.Date;
 
 /**
- * An racing event which a driver may participate in
+ * An event which a Driver can sign up for and participate in for rewards.
  * @author Nick Sabia
  *
  */
-public class RaceEvent {
-	private String eventName;
+public class RaceEvent implements Unique {
+	private String id;
 	private RaceTrack raceTrack;
-	private DriverInventory drivers;
+	//private DriverInventory drivers;
+	private final long createdOn;
 	private int timeElapsed;
 	private int grandPrize;
+	//private List<DriverStanding> standings;
+	private Standings standings;
+	
+	public RaceEvent() {
+		this.id = "";
+		this.raceTrack = null;
+		//this.drivers = new DriverInventory();
+		this.timeElapsed = 0;
+		this.grandPrize = 1000;
+		this.createdOn = new Date().getTime();
+		this.standings = null;
+	}
 	
 	/**
-	 * Construct a new race event. This is where drivers will compete for a cash prize.
+	 * Assigns a randomly generated id to the race event and uses that id to setup the race event. Generates a race track and sets up the standings so that drivers may register.
 	 */
-	public RaceEvent() {
-		this.eventName = "Some event";
-		this.raceTrack = new RaceTrack();
-		this.drivers = new DriverInventory();
-		this.timeElapsed = 0;
-		this.grandPrize = 10000;
+	public void initialize() {
+		DBHandler dbh = DBHandler.getInstance();
+		this.id = dbh.generateId(6);
+		this.standings = new Standings(this.id);
+		this.raceTrack = this.generateRaceTrackFromId();
+		this.grandPrize = ((this.raceTrack.calculateTrackLength() + 99) / 100) * 100; // Uses the distance of the track to calculate the grand prize. Rounds to nearest hundred.
+	}
+	
+	/**
+	 * Generates a race track using the ID of the race event as a seed
+	 */
+	public RaceTrack generateRaceTrackFromId() {
+		return new RaceTrack(Long.parseLong(this.id, 36));
+	}
+	
+	/**
+	 * Retrieve the time in milliseconds which this event was created.
+	 * @return the createdOn
+	 */
+	public long getCreatedOn() {
+		return createdOn;
+	}
+
+	/**
+	 * Retrieve the current driver standings for this race event
+	 * @return the standings
+	 */
+	public Standings getStandings() {
+		return standings;
+	}
+
+	/**
+	 * Set the current driver standings for this race event
+	 * @param standings the standings to set
+	 */
+	public void setStandings(Standings standings) {
+		this.standings = standings;
 	}
 
 	/**
@@ -48,27 +97,17 @@ public class RaceEvent {
 	 * Retrieve an inventory of all drivers participating in the race event.
 	 * @return the drivers as a DriverInventory
 	 */
-	public DriverInventory getDrivers() {
-		return drivers;
-	}
+	//public DriverInventory getDrivers() {
+	//	return drivers;
+	//}
 
 	/**
 	 * Adds a driver to the race event.
 	 * @param driver the driver to add
 	 */
-	public void addDriver(Driver driver) {
-		this.drivers.add(driver);
-	}
-	
-	/**
-	 * Removes a driver from the race event.
-	 * @param driver the driver to add
-	 */
-	public void removeDriver(Driver driver) {
-		if (this.drivers.remove(driver)) 
-			System.out.println("Driver removed");
-		System.out.println("Unable to remove driver. The specified driver is not in the race event.");
-	}
+	//public void addDriver(Driver driver) {
+	//	this.drivers.add(driver);
+	//}
 
 	/**
 	 * Retrieve the current amount of time elapsed during the race.
@@ -84,14 +123,6 @@ public class RaceEvent {
 	 */
 	public void setTimeElapsed(int time) {
 		this.timeElapsed = time;
-	}
-	
-	/**
-	 * Add one time unit to the current amount of time elapsed during the race.
-	 * @param totalTime the totalTime to set
-	 */
-	public void incrementTimeElapsed() {
-		this.timeElapsed++;
 	}
 
 	/**
@@ -109,28 +140,68 @@ public class RaceEvent {
 	public void setGrandPrize(int grandPrize) {
 		this.grandPrize = grandPrize;
 	}
-	
+
 	/**
-	 * Retrieve the name for this race event.
-	 * @return the eventName
+	 * Retrieve the ID for this race event.
+	 * @return the id
 	 */
-	public String getEventName() {
-		return eventName;
+	public String getId() {
+		return id;
 	}
 
 	/**
-	 * Set the name for this race event.
-	 * @param eventName the eventName to set
+	 * Set the ID for this race event.
+	 * @param id the id to set
 	 */
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**
 	 * Lets each driver perform a step on the race track to advance forward or run down an idle timer.
 	 */
-	public void stepAllDrivers() {
-		// step every driver in the list.
+	public String stepAllDrivers() {
+		DBHandler dbh = DBHandler.getInstance();
+		
+		this.timeElapsed++; // Advance time
+		Iterator<DriverStanding> driverIterator = standings.iterator();
+		String stepResult = "";
+		Driver currentDriver = null;
+		DriverStanding currentDriverStanding = null;
+		TrackNode currentNode = null;
+		while (driverIterator.hasNext()) {
+			currentDriverStanding = driverIterator.next();
+			currentDriver = currentDriverStanding.getDriver();
+			if (currentDriver.getState() instanceof Racing) {
+				// Allow the driver to make their move on the track
+				
+				//stepResult += currentDriver.raceStep() + "\n";
+				currentDriverStanding = currentDriver.raceStep(currentDriverStanding);
+				this.standings.update(currentDriverStanding);
+				
+				currentNode = currentDriverStanding.getCurrentNode();
+				stepResult += "Driver: " + currentDriver.getName() + " | " + currentNode.getOrder() + " of " + this.raceTrack.size() + " | Distance: " + (currentNode.getNodeLength() - currentNode.getDistanceRemaining()) + " / " + currentNode.getNodeLength() + " | Current state: " + currentDriver.getState().toString() + "\n";
+				// Update the total distance traveled to later find out the position of this driver in the race.
+				//currentRacingState = (Racing) currentDriver.getState();
+				//currentNode = currentRacingState.getCurrentNode();
+				//currentDriverStanding.setDistanceTraveled(currentRacingState.getTotalDistanceTraveled()); 
+				//this.standings.update(currentDriverStanding, currentDriverStanding.getPosition() - 1);
+				//this.setStandings()
+				
+				//currentStandings
+				
+				// Update the driver within the Player object to reflect state changes.
+				//currentPlayer = currentDriver.getPlayer();
+				//currentPlayer.getOwnedDrivers().update(currentDriver);
+				//dbh.updateUser(currentPlayer);
+			}
+		}
+		// Sort the standings to reflect updated driver positions.
+		this.standings.sortStandings();
+		
+		// Update the db with the details of the standings.
+		dbh.updateRaceEvent(this);
+		return stepResult;
 	}
 	
 	/**
@@ -141,10 +212,11 @@ public class RaceEvent {
 		// Loop through each driver and check their states. 
 		// If any one Driver is still in a Racing state, then return false. 
 		// Otherwise, everyone is finished so return true.
-		InventoryIterator<Driver> driverIterator = this.getDrivers().iterator();
+		//InventoryIterator<Driver> driverIterator = this.getDrivers().iterator();
+		Iterator<DriverStanding> driverIterator = standings.iterator();
 		boolean isFinished = true;
 		while(driverIterator.hasNext() && isFinished) {
-			if (!(driverIterator.next().getState() instanceof Racing)) {
+			if (driverIterator.next().getDriver().getState() instanceof Racing) {
 				isFinished = false;
 			}
 		}
@@ -170,7 +242,7 @@ public class RaceEvent {
 			
 			// Time elapsed and the drivers list are not included here
 			// since they don't define the event itself.
-			if (!this.getEventName().equals(otherObj.getEventName()))
+			if (!this.getId().equals(otherObj.getId()))
 				return false;
 			if (!this.getRaceTrack().equals(otherObj.getRaceTrack()))
 				return false;
@@ -183,6 +255,6 @@ public class RaceEvent {
 	
 	@Override
 	public String toString() {
-		return this.eventName;
+		return "**ID:** " + this.id + "\n**PRIZE:** " + this.grandPrize + "\n**TRACK INFO:**\n" + this.raceTrack;
 	}
 }

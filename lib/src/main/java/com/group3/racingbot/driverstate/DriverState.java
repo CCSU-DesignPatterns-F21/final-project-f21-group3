@@ -1,16 +1,9 @@
 package com.group3.racingbot.driverstate;
 
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
-import com.group3.racingbot.shop.ChopShop;
-import com.group3.racingbot.shop.Dealership;
-import com.group3.racingbot.shop.Importer;
-import com.group3.racingbot.shop.Junkyard;
+import com.group3.racingbot.standings.DriverStanding;
 
 /**
  * Classes which implement this are considered states. A state for a Driver can offer bonuses or hindrances while racing, permanent skill improvements off the track, or simply resting/idling.
@@ -28,57 +21,71 @@ import com.group3.racingbot.shop.Junkyard;
 public interface DriverState {
 	/**
 	 * Puts the Driver into a Resting state.
+	 * @param driver the driver to switch into a resting state.
+	 * @return context for what state the user may have left.
 	 */
-	void rest();
+	String rest(Driver driver);
 	
 	/**
-	 * The driver begins the race they've signed up for. 
+	 * The driver begins the race they've signed up for.
+	 * @param driver
 	 */
-	void beginRace();
+	String beginRace(Driver driver);
 	
 	/**
 	 * Puts the Driver into a training state to improve a skill.
 	 * @param driver
 	 * @param skillToTrain
 	 * @param intensity
+	 * @return String containing contextual info about beginning training.
 	 */
-	void beginTraining(Driver driver, Skill skillToTrain, Intensity intensity);
+	String beginTraining(Driver driver, Skill skillToTrain, Intensity intensity);
 	
 	/**
 	 * Registers this driver and their car for a racing event.
 	 * @param driver
 	 * @param car
 	 * @param raceEvent
+	 * @return String containing contextual info about signing up for a race.
 	 */
-	void signUpForRace(Driver driver, Car car, RaceEvent raceEvent);
+	String signUpForRace(Driver driver, Car car, RaceEvent raceEvent);
 	
 	/**
 	 * Upon completion of training or a race, collect your reward (whether it's stat points or credits).
 	 */
-	void collectReward();
-	
-	/**
-	 * Lets the Driver withdraw from a race if they are in a race pending state.
-	 * @param driver
-	 * @return success or failure of race withdrawl.
-	 */
-	boolean withdrawFromRace(Driver driver);
+	String collectReward();
 	
 	/**
 	 * Allow the Driver to perform their turn to move on the track during a race.
 	 * @param driver
+	 * @param driverStanding
+	 * @return the updated driver standing.
 	 */
-	void raceStep(Driver driver);
+	DriverStanding raceStep(Driver driver, DriverStanding driverStanding);
 	
 	/**
 	 * Move to the finished race state upon race completion.
 	 * @param driver
+	 * @return String containing contextual info about completing a race.
 	 */
-	void completedRace(Driver driver, RaceEvent raceEvent);
+	String completedRace(Driver driver);
 	
 	/**
 	 * Move to the finished training state upon training completion.
-	 * @param driver
+	 * @param driver the driver to switch into a completed state.
+	 * @return String indicating that the user can now claim a reward.
 	 */
-	void completedTraining(Driver driver);
+	String completedTraining(Driver driver);
+	
+	/**
+	 * In the event that this driver is in this state when the server shuts down, this will grab all necessary data from the database in order to get back up and running.
+	 * @return whether or not all missing objects were successfully obtained from the database.
+	 */
+	boolean refreshFromDB();
+	
+	/**
+	 * Gives helpful information about the current state of the driver.
+	 * @return a contextual string which offers helpful information about a particular driver.
+	 */
+	public String driverStatus(Driver driver);
 }
