@@ -5,6 +5,7 @@ package com.group3.racingbot.inventory.filter;
 
 import java.util.ArrayList;
 
+
 import com.group3.racingbot.driverstate.Defensive;
 import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;

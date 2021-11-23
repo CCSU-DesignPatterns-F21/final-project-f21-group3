@@ -3,8 +3,8 @@ package com.group3.racingbot.ComponentFactory;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import com.group3.racingbot.IClonable;
 
 /**
  * @author Jack Gola
@@ -27,6 +27,26 @@ public class WheelComponent extends Component {
 	public WheelComponent() {
 		this.setName("Wheel");
 	}
+	
+	/**
+	 * Alternate constructor, takes an existing object of the same type, for use with prototype.
+	 * @param wc TransmissionComponent object reference
+	 */
+	public WheelComponent(WheelComponent wc)
+	{
+		this.setName(wc.getName());
+		this.setId(wc.getId());
+		this.setQuality(wc.getQuality());
+		this.setWeight(wc.getWeight());
+		this.setValue(wc.getValue());
+		this.setDurability(wc.getDurability());
+		this.setMaxDurability(wc.getMaxDurability());
+		this.setThumbnailURL(wc.getThumbnailURL());
+		
+		this.setBraking(wc.getBraking());
+		this.getRating();
+	}
+	
 	/**
 	 * @return the braking
 	 */
@@ -71,6 +91,16 @@ public class WheelComponent extends Component {
 	@Override
 	public String toString() {
 		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nBraking: " + this.getBraking() + "\n\n";
+	}
+	
+	/**
+	 * Creates a clone of this exact object
+	 * @return a IClonable object, an exact copy.
+	 */
+	@Override
+	public IClonable clone() {
+		// TODO Auto-generated method stub
+		return new WheelComponent(this);
 	}
 
 }

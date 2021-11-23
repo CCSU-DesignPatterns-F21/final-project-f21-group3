@@ -3,15 +3,10 @@
  */
 package com.group3.racingbot.driverstate;
 
-import java.util.Date;
-
 import com.group3.racingbot.Car;
-import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.standings.DriverStanding;
-
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 /**
  * A state where the Driver is idle. A Driver may leave this state once their cooldown has expired.

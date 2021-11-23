@@ -2,6 +2,7 @@ package com.group3.racingbot;
 
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Sorts.descending;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +30,6 @@ import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
-import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
@@ -46,7 +46,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import static com.mongodb.client.model.Sorts.descending;
 
 /**
  * Handles the requests and connections to the database.

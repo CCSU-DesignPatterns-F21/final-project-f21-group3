@@ -4,18 +4,13 @@
 package com.group3.racingbot.driverstate;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
-import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
-import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.standings.DriverStanding;
 
 /**

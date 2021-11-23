@@ -3,8 +3,8 @@ package com.group3.racingbot.ComponentFactory;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import com.group3.racingbot.IClonable;
 
 /**
  * @author Jack Gola
@@ -27,7 +27,26 @@ public class SuspensionComponent extends Component {
 	public SuspensionComponent() {
 		this.setName("Suspension");
 	}
-
+	
+	/**
+	 * Alternate constructor, takes an existing object of the same type, for use with prototype.
+	 * @param sc SuspensionComponent object reference
+	 */
+	public SuspensionComponent(SuspensionComponent sc) {
+		this.setName(sc.getName());
+		this.setId(sc.getId());
+		this.setQuality(sc.getQuality());
+		this.setWeight(sc.getWeight());
+		this.setValue(sc.getValue());
+		this.setDurability(sc.getDurability());
+		this.setMaxDurability(sc.getMaxDurability());
+		this.setThumbnailURL(sc.getThumbnailURL());
+		
+		this.setHandling(sc.getHandling());
+		this.getRating();
+	}
+	
+	
 	/**
 	 * @return the handling
 	 */
@@ -72,5 +91,15 @@ public class SuspensionComponent extends Component {
 	@Override
 	public String toString() {
 		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nHandling: " + this.getHandling() + "\n\n";
+	}
+	
+	/**
+	 * Creates a clone of this exact object
+	 * @return a IClonable object, an exact copy.
+	 */
+	@Override
+	public IClonable clone() {
+		// TODO Auto-generated method stub
+		return new SuspensionComponent(this);
 	}
 }
