@@ -2,6 +2,8 @@ package com.group3.racingbot.ComponentFactory;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
+import com.group3.racingbot.inventory.filter.Quality;
+
 /**
  * @author Jack Gola
  * Defines the ConcreteComponentFactory
@@ -32,7 +34,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		
 		if(type == "engine" && (cost >= 0 && cost <= 150)) {
 			createdComponent = new EngineComponent();
-			((EngineComponent)createdComponent).setQuality("Lemon");
+			((EngineComponent)createdComponent).setQuality(Quality.LEMON);
 			((EngineComponent)createdComponent).setValue(100);
 			((EngineComponent)createdComponent).setWeight(800);
 			((EngineComponent)createdComponent).setSpeed(25);
@@ -42,7 +44,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "engine" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new EngineComponent();
-			((EngineComponent)createdComponent).setQuality("Junkyard");
+			((EngineComponent)createdComponent).setQuality((Quality.JUNKYARD));
 			((EngineComponent)createdComponent).setValue(250);
 			((EngineComponent)createdComponent).setWeight(600);
 			((EngineComponent)createdComponent).setSpeed(50);
@@ -53,7 +55,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			
 		else if(type == "engine" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new EngineComponent();
-			((EngineComponent)createdComponent).setQuality("OEM");
+			((EngineComponent)createdComponent).setQuality(Quality.OEM);
 			((EngineComponent)createdComponent).setValue(500);
 			((EngineComponent)createdComponent).setWeight(400);
 			((EngineComponent)createdComponent).setSpeed(100);
@@ -64,7 +66,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			
 		else if(type == "engine" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new EngineComponent();
-			((EngineComponent)createdComponent).setQuality("Sports");
+			((EngineComponent)createdComponent).setQuality(Quality.SPORTS);
 			((EngineComponent)createdComponent).setValue(1000);
 			((EngineComponent)createdComponent).setWeight(300);
 			((EngineComponent)createdComponent).setSpeed(150);
@@ -74,7 +76,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "engine" && cost >= 3001) {
 			createdComponent = new EngineComponent();
-			((EngineComponent)createdComponent).setQuality("Racing");
+			((EngineComponent)createdComponent).setQuality(Quality.RACING);
 			((EngineComponent)createdComponent).setValue(4000);
 			((EngineComponent)createdComponent).setWeight(200);
 			((EngineComponent)createdComponent).setSpeed(250);
@@ -89,7 +91,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		
 		if(type == "wheel" && (cost >= 0 && cost <= 150)) {
 			createdComponent = new WheelComponent();
-			((WheelComponent)createdComponent).setQuality("Lemon");
+			((WheelComponent)createdComponent).setQuality(Quality.LEMON);
 			((WheelComponent)createdComponent).setValue(100);
 			((WheelComponent)createdComponent).setWeight(800);
 			((WheelComponent)createdComponent).setBraking(25);
@@ -99,7 +101,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "wheel" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new WheelComponent();
-			((WheelComponent)createdComponent).setQuality("Junkyard");
+			((WheelComponent)createdComponent).setQuality(Quality.JUNKYARD);
 			((WheelComponent)createdComponent).setValue(250);
 			((WheelComponent)createdComponent).setWeight(600);
 			((WheelComponent)createdComponent).setBraking(50);
@@ -110,7 +112,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			
 		else if(type == "wheel" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new WheelComponent();
-			((WheelComponent)createdComponent).setQuality("OEM");
+			((WheelComponent)createdComponent).setQuality(Quality.OEM);
 			((WheelComponent)createdComponent).setValue(500);
 			((WheelComponent)createdComponent).setWeight(400);
 			((WheelComponent)createdComponent).setBraking(100);
@@ -121,7 +123,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			
 		else if(type == "wheel" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new WheelComponent();
-			((WheelComponent)createdComponent).setQuality("Sports");
+			((WheelComponent)createdComponent).setQuality(Quality.SPORTS);
 			((WheelComponent)createdComponent).setValue(1000);
 			((WheelComponent)createdComponent).setWeight(300);
 			((WheelComponent)createdComponent).setBraking(150);
@@ -131,7 +133,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "wheel" && cost >= 3001) {
 			createdComponent = new WheelComponent();
-			((WheelComponent)createdComponent).setQuality("Racing");
+			((WheelComponent)createdComponent).setQuality(Quality.RACING);
 			((WheelComponent)createdComponent).setValue(4000);
 			((WheelComponent)createdComponent).setWeight(200);
 			((WheelComponent)createdComponent).setBraking(250);
@@ -146,7 +148,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		
 		if(type == "suspension" && (cost >= 0 && cost <= 150)) {
 			createdComponent = new SuspensionComponent();
-			((SuspensionComponent)createdComponent).setQuality("Lemon");
+			((SuspensionComponent)createdComponent).setQuality(Quality.LEMON);
 			((SuspensionComponent)createdComponent).setValue(100);
 			((SuspensionComponent)createdComponent).setWeight(800);
 			((SuspensionComponent)createdComponent).setHandling(25);
@@ -156,7 +158,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "suspension" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new SuspensionComponent();
-			((SuspensionComponent)createdComponent).setQuality("Junkyard");
+			((SuspensionComponent)createdComponent).setQuality(Quality.JUNKYARD);
 			((SuspensionComponent)createdComponent).setValue(250);
 			((SuspensionComponent)createdComponent).setWeight(600);
 			((SuspensionComponent)createdComponent).setHandling(50);
@@ -166,7 +168,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "suspension" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new SuspensionComponent();
-			((SuspensionComponent)createdComponent).setQuality("OEM");
+			((SuspensionComponent)createdComponent).setQuality(Quality.OEM);
 			((SuspensionComponent)createdComponent).setValue(500);
 			((SuspensionComponent)createdComponent).setWeight(400);
 			((SuspensionComponent)createdComponent).setHandling(100);
@@ -176,7 +178,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "suspension" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new SuspensionComponent();
-			((SuspensionComponent)createdComponent).setQuality("Sports");
+			((SuspensionComponent)createdComponent).setQuality(Quality.SPORTS);
 			((SuspensionComponent)createdComponent).setValue(1000);
 			((SuspensionComponent)createdComponent).setWeight(300);
 			((SuspensionComponent)createdComponent).setHandling(150);
@@ -186,7 +188,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "suspension" && cost >= 3001) {
 			createdComponent = new SuspensionComponent();
-			((SuspensionComponent)createdComponent).setQuality("Racing");
+			((SuspensionComponent)createdComponent).setQuality(Quality.RACING);
 			((SuspensionComponent)createdComponent).setValue(4000);
 			((SuspensionComponent)createdComponent).setWeight(200);
 			((SuspensionComponent)createdComponent).setHandling(250);
@@ -200,7 +202,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		
 		if(type == "chassis" && (cost >= 0 && cost <= 150)) {
 			createdComponent = new ChassisComponent();
-			((ChassisComponent)createdComponent).setQuality("Lemon");
+			((ChassisComponent)createdComponent).setQuality(Quality.LEMON);
 			((ChassisComponent)createdComponent).setValue(100);
 			((ChassisComponent)createdComponent).setWeight(800);
 			((ChassisComponent)createdComponent).setDurability(50);
@@ -214,7 +216,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "chassis" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new ChassisComponent();
-			((ChassisComponent)createdComponent).setQuality("Junkyard");
+			((ChassisComponent)createdComponent).setQuality(Quality.JUNKYARD);
 			((ChassisComponent)createdComponent).setValue(250);
 			((ChassisComponent)createdComponent).setWeight(600);
 			((ChassisComponent)createdComponent).setDurability(75);
@@ -228,7 +230,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "chassis" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new ChassisComponent();
-			((ChassisComponent)createdComponent).setQuality("OEM");
+			((ChassisComponent)createdComponent).setQuality(Quality.OEM);
 			((ChassisComponent)createdComponent).setValue(500);
 			((ChassisComponent)createdComponent).setWeight(400);
 			((ChassisComponent)createdComponent).setDurability(100);
@@ -242,7 +244,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "chassis" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new ChassisComponent();
-			((ChassisComponent)createdComponent).setQuality("Sports");
+			((ChassisComponent)createdComponent).setQuality(Quality.SPORTS);
 			((ChassisComponent)createdComponent).setValue(1000);
 			((ChassisComponent)createdComponent).setWeight(300);
 			((ChassisComponent)createdComponent).setDurability(150);
@@ -256,7 +258,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "chassis" && cost >= 3001) {
 			createdComponent = new ChassisComponent();
-			((ChassisComponent)createdComponent).setQuality("Racing");
+			((ChassisComponent)createdComponent).setQuality(Quality.RACING);
 			((ChassisComponent)createdComponent).setValue(4000);
 			((ChassisComponent)createdComponent).setWeight(200);
 			((ChassisComponent)createdComponent).setDurability(200);
@@ -274,7 +276,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		
 		if(type == "transmission" && (cost >= 0 && cost <= 150)) {
 			createdComponent = new TransmissionComponent();
-			((TransmissionComponent)createdComponent).setQuality("Lemon");
+			((TransmissionComponent)createdComponent).setQuality(Quality.LEMON);
 			((TransmissionComponent)createdComponent).setValue(100);
 			((TransmissionComponent)createdComponent).setWeight(800);
 			((TransmissionComponent)createdComponent).setAcceleration(25);
@@ -284,7 +286,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "transmission" && (cost >= 151 && cost <= 300)) {
 			createdComponent = new TransmissionComponent();
-			((TransmissionComponent)createdComponent).setQuality("Junkyard");
+			((TransmissionComponent)createdComponent).setQuality(Quality.JUNKYARD);
 			((TransmissionComponent)createdComponent).setValue(250);
 			((TransmissionComponent)createdComponent).setWeight(600);
 			((TransmissionComponent)createdComponent).setAcceleration(50);
@@ -294,7 +296,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "transmission" && (cost >= 301 && cost <= 750)) {
 			createdComponent = new TransmissionComponent();
-			((TransmissionComponent)createdComponent).setQuality("OEM");
+			((TransmissionComponent)createdComponent).setQuality(Quality.OEM);
 			((TransmissionComponent)createdComponent).setValue(500);
 			((TransmissionComponent)createdComponent).setWeight(400);
 			((TransmissionComponent)createdComponent).setAcceleration(100);
@@ -304,7 +306,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "transmission" && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new TransmissionComponent();
-			((TransmissionComponent)createdComponent).setQuality("Sports");
+			((TransmissionComponent)createdComponent).setQuality(Quality.SPORTS);
 			((TransmissionComponent)createdComponent).setValue(1000);
 			((TransmissionComponent)createdComponent).setWeight(300);
 			((TransmissionComponent)createdComponent).setAcceleration(150);
@@ -314,7 +316,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		}
 		else if(type == "transmission" && cost >= 3001) {
 			createdComponent = new TransmissionComponent();
-			((TransmissionComponent)createdComponent).setQuality("Racing");
+			((TransmissionComponent)createdComponent).setQuality(Quality.RACING);
 			((TransmissionComponent)createdComponent).setValue(4000);
 			((TransmissionComponent)createdComponent).setWeight(200);
 			((TransmissionComponent)createdComponent).setAcceleration(250);

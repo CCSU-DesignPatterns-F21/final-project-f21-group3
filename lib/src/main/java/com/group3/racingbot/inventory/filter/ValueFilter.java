@@ -8,7 +8,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
  *
  * @param <T>
  */
-public class PriceFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
+public class ValueFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
 	private int price;
 	private FilterOperation operation;
 	private int current;
@@ -19,7 +19,7 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 	 * @param op
 	 * @param price
 	 */
-	public PriceFilter(InventoryIterator<T> iterator, FilterOperation op, int price) {
+	public ValueFilter(InventoryIterator<T> iterator, FilterOperation op, int price) {
 		super(iterator);
 		this.price = price;
 		this.operation = op;
@@ -47,15 +47,15 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 		switch (this.operation) {
 			case IS_GREATER_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() > this.price;
+					&& item.getValue() > this.price;
 				break;
 			case IS_LESS_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() < this.price;
+					&& item.getValue() < this.price;
 				break;
 			case IS_EQUAL: default:
 				itemMatchesContraints = item != null 
-					&& item.getPrice() == this.price;
+					&& item.getValue() == this.price;
 				break;
 		}
 		if (!itemMatchesContraints) {
@@ -86,8 +86,8 @@ public class PriceFilter<T extends MaterialFilterable> extends InventoryIterator
 	public boolean equals(Object other) {
 		if (other == null) { return false; }
 		if (this == other) { return true; } // Same instance 
-		else if (other instanceof PriceFilter) {
-			PriceFilter<?> otherObj = (PriceFilter<?>) other;
+		else if (other instanceof ValueFilter) {
+			ValueFilter<?> otherObj = (ValueFilter<?>) other;
 			if (this.getCriteria().equals(otherObj.getCriteria())) {
 				return true;
 			}

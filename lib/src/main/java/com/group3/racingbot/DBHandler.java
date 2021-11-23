@@ -49,7 +49,7 @@ import com.mongodb.client.MongoDatabase;
 
 /**
  * Handles the requests and connections to the database.
- * @author Maciej Bregisz
+ * @author Maciej Bregisz, Nick Sabia
  *
  */
 public class DBHandler {

@@ -15,12 +15,12 @@ public interface MaterialFilterable {
 	 * Retrieves the price value.
 	 * @return int
 	 */
-	public int getPrice();
+	public int getValue();
 	/**
 	 * Retrieves the quality label.
 	 * @return String
 	 */
-	public String getQuality();
+	public Quality getQuality();
 	/**
 	 * Retrieves the weight value.
 	 * @return int

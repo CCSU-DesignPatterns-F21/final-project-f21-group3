@@ -5,8 +5,13 @@ package com.group3.racingbot.inventory.filter;
 
 import java.util.ArrayList;
 
+
+import com.group3.racingbot.driverstate.Defensive;
+import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
+import com.group3.racingbot.standings.DriverStanding;
+import com.group3.racingbot.standings.Standings;
 
 /**
  * Used to store and use filters on inventories.
@@ -80,32 +85,30 @@ public class FilterManager<T> {
 	}
 	
 	/**
-	 * Apply material filters to a material filterable iterator.
+	 * Apply filters to a filterable iterator.
 	 * @param originalIterator the unaltered iterator.
 	 * @return string containing the results of the filter.
 	 */
-	public InventoryIteratorDecorator<T> performMaterialFilter(InventoryIterator<T> originalIterator) {
-		//String resultStr = "";
-		FilterIterator iterator = new FilterIterator();
-		//Iterator<? extends MaterialFilterable> prevIterator = originalIterator; // This is the iterator which will go into the parameters of the next iterator we find.
+	public InventoryIteratorDecorator<T> applyFilters(InventoryIterator<T> originalIterator) {
+		Iterator<InventoryIteratorDecorator<T>> iterator = this.iterator();
 		ArrayList<InventoryIteratorDecorator<T>> appliedFilters = new ArrayList<InventoryIteratorDecorator<T>>(); // Iterators which actually get used.
+		
 		// Connect each iterator with one another.
 		int index = 0;
 		while (iterator.hasNext()) {
 			InventoryIteratorDecorator<T> currentFilter = iterator.next();
-			// Ensure that only the material filterable filters apply.
-			if (currentFilter.getClass().isAssignableFrom(MaterialFilterable.class)) {
-				/*QualityFilter<Car> filterA = new QualityFilter<Car>(carIterator, "Lemon");
-	    		DurabilityFilter<Car> filterB = new DurabilityFilter<Car>(filterA, FilterOperation.IS_GREATER_THAN, 40);*/
-				if (appliedFilters.size() == 0) {
-					currentFilter.setInventoryIterator(originalIterator);
-				}
-				else {
-					currentFilter.setInventoryIterator(appliedFilters.get(index));
-					index++;
-				}
-				appliedFilters.add(currentFilter);
+			if (appliedFilters.size() == 0) {
+				currentFilter.setInventoryIterator(originalIterator);
 			}
+			else {
+				currentFilter.setInventoryIterator(appliedFilters.get(index));
+				index++;
+			}
+			appliedFilters.add(currentFilter);
+		}
+		// Handle when applied filters is empty
+		if (appliedFilters.size() == 0) {
+			return null;
 		}
 		return appliedFilters.get(index);
 	}
@@ -146,5 +149,48 @@ public class FilterManager<T> {
 			}
 			return item;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((filters == null) ? 0 : filters.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof FilterManager) {
+			@SuppressWarnings("unchecked")
+			FilterManager<T> otherObj = (FilterManager<T>) other;
+			
+			ArrayList<InventoryIteratorDecorator<T>> otherFilters = otherObj.getFilters();
+			
+			if (otherFilters.size() != this.filters.size()) {
+				return false;
+			}
+			
+			try {
+				for (int i = 0, len = this.filters.size(); i < len; i++) {
+					if (otherFilters.get(i) == null || !otherFilters.get(i).equals(this.filters.get(i))) {
+						return false;
+					}
+				}
+			}
+			catch (IndexOutOfBoundsException e) {
+				return false;
+			}
+
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return this.printFilters();
 	}
 }

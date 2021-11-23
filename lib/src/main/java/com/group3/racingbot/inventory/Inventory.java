@@ -7,6 +7,8 @@ package com.group3.racingbot.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.group3.racingbot.inventory.filter.FilterManager;
 
@@ -18,6 +20,7 @@ import com.group3.racingbot.inventory.filter.FilterManager;
 public class Inventory<T extends Unique> {
 	@JsonBackReference
 	private List<T> items;
+	@BsonIgnore
 	private FilterManager<T> filterManager;
 	
 	/**
