@@ -23,6 +23,22 @@ public abstract class InventoryIteratorDecorator<T> implements InventoryIterator
 	}
 	
 	/**
+	 * Retrieve the iterator which is be decorated
+	 * @return the inventoryIterator
+	 */
+	public InventoryIterator<T> getInventoryIterator() {
+		return inventoryIterator;
+	}
+
+	/**
+	 * Set the iterator which is be decorated
+	 * @param inventoryIterator the inventoryIterator to set
+	 */
+	public void setInventoryIterator(InventoryIterator<T> inventoryIterator) {
+		this.inventoryIterator = inventoryIterator;
+	}
+
+	/**
 	 * Grab the next item in the list. This will filter out items which don't match the given criteria.
 	 */
 	abstract public T next();

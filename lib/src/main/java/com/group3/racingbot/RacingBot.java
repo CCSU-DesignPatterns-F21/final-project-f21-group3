@@ -26,7 +26,7 @@ import net.dv8tion.jda.api.entities.Message;
  */
 
 public class RacingBot {
-
+	
 	
 	/**
 	 * Reference to the command prefix.
@@ -44,13 +44,14 @@ public class RacingBot {
 	private static DBHandler db;
 	
 	public static void main(String[] args) throws Exception{
+		System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
 		configProperties = ConfigPropertiesHandler.getInstance();
 		
 		jda = JDABuilder.createDefault(configProperties.getProperty("discordChannelToken")).build();
 		jda.getPresence().setStatus(OnlineStatus.IDLE);
 		jda.getPresence().setActivity(Activity.watching("for participants!"));
 	
-		db = new DBHandler();
+		db = DBHandler.getInstance();
 
 		Commands commandHandler = new Commands(db);
 		jda.addEventListener(commandHandler);

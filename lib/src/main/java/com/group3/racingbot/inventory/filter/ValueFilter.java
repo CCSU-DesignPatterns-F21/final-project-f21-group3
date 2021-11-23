@@ -3,25 +3,25 @@ package com.group3.racingbot.inventory.filter;
 import com.group3.racingbot.inventory.InventoryIterator;
 
 /**
- * Returns results which match the given drafting attribute criteria.
+ * Returns results which match the given price criteria.
  * @author Nick Sabia
  *
  * @param <T>
  */
-public class DraftingFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
-	private int drafting;
+public class ValueFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
+	private int price;
 	private FilterOperation operation;
 	private int current;
 	
 	/**
-	 * Applies the drafting filter to whatever inventory iterator is passed into it.
+	 * Applies the price filter to whatever inventory iterator is passed into it.
 	 * @param iterator
 	 * @param op
-	 * @param drafting
+	 * @param price
 	 */
-	public DraftingFilter(InventoryIterator<T> iterator, FilterOperation op, int drafting) {
+	public ValueFilter(InventoryIterator<T> iterator, FilterOperation op, int price) {
 		super(iterator);
-		this.drafting = drafting;
+		this.price = price;
 		this.operation = op;
 		this.current = 0;
 	}
@@ -39,7 +39,7 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 	}
 	
 	/**
-	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified drafting skill.
+	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified price.
 	 */
 	public T next() {
 		T item = this.inventoryIterator.next();
@@ -47,15 +47,15 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 		switch (this.operation) {
 			case IS_GREATER_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getDrafting() > this.drafting;
+					&& item.getValue() > this.price;
 				break;
 			case IS_LESS_THAN:
 				itemMatchesContraints = item != null 
-					&& item.getDrafting() < this.drafting;
+					&& item.getValue() < this.price;
 				break;
 			case IS_EQUAL: default:
 				itemMatchesContraints = item != null 
-					&& item.getDrafting() == this.drafting;
+					&& item.getValue() == this.price;
 				break;
 		}
 		if (!itemMatchesContraints) {
@@ -71,14 +71,14 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString().toLowerCase() + " " + this.drafting;
+		return this.operation.toString().toLowerCase() + " " + this.price;
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.drafting + this.operation.getIntOperation();
+		result = prime * result + this.price + this.operation.getIntOperation();
 		return result;
 	}
 	
@@ -86,8 +86,8 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 	public boolean equals(Object other) {
 		if (other == null) { return false; }
 		if (this == other) { return true; } // Same instance 
-		else if (other instanceof DraftingFilter) {
-			DraftingFilter<?> otherObj = (DraftingFilter<?>) other;
+		else if (other instanceof ValueFilter) {
+			ValueFilter<?> otherObj = (ValueFilter<?>) other;
 			if (this.getCriteria().equals(otherObj.getCriteria())) {
 				return true;
 			}
@@ -97,7 +97,7 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 	
 	@Override
 	public String toString() {
-		return "DraftingFilter which filters for items that are " + this.getCriteria();
+		return "PriceFilter which filters for items that are " + this.getCriteria();
 	}
 	
 	/**

@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
+import com.group3.racingbot.IClonable;
+
 /**
  * @author Jack Gola
  * Specialized class of Component abstract class
@@ -31,6 +33,8 @@ public class ChassisComponent extends Component {
 	public ChassisComponent() {
 		this.setName("Chassis");
 	}
+	
+	
 
 	/**
 	 * @return the brakingModifier
@@ -115,7 +119,7 @@ public class ChassisComponent extends Component {
 	public void setHandlingModifier(double handlingModifier) {
 		this.handlingModifier = handlingModifier;
 	}
-	
+
 	/**
 	 * returns hashCode() for chassis component
 	 */
@@ -161,6 +165,4 @@ public class ChassisComponent extends Component {
 		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nPopularity: " + this.getPopularityModifier()
 		+ "\nAcceleration Modifier: " + getAccelerationModifier() + "\nSpeed Modifier: " + getSpeedModifier() + "\nHandling Modifier: " + getHandlingModifier() + "\nBraking Modifier: " + getBrakingModifier() + "\n\n";
 	}
-	
-	
 }

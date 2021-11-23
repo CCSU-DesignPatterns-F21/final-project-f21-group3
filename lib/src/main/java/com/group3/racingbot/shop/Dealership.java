@@ -2,9 +2,9 @@ package com.group3.racingbot.shop;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
+import com.group3.racingbot.Car;
 import com.group3.racingbot.ComponentFactory.Component;
-import com.group3.racingbot.inventory.CarInventory;
-import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.Inventory;
 
 /**
  * Concrete class extending abstract class Shop. Sells low quality components.
@@ -16,8 +16,8 @@ public class Dealership extends Shop  {
 	
 	@BsonCreator
 	public Dealership() {
-		setCarsForSale(new CarInventory());
-		setComponentsForSale(new ComponentInventory());
+		setCarsForSale(new Inventory<Car>());
+		setComponentsForSale(new Inventory<Component>());
 		setId(2);
 		setName("Dealership");
 		setDescription("Factory cars and components, just like the owners manual suggested. Only genuine factory parts!");

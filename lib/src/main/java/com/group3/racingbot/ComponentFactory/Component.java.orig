@@ -6,10 +6,11 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+<<<<<<< HEAD
 import com.group3.racingbot.IClonable;
+=======
 import com.group3.racingbot.inventory.Unique;
-import com.group3.racingbot.inventory.filter.MaterialFilterable;
-import com.group3.racingbot.inventory.filter.Quality;
+>>>>>>> development
 
 /**
  * @author Jack Gola
@@ -25,15 +26,19 @@ import com.group3.racingbot.inventory.filter.Quality;
         @JsonSubTypes.Type(value = ChassisComponent.class),
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
+<<<<<<< HEAD
+public abstract class Component{
+	private String quality = "", name = "";
+	private int weight = 0, value = 0, durability = 0;
+	private int maxDurability = 100;				
+	private String thumbnailURL = "";
+=======
 
-
-public abstract class Component implements Unique, MaterialFilterable {
-	private String id = "", 
-			name = "";
-	private Quality quality = Quality.LEMON;
+public abstract class Component implements Unique {
+	private String id = "", quality = "", name = "";
 	private int weight = 0, value = 0, durability = 0, rating = 0;
 	private int maxDurability = 100;
-	private String thumbnailURL = "";
+
 	@Override
 	public String getId() {
 		return id;
@@ -50,6 +55,7 @@ public abstract class Component implements Unique, MaterialFilterable {
 	public int getRating() {
 		return rating;
 	}
+>>>>>>> development
 
 	/**
 	 * @return the name
@@ -68,7 +74,7 @@ public abstract class Component implements Unique, MaterialFilterable {
 	/**
 	 * @param quality the quality to set
 	 */
-	public void setQuality(Quality quality) {
+	public void setQuality(String quality) {
 		this.quality = quality;
 	}
 
@@ -112,7 +118,7 @@ public abstract class Component implements Unique, MaterialFilterable {
 	 * @param returns Quality
 	 */
 	
-	public Quality getQuality() {
+	public String getQuality() {
 		return quality;
 	}
 	

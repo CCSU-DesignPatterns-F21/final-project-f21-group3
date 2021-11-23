@@ -1,11 +1,19 @@
 package com.group3.racingbot;
 
+<<<<<<< HEAD
 import java.awt.Color;
+=======
 import java.util.ArrayList;
+>>>>>>> development
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
+<<<<<<< HEAD
+import com.group3.racingbot.inventory.CarInventory;
+import com.group3.racingbot.inventory.ComponentInventory;
+import com.group3.racingbot.inventory.DriverInventory;
+=======
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
@@ -14,6 +22,7 @@ import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.inventory.filter.FilterManager;
 import com.group3.racingbot.inventory.filter.InventoryIteratorDecorator;
 
+>>>>>>> development
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.
  * @author Maciej Bregisz
@@ -292,6 +301,7 @@ public class Player implements Unique {
 	public void setActiveCarId(String activeCarId) {
 		this.activeCarId = activeCarId;
 	}
+	
 
 	/**
 	 * @return details about Player Object.
@@ -327,4 +337,7 @@ public class Player implements Unique {
 		}
 		return false;
 	}
+	
+
+	
 }

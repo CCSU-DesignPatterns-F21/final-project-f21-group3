@@ -11,7 +11,11 @@ import com.group3.racingbot.standings.Standings;
 import java.util.Date;
 
 /**
+<<<<<<< HEAD
+ * An racing event which a driver may participate in
+=======
  * An event which a Driver can sign up for and participate in for rewards.
+>>>>>>> d5ba05d491f2805ac2a395c721c3bd3fd2964fd2
  * @author Nick Sabia
  *
  */
@@ -25,7 +29,17 @@ public class RaceEvent implements Unique {
 	//private List<DriverStanding> standings;
 	private Standings standings;
 	
+	/**
+	 * Construct a new race event. This is where drivers will compete for a cash prize.
+	 */
 	public RaceEvent() {
+<<<<<<< HEAD
+		this.eventName = "Some event";
+		this.raceTrack = new RaceTrack();
+		this.drivers = new DriverInventory();
+		this.timeElapsed = 0;
+		this.grandPrize = 10000;
+=======
 		this.id = "";
 		this.raceTrack = null;
 		//this.drivers = new DriverInventory();
@@ -75,6 +89,7 @@ public class RaceEvent implements Unique {
 	 */
 	public void setStandings(Standings standings) {
 		this.standings = standings;
+>>>>>>> d5ba05d491f2805ac2a395c721c3bd3fd2964fd2
 	}
 
 	/**
@@ -160,6 +175,10 @@ public class RaceEvent implements Unique {
 	/**
 	 * Lets each driver perform a step on the race track to advance forward or run down an idle timer.
 	 */
+<<<<<<< HEAD
+	public void stepAllDrivers() {
+		// step every driver in the list.
+=======
 	public String stepAllDrivers() {
 		DBHandler dbh = DBHandler.getInstance();
 		
@@ -202,6 +221,7 @@ public class RaceEvent implements Unique {
 		// Update the db with the details of the standings.
 		dbh.updateRaceEvent(this);
 		return stepResult;
+>>>>>>> d5ba05d491f2805ac2a395c721c3bd3fd2964fd2
 	}
 	
 	/**

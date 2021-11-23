@@ -11,6 +11,7 @@ import com.group3.racingbot.inventory.InventoryIterator;
 public class ComposureFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
 	private int composure;
 	private FilterOperation operation;
+	private int current;
 	
 	/**
 	 * Applies the composure filter to whatever inventory iterator is passed into it.
@@ -22,6 +23,12 @@ public class ComposureFilter<T extends SkillFilterable> extends InventoryIterato
 		super(iterator);
 		this.composure = composure;
 		this.operation = op;
+		this.current = 0;
+	}
+	
+	@Override
+	public int getCurrentIndex() {
+		return this.current;
 	}
 	
 	/**
@@ -64,7 +71,7 @@ public class ComposureFilter<T extends SkillFilterable> extends InventoryIterato
 	 * @return String
 	 */
 	public String getCriteria() {
-		return this.operation.toString() + " " + this.composure;
+		return this.operation.toString().toLowerCase() + " " + this.composure;
 	}
 	
 	@Override
