@@ -21,14 +21,14 @@ public class EngineComponent extends Component {
 	 */
 	@BsonCreator
 	public EngineComponent() {
-		this.setName("Engine");
+		this.setComponentType(ComponentType.ENGINE);
 	}
 	/**
 	 * Alternate constructor, takes an existing object of the same type, for use with prototype.
 	 * @param ec EngineComponent object reference
 	 */
 	public EngineComponent(EngineComponent ec) {
-		this.setName(ec.getName());
+		this.setComponentType(ComponentType.ENGINE);
 		this.setId(ec.getId());
 		this.setQuality(ec.getQuality());
 		this.setWeight(ec.getWeight());
@@ -86,7 +86,7 @@ public class EngineComponent extends Component {
 
 	@Override
 	public String toString() {
-		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nSpeed: " + this.getSpeed() + "\n\n";
+		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nSpeed: " + this.getSpeed() + "\n\n";
 	}
 
 	/**

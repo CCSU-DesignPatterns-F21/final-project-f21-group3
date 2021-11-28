@@ -25,7 +25,7 @@ public class TransmissionComponent extends Component {
 	 */
 	@BsonCreator
 	public TransmissionComponent() {
-		this.setName("Transmission");
+		this.setComponentType(ComponentType.TRANSMISSION);
 	}
 	
 	/**
@@ -34,7 +34,7 @@ public class TransmissionComponent extends Component {
 	 */
 	public TransmissionComponent(TransmissionComponent tc)
 	{
-		this.setName(tc.getName());
+		this.setComponentType(ComponentType.TRANSMISSION);
 		this.setId(tc.getId());
 		this.setQuality(tc.getQuality());
 		this.setWeight(tc.getWeight());
@@ -95,7 +95,7 @@ public class TransmissionComponent extends Component {
 	
 	@Override
 	public String toString() {
-		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nAcceleration: " + this.getAcceleration() + "\n\n";
+		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nAcceleration: " + this.getAcceleration() + "\n\n";
 	}
 	
 	/**

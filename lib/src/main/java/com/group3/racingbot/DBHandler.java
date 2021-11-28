@@ -30,7 +30,7 @@ import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
-import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
@@ -355,7 +355,7 @@ public class DBHandler {
 			// Add the player object to each item in the driver inventory.
 			// The player object isn't stored for every driver in the database, 
 			// so we must do it here to avoid the player attribute in each driver pointing to null.
-			InventoryIterator<Driver> driverIterator = player.getOwnedDrivers().iterator();
+			Iterator<Driver> driverIterator = player.getOwnedDrivers().iterator();
 			int i = 0;
 			Driver currentDriver = null;
 			while (driverIterator.hasNext()) {

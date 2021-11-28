@@ -5,13 +5,7 @@ package com.group3.racingbot.inventory.filter;
 
 import java.util.ArrayList;
 
-
-import com.group3.racingbot.driverstate.Defensive;
-import com.group3.racingbot.inventory.Inventory;
-import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
-import com.group3.racingbot.standings.DriverStanding;
-import com.group3.racingbot.standings.Standings;
 
 /**
  * Used to store and use filters on inventories.
@@ -20,25 +14,25 @@ import com.group3.racingbot.standings.Standings;
 public class FilterManager<T> {
 	//private ArrayList<InventoryIteratorDecorator<T>> materialFilters;
 	//private ArrayList<InventoryIteratorDecorator<T>> skillFilters;
-	private ArrayList<InventoryIteratorDecorator<T>> filters;
+	private ArrayList<IteratorDecorator<T>> filters;
 	
 	public FilterManager() {
 		//this.materialFilters = new ArrayList<InventoryIteratorDecorator<T>>();
 		//this.skillFilters = new ArrayList<InventoryIteratorDecorator<T>>();
-		this.filters = new ArrayList<InventoryIteratorDecorator<T>>();
+		this.filters = new ArrayList<IteratorDecorator<T>>();
 	}
 
 	/**
 	 * @return the filters
 	 */
-	public ArrayList<InventoryIteratorDecorator<T>> getFilters() {
+	public ArrayList<IteratorDecorator<T>> getFilters() {
 		return filters;
 	}
 
 	/**
 	 * @param filters the filters to set
 	 */
-	public void setFilters(ArrayList<InventoryIteratorDecorator<T>> filters) {
+	public void setFilters(ArrayList<IteratorDecorator<T>> filters) {
 		this.filters = filters;
 	}
 	
@@ -47,7 +41,7 @@ public class FilterManager<T> {
 	 * @param filter filter to add
 	 */
 	//@SuppressWarnings("unchecked")
-	public void add(InventoryIteratorDecorator<T> filter) {
+	public void add(IteratorDecorator<T> filter) {
 		//if (filter.getInventoryIterator().getClass().isAssignableFrom(MaterialFilterable.class)) {
 			//this.materialFilters.add((InventoryIteratorDecorator<MaterialFilterable>) filter);
 		//}
@@ -59,14 +53,14 @@ public class FilterManager<T> {
 	 * Clear out all existing filters.
 	 */
 	public void clear() {
-		this.filters = new ArrayList<InventoryIteratorDecorator<T>>();
+		this.filters = new ArrayList<IteratorDecorator<T>>();
 	}
 	
 	/**
 	 * Retrieve a new iterator that can traverse the filters.
 	 * @return a filter iterator
 	 */
-	public Iterator<InventoryIteratorDecorator<T>> iterator() {
+	public Iterator<IteratorDecorator<T>> iterator() {
 		return new FilterIterator();
 	}
 	
@@ -78,7 +72,7 @@ public class FilterManager<T> {
 		String resultStr = "";
 		FilterIterator iterator = new FilterIterator();
 		while (iterator.hasNext()) {
-			InventoryIteratorDecorator<T> currentFilter = iterator.next();
+			IteratorDecorator<T> currentFilter = iterator.next();
 			resultStr += currentFilter.toString() + "\n";
 		}
 		return resultStr;
@@ -89,19 +83,19 @@ public class FilterManager<T> {
 	 * @param originalIterator the unaltered iterator.
 	 * @return string containing the results of the filter.
 	 */
-	public InventoryIteratorDecorator<T> applyFilters(InventoryIterator<T> originalIterator) {
-		Iterator<InventoryIteratorDecorator<T>> iterator = this.iterator();
-		ArrayList<InventoryIteratorDecorator<T>> appliedFilters = new ArrayList<InventoryIteratorDecorator<T>>(); // Iterators which actually get used.
+	public IteratorDecorator<T> applyFilters(Iterator<T> originalIterator) {
+		Iterator<IteratorDecorator<T>> iterator = this.iterator();
+		ArrayList<IteratorDecorator<T>> appliedFilters = new ArrayList<IteratorDecorator<T>>(); // Iterators which actually get used.
 		
 		// Connect each iterator with one another.
 		int index = 0;
 		while (iterator.hasNext()) {
-			InventoryIteratorDecorator<T> currentFilter = iterator.next();
+			IteratorDecorator<T> currentFilter = iterator.next();
 			if (appliedFilters.size() == 0) {
-				currentFilter.setInventoryIterator(originalIterator);
+				currentFilter.setIterator(originalIterator);
 			}
 			else {
-				currentFilter.setInventoryIterator(appliedFilters.get(index));
+				currentFilter.setIterator(appliedFilters.get(index));
 				index++;
 			}
 			appliedFilters.add(currentFilter);
@@ -117,7 +111,7 @@ public class FilterManager<T> {
 	 * Provides a way to traverse the filters.
 	 * @author Nick Sabia
 	 */
-	private class FilterIterator implements Iterator<InventoryIteratorDecorator<T>> {
+	private class FilterIterator implements Iterator<IteratorDecorator<T>> {
 		private int current;
 		
 		private FilterIterator() {
@@ -138,8 +132,8 @@ public class FilterManager<T> {
 		}
 		
 		@Override
-		public InventoryIteratorDecorator<T> next() {
-			InventoryIteratorDecorator<T> item = null;
+		public IteratorDecorator<T> next() {
+			IteratorDecorator<T> item = null;
 			try {
 				item = FilterManager.this.filters.get(this.current);
 				this.current++;
@@ -167,7 +161,7 @@ public class FilterManager<T> {
 			@SuppressWarnings("unchecked")
 			FilterManager<T> otherObj = (FilterManager<T>) other;
 			
-			ArrayList<InventoryIteratorDecorator<T>> otherFilters = otherObj.getFilters();
+			ArrayList<IteratorDecorator<T>> otherFilters = otherObj.getFilters();
 			
 			if (otherFilters.size() != this.filters.size()) {
 				return false;

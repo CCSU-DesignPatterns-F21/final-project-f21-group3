@@ -1,7 +1,7 @@
 package com.group3.racingbot.inventory.filter;
 
 /**
- * Classes which implement this can be filtered by a concrete InventoryIteratorDecorator which filters by some physical property.
+ * Classes which implement this can be filtered by a concrete IteratorDecorator which filters by some physical property.
  * @author Nick Sabia
  *
  */

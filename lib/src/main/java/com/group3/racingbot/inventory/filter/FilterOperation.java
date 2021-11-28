@@ -8,7 +8,8 @@ package com.group3.racingbot.inventory.filter;
 public enum FilterOperation {
 	IS_GREATER_THAN(1),
 	IS_EQUAL(0),
-	IS_LESS_THAN(-1);
+	IS_LESS_THAN(-1),
+	IS_NOT_EQUAL(2);
 	
 	private final int operation;
 
@@ -30,6 +31,8 @@ public enum FilterOperation {
 	 */
 	public String toString() {
 		switch (this.operation) {
+			case 2:
+				return "NOT EQUAL TO";
 			case 1:
 				return "GREATER THAN";
 			case 0:

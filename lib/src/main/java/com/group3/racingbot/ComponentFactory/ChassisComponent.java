@@ -31,7 +31,7 @@ public class ChassisComponent extends Component {
 	 */
 	@BsonCreator
 	public ChassisComponent() {
-		this.setName("Chassis");
+		this.setComponentType(ComponentType.CHASSIS);
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public class ChassisComponent extends Component {
 	 */
 	public ChassisComponent(ChassisComponent cc)
 	{
-		this.setName(cc.getName());
+		this.setComponentType(ComponentType.CHASSIS);
 		this.setId(cc.getId());
 		this.setQuality(cc.getQuality());
 		this.setWeight(cc.getWeight());
@@ -186,7 +186,7 @@ public class ChassisComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nPopularity: " + this.getPopularityModifier()
+		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nPopularity: " + this.getPopularityModifier()
 		+ "\nAcceleration Modifier: " + getAccelerationModifier() + "\nSpeed Modifier: " + getSpeedModifier() + "\nHandling Modifier: " + getHandlingModifier() + "\nBraking Modifier: " + getBrakingModifier() + "\n\n";
 	}
 	

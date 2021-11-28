@@ -6,8 +6,10 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.group3.racingbot.Car;
 import com.group3.racingbot.IClonable;
 import com.group3.racingbot.inventory.Unique;
+import com.group3.racingbot.inventory.filter.ComponentFilterable;
 import com.group3.racingbot.inventory.filter.MaterialFilterable;
 import com.group3.racingbot.inventory.filter.Quality;
 
@@ -26,11 +28,9 @@ import com.group3.racingbot.inventory.filter.Quality;
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
 
-
-
-public abstract class Component implements Unique, IClonable,MaterialFilterable {
-	private String id = "", name = "";
-
+public abstract class Component implements Unique, IClonable, MaterialFilterable, ComponentFilterable {
+	private String id = "";
+	private ComponentType componentType = null;
 	private Quality quality = Quality.LEMON;
 
 	private int weight = 0, value = 0, durability = 0, rating = 0;
@@ -53,18 +53,14 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 		return rating;
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
+	@Override
+	public ComponentType getComponentType() {
+		return componentType;
 	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+	
+	@Override
+	public void setComponentType(ComponentType componentType) {
+		this.componentType = componentType;
 	}
 
 	/**
@@ -180,25 +176,31 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(durability, maxDurability, name, quality, value, weight);
+		return Objects.hash(durability, maxDurability, componentType.toString(), quality, value, weight);
 	}
 	
-	/**
-	 * @param returns boolean for component
-	 */
-
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Component) {
+			Component otherObj = (Component) other;
+			
+			if (this.getDurability() != otherObj.getDurability())
+				return false;
+			if (this.getValue() != otherObj.getValue())
+				return false;
+			if (this.getRating() != otherObj.getRating())
+				return false;
+			if (this.getWeight() != otherObj.getWeight())
+				return false;
+			if (this.getComponentType().getComponentType() != otherObj.getComponentType().getComponentType()) {
+				return false;
+			}
+			
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Component other = (Component) obj;
-		return durability == other.durability && maxDurability == other.maxDurability
-				&& Objects.equals(name, other.name) && Objects.equals(quality, other.quality)
-				&& value == other.value && weight == other.weight;
+		}
+		return false;
 	}
 	
 	/**
@@ -208,7 +210,7 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	@Override
 	public String toString() {
 
-		return "Component [id=" + id + "quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
+		return "Component [id=" + id + "quality=" + quality + ", type=" + componentType + ", weight=" + weight + ", value=" + value
 				+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
 
 	}
