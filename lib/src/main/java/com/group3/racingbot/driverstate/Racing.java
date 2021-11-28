@@ -187,22 +187,6 @@ public abstract class Racing implements DriverState {
 	}
 
 	/**
-	 * Retrieve the race track which is currently being raced on.
-	 * @return the raceTrack
-	 */
-	//public RaceTrack getRaceTrack() {
-	//	return raceTrack;
-	//}
-
-	/**
-	 * Set the race track which is currently being raced on.
-	 * @param raceTrack the raceTrack to set
-	 */
-	//public void setRaceTrack(RaceTrack raceTrack) {
-	//	this.raceTrack = raceTrack;
-	//}
-
-	/**
 	 * Retrieve the driver who is currently racing.
 	 * @return the driver
 	 */
@@ -247,37 +231,7 @@ public abstract class Racing implements DriverState {
 	public void setRaceEventId(String raceEventId) {
 		this.raceEventId = raceEventId;
 	}
-
-	/**
-	 * @return the totalDistanceTraveled
-	 */
-	//public int getTotalDistanceTraveled() {
-	//	return totalDistanceTraveled;
-	//}
-
-	/**
-	 * @param totalDistanceTraveled the totalDistanceTraveled to set
-	 */
-	//public void setTotalDistanceTraveled(int totalDistanceTraveled) {
-	//	this.totalDistanceTraveled = totalDistanceTraveled;
-	//}
-
-	/**
-	 * Retrieve the race event.
-	 * @return the raceEvent
-	 */
-	//public RaceEvent getRaceEvent() {
-	//	return raceEvent;
-	//}
-
-	/**
-	 * Set the race event.
-	 * @param raceEvent the raceEvent to set
-	 */
-	//public void setRaceEvent(RaceEvent raceEvent) {
-	//	this.raceEvent = raceEvent;
-	//}
-
+	
 	/**
 	 * Retrieve the distance this Driver is able to travel on straight track nodes this turn.
 	 * @return the straightDistance

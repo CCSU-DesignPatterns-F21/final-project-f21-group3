@@ -112,7 +112,7 @@ public abstract class Completed implements DriverState{
 
 	@Override
 	public String rest(Driver driver) {
-		return driver.getName() + "(" + driver.getId() + ") still has rewards to claim. May not rest until the reward has been claimed.\n**Claim a Reward**\n!r debug claim";
+		return driver.getName() + "(" + driver.getId() + ") still has rewards to claim. May not rest until the reward has been claimed.\n**Claim a Reward**\n!r claim";
 	}
 
 	@Override

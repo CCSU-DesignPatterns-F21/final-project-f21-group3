@@ -32,7 +32,7 @@ public class Resting implements DriverState {
 	public String signUpForRace(Driver driver, Car car, RaceEvent raceEvent) {
 		DriverState racePendingState = new RacePending(driver.getPlayer().getId(), driver.getId(), car.getId(), raceEvent.getId());
 		driver.setState(racePendingState);
-		return driver.getName() + " is now signed up for the race event " + raceEvent.getId() + ". You may withdraw " + driver.getName() + " from the race before the race starts.\n**Withdraw**\n!r debug driver withdraw";
+		return driver.getName() + " is now signed up for the race event " + raceEvent.getId() + ". You may withdraw " + driver.getName() + " from the race before the race starts.\n**Withdraw**\n!r withdraw";
 	}
 	
 	@Override
@@ -83,8 +83,8 @@ public class Resting implements DriverState {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		String trainingSyntax = "!r debug driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)\n!r debug driver train (a | cor | com | d | s | r) (l | m | i)";
-		String registerSyntax = "!r debug event register";
+		String trainingSyntax = "!r driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)\n!r debug driver train (a | cor | com | d | s | r) (l | m | i)";
+		String registerSyntax = "!r event register";
 		return driver.getName() + " (" + driver.getId() + ") is currently resting. You can train " + driver.getName() + " or enter them into a race.\n**Train**\n" + trainingSyntax + "\n**Register for a race**\n" + registerSyntax;
 	}
 }

@@ -341,7 +341,7 @@ public class RacePending implements DriverState {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		return driver.getName() + "(" + driver.getId() + ") is currently awaiting the start of race event " + this.raceEventId + ". You may withdraw " + driver.getName() + " from the race before the race starts.\n**Withdraw**\n!r debug driver withdraw";
+		return driver.getName() + "(" + driver.getId() + ") is currently awaiting the start of race event " + this.raceEventId + ". You may withdraw " + driver.getName() + " from the race before the race starts.\n**Withdraw**\n!r withdraw";
 	}
 
 	@Override
