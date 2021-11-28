@@ -1,6 +1,6 @@
 package com.group3.racingbot.inventory.filter;
 
-import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.Iterator;
 
 /**
  * Applies the quality filter to whatever inventory iterator is passed into it. This will filter out items which don't match the criteria for the specified quality.
@@ -8,36 +8,25 @@ import com.group3.racingbot.inventory.InventoryIterator;
  *
  * @param <T>
  */
-public class QualityFilter<T extends MaterialFilterable> extends InventoryIteratorDecorator<T> {
+public class QualityFilter<T extends MaterialFilterable> extends IteratorDecorator<T> {
 	private Quality quality;
 	private FilterOperation operation;
-	private int current;
 	
 	/**
 	 * Applies the quality filter to whatever inventory iterator is passed into it.
-	 * @param iterator
-	 * @param label
+	 * @param iterator the iterator which is to be decorated
+	 * @param op the logical operator
+	 * @param quality the quality of the material object to filter by
 	 */
-	public QualityFilter(InventoryIterator<T> iterator, FilterOperation op, Quality quality) {
+	public QualityFilter(Iterator<T> iterator, FilterOperation op, Quality quality) {
 		super(iterator);
 		this.quality = quality;
 		this.operation = op;
-		this.current = 0;
-	}
-	
-	@Override
-	public int getCurrentIndex() {
-		return this.current;
-	}
-	
-	@Override
-	public boolean hasNext() {
-		return this.inventoryIterator.hasNext();
 	}
 	
 	@Override
 	public T next() {
-		T item = this.inventoryIterator.next();
+		T item = super.getIterator().next();
 		boolean itemMatchesContraints = false;
 		switch (this.operation) {
 			case IS_GREATER_THAN:
@@ -48,9 +37,16 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 				itemMatchesContraints = item != null 
 					&& item.getQuality().getQuality() < this.quality.getQuality();
 				break;
-			case IS_EQUAL: default:
+			case IS_EQUAL:
 				itemMatchesContraints = item != null 
 					&& item.getQuality().getQuality() == this.quality.getQuality();
+				break;
+			case IS_NOT_EQUAL:
+				itemMatchesContraints = item != null 
+					&& item.getQuality().getQuality() != this.quality.getQuality();
+				break;
+			default:
+				System.out.println("QualityFilter: Invalid operator supplied.");
 				break;
 		}
 		if (!itemMatchesContraints) {
@@ -61,10 +57,7 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 		return item;
 	}
 	
-	/**
-	 * Returns what this filter is filtering for.
-	 * @return String
-	 */
+	@Override
 	public String getCriteria() {
 		return this.operation.toString().toLowerCase() + " " + this.quality.toString().toLowerCase();
 	}
@@ -94,10 +87,4 @@ public class QualityFilter<T extends MaterialFilterable> extends InventoryIterat
 	public String toString() {
 		return "QualityFilter which filters for " + this.quality;
 	}
-	
-	@Override
-	public void printInventory() {
-		
-	}
-
 }

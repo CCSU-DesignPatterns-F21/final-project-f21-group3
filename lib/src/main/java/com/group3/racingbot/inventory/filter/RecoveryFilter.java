@@ -1,6 +1,6 @@
 package com.group3.racingbot.inventory.filter;
 
-import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.Iterator;
 
 /**
  * Returns results which match the given recovery attribute criteria.
@@ -8,41 +8,25 @@ import com.group3.racingbot.inventory.InventoryIterator;
  *
  * @param <T>
  */
-public class RecoveryFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
+public class RecoveryFilter<T extends SkillFilterable> extends IteratorDecorator<T> {
 	private int recovery;
 	private FilterOperation operation;
-	private int current;
 	
 	/**
 	 * Applies the recovery filter to whatever inventory iterator is passed into it.
-	 * @param iterator
-	 * @param op
-	 * @param recovery
+	 * @param iterator the iterator which is to be decorated
+	 * @param op the logical operator
+	 * @param recovery the recovery skill to filter by
 	 */
-	public RecoveryFilter(InventoryIterator<T> iterator, FilterOperation op, int recovery) {
+	public RecoveryFilter(Iterator<T> iterator, FilterOperation op, int recovery) {
 		super(iterator);
 		this.recovery = recovery;
 		this.operation = op;
-		this.current = 0;
 	}
 	
 	@Override
-	public int getCurrentIndex() {
-		return this.current;
-	}
-	
-	/**
-	 * Verifies that there is another item ahead of the current one.
-	 */
-	public boolean hasNext() {
-		return this.inventoryIterator.hasNext();
-	}
-	
-	/**
-	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified recovery skill.
-	 */
 	public T next() {
-		T item = this.inventoryIterator.next();
+		T item = super.getIterator().next();
 		boolean itemMatchesContraints = false;
 		switch (this.operation) {
 			case IS_GREATER_THAN:
@@ -53,9 +37,16 @@ public class RecoveryFilter<T extends SkillFilterable> extends InventoryIterator
 				itemMatchesContraints = item != null 
 					&& item.getRecovery() < this.recovery;
 				break;
-			case IS_EQUAL: default:
+			case IS_EQUAL:
 				itemMatchesContraints = item != null 
 					&& item.getRecovery() == this.recovery;
+				break;
+			case IS_NOT_EQUAL:
+				itemMatchesContraints = item != null 
+					&& item.getRecovery() != this.recovery;
+				break;
+			default:
+				System.out.println("RecoveryFilter: Invalid operator supplied.");
 				break;
 		}
 		if (!itemMatchesContraints) {
@@ -66,10 +57,7 @@ public class RecoveryFilter<T extends SkillFilterable> extends InventoryIterator
 		return item;
 	}
 	
-	/**
-	 * Returns what this filter is filtering for.
-	 * @return String
-	 */
+	@Override
 	public String getCriteria() {
 		return this.operation.toString().toLowerCase() + " " + this.recovery;
 	}
@@ -98,12 +86,5 @@ public class RecoveryFilter<T extends SkillFilterable> extends InventoryIterator
 	@Override
 	public String toString() {
 		return "RecoveryFilter which filters for items that are " + this.getCriteria();
-	}
-	
-	/**
-	 * Print the entire inventory regardless of filter.
-	 */
-	public void printInventory() {
-		
 	}
 }

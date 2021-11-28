@@ -13,6 +13,7 @@ import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.ChassisComponent;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
+import com.group3.racingbot.ComponentFactory.ComponentType;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
 import com.group3.racingbot.ComponentFactory.EngineComponent;
 import com.group3.racingbot.ComponentFactory.SuspensionComponent;
@@ -24,30 +25,27 @@ import com.group3.racingbot.driverstate.Skill;
 import com.group3.racingbot.driverstate.Training;
 import com.group3.racingbot.gameservice.GameplayHandler;
 import com.group3.racingbot.inventory.Inventory;
-import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.inventory.filter.ComponentTypeFilter;
 import com.group3.racingbot.inventory.filter.ComposureFilter;
 import com.group3.racingbot.inventory.filter.CorneringFilter;
 import com.group3.racingbot.inventory.filter.DraftingFilter;
 import com.group3.racingbot.inventory.filter.DurabilityFilter;
 import com.group3.racingbot.inventory.filter.FilterManager;
 import com.group3.racingbot.inventory.filter.FilterOperation;
-import com.group3.racingbot.inventory.filter.InventoryIteratorDecorator;
+import com.group3.racingbot.inventory.filter.IteratorDecorator;
 
 import com.group3.racingbot.shop.Shop;
 import com.group3.racingbot.standings.DriverStanding;
 import com.group3.racingbot.standings.Standings;
 
-import com.group3.racingbot.inventory.filter.MaterialFilterable;
 import com.group3.racingbot.inventory.filter.Quality;
 import com.group3.racingbot.inventory.filter.QualityFilter;
 import com.group3.racingbot.inventory.filter.RecoveryFilter;
 import com.group3.racingbot.inventory.filter.StraightsFilter;
 import com.group3.racingbot.inventory.filter.ValueFilter;
 import com.group3.racingbot.inventory.filter.WeightFilter;
-import com.group3.racingbot.gameservice.GameplayHandler;
-
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -366,63 +364,60 @@ public class Commands extends ListenerAdapter {
 	    		
 	    		if(args[2].equalsIgnoreCase("chopshop") || args[2].equalsIgnoreCase("c"))
 	    		{
-	    				if(args.length > 3)
-	    				{
-	    					if(args[3].equalsIgnoreCase("buy") || args[3].equalsIgnoreCase("b")) {
-	    						if(args.length > 4)
-	    	    				{
-	    							int id = Integer.parseInt(args[4]);
-	    							Shop shop = dbh.getShop(0);
-	    							List<Component> components = shop.getComponentsForSale().getItems();
-	    							try
+    				if(args.length > 3)
+    				{
+    					if(args[3].equalsIgnoreCase("buy") || args[3].equalsIgnoreCase("b")) {
+    						if(args.length > 4)
+    	    				{
+    							int id = Integer.parseInt(args[4]);
+    							Shop shop = dbh.getShop(0);
+    							List<Component> components = shop.getComponentsForSale().getItems();
+    							try
+    							{
+    								Player player = dbh.getPlayer(event.getAuthor().getId());
+	    							if(player.getCredits() >= components.get(id).getValue())
 	    							{
-	    								Player player = dbh.getPlayer(event.getAuthor().getId());
-		    							if(player.getCredits() >= components.get(id).getValue())
-		    							{
-		    								
-		    								Component component = components.get(id);
-		    								player.setCredits(player.getCredits()-component.getValue());
-		    								player.getOwnedComponents().add(component);
-		    								dbh.updateUser(player);
-		    								
-		    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
-		    								event.getChannel().sendMessage(printComponent(component,event).build()).queue();
-
-		    							}else {
-		    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
-		    							}
 	    								
-	    							}catch(Exception e){
-	    								System.out.println("Error performing transaction: "+ e.getMessage());
+	    								Component component = components.get(id);
+	    								player.setCredits(player.getCredits()-component.getValue());
+	    								player.getOwnedComponents().add(component);
+	    								dbh.updateUser(player);
+	    								
+	    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
+	    								event.getChannel().sendMessage(printComponent(component,event).build()).queue();
+
+	    							}else {
+	    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
 	    							}
-	    							
-	    	    				}else {
-	    	    					event.getChannel().sendMessage("Please try again with an id.").queue();
-	    	    				}
-	    					}
-	    				}else {
-	    					Shop shop = dbh.getShop(0);
-				    		//System.out.println(shop.size());
-				    		eb.clear();
-			    			eb.setColor(Color.green);
-			    			List<Component> components = shop.getComponentsForSale().getItems();
-			    			eb.setTitle(shop.getName());
-			    			eb.setDescription(shop.getDescription());
-				    		for(int i=0; i<components.size();i++)
-				    		{
-				    			
-				    			//TODO: use the iterator function instead?
-				    			//System.out.println(components.size());
-				    					
-				    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
-		    					eb.addField(field);
-				    					
-				    		}
-				    		event.getChannel().sendMessage(eb.build()).queue();
-	    				}
-	    					
-	    				
-	    	
+    								
+    							}catch(Exception e){
+    								System.out.println("Error performing transaction: "+ e.getMessage());
+    							}
+    							
+    	    				}else {
+    	    					event.getChannel().sendMessage("Please try again with an id.").queue();
+    	    				}
+    					}
+    				}else {
+    					Shop shop = dbh.getShop(0);
+			    		//System.out.println(shop.size());
+			    		eb.clear();
+		    			eb.setColor(Color.green);
+		    			List<Component> components = shop.getComponentsForSale().getItems();
+		    			eb.setTitle(shop.getName());
+		    			eb.setDescription(shop.getDescription());
+			    		for(int i=0; i<components.size();i++)
+			    		{
+			    			
+			    			//TODO: use the iterator function instead?
+			    			//System.out.println(components.size());
+			    					
+			    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+	    					eb.addField(field);
+			    					
+			    		}
+			    		event.getChannel().sendMessage(eb.build()).queue();
+    				}
 	    		}
 	    		
 	    		if(args[2].equalsIgnoreCase("junkyard") || args[2].equalsIgnoreCase("j"))
@@ -764,7 +759,7 @@ public class Commands extends ListenerAdapter {
 	    		Player p = dbh.getPlayer(user.getId());
 	    		if (args[2].equalsIgnoreCase("view")) {
     				String results = "";
-    				InventoryIterator<Component> iterator = p.getOwnedComponents().iterator();
+    				Iterator<Component> iterator = p.getOwnedComponents().iterator();
     				
     				int index = 1;
 					while (iterator.hasNext()) {
@@ -792,8 +787,8 @@ public class Commands extends ListenerAdapter {
     						updatedPlayer = addFilter(p, event, referenceArg, errorMsg);
     					}
     				}
-    				InventoryIterator<Component> originalIterator = updatedPlayer.getOwnedComponents().iterator();
-    				InventoryIteratorDecorator<Component> filteredIterator = updatedPlayer.getOwnedComponents().getFilterManager().applyFilters(originalIterator);
+    				Iterator<Component> originalIterator = updatedPlayer.getOwnedComponents().iterator();
+    				IteratorDecorator<Component> filteredIterator = updatedPlayer.getOwnedComponents().getFilterManager().applyFilters(originalIterator);
     				
     				// There were no results.
     				if (filteredIterator == null) {
@@ -878,7 +873,7 @@ public class Commands extends ListenerAdapter {
 	    		}
     			if (args[2].equalsIgnoreCase("view")) {
     				String results = "";
-    				InventoryIterator<Driver> iterator = p.getOwnedDrivers().iterator();
+    				Iterator<Driver> iterator = p.getOwnedDrivers().iterator();
     				
     				int index = 1;
 					while (iterator.hasNext()) {
@@ -906,8 +901,8 @@ public class Commands extends ListenerAdapter {
     						updatedPlayer = addFilter(p, event, referenceArg, errorMsg);
     					}
     				}
-    				InventoryIterator<Driver> originalIterator = updatedPlayer.getOwnedDrivers().iterator();
-    				InventoryIteratorDecorator<Driver> filteredIterator = updatedPlayer.getOwnedDrivers().getFilterManager().applyFilters(originalIterator);
+    				Iterator<Driver> originalIterator = updatedPlayer.getOwnedDrivers().iterator();
+    				IteratorDecorator<Driver> filteredIterator = updatedPlayer.getOwnedDrivers().getFilterManager().applyFilters(originalIterator);
     				
     				// There were no results.
     				if (filteredIterator == null) {
@@ -1073,7 +1068,7 @@ public class Commands extends ListenerAdapter {
     						event.getChannel().sendMessage("Active car set!\n" + activeCar).queue();
     					}
     					catch (Exception e) {
-    						e.printStackTrace();
+    						//e.printStackTrace();
     						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not change active car.").queue();
     					}
     					
@@ -1098,7 +1093,7 @@ public class Commands extends ListenerAdapter {
     			}
     			if (args[2].equalsIgnoreCase("view")) {
     				String results = "";
-    				InventoryIterator<Car> iterator = p.getOwnedCars().iterator();
+    				Iterator<Car> iterator = p.getOwnedCars().iterator();
     				
     				int index = 1;
 					while (iterator.hasNext()) {
@@ -1126,8 +1121,8 @@ public class Commands extends ListenerAdapter {
     						updatedPlayer = addFilter(p, event, referenceArg, errorMsg);
     					}
     				}
-    				InventoryIterator<Car> originalIterator = updatedPlayer.getOwnedCars().iterator();
-    				InventoryIteratorDecorator<Car> filteredIterator = updatedPlayer.getOwnedCars().getFilterManager().applyFilters(originalIterator);
+    				Iterator<Car> originalIterator = updatedPlayer.getOwnedCars().iterator();
+    				IteratorDecorator<Car> filteredIterator = updatedPlayer.getOwnedCars().getFilterManager().applyFilters(originalIterator);
     				
     				// There were no results.
     				if (filteredIterator == null) {
@@ -1237,7 +1232,7 @@ public class Commands extends ListenerAdapter {
 		    		somePlayer.getOwnedCars().add(carD);
 		    		
 		    		//Inventory<Car> inventory = new CarInventory();
-		    		InventoryIterator<Car> carIterator = somePlayer.getOwnedCars().iterator();
+		    		Iterator<Car> carIterator = somePlayer.getOwnedCars().iterator();
 		    		
 		    		QualityFilter<Car> filterA = new QualityFilter<Car>(carIterator, "Lemon");
 		    		DurabilityFilter<Car> filterB = new DurabilityFilter<Car>(filterA, FilterOperation.IS_GREATER_THAN, 40);
@@ -1300,6 +1295,9 @@ public class Commands extends ListenerAdapter {
 			case "=": case "==":
 				filterOp = FilterOperation.IS_EQUAL;
 				break;
+			case "!=": case "<>":
+				filterOp = FilterOperation.IS_NOT_EQUAL;
+				break;
 			default:
 				break;
 		}
@@ -1359,6 +1357,7 @@ public class Commands extends ListenerAdapter {
 		}
 		else {
 			// Assume the user has entered a string
+			boolean hasError = false;
 			switch (args[referenceArg + 2].toLowerCase()) {
 				case "lemon": case "l": 
 					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.LEMON));
@@ -1383,11 +1382,56 @@ public class Commands extends ListenerAdapter {
 					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.RACING));
 					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.RACING));
 					break;
+				case "engine":
+					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.ENGINE));
+					}
+					else {
+						hasError = true;
+					}
+					break;
+				case "transmission":
+					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.TRANSMISSION));
+					}
+					else {
+						hasError = true;
+					}
+					break;
+				case "chassis":
+					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.CHASSIS));
+					}
+					else {
+						hasError = true;
+					}
+					break;
+				case "suspension":
+					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.SUSPENSION));
+					}
+					else {
+						hasError = true;
+					}
+					break;
+				case "wheel": case "wheels":
+					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.WHEELS));
+					}
+					else {
+						hasError = true;
+					}
+					break;
 				default:
-					event.getChannel().sendMessage("invalid string for string criteria error: " + errorMsg).queue();
-					return p;
+					break;
 			}
-			event.getChannel().sendMessage("Filter has been added.").queue();
+			if (hasError) {
+				event.getChannel().sendMessage("invalid string for string criteria error: " + errorMsg).queue();
+			}
+			else {
+				event.getChannel().sendMessage("Filter has been added.").queue();
+			}
+			
 			//dbh.updateUser(p);
 			return p;
 		}
