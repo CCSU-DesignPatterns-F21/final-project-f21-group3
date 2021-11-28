@@ -61,6 +61,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  * 
  * @author Maciej Bregisz
  * @author Jack Gola - "factorymethod" command
+ * @author Nick Sabia
  *
  */
 public class Commands extends ListenerAdapter {
@@ -349,7 +350,7 @@ public class Commands extends ListenerAdapter {
 	    				
 	    				for(int c=0; c<components.size();c++)
 	    				{
-	    					Field field = new Field(components.get(c).getName(), components.get(c).toString(), false);
+	    					Field field = new Field(components.get(c).getComponentType().toString(), components.get(c).toString(), false);
 	    					eb.addField(field);
 	    					
 	    					//event.getChannel().sendMessage(components.get(c).toString()).queue();
@@ -412,7 +413,7 @@ public class Commands extends ListenerAdapter {
 			    			//TODO: use the iterator function instead?
 			    			//System.out.println(components.size());
 			    					
-			    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+			    			Field field = new Field(components.get(i).getComponentType().toString(),"#: "+ i +"\n"+ components.get(i).toString(), true);
 	    					eb.addField(field);
 			    					
 			    		}
@@ -440,7 +441,7 @@ public class Commands extends ListenerAdapter {
 	    								player.getOwnedComponents().add(component);
 	    								dbh.updateUser(player);
 	    								eb.clear();
-	    								eb.setTitle(component.getName());
+	    								eb.setTitle(component.getComponentType().toString());
 	    								eb.setThumbnail(component.getThumbnailURL());
 	    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
 	    								event.getChannel().sendMessage(eb.build()).queue();
@@ -473,7 +474,7 @@ public class Commands extends ListenerAdapter {
 			    			//TODO: use the iterator function instead?
 			    			//System.out.println(components.size());
 			    					
-			    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+			    			Field field = new Field(components.get(i).getComponentType().toString(),"#: "+ i +"\n"+ components.get(i).toString(), true);
 	    					eb.addField(field);
 			    					
 			    		}
@@ -529,7 +530,7 @@ public class Commands extends ListenerAdapter {
 			    			//TODO: use the iterator function instead?
 			    			//System.out.println(components.size());
 			    					
-			    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+			    			Field field = new Field(components.get(i).getComponentType().toString(),"#: "+ i +"\n"+ components.get(i).toString(), true);
 	    					eb.addField(field);
 			    					
 			    		}
@@ -585,7 +586,7 @@ public class Commands extends ListenerAdapter {
 			    			//TODO: use the iterator function instead?
 			    			//System.out.println(components.size());
 			    					
-			    			Field field = new Field(components.get(i).getName(),"#: "+ i +"\n"+ components.get(i).toString(), true);
+			    			Field field = new Field(components.get(i).getComponentType().toString(),"#: "+ i +"\n"+ components.get(i).toString(), true);
 	    					eb.addField(field);
 			    					
 			    		}
@@ -755,7 +756,7 @@ public class Commands extends ListenerAdapter {
     				timer.scheduleAtFixedRate(raceStepAllTask, 1000, TWO_SECONDS);
     			}
     		}
-	    	if(args[1].equalsIgnoreCase("component")) {
+	    	if(args[1].equalsIgnoreCase("component") || args[1].equalsIgnoreCase("components")) {
 	    		Player p = dbh.getPlayer(user.getId());
 	    		if (args[2].equalsIgnoreCase("view")) {
     				String results = "";
@@ -813,7 +814,7 @@ public class Commands extends ListenerAdapter {
     				}
     			}
 	    	}
-	    	if(args[1].equalsIgnoreCase("driver"))
+	    	if(args[1].equalsIgnoreCase("driver") || args[1].equalsIgnoreCase("drivers"))
     		{
     			Player p = dbh.getPlayer(user.getId());
     			if(args[2].equalsIgnoreCase("create"))
@@ -1030,7 +1031,7 @@ public class Commands extends ListenerAdapter {
 					event.getChannel().sendMessage("Player does not have an active driver").queue();
 				}
 			}
-	    	if(args[1].equalsIgnoreCase("car")) 
+	    	if(args[1].equalsIgnoreCase("car") || args[1].equalsIgnoreCase("cars")) 
     		{
     			Player p = dbh.getPlayer(user.getId());
     			if (args[2].equalsIgnoreCase("free"))
@@ -1041,7 +1042,8 @@ public class Commands extends ListenerAdapter {
     				}
     				// Create the car
     				Car freeCar = new Car();
-    				freeCar.setId(dbh.generateId(6));
+    				String carId = dbh.generateId(6);
+    				freeCar.setId(carId);
     				ConcreteComponentFactory componentFactory = new ConcreteComponentFactory();
     				EngineComponent engine = (EngineComponent) componentFactory.createComponent("engine", value);
     				TransmissionComponent transmission = (TransmissionComponent) componentFactory.createComponent("transmission", value);
@@ -1055,39 +1057,60 @@ public class Commands extends ListenerAdapter {
     				freeCar.setWheels(wheels);
     				p.getOwnedCars().add(freeCar);
     				dbh.updateUser(p);
-    				event.getChannel().sendMessage("A free car was added to your garage.").queue();
+    				event.getChannel().sendMessage("A free car (" + carId + ") was added to your garage.").queue();
 	    		}
     			if (args[2].equalsIgnoreCase("set")) {
     				if(args.length > 3 && args[3] != null)
     				{
     					try {
-    						int index = Integer.parseInt(args[3].toString());
-    						Car activeCar = p.getOwnedCars().getItems().get(index);
+    						String carId = args[3].toString();
+    						Car activeCar = p.getOwnedCars().getById(carId);
     						p.setActiveCarId(activeCar.getId());
     						dbh.updateUser(p);
     						event.getChannel().sendMessage("Active car set!\n" + activeCar).queue();
     					}
     					catch (Exception e) {
     						//e.printStackTrace();
-    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not change active car.").queue();
+    						event.getChannel().sendMessage("A car with that id could not be found. Did not change active car.\n**View Car Inventory**\n!r car view").queue();
     					}
     					
     				}
     			}
-    			if (args[2].equalsIgnoreCase("remove")) {
+    			if (args[2].equalsIgnoreCase("disassemble")) {
     				if(args.length > 3 && args[3] != null)
     				{
     					try {
-    						int index = Integer.parseInt(args[4].toString());
-    						Inventory<Car> updatedInventory = p.getOwnedCars();
-    						Car removedCar = updatedInventory.getItems().get(index);
-    						updatedInventory.getItems().remove(index);
-    						p.setOwnedCars(updatedInventory);
+    						String carId = args[3].toString();
+    						//int index = Integer.parseInt(args[4].toString());
+    						Inventory<Car> updatedCarInventory = p.getOwnedCars();
+    						Inventory<Component> updatedComponentInventory = p.getOwnedComponents();
+    						Car carToRemove = updatedCarInventory.getById(carId);
+    						
+    						// Extract all components from the car into the player's component inventory.
+    						if (carToRemove.getEngine() != null) {
+    							updatedComponentInventory.add(carToRemove.getEngine());
+    						}
+    						if (carToRemove.getChassis() != null) {
+    							updatedComponentInventory.add(carToRemove.getChassis());
+    						}
+    						if (carToRemove.getSuspension() != null) {
+    							updatedComponentInventory.add(carToRemove.getSuspension());
+    						}
+    						if (carToRemove.getTransmission() != null) {
+    							updatedComponentInventory.add(carToRemove.getTransmission());
+    						}
+    						if (carToRemove.getWheels() != null) {
+    							updatedComponentInventory.add(carToRemove.getWheels());
+    						}
+    						
+    						updatedCarInventory.remove(carToRemove);
+    						p.setOwnedCars(updatedCarInventory);
+    						p.setOwnedComponents(updatedComponentInventory);
     						dbh.updateUser(p);
-    						event.getChannel().sendMessage("Car removed!\n" + removedCar).queue();
+    						event.getChannel().sendMessage("Car disassembled! All parts which were in the car are now in your component inventory.\n**View Component Inventory**\n!r component view").queue();
     					}
     					catch (Exception e) {
-    						event.getChannel().sendMessage("A number was not entered or there was no car in that slot in the garage (out of bounds). Did not remove a car.").queue();
+    						event.getChannel().sendMessage("A car with that id could not be found. Did not disassemble a car.\n**View Car Inventory**\n!r car view").queue();
     					}
     				}
     			}
@@ -1358,73 +1381,83 @@ public class Commands extends ListenerAdapter {
 		else {
 			// Assume the user has entered a string
 			boolean hasError = false;
-			switch (args[referenceArg + 2].toLowerCase()) {
-				case "lemon": case "l": 
-					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.LEMON));
-					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.LEMON));
-					break;
-				case "junkyard": case "j": case "junk": 
-					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.JUNKYARD));
-					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.JUNKYARD));
-					break;
-				case "oem": case "o": 
-					FilterManager<Car> filterManager = p.getOwnedCars().getFilterManager();
-					filterManager.add(new QualityFilter<Car>(null, filterOp, Quality.OEM));
-					p.getOwnedCars().setFilterManager(filterManager);
-					//p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.OEM));
-					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.OEM));
-					break;
-				case "sports": case "s": case "sport":
-					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.SPORTS));
-					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.SPORTS));
-					break;
-				case "racing": case "r":
-					p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.RACING));
-					p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.RACING));
-					break;
-				case "engine":
-					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
-						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.ENGINE));
-					}
-					else {
-						hasError = true;
-					}
-					break;
-				case "transmission":
-					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
-						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.TRANSMISSION));
-					}
-					else {
-						hasError = true;
-					}
-					break;
-				case "chassis":
-					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
-						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.CHASSIS));
-					}
-					else {
-						hasError = true;
-					}
-					break;
-				case "suspension":
-					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
-						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.SUSPENSION));
-					}
-					else {
-						hasError = true;
-					}
-					break;
-				case "wheel": case "wheels":
-					if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
-						p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.WHEELS));
-					}
-					else {
-						hasError = true;
-					}
-					break;
-				default:
-					break;
+			if (args[referenceArg].toLowerCase().equals("quality")) {
+				// The user is filtering by quality.
+				switch (args[referenceArg + 2].toLowerCase()) {
+					case "lemon": case "l": 
+						p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.LEMON));
+						p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.LEMON));
+						break;
+					case "junkyard": case "j": case "junk": 
+						p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.JUNKYARD));
+						p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.JUNKYARD));
+						break;
+					case "oem": case "o": 
+						FilterManager<Car> filterManager = p.getOwnedCars().getFilterManager();
+						filterManager.add(new QualityFilter<Car>(null, filterOp, Quality.OEM));
+						p.getOwnedCars().setFilterManager(filterManager);
+						//p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.OEM));
+						p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.OEM));
+						break;
+					case "sports": case "s": case "sport":
+						p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.SPORTS));
+						p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.SPORTS));
+						break;
+					case "racing": case "r":
+						p.getOwnedCars().getFilterManager().add(new QualityFilter<Car>(null, filterOp, Quality.RACING));
+						p.getOwnedComponents().getFilterManager().add(new QualityFilter<Component>(null, filterOp, Quality.RACING));
+						break;
+					default:
+						break;
+				}
 			}
+			else if (args[referenceArg].toLowerCase().equals("component")) {
+				// The user is filtering by component type.
+				switch(args[referenceArg + 2].toLowerCase()) {
+					case "engine":
+						if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+							p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.ENGINE));
+						}
+						else {
+							hasError = true;
+						}
+						break;
+					case "transmission":
+						if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+							p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.TRANSMISSION));
+						}
+						else {
+							hasError = true;
+						}
+						break;
+					case "chassis":
+						if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+							p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.CHASSIS));
+						}
+						else {
+							hasError = true;
+						}
+						break;
+					case "suspension":
+						if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+							p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.SUSPENSION));
+						}
+						else {
+							hasError = true;
+						}
+						break;
+					case "wheel": case "wheels":
+						if (filterOp == FilterOperation.IS_EQUAL || filterOp == FilterOperation.IS_NOT_EQUAL) {
+							p.getOwnedComponents().getFilterManager().add(new ComponentTypeFilter<Component>(null, filterOp, ComponentType.WHEELS));
+						}
+						else {
+							hasError = true;
+						}
+						break;
+				}
+			}
+			
+			
 			if (hasError) {
 				event.getChannel().sendMessage("invalid string for string criteria error: " + errorMsg).queue();
 			}
@@ -1548,7 +1581,7 @@ public class Commands extends ListenerAdapter {
 	 public EmbedBuilder printComponent(Component c, GuildMessageReceivedEvent event)
 	 {
 		eb.clear();
-		eb.setTitle(c.getName());
+		eb.setTitle(c.getComponentType().toString());
 		eb.setThumbnail(c.getThumbnailURL());
 		eb.addField("Quality: ", formatText("cb",c.getQuality().toString().toLowerCase()),false);
 		eb.addField("Durability: ",formatText("cb",c.getDurability() +"/"+c.getMaxDurability()) ,true);

@@ -25,7 +25,7 @@ public class SuspensionComponent extends Component {
 	 */
 	@BsonCreator
 	public SuspensionComponent() {
-		this.setName("Suspension");
+		this.setComponentType(ComponentType.SUSPENSION);
 	}
 	
 	/**
@@ -33,7 +33,7 @@ public class SuspensionComponent extends Component {
 	 * @param sc SuspensionComponent object reference
 	 */
 	public SuspensionComponent(SuspensionComponent sc) {
-		this.setName(sc.getName());
+		this.setComponentType(ComponentType.SUSPENSION);
 		this.setId(sc.getId());
 		this.setQuality(sc.getQuality());
 		this.setWeight(sc.getWeight());
@@ -90,7 +90,7 @@ public class SuspensionComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nHandling: " + this.getHandling() + "\n\n";
+		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nHandling: " + this.getHandling() + "\n\n";
 	}
 	
 	/**

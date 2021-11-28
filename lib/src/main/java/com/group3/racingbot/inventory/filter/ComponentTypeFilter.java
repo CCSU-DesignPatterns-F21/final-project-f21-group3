@@ -10,7 +10,7 @@ import com.group3.racingbot.inventory.Iterator;
  *
  * @param <T>
  */
-public class ComponentTypeFilter<T> extends IteratorDecorator<T> {
+public class ComponentTypeFilter<T extends ComponentFilterable> extends IteratorDecorator<T> {
 	private ComponentType componentType;
 	private FilterOperation operation;
 	
@@ -30,7 +30,7 @@ public class ComponentTypeFilter<T> extends IteratorDecorator<T> {
 	 * Associates a class name with a component type if possible. Returns null if not possible.
 	 * @param className the class name to pair with a component type.
 	 */
-	private ComponentType componentTypeFromClassName(String className) {
+	/*private ComponentType componentTypeFromClassName(String className) {
 		if (className.equals("EngineComponent")) {
 			return ComponentType.ENGINE;
 		}
@@ -49,21 +49,21 @@ public class ComponentTypeFilter<T> extends IteratorDecorator<T> {
 		else {
 			return null;
 		}
-	}
+	}*/
 	
 	@Override
 	public T next() {
 		T item = super.getIterator().next();
 		boolean itemMatchesContraints = false;
-		ComponentType itemComponentType = componentTypeFromClassName(item.getClass().getSimpleName());
+		//ComponentType itemComponentType = null;//componentTypeFromClassName(item.getClass().getSimpleName());
 		switch (this.operation) {
 			case IS_NOT_EQUAL:
-				itemMatchesContraints = itemComponentType != null 
-					&& itemComponentType != this.componentType;
+				itemMatchesContraints = item.getComponentType() != null 
+					&& item.getComponentType() != this.componentType;
 				break;
 			case IS_EQUAL:
-				itemMatchesContraints = itemComponentType != null 
-					&& itemComponentType == this.componentType;
+				itemMatchesContraints = item.getComponentType() != null 
+					&& item.getComponentType() == this.componentType;
 				break;
 			default:
 				System.out.println("ComponentTypeFilter: Invalid operator supplied. Only supports equals and not equals.");

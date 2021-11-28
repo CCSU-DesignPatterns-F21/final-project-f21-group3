@@ -25,7 +25,7 @@ public class WheelComponent extends Component {
 	 */
 	@BsonCreator
 	public WheelComponent() {
-		this.setName("Wheel");
+		this.setComponentType(ComponentType.WHEELS);
 	}
 	
 	/**
@@ -34,7 +34,7 @@ public class WheelComponent extends Component {
 	 */
 	public WheelComponent(WheelComponent wc)
 	{
-		this.setName(wc.getName());
+		this.setComponentType(ComponentType.WHEELS);
 		this.setId(wc.getId());
 		this.setQuality(wc.getQuality());
 		this.setWeight(wc.getWeight());
@@ -90,7 +90,7 @@ public class WheelComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nBraking: " + this.getBraking() + "\n\n";
+		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nBraking: " + this.getBraking() + "\n\n";
 	}
 	
 	/**
