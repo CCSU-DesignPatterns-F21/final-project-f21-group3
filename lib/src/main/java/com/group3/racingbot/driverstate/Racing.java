@@ -35,7 +35,7 @@ import com.group3.racingbot.standings.DriverStanding;
 //        @JsonSubTypes.Type(value = Defensive.class),
 //		@JsonSubTypes.Type(value = Crashed.class)})
 //@BsonDiscriminator(value="Racing", key="_cls")
-public abstract class Racing implements DriverState {
+public abstract class Racing implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
 	private String playerId;

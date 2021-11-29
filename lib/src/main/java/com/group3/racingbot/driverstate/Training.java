@@ -28,7 +28,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  *
  */
 //@BsonDiscriminator(value="Training", key="_cls")
-public class Training implements DriverState {
+public class Training implements DriverState, Refreshable {
 	private String playerId;
 	private String driverId;
 	@BsonIgnore

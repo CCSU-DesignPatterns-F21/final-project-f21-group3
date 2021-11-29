@@ -73,13 +73,6 @@ public class Resting implements DriverState {
 	public String toString() {
 		return "Resting";
 	}
-
-	@Override
-	public boolean refreshFromDB() {
-		// If the server shuts down and boots back up, this function will grab all the missing objects from the database and insert them into the state as needed.
-		// Do nothing
-		return true;
-	}
 	
 	@Override
 	public String driverStatus(Driver driver) {
