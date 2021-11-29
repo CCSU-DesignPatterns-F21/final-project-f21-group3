@@ -130,7 +130,7 @@ public class FinishedTraining extends Completed {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		return driver.getName() + " (" + driver.getId() + ") has completed training for " + this.skill.toString().toLowerCase() + ". You can now claim the skill reward. \n**Claim a reward**\n!r debug claim";
+		return driver.getName() + " (" + driver.getId() + ") has completed training for " + this.skill.toString().toLowerCase() + ". You can now claim the skill reward. \n**Claim a reward**\n!r claim";
 	}
 
 	@Override

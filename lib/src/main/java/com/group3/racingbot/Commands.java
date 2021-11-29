@@ -362,7 +362,11 @@ public class Commands extends ListenerAdapter {
 	    	
 	    	if(args[1].equalsIgnoreCase("shop") || args[1].equalsIgnoreCase("s"))
     		{
-	    		
+	    		if(args.length == 2)
+				{
+	    			event.getChannel().sendMessage("Shop commands:\n**Chop shop**\n!r shop chopshop\n**Junkyard**\n!r shop junkyard\n**Dealership**\n!r shop dealership\n**Importer**\n!r shop importer").queue();
+	    			return;
+				}
 	    		if(args[2].equalsIgnoreCase("chopshop") || args[2].equalsIgnoreCase("c"))
 	    		{
     				if(args.length > 3)
@@ -756,6 +760,16 @@ public class Commands extends ListenerAdapter {
     				timer.scheduleAtFixedRate(raceStepAllTask, 1000, TWO_SECONDS);
     			}
     		}
+	    	if(args[1].equalsIgnoreCase("claim")) {
+    			Player p = dbh.getPlayer(user.getId());
+    			try {
+    				Driver activeDriver = p.getOwnedDrivers().getById(p.getActiveDriverId());
+    				event.getChannel().sendMessage(activeDriver.collectReward()).queue();
+    			}
+    			catch(NotFoundException e) {
+    				event.getChannel().sendMessage("Unable to retrieve Driver " + p.getActiveDriverId() + ". Cannot claim a reward.").queue();
+    			}
+    		}
 	    	if(args[1].equalsIgnoreCase("component") || args[1].equalsIgnoreCase("components")) {
 	    		Player p = dbh.getPlayer(user.getId());
 	    		if (args[2].equalsIgnoreCase("view")) {
@@ -1059,23 +1073,6 @@ public class Commands extends ListenerAdapter {
     				dbh.updateUser(p);
     				event.getChannel().sendMessage("A free car (" + carId + ") was added to your garage.").queue();
 	    		}
-    			if (args[2].equalsIgnoreCase("set")) {
-    				if(args.length > 3 && args[3] != null)
-    				{
-    					try {
-    						String carId = args[3].toString();
-    						Car activeCar = p.getOwnedCars().getById(carId);
-    						p.setActiveCarId(activeCar.getId());
-    						dbh.updateUser(p);
-    						event.getChannel().sendMessage("Active car set!\n" + activeCar).queue();
-    					}
-    					catch (Exception e) {
-    						//e.printStackTrace();
-    						event.getChannel().sendMessage("A car with that id could not be found. Did not change active car.\n**View Car Inventory**\n!r car view").queue();
-    					}
-    					
-    				}
-    			}
     			if (args[2].equalsIgnoreCase("disassemble")) {
     				if(args.length > 3 && args[3] != null)
     				{
@@ -1113,6 +1110,131 @@ public class Commands extends ListenerAdapter {
     						event.getChannel().sendMessage("A car with that id could not be found. Did not disassemble a car.\n**View Car Inventory**\n!r car view").queue();
     					}
     				}
+    				else {
+    					event.getChannel().sendMessage("Invalid syntax. Below shows how you use this command:\n**Equip component to a car**\n!r car disassemble [car id]").queue();
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("equip")) {
+    				if(args.length > 3 && args[3] != null)
+    				{
+    					try {
+    						String componentId = args[3].toString();
+    						//int index = Integer.parseInt(args[4].toString());
+    						Inventory<Car> updatedCarInventory = p.getOwnedCars();
+    						Inventory<Component> updatedComponentInventory = p.getOwnedComponents();
+    						Car activeCar = updatedCarInventory.getById(p.getActiveCarId());
+    						Component componentToEquip = updatedComponentInventory.getById(componentId);
+    						Component componentToUnequip = null;
+    						// Replace the component of the car with the same type as the component we're trying to equip.
+    						switch (componentToEquip.getComponentType()) {
+    							case ENGINE:
+    								componentToUnequip = activeCar.getEngine();
+    								if (componentToUnequip != null) {
+    	    							activeCar.setEngine((EngineComponent) componentToEquip);
+    	    						}
+    								break;
+    							case CHASSIS:
+    								componentToUnequip = activeCar.getChassis();
+    								if (componentToUnequip != null) {
+    	    							activeCar.setChassis((ChassisComponent) componentToEquip);
+    	    						}
+    								break;
+    							case SUSPENSION:
+    								componentToUnequip = activeCar.getSuspension();
+    								if (componentToUnequip != null) {
+    	    							activeCar.setSuspension((SuspensionComponent) componentToEquip);
+    	    						}
+    								break;
+    							case TRANSMISSION:
+    								componentToUnequip = activeCar.getTransmission();
+    								if (componentToUnequip != null) {
+    	    							activeCar.setTransmission((TransmissionComponent) componentToEquip);
+    	    						}
+    								break;
+    							case WHEELS:
+    								componentToUnequip = activeCar.getWheels();
+    								if (componentToUnequip != null) {
+    	    							activeCar.setWheels((WheelComponent) componentToEquip);
+    	    						}
+    								break;
+    							default:
+    								event.getChannel().sendMessage("At least one component holds an unknown component type. Unable to equip component " + componentId + ".").queue();
+    								return;
+    						}
+    						// Store the component into the player's component inventory
+    						if (componentToUnequip != null) {
+    							updatedComponentInventory.add(componentToUnequip);
+    						}
+    						updatedComponentInventory.remove(componentToEquip);
+    						
+    						p.setOwnedCars(updatedCarInventory);
+    						p.setOwnedComponents(updatedComponentInventory);
+    						dbh.updateUser(p);
+    						event.getChannel().sendMessage("Successfully equipped " + componentToEquip.getComponentType().toString().toLowerCase() + " " + componentId + " to car " + activeCar.getId() + "!\n**View Component Inventory**\n!r component view\n**View Car Inventory**\n!r car view").queue();
+    					}
+    					catch (Exception e) {
+    						event.getChannel().sendMessage("A component with that id could not be found. Did not equip component to active car.\n**View Component Inventory**\n!r component view").queue();
+    					}
+    				}
+    				else {
+    					event.getChannel().sendMessage("Invalid syntax. This command allows you to equip components to your active car. Below shows how you use this command:\n**Equip component to active car**\n!r car equip [component id]").queue();
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("unequip")) {
+    				if(args.length > 3 && args[3] != null)
+    				{
+    					try {
+    						String partTypeToUnequip = args[3].toString().toLowerCase(); // This holds the string engine, transmission, chassis, etc.
+    						Component partToUnequip = null; // This holds an instance of component from the active car (if the active car actually has a component already equipped)
+    						Inventory<Car> updatedCarInventory = p.getOwnedCars();
+    						Inventory<Component> updatedComponentInventory = p.getOwnedComponents();
+    						Car activeCar = updatedCarInventory.getById(p.getActiveCarId());
+    						switch(partTypeToUnequip) {
+    							case "engine": case "e":
+    								partToUnequip = activeCar.getEngine();
+    								activeCar.setEngine(null);
+    								break;
+    							case "transmission": case "t":
+    								partToUnequip = activeCar.getTransmission();
+    								activeCar.setTransmission(null);
+    								break;
+    							case "suspension": case "s":
+    								partToUnequip = activeCar.getSuspension();
+    								activeCar.setSuspension(null);
+    								break;
+    							case "wheels": case "wheel": case "w":
+    								partToUnequip = activeCar.getWheels();
+    								activeCar.setWheels(null);
+    								break;
+    							case "chassis": case "c":
+    								partToUnequip = activeCar.getChassis();
+    								activeCar.setChassis(null);
+    								break;
+    							default:
+    								event.getChannel().sendMessage("Invalid syntax. This command allows you to unequip components from your active car. Below shows how you use this command:\n**Unequip component from active car**\n!r car unequip (engine | transmission | chassis | suspension | wheels)\n**Shorthand version of unequip command**\n!r car unequip (e | t | c | s | w)").queue();
+    								break;
+    						}
+    						if (partToUnequip != null) {
+    							updatedComponentInventory.add(partToUnequip);
+    							// Update the active car so that the unequip action persists in the database.
+    							updatedCarInventory.update(activeCar);
+    							p.setOwnedCars(updatedCarInventory);
+    							// Make sure the newly unequipped component gets stored into the player's component inventory.
+        						p.setOwnedComponents(updatedComponentInventory);
+        						dbh.updateUser(p);
+        						event.getChannel().sendMessage("Successfully unequipped " + partToUnequip.getComponentType().toString().toLowerCase() + " " + partToUnequip.getId() + " from car " + activeCar.getId() + "!\n**View Component Inventory**\n!r component view\n**View Car Inventory**\n!r car view").queue();
+    						}
+    						else {
+    							event.getChannel().sendMessage("Unable to unequip component from car " + activeCar.getId() + " because the car is missing that component already.\n**View active car components**\n!r car active detail").queue();
+    						}
+    					}
+    					catch (Exception e) {
+    						event.getChannel().sendMessage("A component with that id could not be found. Did not unequip component from active car.\n**View active car's components**\n!r car active detail").queue();
+    					}
+    				}
+    				else {
+    					event.getChannel().sendMessage("Invalid syntax. This command allows you to unequip components from your active car. Below shows how you use this command:\n**Unequip component from active car**\n!r car unequip [component id]").queue();
+    				}
     			}
     			if (args[2].equalsIgnoreCase("view")) {
     				String results = "";
@@ -1130,6 +1252,53 @@ public class Commands extends ListenerAdapter {
     				else {
     					event.getChannel().sendMessage("Inventory is empty.").queue();
     				}
+    			}
+    			if (args[2].equalsIgnoreCase("active")) {
+    				if(args.length > 3 && args[3] != null)
+    				{
+    					if (args[3].equalsIgnoreCase("detail")) {
+    						// View the car's individual components
+    						try {
+    							Car activeCar = p.getOwnedCars().getById(p.getActiveCarId());
+    							String result = "";
+    							result += activeCar.getChassis() + "\n";
+    							result += activeCar.getSuspension() + "\n";
+    							result += activeCar.getWheels() + "\n";
+    							result += activeCar.getTransmission() + "\n";
+    							result += activeCar.getEngine();
+    							event.getChannel().sendMessage("**Your Active Car - Detailed**\n" + result + "\nTo change cars, use the command below:\n**Switch active car**\n!r car active [car id]").queue();
+    						}
+    						catch (NotFoundException e) {
+        						//e.printStackTrace();
+        						event.getChannel().sendMessage("A car with that id could not be found. Cannot view active car.\n**View Car Inventory**\n!r car view").queue();
+        					}
+    					}
+    					else {
+    						// Attempt to set an active car
+    						try {
+        						String carId = args[3].toString();
+        						Car activeCar = p.getOwnedCars().getById(carId);
+        						p.setActiveCarId(activeCar.getId());
+        						dbh.updateUser(p);
+        						event.getChannel().sendMessage("Active car set!\n" + activeCar).queue();
+        					}
+        					catch (NotFoundException e) {
+        						//e.printStackTrace();
+        						event.getChannel().sendMessage("A car with that id could not be found. Did not change active car.\n**View Car Inventory**\n!r car view").queue();
+        					}
+    					}
+    				}
+    				else {
+    					Car activeCar = null;
+    					try {
+    						activeCar = p.getOwnedCars().getById(p.getActiveCarId());
+    						event.getChannel().sendMessage("**Your Active Car**\n" + activeCar.toString() + "\nTo change cars, use the command below:\n**Switch active car**\n!r car active [car id]").queue();
+    					}
+    					catch (NotFoundException e) {
+    						event.getChannel().sendMessage("**Your Active Car**\nYou currently don't have an active car. To change cars, use the command below:\n**Switch active car**\n!r car active [car id]").queue();
+    					}
+    				}
+    				
     			}
     			if (args[2].equalsIgnoreCase("filterBy")) {
     				String errorMsg = "Invalid command. The syntax for the add filter command is as follows:\n!r car filterBy filterType operator (number | String) [filterType operator (number | String)]";
@@ -1190,16 +1359,6 @@ public class Commands extends ListenerAdapter {
 	    				gph.debug();
 	    			}
 	    			
-	    		}
-	    		if(args[2].equalsIgnoreCase("claim")) {
-	    			Player p = dbh.getPlayer(user.getId());
-	    			try {
-	    				Driver activeDriver = p.getOwnedDrivers().getById(p.getActiveDriverId());
-	    				event.getChannel().sendMessage(activeDriver.collectReward()).queue();
-	    			}
-	    			catch(NotFoundException e) {
-	    				event.getChannel().sendMessage("Unable to retrieve Driver " + p.getActiveDriverId() + ". Cannot claim a reward.").queue();
-	    			}
 	    		}
 	    	}
 	    	if (args[1].equalsIgnoreCase("test")) {

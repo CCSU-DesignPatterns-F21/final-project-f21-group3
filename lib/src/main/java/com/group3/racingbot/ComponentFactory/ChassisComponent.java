@@ -186,8 +186,9 @@ public class ChassisComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nPopularity: " + this.getPopularityModifier()
-		+ "\nAcceleration Modifier: " + getAccelerationModifier() + "\nSpeed Modifier: " + getSpeedModifier() + "\nHandling Modifier: " + getHandlingModifier() + "\nBraking Modifier: " + getBrakingModifier() + "\n\n";
+		//return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nPopularity: " + this.getPopularityModifier()
+		//+ "\nAcceleration Modifier: " + getAccelerationModifier() + "\nSpeed Modifier: " + getSpeedModifier() + "\nHandling Modifier: " + getHandlingModifier() + "\nBraking Modifier: " + getBrakingModifier() + "\n\n";
+		return super.toString() + " | Popularity Modifier: " + this.getPopularityModifier() + " | Acceleration Modifier: " + getAccelerationModifier() + " | Speed Modifier: " + getSpeedModifier() + " | Handling Modifier: " + getHandlingModifier() + " | Braking Modifier: " + getBrakingModifier();
 	}
 	
 	/**

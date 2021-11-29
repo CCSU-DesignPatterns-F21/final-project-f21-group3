@@ -95,7 +95,7 @@ public class TransmissionComponent extends Component {
 	
 	@Override
 	public String toString() {
-		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nAcceleration: " + this.getAcceleration() + "\n\n";
+		return super.toString() + " | Acceleration: " + this.getAcceleration();
 	}
 	
 	/**

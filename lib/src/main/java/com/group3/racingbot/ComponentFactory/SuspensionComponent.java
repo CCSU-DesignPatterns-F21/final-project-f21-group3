@@ -90,7 +90,7 @@ public class SuspensionComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nHandling: " + this.getHandling() + "\n\n";
+		return super.toString() + " | Handling: " + this.getHandling();
 	}
 	
 	/**

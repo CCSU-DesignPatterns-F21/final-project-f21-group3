@@ -210,8 +210,9 @@ public abstract class Component implements Unique, IClonable, MaterialFilterable
 	@Override
 	public String toString() {
 
-		return "Component [id=" + id + "quality=" + quality + ", type=" + componentType + ", weight=" + weight + ", value=" + value
-				+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
+		//return "Component [id=" + id + "quality=" + quality + ", type=" + componentType + ", weight=" + weight + ", value=" + value
+		//		+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
+		return "id: " + this.id + " | " + this.componentType.toString() + " | Quality: " + this.quality + " | Value: " + this.value + " | Durability: " + this.durability + " | Weight: " + this.weight;
 
 	}
 }
