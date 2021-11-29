@@ -86,7 +86,7 @@ public class EngineComponent extends Component {
 
 	@Override
 	public String toString() {
-		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nSpeed: " + this.getSpeed() + "\n\n";
+		return super.toString() + " | Speed: " + this.getSpeed();
 	}
 
 	/**

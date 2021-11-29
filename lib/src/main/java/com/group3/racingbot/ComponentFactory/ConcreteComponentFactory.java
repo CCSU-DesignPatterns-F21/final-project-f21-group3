@@ -2,6 +2,7 @@ package com.group3.racingbot.ComponentFactory;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.inventory.filter.Quality;
 
 /**
@@ -18,7 +19,7 @@ public class ConcreteComponentFactory extends ComponentFactory{
 	 */
 	@BsonCreator
 	public Component createComponent(String type,int cost) {
-	
+		DBHandler dbh = DBHandler.getInstance();
 		Component createdComponent = null;
 		//Store refreshes stock with parts of a varying price range.
 		//Lemon: 0-150
@@ -324,9 +325,8 @@ public class ConcreteComponentFactory extends ComponentFactory{
 			((TransmissionComponent)createdComponent).setMaxDurability(200);
 			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/trs3NPs.gif");
 		}
+		createdComponent.setId(dbh.generateId(6)); // Give the component a random id.
 		return createdComponent;
-		
-		//return createdComponent;
 		
 	}
 

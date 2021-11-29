@@ -362,7 +362,11 @@ public class Commands extends ListenerAdapter {
 	    	
 	    	if(args[1].equalsIgnoreCase("shop") || args[1].equalsIgnoreCase("s"))
     		{
-	    		
+	    		if(args.length == 2)
+				{
+	    			event.getChannel().sendMessage("Shop commands:\n**Chop shop**\n!r shop chopshop\n**Junkyard**\n!r shop junkyard\n**Dealership**\n!r shop dealership\n**Importer**\n!r shop importer").queue();
+	    			return;
+				}
 	    		if(args[2].equalsIgnoreCase("chopshop") || args[2].equalsIgnoreCase("c"))
 	    		{
     				if(args.length > 3)
