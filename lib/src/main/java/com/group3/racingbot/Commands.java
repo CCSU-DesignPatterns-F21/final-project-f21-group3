@@ -1163,20 +1163,77 @@ public class Commands extends ListenerAdapter {
     						}
     						// Store the component into the player's component inventory
     						if (componentToUnequip != null) {
-    							updatedComponentInventory.remove(componentToUnequip);
+    							updatedComponentInventory.add(componentToUnequip);
     						}
-
+    						updatedComponentInventory.remove(componentToEquip);
+    						
     						p.setOwnedCars(updatedCarInventory);
     						p.setOwnedComponents(updatedComponentInventory);
     						dbh.updateUser(p);
     						event.getChannel().sendMessage("Successfully equipped " + componentToEquip.getComponentType().toString().toLowerCase() + " " + componentId + " to car " + activeCar.getId() + "!\n**View Component Inventory**\n!r component view\n**View Car Inventory**\n!r car view").queue();
     					}
     					catch (Exception e) {
-    						event.getChannel().sendMessage("A car with that id could not be found. Did not disassemble a car.\n**View Car Inventory**\n!r car view").queue();
+    						event.getChannel().sendMessage("A component with that id could not be found. Did not equip component to active car.\n**View Component Inventory**\n!r component view").queue();
     					}
     				}
     				else {
-    					event.getChannel().sendMessage("Invalid syntax. This command allows you to equip components to your active car. Below shows how you use this command:\n**Equip component to a car**\n!r car equip [component id]").queue();
+    					event.getChannel().sendMessage("Invalid syntax. This command allows you to equip components to your active car. Below shows how you use this command:\n**Equip component to active car**\n!r car equip [component id]").queue();
+    				}
+    			}
+    			if (args[2].equalsIgnoreCase("unequip")) {
+    				if(args.length > 3 && args[3] != null)
+    				{
+    					try {
+    						String partTypeToUnequip = args[3].toString().toLowerCase(); // This holds the string engine, transmission, chassis, etc.
+    						Component partToUnequip = null; // This holds an instance of component from the active car (if the active car actually has a component already equipped)
+    						Inventory<Car> updatedCarInventory = p.getOwnedCars();
+    						Inventory<Component> updatedComponentInventory = p.getOwnedComponents();
+    						Car activeCar = updatedCarInventory.getById(p.getActiveCarId());
+    						switch(partTypeToUnequip) {
+    							case "engine": case "e":
+    								partToUnequip = activeCar.getEngine();
+    								activeCar.setEngine(null);
+    								break;
+    							case "transmission": case "t":
+    								partToUnequip = activeCar.getTransmission();
+    								activeCar.setTransmission(null);
+    								break;
+    							case "suspension": case "s":
+    								partToUnequip = activeCar.getSuspension();
+    								activeCar.setSuspension(null);
+    								break;
+    							case "wheels": case "wheel": case "w":
+    								partToUnequip = activeCar.getWheels();
+    								activeCar.setWheels(null);
+    								break;
+    							case "chassis": case "c":
+    								partToUnequip = activeCar.getChassis();
+    								activeCar.setChassis(null);
+    								break;
+    							default:
+    								event.getChannel().sendMessage("Invalid syntax. This command allows you to unequip components from your active car. Below shows how you use this command:\n**Unequip component from active car**\n!r car unequip (engine | transmission | chassis | suspension | wheels)\n**Shorthand version of unequip command**\n!r car unequip (e | t | c | s | w)").queue();
+    								break;
+    						}
+    						if (partToUnequip != null) {
+    							updatedComponentInventory.add(partToUnequip);
+    							// Update the active car so that the unequip action persists in the database.
+    							updatedCarInventory.update(activeCar);
+    							p.setOwnedCars(updatedCarInventory);
+    							// Make sure the newly unequipped component gets stored into the player's component inventory.
+        						p.setOwnedComponents(updatedComponentInventory);
+        						dbh.updateUser(p);
+        						event.getChannel().sendMessage("Successfully unequipped " + partToUnequip.getComponentType().toString().toLowerCase() + " " + partToUnequip.getId() + " from car " + activeCar.getId() + "!\n**View Component Inventory**\n!r component view\n**View Car Inventory**\n!r car view").queue();
+    						}
+    						else {
+    							event.getChannel().sendMessage("Unable to unequip component from car " + activeCar.getId() + " because the car is missing that component already.\n**View active car components**\n!r car active detail").queue();
+    						}
+    					}
+    					catch (Exception e) {
+    						event.getChannel().sendMessage("A component with that id could not be found. Did not unequip component from active car.\n**View active car's components**\n!r car active detail").queue();
+    					}
+    				}
+    				else {
+    					event.getChannel().sendMessage("Invalid syntax. This command allows you to unequip components from your active car. Below shows how you use this command:\n**Unequip component from active car**\n!r car unequip [component id]").queue();
     				}
     			}
     			if (args[2].equalsIgnoreCase("view")) {
