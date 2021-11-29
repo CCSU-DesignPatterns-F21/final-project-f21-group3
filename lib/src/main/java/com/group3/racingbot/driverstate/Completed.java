@@ -24,7 +24,7 @@ import com.group3.racingbot.standings.DriverStanding;
 //        @JsonSubTypes.Type(value = FinishedRace.class),
 //		@JsonSubTypes.Type(value = FinishedTraining.class)})
 //@BsonDiscriminator(value="Completed", key="_cls")
-public abstract class Completed implements DriverState{
+public abstract class Completed implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
 	private String playerId;

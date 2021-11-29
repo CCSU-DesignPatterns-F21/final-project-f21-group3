@@ -78,12 +78,6 @@ public interface DriverState {
 	String completedTraining(Driver driver);
 	
 	/**
-	 * In the event that this driver is in this state when the server shuts down, this will grab all necessary data from the database in order to get back up and running.
-	 * @return whether or not all missing objects were successfully obtained from the database.
-	 */
-	boolean refreshFromDB();
-	
-	/**
 	 * Gives helpful information about the current state of the driver.
 	 * @return a contextual string which offers helpful information about a particular driver.
 	 */

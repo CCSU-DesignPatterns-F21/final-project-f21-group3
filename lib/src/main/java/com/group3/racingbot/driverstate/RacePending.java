@@ -18,7 +18,7 @@ import com.group3.racingbot.standings.DriverStanding;
  *
  */
 //@BsonDiscriminator(value="RacePending", key="_cls")
-public class RacePending implements DriverState {
+public class RacePending implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
 	private String playerId;
