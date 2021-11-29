@@ -1,6 +1,7 @@
 package com.group3.racingbot;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +10,9 @@ import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import com.github.ygimenez.method.Pages;
+import com.github.ygimenez.model.InteractPage;
+import com.github.ygimenez.model.Page;
 import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.ChassisComponent;
 import com.group3.racingbot.ComponentFactory.Component;
@@ -35,21 +39,20 @@ import com.group3.racingbot.inventory.filter.DurabilityFilter;
 import com.group3.racingbot.inventory.filter.FilterManager;
 import com.group3.racingbot.inventory.filter.FilterOperation;
 import com.group3.racingbot.inventory.filter.IteratorDecorator;
-
-import com.group3.racingbot.shop.Shop;
-import com.group3.racingbot.standings.DriverStanding;
-import com.group3.racingbot.standings.Standings;
-
 import com.group3.racingbot.inventory.filter.Quality;
 import com.group3.racingbot.inventory.filter.QualityFilter;
 import com.group3.racingbot.inventory.filter.RecoveryFilter;
 import com.group3.racingbot.inventory.filter.StraightsFilter;
 import com.group3.racingbot.inventory.filter.ValueFilter;
 import com.group3.racingbot.inventory.filter.WeightFilter;
+import com.group3.racingbot.shop.Shop;
+import com.group3.racingbot.standings.DriverStanding;
+import com.group3.racingbot.standings.Standings;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -77,6 +80,7 @@ public class Commands extends ListenerAdapter {
 		dbh = db;
 		component = new ConcreteComponentFactory();
 		this.raceEvent = dbh.obtainRecentRaceEvent();
+		
 	} 
 	
 	/**
@@ -88,6 +92,8 @@ public class Commands extends ListenerAdapter {
 	{
 		Member user = event.getMember(); //Gets the id of the user who called the command.
 	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
+	    
+	    
 		eb.clear();
 		try {
 			//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
@@ -103,7 +109,7 @@ public class Commands extends ListenerAdapter {
 	    				+ "\n # of Components: " + p.getOwnedComponents().getItems().size()
 	    				+ "\n # of Cars: " + p.getOwnedCars().getItems().size());
 	    		//eb.addField("Title of field", "test of field", false);
-	    		event.getGuild().getSystemChannel().sendMessage(eb.build()).queue();
+	    		event.getGuild().getSystemChannel().sendMessageEmbeds(eb.build()).queue();
     			
     		}else {
     			event.getGuild().getSystemChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
@@ -118,7 +124,7 @@ public class Commands extends ListenerAdapter {
 	    		eb.setDescription("Total Wins: "+ p.getTotalWins()
 	    				+ "\n Total Losses: " + p.getTotalLosses()
 	    				+ "\n Credits: " + p.getCredits());
-	    		event.getGuild().getSystemChannel().sendMessage(eb.build()).queue();
+	    		event.getGuild().getSystemChannel().sendMessageEmbeds(eb.build()).queue();
 	    		//eb.addField("Title of field", "test of field", false);
     		}
 		}catch(Exception e) {
@@ -164,7 +170,7 @@ public class Commands extends ListenerAdapter {
 	    				+ "**!iracer race register or !r r r** | Register for the upcoming race");
 	    		eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
 	    		
-	    	event.getChannel().sendMessage(eb.build()).queue();
+	    	event.getChannel().sendMessageEmbeds(eb.build()).queue();
 	    		
 	    	}
 	    	//Handle User registering for bot and other 
@@ -177,7 +183,7 @@ public class Commands extends ListenerAdapter {
 		    			Player p = dbh.getPlayer(user.getId());
 		    			EmbedBuilder playereb = printPlayer(p,event);
 	    				playereb.setThumbnail(user.getUser().getAvatarUrl());
-			    		event.getChannel().sendMessage(playereb.build()).queue();
+			    		event.getChannel().sendMessageEmbeds(playereb.build()).queue();
 		    			
 		    		}else {
 		    			event.getChannel().sendMessage("Registering User: " + user.getAsMention() + " with RacingBot!").queue();
@@ -196,7 +202,7 @@ public class Commands extends ListenerAdapter {
 		    			dbh.insertUser(p);
 		    			EmbedBuilder playereb = printPlayer(p,event);
 		    			playereb.setThumbnail(user.getUser().getAvatarUrl());
-			    		event.getChannel().sendMessage(playereb.build()).queue();
+			    		event.getChannel().sendMessageEmbeds(playereb.build()).queue();
 		    		}	    	
 	    			
 	    		}catch(Exception e) {
@@ -286,7 +292,7 @@ public class Commands extends ListenerAdapter {
 	    					Player p = dbh.getPlayer(m.getId());
 		    				EmbedBuilder playereb = printPlayer(p,event);
 		    				playereb.setThumbnail(m.getUser().getAvatarUrl());
-				    		event.getChannel().sendMessage(playereb.build()).queue();
+				    		event.getChannel().sendMessageEmbeds(playereb.build()).queue();
 	    				}
 	    				catch(Exception e) {
 	    					event.getChannel().sendMessage("Error!, Issues getting player profile").queue();
@@ -306,7 +312,7 @@ public class Commands extends ListenerAdapter {
 	    				{
 	    					Player p = dbh.getPlayer(id);
 	    					EmbedBuilder playereb = printPlayer(p,event);
-				    		event.getChannel().sendMessage(playereb.build()).queue();
+				    		event.getChannel().sendMessageEmbeds(playereb.build()).queue();
 	    				}else {
 	    					
 	    					Player p = new Player();
@@ -316,7 +322,7 @@ public class Commands extends ListenerAdapter {
 			    			dbh.insertUser(p);
 			    			
 			    			EmbedBuilder playereb = printPlayer(p,event);
-				    		event.getChannel().sendMessage(playereb.build()).queue();
+				    		event.getChannel().sendMessageEmbeds(playereb.build()).queue();
 	    				}
 	    				Player p = dbh.getPlayer(event.getAuthor().getId());
 	    				
@@ -329,12 +335,43 @@ public class Commands extends ListenerAdapter {
 	    		   		
 	    	}
 	    	
+	    	if(args[1].equalsIgnoreCase("inventory") || args[1].equalsIgnoreCase("inv") || args[1].equalsIgnoreCase("i"))
+	    	{
+	    		try {
+	    			Player p = dbh.getPlayer(event.getAuthor().getId());
+		    		List<Component> components = p.getOwnedComponents().getItems();
+		    		List<Car> cars = p.getOwnedCars().getItems();
+		    		
+		    		
+		    		
+		    		ArrayList<Page> comppages = new ArrayList<>();
+		    		ArrayList<Page> carpages = new ArrayList<>();
+		    		
+		    		Field field = new Field(components.get(0).getComponentType().toString(),formatText("cb" ,components.get(0).toString()), false);
+					eb.addField(field);
+		    		comppages.add(new InteractPage(eb.build()));
+		    		
+		    		event.getChannel().sendMessageEmbeds((MessageEmbed)comppages.get(0).getContent()).queue(success ->{
+	    				Pages.paginate(success, comppages, /* Use buttons? */ true);
+	    			});
+		    		event.getChannel().sendMessageEmbeds((MessageEmbed)carpages.get(0).getContent()).queue(success ->{
+	    				Pages.paginate(success, carpages, /* Use buttons? */ true);
+	    			});
+	    		}catch(Exception e)
+	    		{
+	    			System.out.println(e.getMessage());
+	    			event.getChannel().sendMessage("Error retrieving inventory!").queue();
+	    		}
+	    	}
+	    	
 	    	if(args[1].equalsIgnoreCase("shops"))
     		{
 	    		
 	    		List<Shop> shops = dbh.getShops();
 	    		System.out.println(shops.size());
-	    			
+	    		
+	    		ArrayList<Page> pages = new ArrayList<>();
+
 	    			for(int i=0; i<shops.size();i++)
 	    			{
 	    				eb.clear();
@@ -350,14 +387,20 @@ public class Commands extends ListenerAdapter {
 	    				
 	    				for(int c=0; c<components.size();c++)
 	    				{
-	    					Field field = new Field(components.get(c).getComponentType().toString(), components.get(c).toString(), false);
+	    					Field field = new Field(components.get(c).getComponentType().toString(),formatText("cb" ,components.get(c).toString()), false);
 	    					eb.addField(field);
 	    					
 	    					//event.getChannel().sendMessage(components.get(c).toString()).queue();
 	    					
 	    				}
-	    				event.getChannel().sendMessage(eb.build()).queue();
+	    				
+	    				eb.setFooter("To Purchase a component use: !r shop <chopshop, junkyard, dealership, importer> buy <component id>");
+	    				pages.add(new InteractPage(eb.build()));
+	    				
 	    			}
+	    			event.getChannel().sendMessageEmbeds((MessageEmbed)pages.get(0).getContent()).queue(success ->{
+	    				Pages.paginate(success, pages, /* Use buttons? */ true);
+	    			});
     		}
 	    	
 	    	if(args[1].equalsIgnoreCase("shop") || args[1].equalsIgnoreCase("s"))
@@ -385,7 +428,7 @@ public class Commands extends ListenerAdapter {
 	    								dbh.updateUser(player);
 	    								
 	    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
-	    								event.getChannel().sendMessage(printComponent(component,event).build()).queue();
+		    								event.getChannel().sendMessageEmbeds(printComponent(component,event).build()).queue();
 
 	    							}else {
 	    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
@@ -417,7 +460,7 @@ public class Commands extends ListenerAdapter {
 	    					eb.addField(field);
 			    					
 			    		}
-			    		event.getChannel().sendMessage(eb.build()).queue();
+				    		event.getChannel().sendMessageEmbeds(eb.build()).queue();
     				}
 	    		}
 	    		
@@ -444,7 +487,7 @@ public class Commands extends ListenerAdapter {
 	    								eb.setTitle(component.getComponentType().toString());
 	    								eb.setThumbnail(component.getThumbnailURL());
 	    								event.getChannel().sendMessage("Transaction complete! New Credit balance: " + player.getCredits()).queue();
-	    								event.getChannel().sendMessage(eb.build()).queue();
+	    								event.getChannel().sendMessageEmbeds(eb.build()).queue();
 	    							}else {
 	    								event.getChannel().sendMessage("Transaction failed! Insufficient credits! ").queue();
 	    							}
@@ -478,7 +521,7 @@ public class Commands extends ListenerAdapter {
 	    					eb.addField(field);
 			    					
 			    		}
-			    		event.getChannel().sendMessage(eb.build()).queue();
+			    		event.getChannel().sendMessageEmbeds(eb.build()).queue();
     				}
     					
 	    		}
@@ -534,7 +577,7 @@ public class Commands extends ListenerAdapter {
 	    					eb.addField(field);
 			    					
 			    		}
-			    		event.getChannel().sendMessage(eb.build()).queue();
+			    		event.getChannel().sendMessageEmbeds(eb.build()).queue();
     				}
     					
 	    		}
@@ -590,7 +633,7 @@ public class Commands extends ListenerAdapter {
 	    					eb.addField(field);
 			    					
 			    		}
-			    		event.getChannel().sendMessage(eb.build()).queue();
+			    		event.getChannel().sendMessageEmbeds(eb.build()).queue();
     				}
     					
 	    		}
@@ -1189,7 +1232,6 @@ public class Commands extends ListenerAdapter {
 	    			{
 	    				gph.debug();
 	    			}
-	    			
 	    		}
 	    		if(args[2].equalsIgnoreCase("claim")) {
 	    			Player p = dbh.getPlayer(user.getId());
@@ -1234,7 +1276,7 @@ public class Commands extends ListenerAdapter {
 				eb.setDescription(car.toString());	
 
 	
-				event.getChannel().sendMessage(eb.build()).queue();
+				event.getChannel().sendMessageEmbeds(eb.build()).queue();
 			}
 		}
 	    	

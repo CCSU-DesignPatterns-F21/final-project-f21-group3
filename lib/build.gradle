@@ -37,7 +37,7 @@ dependencies {
   
   implementation("net.dv8tion:JDA:4.3.0_277")
   implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
-  implementation group: 'com.github.ygimenez', name: 'Pagination-Utils', version: '2.3.0'
+  implementation group: 'com.github.ygimenez', name: 'Pagination-Utils', version: '3.0.4'
   
 }
 
