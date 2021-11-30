@@ -19,7 +19,8 @@ public abstract class TrackNode {
 	private int order;
 	
 	/**
-	 * Construct a piece of a race track.
+	 * Construct a piece of a race track using a seed
+	 * @param seed used to generate the track node
 	 */
 	@BsonCreator
 	public TrackNode(@BsonProperty("seed") long seed) {
@@ -53,7 +54,7 @@ public abstract class TrackNode {
 
 	/**
 	 * Retrieve the seed used to generate this track node.
-	 * @return the seed
+	 * @return the seed used to generate the track node
 	 */
 	public long getSeed() {
 		return seed;
@@ -68,13 +69,15 @@ public abstract class TrackNode {
 	}
 
 	/**
-	 * @return the successor
+	 * Retrieve the next track node in the sequence of track nodes
+	 * @return the successor of this track node
 	 */
 	public TrackNode getSuccessor() {
 		return successor;
 	}
 
 	/**
+	 * Retrieve the next track node in the sequence of track nodes
 	 * @param successor the successor to set
 	 */
 	public void setSuccessor(TrackNode successor) {
@@ -82,6 +85,7 @@ public abstract class TrackNode {
 	}
 
 	/**
+	 * Retrieve the total distance of this track node
 	 * @return the nodeLength
 	 */
 	public int getNodeLength() {
@@ -89,6 +93,7 @@ public abstract class TrackNode {
 	}
 
 	/**
+	 * Set the total distance of this track node
 	 * @param nodeLength the nodeLength to set
 	 */
 	public void setNodeLength(int nodeLength) {
@@ -96,6 +101,7 @@ public abstract class TrackNode {
 	}
 
 	/**
+	 * Retrieve the distance left to cover within this track node.
 	 * @return the distanceRemaining
 	 */
 	public int getDistanceRemaining() {
@@ -103,6 +109,7 @@ public abstract class TrackNode {
 	}
 
 	/**
+	 * Set the distance left to cover within this track node.
 	 * @param distanceRemaining the distanceRemaining to set
 	 */
 	public void setDistanceRemaining(int distanceRemaining) {
