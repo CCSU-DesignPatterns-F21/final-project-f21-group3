@@ -24,5 +24,9 @@ public class DriverStandingsMergeSort implements SortStandings {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	@Override
+	public String toString() {
+		return "Merge sort";
+	}
 }

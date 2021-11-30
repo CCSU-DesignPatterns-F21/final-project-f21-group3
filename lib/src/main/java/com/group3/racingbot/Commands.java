@@ -46,7 +46,6 @@ import com.group3.racingbot.standings.DriverStanding;
 import com.group3.racingbot.standings.Standings;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -70,6 +69,10 @@ public class Commands extends ListenerAdapter {
 	private GameplayHandler gph;
 	private RaceEvent raceEvent;
 	
+	/**
+	 * Constructs the commands class. 
+	 * @param db the database handler which will be used throughout all commands executed.
+	 */
 	public Commands(DBHandler db) {
 		eb = new EmbedBuilder();
 		dbh = db;
@@ -85,7 +88,7 @@ public class Commands extends ListenerAdapter {
 	public void onGuildMemberJoin(GuildMemberJoinEvent event)
 	{
 		Member user = event.getMember(); //Gets the id of the user who called the command.
-	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
+	    //JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
 		eb.clear();
 		try {
 			//Example response, gets the name of the User which called the command and returns a message with a @User mention in it's content.
@@ -135,7 +138,7 @@ public class Commands extends ListenerAdapter {
 		
 	    String[] args = event.getMessage().getContentRaw().split(" ");
 	    Member user = event.getMember(); //Gets the id of the user who called the command.
-	    JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
+	    //JDA client = event.getJDA(); //Gets the JDA object for later manipulation.
 	    
 	    // Verify that each Driver which a user owns is paired with a Player object
 	    /*if(dbh.userExists(user.getId())) {
@@ -316,7 +319,7 @@ public class Commands extends ListenerAdapter {
 			    			EmbedBuilder playereb = printPlayer(p,event);
 				    		event.getChannel().sendMessage(playereb.build()).queue();
 	    				}
-	    				Player p = dbh.getPlayer(event.getAuthor().getId());
+	    				//Player p = dbh.getPlayer(event.getAuthor().getId());
 	    				
 		    		}catch(Exception e)
 		    		{	
@@ -1394,43 +1397,6 @@ public class Commands extends ListenerAdapter {
 				event.getChannel().sendMessage(eb.build()).queue();
 			}
 		}
-	    	
-		    	// A test for filtering an inventory of cars.
-		    	/*if(args[1].equalsIgnoreCase("inventory")) {
-		    		/*Player somePlayer = new Player();
-		    		
-		    		int randomNum = ThreadLocalRandom.current().nextInt(0, 49);
-		    		
-		    		Car carA = new Car(20, randomNum*2, "OEM", randomNum*3);
-		    		Car carB = new Car(40, randomNum, "Junkyard", randomNum*4);
-		    		Car carC = new Car(60, randomNum, "Lemon", randomNum*2);
-		    		Car carD = new Car(80, randomNum*5, "Racing", randomNum/3);
-		    		
-		    		somePlayer.getOwnedCars().add(carA);
-		    		somePlayer.getOwnedCars().add(carB);
-		    		somePlayer.getOwnedCars().add(carC);
-		    		somePlayer.getOwnedCars().add(carD);
-		    		
-		    		//Inventory<Car> inventory = new CarInventory();
-		    		Iterator<Car> carIterator = somePlayer.getOwnedCars().iterator();
-		    		
-		    		QualityFilter<Car> filterA = new QualityFilter<Car>(carIterator, "Lemon");
-		    		DurabilityFilter<Car> filterB = new DurabilityFilter<Car>(filterA, FilterOperation.IS_GREATER_THAN, 40);
-		    		// Print all items with "Junkyard" quality
-		    		String result = "Filtered search results:\n";
-		    		int carCount = 1;
-		    		while (filterB.hasNext()) {
-		    			Car car = filterB.next();
-		    			if (car != null) {
-		    				result += "Car " + carCount + ": " + car + "\n";
-		    				carCount++;
-		    			}
-		    		}
-		    		eb.setDescription(result);
-		    		event.getChannel().sendMessage(eb.build()).queue();
-		    	}*/
-					
-				//TODO: for debugging only
 				
 				//Lemon: 0-150
 				//Junkyard: 151 - 300
@@ -1448,10 +1414,13 @@ public class Commands extends ListenerAdapter {
 	}
 	
 	/**
-	 * Add a filter to a player's inventories
-	 * @param player
-	 * @param event
-	 * @return
+	 * Add a filter to a player's inventory (or inventories) which makes contextual sense. 
+	 * For example, if supplied a filter which filters by value, this will add filters to the component and car inventory and leave the driver inventory alone.
+	 * @param p The player whose inventory (or inventories) is supplied with the filter
+	 * @param event The message received event supplied by jda. Used to send messages from within this method.
+	 * @param referenceArg This is the index of the argument in the command which acts as the "start of the filter", or the index of the first token in the filter command. This parameter is necessary since filters can be chained together in one command with spaces. Ex. !r car filterBy quality = sports durability < 80. In the example, the referencearg for the first filter is at index 3, then the next referencearg for the next filter would be index 6.
+	 * @param errorMsg The error message to display if adding the filter fails in some way.
+	 * @return the player with the updated inventory (or inventories) with the filter applied.
 	 */
 	private Player addFilter(Player p, GuildMessageReceivedEvent event, int referenceArg, String errorMsg) {
 		String[] args = event.getMessage().getContentRaw().split(" ");
@@ -1735,6 +1704,12 @@ public class Commands extends ListenerAdapter {
 		return eb; 
 	 }
 	 
+	 /**
+	  * Sends a discord message containing details about a component formatted in a stylish way using embeds.
+	  * @param c the component whose details are to be to displayed to the user
+	  * @param event The message received event supplied by jda. Used to add onto the EmbedBuilder object passed in.
+	  * @return EmbedBuilder instance which has been added onto with builder methods and is ready to send a stylishly formatted discord message.
+	  */
 	 public EmbedBuilder printComponent(Component c, GuildMessageReceivedEvent event)
 	 {
 		eb.clear();

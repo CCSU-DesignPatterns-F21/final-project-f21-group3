@@ -128,8 +128,8 @@ public class DBHandler {
 		    );
 		configProperties = ConfigPropertiesHandler.getInstance();
 
-		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
-		connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
+		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+		//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
 				mongoClient = MongoClients.create(settings);
 				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);

@@ -70,4 +70,9 @@ public class DriverStandingsQuickSort implements SortStandings {
 		list.set(a, list.get(b));
 		list.set(b, tmp);
 	}
+	
+	@Override
+	public String toString() {
+		return "Quick sort";
+	}
 }
