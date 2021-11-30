@@ -17,7 +17,6 @@ import com.group3.racingbot.Driver;
 /**
  * A race track which Drivers can race and compete on.
  * @author Maciej Bregisz
- *
  */
 public class RaceTrack {
 	@BsonIgnore
@@ -37,7 +36,7 @@ public class RaceTrack {
 	
 	/**
 	 * Set the track nodes which will make up the race track.
-	 * @param tn
+	 * @param tn the list of track nodes to set
 	 */
 	public void setTrackNodes(List<TrackNode> tn) {
 		this.trackNodes = tn;
@@ -54,7 +53,7 @@ public class RaceTrack {
 	
 	/**
 	 * Retrieve the seed used in generating the race track.
-	 * @return the seed
+	 * @return the seed used to generate the track nodes
 	 */
 	public long getSeed() {
 		return seed;
@@ -151,7 +150,8 @@ public class RaceTrack {
 	/**
 	 * Makes the driver advance forward along the track.
 	 * @param distance distance to travel
-	 * @throws RaceTrackEndException 
+	 * @param driver the driver which is progressing through the track.
+	 * @throws RaceTrackEndException
 	 */
 	public void progressForward(Driver driver, int distance) throws RaceTrackEndException {
 		// CoR

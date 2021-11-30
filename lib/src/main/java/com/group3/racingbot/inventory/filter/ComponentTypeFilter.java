@@ -26,31 +26,6 @@ public class ComponentTypeFilter<T extends ComponentFilterable> extends Iterator
 		this.operation = op;
 	}
 	
-	/**
-	 * Associates a class name with a component type if possible. Returns null if not possible.
-	 * @param className the class name to pair with a component type.
-	 */
-	/*private ComponentType componentTypeFromClassName(String className) {
-		if (className.equals("EngineComponent")) {
-			return ComponentType.ENGINE;
-		}
-		else if (className.equals("SuspensionComponent")) {
-			return ComponentType.SUSPENSION;
-		}
-		else if (className.equals("ChassisComponent")) {
-			return ComponentType.CHASSIS;
-		}
-		else if (className.equals("TransmissionComponent")) {
-			return ComponentType.TRANSMISSION;
-		}
-		else if (className.equals("WheelComponent")) {
-			return ComponentType.WHEELS;
-		}
-		else {
-			return null;
-		}
-	}*/
-	
 	@Override
 	public T next() {
 		T item = super.getIterator().next();

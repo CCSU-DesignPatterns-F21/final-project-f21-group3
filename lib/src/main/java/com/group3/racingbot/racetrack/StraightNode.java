@@ -14,7 +14,8 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 public class StraightNode extends TrackNode {
 	
 	/**
-	 * Construct a straight node
+	 * Construct a straight node using a seed
+	 * @param seed used to generate the track node
 	 */
 	@BsonCreator
 	public StraightNode(@BsonProperty("seed") long seed) {
