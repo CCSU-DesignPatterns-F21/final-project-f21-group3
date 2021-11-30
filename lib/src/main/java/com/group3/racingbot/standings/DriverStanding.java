@@ -11,6 +11,7 @@ import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
+import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.RaceTrack;
@@ -326,6 +327,11 @@ public class DriverStanding {
 	@Override
 	public String toString() {
 		this.refreshFromDB();
-		return this.position + ". | Driver: " + this.driver.getName() + " (" + this.driverId + ") | Time Completed: " + this.timeCompleted;
+		if (this.getDriver().getState() instanceof Racing) {
+			return this.position + ". | Driver: " + this.driver.getName() + " | " + currentNode.getOrder() + " of " + this.raceTrack.size() + " | Distance: " + (currentNode.getNodeLength() - currentNode.getDistanceRemaining()) + " / " + currentNode.getNodeLength() + " | Current state: " + this.driver.getState().toString();
+		}
+		else {
+			return this.position + ". | Driver: " + this.driver.getName() + " (" + this.driverId + ") | Time Completed: " + this.timeCompleted;
+		}
 	}
 }

@@ -748,7 +748,8 @@ public class Commands extends ListenerAdapter {
     				    public void run () {
     				    	if (!raceEvent.isFinished()) {
 	    						System.out.println("Race Step");
-	    						event.getChannel().sendMessage(raceEvent.stepAllDrivers()).queue();
+	    						String stepResult = raceEvent.stepAllDrivers();
+	    						event.getChannel().sendMessage(stepResult.substring(1, stepResult.length()-1)).queue(); // We must trim the first and last character because brackets get added somewhere. Maybe because it's an ArrayList?
     				    	}
     				    	else {
     				    		event.getChannel().sendMessage(printRaceResults()).queue();

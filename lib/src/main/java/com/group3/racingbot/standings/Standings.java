@@ -318,7 +318,7 @@ public class Standings {
 		Iterator<DriverStanding> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			DriverStanding currentDriverStanding = iterator.next();
-			results += currentDriverStanding + "\n";
+			results += currentDriverStanding.toString() + "\n";
 		}
 		return results;
 	}
