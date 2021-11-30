@@ -34,6 +34,12 @@ public class DriverStanding {
 	private int distanceTraveled;
 	private int timeCompleted;
 	
+	/**
+	 * Constructs a driver standing. In other words, this holds the pole position as well as distance traveled of the Driver.
+	 * @param playerId the player which owns the driver
+	 * @param driverId the driver who participated in the race
+	 * @param raceEventId the event which the driver participated in
+	 */
 	@BsonCreator
 	public DriverStanding(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("raceEventId") String raceEventId) {
 		this.player = null;
@@ -49,6 +55,7 @@ public class DriverStanding {
 	}
 	
 	/**
+	 * Retrieve the player which owns the driver which this driver standing is based upon.
 	 * @return the player
 	 */
 	public Player getPlayer() {
@@ -57,6 +64,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the player which owns the driver which this driver standing is based upon.
 	 * @param player the player to set
 	 */
 	public void setPlayer(Player player) {
@@ -64,6 +72,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Retrieve the driver which this driver standing is based upon.
 	 * @return the driver
 	 */
 	public Driver getDriver() {
@@ -72,6 +81,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the driver which this driver standing is based upon.
 	 * @param driver the driver to set
 	 */
 	public void setDriver(Driver driver) {
@@ -79,6 +89,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Retrieve the race track from the race event that the driver is participating in.
 	 * @return the raceTrack
 	 */
 	public RaceTrack getRaceTrack() {
@@ -87,6 +98,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the race track from the race event that the driver is participating in.
 	 * @param raceTrack the raceTrack to set
 	 */
 	public void setRaceTrack(RaceTrack raceTrack) {
@@ -94,6 +106,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Retrieve the race event id of the race event that the driver is participating in.
 	 * @return the raceEventId
 	 */
 	public String getRaceEventId() {
@@ -101,6 +114,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the race event id of the race event that the driver is participating in.
 	 * @param raceEventId the raceEventId to set
 	 */
 	public void setRaceEventId(String raceEventId) {
@@ -108,6 +122,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Retrieve the node which the driver is currently on.
 	 * @return the currentNode
 	 */
 	public TrackNode getCurrentNode() {
@@ -116,6 +131,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the node which the driver is currently on.
 	 * @param currentNode the currentNode to set
 	 */
 	public void setCurrentNode(TrackNode currentNode) {
@@ -123,6 +139,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Retrieve the pole position of the driver in the race event.
 	 * @return the position
 	 */
 	public int getPosition() {
@@ -130,6 +147,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the pole position of the driver in the race event.
 	 * @param position the position to set
 	 */
 	public void setPosition(int position) {
@@ -137,6 +155,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Retrieve the total distance which the driver has traveled along the race track.
 	 * @return the distanceTraveled
 	 */
 	public int getDistanceTraveled() {
@@ -144,6 +163,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the total distance which the driver has traveled along the race track.
 	 * @param distanceTraveled the distanceTraveled to set
 	 */
 	public void setDistanceTraveled(int distanceTraveled) {
@@ -151,6 +171,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Retrieve the time which the driver reached the end of the race track. If the driver has not reached the end of the track, then return 0.
 	 * @return the timeCompleted
 	 */
 	public int getTimeCompleted() {
@@ -158,6 +179,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the time which the driver reached the end of the race track.
 	 * @param timeCompleted the timeCompleted to set
 	 */
 	public void setTimeCompleted(int timeCompleted) {
@@ -165,6 +187,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Retrieve the playerid of the player which owns the driver which this driver standing is based upon.
 	 * @return the playerId
 	 */
 	public String getPlayerId() {
@@ -172,6 +195,7 @@ public class DriverStanding {
 	}
 
 	/**
+	 * Set the playerid of the player which owns the driver which this driver standing is based upon.
 	 * @return the driverId
 	 */
 	public String getDriverId() {

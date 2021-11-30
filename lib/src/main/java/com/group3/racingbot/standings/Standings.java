@@ -19,13 +19,17 @@ import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
 
 /**
- * Keeps track of which drivers are winning within a race event.
+ * Keeps track of the pole positions of all drivers within a race event.
  * @author Nick Sabia
  */
 public class Standings {
 	private List<DriverStanding> standings;
 	private String raceEventId;
 	
+	/**
+	 * Construct the Standings. Holds all drivers which are participating in the race event whose id is supplied.
+	 * @param raceEventId
+	 */
 	@BsonCreator
 	public Standings(@BsonProperty("raceEventId") String raceEventId) {
 		this.standings = new ArrayList<DriverStanding>();
@@ -98,6 +102,7 @@ public class Standings {
 	}
 
 	/**
+	 * Retrieve the race event id of the race event which these standings apply to.
 	 * @return the raceEventId
 	 */
 	public String getRaceEventId() {
@@ -105,6 +110,7 @@ public class Standings {
 	}
 
 	/**
+	 * Set the race event id of the race event which these standings apply to.
 	 * @param raceEventId the raceEventId to set
 	 */
 	public void setRaceEventId(String raceEventId) {
@@ -112,6 +118,7 @@ public class Standings {
 	}
 
 	/**
+	 * Retrieve the list of all driver standings for the race event.
 	 * @return the standings
 	 */
 	public List<DriverStanding> getStandings() {
@@ -119,6 +126,7 @@ public class Standings {
 	}
 
 	/**
+	 * Set the list of all driver standings for the race event.
 	 * @param standings the standings to set
 	 */
 	public void setStandings(List<DriverStanding> standings) {
@@ -127,8 +135,8 @@ public class Standings {
 
 	/**
 	 * Adds a driver to the race event.
-	 * @param playerId
-	 * @param driverId
+	 * @param playerId the id of the player whose driver is going to be participating in the race event.
+	 * @param driverId the driver who will join the race event
 	 */
 	public void addDriver(String playerId, String driverId) {
 		//Predicate<DriverStanding> condition = driverPosition -> driverPosition.getDriverId().equals(driver.getId());
