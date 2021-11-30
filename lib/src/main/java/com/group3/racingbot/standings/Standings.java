@@ -17,15 +17,21 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.Iterator;
 //import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.sorting.DriverStandingsQuickSort;
+import com.group3.racingbot.sorting.SortStandings;
 
 /**
- * Keeps track of which drivers are winning within a race event.
+ * Keeps track of the pole positions of all drivers within a race event.
  * @author Nick Sabia
  */
 public class Standings {
 	private List<DriverStanding> standings;
 	private String raceEventId;
 	
+	/**
+	 * Construct the Standings. Holds all drivers which are participating in the race event whose id is supplied.
+	 * @param raceEventId
+	 */
 	@BsonCreator
 	public Standings(@BsonProperty("raceEventId") String raceEventId) {
 		this.standings = new ArrayList<DriverStanding>();
@@ -41,6 +47,8 @@ public class Standings {
 		List<DriverStanding> racing = new ArrayList<DriverStanding>(); // This list holds all drivers who are currently racing.
 		List<DriverStanding> dnf = new ArrayList<DriverStanding>(); // This list holds all drivers who couldn't complete the race.
 		List<DriverStanding> result = new ArrayList<DriverStanding>(); // This list holds all drivers in the order which they stand within the race event.
+		// Defines the sorting algorithm to use
+		SortStandings sortAlgorithm = new DriverStandingsQuickSort();
 		
 		// Separate driver standings into different lists based on their states.
 		Iterator<DriverStanding> iterator = this.iterator();
@@ -58,9 +66,10 @@ public class Standings {
 		}
 		
 		// Sort the racers who have finished by timeCompleted, then if there's a tie randomly pick one.
-		TimeCompletedComparator timeCompletedComparator = new TimeCompletedComparator();
+		//TimeCompletedComparator timeCompletedComparator = new TimeCompletedComparator();
 		if (finished.size() > 0) {
-			Collections.sort(finished, timeCompletedComparator);
+			//Collections.sort(finished, timeCompletedComparator);
+			sortAlgorithm.sortByTimeCompleted(finished);
 			for (int i = 0, len = finished.size(); i < len; i++) {
 				if (i > 0) {
 					boolean isTied = finished.get(i-1).getTimeCompleted() == finished.get(i).getTimeCompleted();
@@ -77,11 +86,13 @@ public class Standings {
 		}
 		
 		// Sort the racers who are still currently racing.
-		DistanceTraveledComparator distanceTraveledComparator = new DistanceTraveledComparator();
-		Collections.sort(racing, distanceTraveledComparator);
+		//DistanceTraveledComparator distanceTraveledComparator = new DistanceTraveledComparator();
+		//Collections.sort(racing, distanceTraveledComparator);
+		sortAlgorithm.sortByDistanceTraveled(racing);
 		
 		// Sort the racers who couldn't complete the race
-		Collections.sort(dnf, timeCompletedComparator);
+		//Collections.sort(dnf, timeCompletedComparator);
+		sortAlgorithm.sortByTimeCompleted(dnf);
 		Collections.reverse(dnf);
 		
 		// Add each list together into the result list
@@ -98,6 +109,7 @@ public class Standings {
 	}
 
 	/**
+	 * Retrieve the race event id of the race event which these standings apply to.
 	 * @return the raceEventId
 	 */
 	public String getRaceEventId() {
@@ -105,6 +117,7 @@ public class Standings {
 	}
 
 	/**
+	 * Set the race event id of the race event which these standings apply to.
 	 * @param raceEventId the raceEventId to set
 	 */
 	public void setRaceEventId(String raceEventId) {
@@ -112,6 +125,7 @@ public class Standings {
 	}
 
 	/**
+	 * Retrieve the list of all driver standings for the race event.
 	 * @return the standings
 	 */
 	public List<DriverStanding> getStandings() {
@@ -119,6 +133,7 @@ public class Standings {
 	}
 
 	/**
+	 * Set the list of all driver standings for the race event.
 	 * @param standings the standings to set
 	 */
 	public void setStandings(List<DriverStanding> standings) {
@@ -127,8 +142,8 @@ public class Standings {
 
 	/**
 	 * Adds a driver to the race event.
-	 * @param playerId
-	 * @param driverId
+	 * @param playerId the id of the player whose driver is going to be participating in the race event.
+	 * @param driverId the driver who will join the race event
 	 */
 	public void addDriver(String playerId, String driverId) {
 		//Predicate<DriverStanding> condition = driverPosition -> driverPosition.getDriverId().equals(driver.getId());
@@ -303,7 +318,7 @@ public class Standings {
 		Iterator<DriverStanding> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			DriverStanding currentDriverStanding = iterator.next();
-			results += currentDriverStanding + "\n";
+			results += currentDriverStanding.toString() + "\n";
 		}
 		return results;
 	}

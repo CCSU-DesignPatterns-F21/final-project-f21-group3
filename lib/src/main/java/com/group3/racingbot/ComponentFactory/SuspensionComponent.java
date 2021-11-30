@@ -48,6 +48,7 @@ public class SuspensionComponent extends Component {
 	
 	
 	/**
+	 * Retrieve the handling which this suspension is capable of performing
 	 * @return the handling
 	 */
 	public float getHandling() {
@@ -55,6 +56,7 @@ public class SuspensionComponent extends Component {
 	}
 
 	/**
+	 * Set the handling which this suspension is capable of performing
 	 * @param handling the handling to set
 	 */
 	public void setHandling(float handling) {

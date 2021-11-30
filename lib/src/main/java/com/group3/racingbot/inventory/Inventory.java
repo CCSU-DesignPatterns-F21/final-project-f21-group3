@@ -32,6 +32,7 @@ public class Inventory<T extends Unique> {
 	}
 
 	/**
+	 * Retrieve the filter manager. The filter manager is responsible for chaining decorated iterators together in order to create the final filtered result.
 	 * @return the filterManager
 	 */
 	public FilterManager<T> getFilterManager() {
@@ -39,6 +40,7 @@ public class Inventory<T extends Unique> {
 	}
 
 	/**
+	 * Set the filter manager. The filter manager is responsible for chaining decorated iterators together in order to create the final filtered result.
 	 * @param filterManager the filterManager to set
 	 */
 	public void setFilterManager(FilterManager<T> filterManager) {
@@ -54,6 +56,7 @@ public class Inventory<T extends Unique> {
 	
 	/**
 	 * Add an item to the inventory.
+	 * @param item the item to add to the inventory
 	 */
 	public void add(T item) {
 		this.items.add(item);
@@ -61,6 +64,8 @@ public class Inventory<T extends Unique> {
 	
 	/**
 	 * Remove an item from the inventory.
+	 * @param item the item to add to the inventory.
+	 * @return whether or not the item removal was successful or not.
 	 */
 	public boolean remove(T item) {
 		if (this.items.remove(item)) 
@@ -113,7 +118,7 @@ public class Inventory<T extends Unique> {
 	/**
 	 * Get an item from the inventory based on its id.
 	 * @param id the id of the item
-	 * @return an item
+	 * @return an item from the inventory which matches the supplied id
 	 * @throws NotFoundException 
 	 */
 	public T getById(String id) throws NotFoundException {

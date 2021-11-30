@@ -4,6 +4,7 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 
 import com.group3.racingbot.Car;
 import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.ComponentFactory.ComponentType;
 import com.group3.racingbot.inventory.Inventory;
 
 /**
@@ -32,6 +33,6 @@ public class Junkyard extends Shop {
 	public void update() {
 		System.out.println("Updating Junkyard Store");
 		getComponentsForSale().getItems().clear();
-		getComponentsForSale().add(getFactory().createComponent("engine", 100));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.ENGINE, 100));
 	}
 }

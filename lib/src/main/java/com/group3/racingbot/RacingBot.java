@@ -12,12 +12,9 @@ import net.dv8tion.jda.api.entities.Activity;
  * @author Maciej Bregisz
  * @author Nick Sabia
  * @author Jack Gola
- * @author Kobe Onye
  *
  */
-
 public class RacingBot {
-	
 	
 	/**
 	 * Reference to the command prefix.
@@ -34,7 +31,12 @@ public class RacingBot {
 	private static ConfigPropertiesHandler configProperties;
 	private static DBHandler db;
 	
-	public static void main(String[] args) throws Exception{
+	/**
+	 * Initializes and runs the discord racing bot.
+	 * @param args
+	 * @throws Exception 
+	 */
+	public static void main(String[] args) throws Exception {
 		System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
 		configProperties = ConfigPropertiesHandler.getInstance();
 		

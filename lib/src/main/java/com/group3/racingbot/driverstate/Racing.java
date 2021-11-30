@@ -16,25 +16,18 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.ComponentFactory.ComponentType;
-import com.group3.racingbot.exceptions.RaceTrackEndException;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.RaceTrackEndException;
 import com.group3.racingbot.racetrack.StraightNode;
 import com.group3.racingbot.standings.DriverStanding;
 
 /**
- * A state where the Driver is currently racing. A Driver may leave this state once they finish the race.
+ * Represents a racing state in which the driver is currently participating in a race event and hasn't reached the end of the track. A Driver may leave this state once they finish the race.
  * @author Nick Sabia
  *
  */
-//@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = Aggressive.class),
-//        @JsonSubTypes.Type(value = Normal.class),
-//        @JsonSubTypes.Type(value = Defensive.class),
-//		@JsonSubTypes.Type(value = Crashed.class)})
-//@BsonDiscriminator(value="Racing", key="_cls")
 public abstract class Racing implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
@@ -50,12 +43,16 @@ public abstract class Racing implements DriverState, Refreshable {
 	private String raceEventId;
 	private int straightDistance;
 	private int cornerDistance;
-	//private int position;
 	private int distanceTraveledThisStep; // How far the driver traveled this race step.
-	//private int totalDistanceTraveled; // Used to compare with other drivers to determine position.
-	//private TrackNode currentNode;
 	private double multiplier;
 
+	/**
+	 * The racing constructor. 
+	 * @param playerId the player id of the player who owns the driver which is participating in the race event.
+	 * @param driverId the driver id of the driver who is participating in the race event.
+	 * @param carId the car id of the car being used in the race event.
+	 * @param raceEventId the race event id of the race event which the driver is participating in.
+	 */
 	@BsonCreator
 	public Racing(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId) {
 		this.player = null;
@@ -64,13 +61,10 @@ public abstract class Racing implements DriverState, Refreshable {
 		this.driverId = driverId;
 		this.car = null;
 		this.carId = carId;
-		//this.raceTrack = raceTrack;
 		this.raceEventId = raceEventId;
 		this.straightDistance = 0;
 		this.cornerDistance = 0;
 		this.distanceTraveledThisStep = 0;
-		//this.totalDistanceTraveled = 0;
-		//this.currentNode = null;
 		this.multiplier = 1;
 	}
 	
@@ -219,6 +213,7 @@ public abstract class Racing implements DriverState, Refreshable {
 	}
 	
 	/**
+	 * Retrieve the race event id of the race event which the driver is participating in.
 	 * @return the raceEventId
 	 */
 	public String getRaceEventId() {
@@ -226,6 +221,7 @@ public abstract class Racing implements DriverState, Refreshable {
 	}
 
 	/**
+	 * Set the race event id of the race event which the driver is participating in.
 	 * @param raceEventId the raceEventId to set
 	 */
 	public void setRaceEventId(String raceEventId) {
@@ -265,23 +261,7 @@ public abstract class Racing implements DriverState, Refreshable {
 	}
 
 	/**
-	 * Retrieve the node which the Driver is currently on.
-	 * @return the currentNode
-	 */
-	//public TrackNode getCurrentNode() {
-	//	return currentNode;
-	//}
-
-	/**
-	 * Set the node which the Driver is currently on.
-	 * @param currentNode the currentNode to set
-	 */
-	//public void setCurrentNode(TrackNode currentNode) {
-	//	this.currentNode = currentNode;
-	//}
-
-	/**
-	 * Return a randomly rolled driver state. The likelihood of rolling a certain racing state depends on the racing state the driver is in. Has a chance to return a DNF state if the driver cannot finish the race.
+	 * Return a randomly chosen driver state. The likelihood of rolling a certain racing state depends on the racing state the driver is in. In other words, the randomization is weighted. There is a chance to return a DNF state if the driver cannot finish the race.
 	 * @return a racing state
 	 */
 	abstract public DriverState rollDriverState();

@@ -13,7 +13,6 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="Normal", key="_cls")
 public class Normal extends Racing {
 	/**
 	 * Construct a normal racing state.
@@ -34,13 +33,7 @@ public class Normal extends Racing {
 		int roll = ThreadLocalRandom.current().nextInt(0, 100);
 		if (roll < (6 * this.getMultiplier())) {
 			// Driver has crashed
-			//crash(this.getCar());
-			//if (this.getCar().getDurability() > 0) {
-				return new Crashed(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId());
-			//}
-			//else {
-			//	return new DNF(super.getPlayerId(), super.getDriverId());
-			//}
+			return new Crashed(super.getPlayerId(), super.getDriverId(), super.getCarId(), super.getRaceEventId());
 		}
 		else if (roll < 60) {
 			// Driver remains in the Normal state.

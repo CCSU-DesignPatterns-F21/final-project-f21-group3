@@ -25,7 +25,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
 /**
- *  Repsponsible for handling the game simulation itself and any underlying features. Keeps track of the Store, Car and Component creation.
+ *  Responsible for handling the game simulation itself and any underlying features. Keeps track of the Store, Car and Component creation.
  * @author Maciej Bregisz
  *
  */
@@ -38,6 +38,11 @@ public class GameplayHandler {
 	private List<CustomObserver> listeners = new ArrayList<CustomObserver>();
 	private ComponentFactory componentFactory;
 	
+	/**
+	 * Construct the gameplay handler.
+	 * @param j instance of JDA with the discord bot's token setup
+	 * @param dbh allows for updated shops to be inserted into the database.
+	 */
 	public GameplayHandler(JDA j, DBHandler dbh) {
 		db = dbh;
 		componentFactory = new ConcreteComponentFactory();
@@ -133,11 +138,6 @@ public class GameplayHandler {
 		timer.schedule(hourlyTask, firstScheduledTask, 1000*60*60);
 	}
 	
-	public void debug()
-	{
-		notifyObservers();
-	}
-	
 	/**
 	 * Adds observer to a list which will be notified when specified event takes place.
 	 * @param o observer which is subscribing.
@@ -172,8 +172,8 @@ public class GameplayHandler {
 	}
 	
 	/**
-	 * Returns the list of CustomObservers
-	 * @return
+	 * Retrieve the list of listeners which have subscribed to the gameplay handler
+	 * @return list of CustomObservers
 	 */
 	public List<CustomObserver> getObservers(){
 		return listeners;
@@ -224,5 +224,10 @@ public class GameplayHandler {
 		} else if (!jda.equals(other.jda))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "Gameplay handler.";
 	}
 }

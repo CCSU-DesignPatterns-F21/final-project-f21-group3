@@ -48,6 +48,7 @@ public class WheelComponent extends Component {
 	}
 	
 	/**
+	 * Retrieve the braking which this transmission is capable of performing
 	 * @return the braking
 	 */
 	public float getBraking() {
@@ -55,6 +56,7 @@ public class WheelComponent extends Component {
 	}
 
 	/**
+	 * Set the braking which this transmission is capable of performing
 	 * @param braking the braking to set
 	 */
 	public void setBraking(float braking) {

@@ -42,6 +42,7 @@ public class EngineComponent extends Component {
 	}
 	
 	/**
+	 * Retrieve the speed which this engine is capable of performing.
 	 * @return the speed
 	 */
 	public float getSpeed() {
@@ -49,6 +50,7 @@ public class EngineComponent extends Component {
 	}
 
 	/**
+	 * Set the speed which this engine is capable of performing.
 	 * @param speed the speed to set
 	 */
 	public void setSpeed(float speed) {

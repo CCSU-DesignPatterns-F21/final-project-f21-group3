@@ -18,12 +18,6 @@ import com.group3.racingbot.standings.DriverStanding;
  * @author Nick Sabia
  *
  */
-//@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = DNF.class),
-//        @JsonSubTypes.Type(value = FinishedRace.class),
-//		@JsonSubTypes.Type(value = FinishedTraining.class)})
-//@BsonDiscriminator(value="Completed", key="_cls")
 public abstract class Completed implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
@@ -43,7 +37,6 @@ public abstract class Completed implements DriverState, Refreshable {
 		this.playerId = playerId;
 		this.driver = null;
 		this.driverId = driverId;
-		//this.raceEventId = raceEventId;
 	}
 	
 	/**
