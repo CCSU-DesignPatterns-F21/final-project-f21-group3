@@ -1061,11 +1061,11 @@ public class Commands extends ListenerAdapter {
     				String carId = dbh.generateId(6);
     				freeCar.setId(carId);
     				ConcreteComponentFactory componentFactory = new ConcreteComponentFactory();
-    				EngineComponent engine = (EngineComponent) componentFactory.createComponent("engine", value);
-    				TransmissionComponent transmission = (TransmissionComponent) componentFactory.createComponent("transmission", value);
-    				SuspensionComponent suspension = (SuspensionComponent) componentFactory.createComponent("suspension", value);
-    				ChassisComponent chassis = (ChassisComponent) componentFactory.createComponent("chassis", value);
-    				WheelComponent wheels = (WheelComponent) componentFactory.createComponent("wheel", value);
+    				EngineComponent engine = (EngineComponent) componentFactory.createComponent(ComponentType.ENGINE, value);
+    				TransmissionComponent transmission = (TransmissionComponent) componentFactory.createComponent(ComponentType.TRANSMISSION, value);
+    				SuspensionComponent suspension = (SuspensionComponent) componentFactory.createComponent(ComponentType.SUSPENSION, value);
+    				ChassisComponent chassis = (ChassisComponent) componentFactory.createComponent(ComponentType.CHASSIS, value);
+    				WheelComponent wheels = (WheelComponent) componentFactory.createComponent(ComponentType.WHEELS, value);
     				freeCar.setEngine(engine);
     				freeCar.setChassis(chassis);
     				freeCar.setSuspension(suspension);
@@ -1370,11 +1370,11 @@ public class Commands extends ListenerAdapter {
 				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
 				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
 				
-				Component engine = component.createComponent("engine", 100);
-				Component suspension = component.createComponent("suspension", 250);
-				Component wheel = component.createComponent("wheel", 800);
-				Component transmission = component.createComponent("transmission", 499);
-				Component chassis = component.createComponent("chassis", 4500);
+				Component engine = component.createComponent(ComponentType.ENGINE, 100);
+				Component suspension = component.createComponent(ComponentType.SUSPENSION, 250);
+				Component wheel = component.createComponent(ComponentType.WHEELS, 800);
+				Component transmission = component.createComponent(ComponentType.TRANSMISSION, 499);
+				Component chassis = component.createComponent(ComponentType.CHASSIS, 4500);
 				
 				CarBuilder car = new Car.CarBuilder();
 				
