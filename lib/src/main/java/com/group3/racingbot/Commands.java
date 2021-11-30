@@ -171,15 +171,53 @@ public class Commands extends ListenerAdapter {
 	    				+ "**!r shop (chopshop, junkyard, dealership, importer) or !r s (c,j,d,i)** | Lists the items for sale of a specific store.\n"
 	    				+ "**!r shop (chopshop, junkyard, dealership, importer) buy [id]** | Buys the item by the id listed in the shop.\n"
 	    				+ "\n**Events**\n"
-	    				+ "**!r event register or !r event r** | Register for the upcoming race"
-	    				+ "**!r event generate** | Generate a new race event"
-	    				+ "**!r event view** | View the details of a race event, including the race track"
-	    				+ "**!r event begin** | Starts a race event"
+	    				+ "**!r event register or !r event r** | Register for the upcoming race\n"
+	    				+ "**!r event generate** | Generate a new race event\n"
+	    				+ "**!r event view** | View the details of a race event, including the race track\n"
+	    				+ "**!r event begin** | Starts a race event\n"
 	    				+ "\n**Claim Rewards**\n"
-	    				+ "**!r claim** | If there is a reward for the user's active driver to claim, then collect that reward"
+	    				+ "**!r claim** | If there is a reward for the user's active driver to claim, then collect that reward\n"
 	    				+ "\n**Withdraw From Event or Training**\n"
-	    				+ "**!r withdraw** | If your active driver is in the middle of something, this pulls them out of it. The only exception being that you cannot withdraw a driver from a race once they're already racing."
-	    				+ "\n**Driver**\n"
+	    				+ "**!r withdraw** | If your active driver is in the middle of something, this pulls them out of it. The only exception being that you cannot withdraw a driver from a race once they're already racing.\n"
+	    				);
+	    		eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
+	    		
+	    	event.getChannel().sendMessage(eb.build()).queue();
+	    	eb.clear();
+	    	eb.setColor(Color.red);
+	    	eb.setDescription("\n**Driver**\n"
+	    				+ "**!r driver create [name]** | Create a new driver with the given name.\n"
+	    				+ "**!r driver active** | View details about the current active driver\n"
+	    				+ "**!r driver active [driver name]** | Set the current active driver by supplying a driver's name\n"
+	    				+ "**!r driver view** | See all of the drivers which you own\n"
+	    				+ "**!r driver status** | See what your driver is currently up to\n"
+	    				+ "\n**Driver Filtering**\n"
+	    				+ "**!r driver filterBy (composure | awareness | drafting | straights | cornering | recovery) (= | != | > | <) (number | String) [(composure | awareness | drafting | straights | cornering | recovery) (= | != | > | <) (number | String)] ** | Retrieve drivers from your inventory which meet a specific criteria. Can use multiple filters at once.\n"
+	    				+ "\n**Driver Training**\n"
+	    				+ "**!r driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)** | Have your driver work on a particular skill. This takes time! The more intense the workout, the longer the training session, but the better the rewards.\n"
+    					);
+	    	eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
+	    	event.getChannel().sendMessage(eb.build()).queue();
+	    	
+	    	eb.clear();
+	    	eb.setColor(Color.red);
+	    	eb.setDescription("\n**Cars**\n"
+						+ "**!r car blueprint** | For 2000 credits, lets you buy a new blank slate of a car. This car has nothing, it's up to you to build it up.\n"
+						+ "**!r car disassemble [car id]** | Disassemble a car and store all of its components into your component inventory. WARNING: This will remove the car from your car inventory.\n"
+						+ "**!r car equip [car id]** | Take a component from your inventory and install it onto your active car.\n"
+						+ "**!r car unequip (engine | chassis | suspension | wheels | transmission)** | Removes a component from your active car and puts it into your component inventory.\n"
+						+ "**!r car view** | Look at all the cars within your car inventory.\n"
+						+ "**!r car active** | View details about your active car.\n"
+						+ "\n**Car Filtering**\n"
+						+ "**!r car filterBy (quality | durability | value | weight) (= | != | > | <) (number | String) [(quality | durability | value | weight) (= | != | > | <) (number | String)]** | Filter for certain cars which meet the given criteria.\n"
+						+ "\n**Components**\n"
+						+ "**!r component view** | View all of the components you own.\n"
+						+ "**!r component filterBy (quality | durability | value | weight) (= | != | > | <) (number | String) [(quality | durability | value | weight) (= | != | > | <) (number | String)]** | Filter for certain components which meet the given criteria.\n"
+						);
+	    	eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
+	    	event.getChannel().sendMessage(eb.build()).queue();
+	    	/*
+	    	 * + "\n**Driver**\n"
 	    				+ "**!r driver create [name]** | Create a new driver with the given name."
 	    				+ "**!r driver active** | View details about the current active driver"
 	    				+ "**!r driver active [driver name]** | Set the current active driver by supplying a driver's name"
@@ -200,10 +238,7 @@ public class Commands extends ListenerAdapter {
 	    				+ "\n**Components**\n"
 	    				+ "**!r component view** | View all of the components you own."
 	    				+ "**!r component filterBy (quality | durability | value | weight) (= | != | > | <) (number | String) [(quality | durability | value | weight) (= | != | > | <) (number | String)]** | Filter for certain components which meet the given criteria."
-	    				);
-	    		eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
-	    		
-	    	event.getChannel().sendMessage(eb.build()).queue();
+	    	 */
 	    		
 	    	}
 	    	//Handle User registering for bot and other 
