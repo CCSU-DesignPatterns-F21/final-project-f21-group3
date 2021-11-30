@@ -17,6 +17,8 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.Iterator;
 //import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.sorting.DriverStandingsQuickSort;
+import com.group3.racingbot.sorting.SortStandings;
 
 /**
  * Keeps track of the pole positions of all drivers within a race event.
@@ -45,6 +47,8 @@ public class Standings {
 		List<DriverStanding> racing = new ArrayList<DriverStanding>(); // This list holds all drivers who are currently racing.
 		List<DriverStanding> dnf = new ArrayList<DriverStanding>(); // This list holds all drivers who couldn't complete the race.
 		List<DriverStanding> result = new ArrayList<DriverStanding>(); // This list holds all drivers in the order which they stand within the race event.
+		// Defines the sorting algorithm to use
+		SortStandings sortAlgorithm = new DriverStandingsQuickSort();
 		
 		// Separate driver standings into different lists based on their states.
 		Iterator<DriverStanding> iterator = this.iterator();
@@ -62,9 +66,10 @@ public class Standings {
 		}
 		
 		// Sort the racers who have finished by timeCompleted, then if there's a tie randomly pick one.
-		TimeCompletedComparator timeCompletedComparator = new TimeCompletedComparator();
+		//TimeCompletedComparator timeCompletedComparator = new TimeCompletedComparator();
 		if (finished.size() > 0) {
-			Collections.sort(finished, timeCompletedComparator);
+			//Collections.sort(finished, timeCompletedComparator);
+			sortAlgorithm.sortByTimeCompleted(finished);
 			for (int i = 0, len = finished.size(); i < len; i++) {
 				if (i > 0) {
 					boolean isTied = finished.get(i-1).getTimeCompleted() == finished.get(i).getTimeCompleted();
@@ -81,11 +86,13 @@ public class Standings {
 		}
 		
 		// Sort the racers who are still currently racing.
-		DistanceTraveledComparator distanceTraveledComparator = new DistanceTraveledComparator();
-		Collections.sort(racing, distanceTraveledComparator);
+		//DistanceTraveledComparator distanceTraveledComparator = new DistanceTraveledComparator();
+		//Collections.sort(racing, distanceTraveledComparator);
+		sortAlgorithm.sortByDistanceTraveled(racing);
 		
 		// Sort the racers who couldn't complete the race
-		Collections.sort(dnf, timeCompletedComparator);
+		//Collections.sort(dnf, timeCompletedComparator);
+		sortAlgorithm.sortByTimeCompleted(dnf);
 		Collections.reverse(dnf);
 		
 		// Add each list together into the result list
