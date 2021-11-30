@@ -1352,7 +1352,7 @@ public class Commands extends ListenerAdapter {
 				                                     
                TODO: Remove before final release, DEBUG ONLY FUNCTIONS any relationships with other classes in this case are not to be represented in the UML.                                                                                        
 	    	 */
-	    	if(args[1].equalsIgnoreCase("debug"))
+	    	/*if(args[1].equalsIgnoreCase("debug"))
 	    	{
 	    		if(args[2].equalsIgnoreCase("shop"))
 	    		{
@@ -1362,7 +1362,7 @@ public class Commands extends ListenerAdapter {
 	    			}
 	    			
 	    		}
-	    	}
+	    	}*/
 	    	if (args[1].equalsIgnoreCase("test")) {
 				
 				eb.clear();

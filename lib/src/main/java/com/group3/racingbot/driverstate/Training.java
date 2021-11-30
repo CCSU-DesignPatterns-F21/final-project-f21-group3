@@ -27,7 +27,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="Training", key="_cls")
 public class Training implements DriverState, Refreshable {
 	private String playerId;
 	private String driverId;
@@ -191,7 +190,8 @@ public class Training implements DriverState, Refreshable {
 	}
 	
 	/**
-	 * Triggers the start of the training task.
+	 * Triggers the start of the training task. Notifies the user when the training is complete via discord message.
+	 * @param event allows for a message to be sent to the discord channel one the timer for training has run out.
 	 */
 	public void activateTimer(GuildMessageReceivedEvent event) {
 		// This timer will go off once the user has waited long enough for the training session to be done.

@@ -13,7 +13,6 @@ import com.group3.racingbot.standings.DriverStanding;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="Resting", key="_cls")
 public class Resting implements DriverState {
 
 	@Override

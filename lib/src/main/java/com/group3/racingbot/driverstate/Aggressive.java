@@ -10,7 +10,6 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="Aggressive", key="_cls")
 public class Aggressive extends Racing {
 	/**
 	 * Construct an aggressive racing state.
