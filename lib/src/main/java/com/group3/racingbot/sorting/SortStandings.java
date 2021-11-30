@@ -12,5 +12,15 @@ import com.group3.racingbot.standings.DriverStanding;
  * @author Nick Sabia
  */
 public interface SortStandings {
-	public List<DriverStanding> sortByTime();
+	/**
+	 * Sorts a list of driver standings by time completed of a race event.
+	 * @return list of driver standings sorted by time completed
+	 */
+	public List<DriverStanding> sortByTimeCompleted();
+	
+	/**
+	 * Sorts a list of driver standings by total distance traveled in a race event.
+	 * @return list of driver standings sorted by distance traveled
+	 */
+	public List<DriverStanding> sortByDistanceTraveled();
 }
