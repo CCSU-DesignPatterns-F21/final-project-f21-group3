@@ -14,13 +14,13 @@ import com.group3.racingbot.standings.DriverStanding;
 public class DriverStandingsMergeSort implements SortStandings {
 
 	@Override
-	public List<DriverStanding> sortByTimeCompleted() {
+	public List<DriverStanding> sortByTimeCompleted(List<DriverStanding> list) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<DriverStanding> sortByDistanceTraveled() {
+	public List<DriverStanding> sortByDistanceTraveled(List<DriverStanding> list) {
 		// TODO Auto-generated method stub
 		return null;
 	}
