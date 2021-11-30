@@ -17,6 +17,7 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.Iterator;
 //import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.sorting.DriverStandingsMergeSort;
 import com.group3.racingbot.sorting.DriverStandingsQuickSort;
 import com.group3.racingbot.sorting.SortStandings;
 
