@@ -10,7 +10,6 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.inventory.NotFoundException;
-import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.standings.DriverStanding;
 
 /**

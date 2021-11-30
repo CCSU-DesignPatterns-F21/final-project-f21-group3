@@ -22,6 +22,7 @@ import com.group3.racingbot.driverstate.Intensity;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Skill;
 import com.group3.racingbot.driverstate.Training;
+import com.group3.racingbot.gameservice.GameplayHandler;
 import com.group3.racingbot.inventory.Inventory;
 import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.Iterator;
@@ -33,6 +34,11 @@ import com.group3.racingbot.inventory.filter.DurabilityFilter;
 import com.group3.racingbot.inventory.filter.FilterManager;
 import com.group3.racingbot.inventory.filter.FilterOperation;
 import com.group3.racingbot.inventory.filter.InventoryIteratorDecorator;
+
+import com.group3.racingbot.shop.Shop;
+import com.group3.racingbot.standings.DriverStanding;
+import com.group3.racingbot.standings.Standings;
+
 import com.group3.racingbot.inventory.filter.MaterialFilterable;
 import com.group3.racingbot.inventory.filter.Quality;
 import com.group3.racingbot.inventory.filter.QualityFilter;
@@ -42,6 +48,7 @@ import com.group3.racingbot.inventory.filter.ValueFilter;
 import com.group3.racingbot.inventory.filter.WeightFilter;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
@@ -49,9 +56,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import com.group3.racingbot.shop.Shop;
-import com.group3.racingbot.standings.DriverStanding;
-import com.group3.racingbot.standings.Standings;
 
 /**
  * Handles Discord user command inputs and interacts with the gameplay handler

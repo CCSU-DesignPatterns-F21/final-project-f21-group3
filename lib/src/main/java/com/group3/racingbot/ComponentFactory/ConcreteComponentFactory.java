@@ -329,6 +329,11 @@ public class ConcreteComponentFactory extends ComponentFactory{
 		//return createdComponent;
 		
 	}
+
+	@Override
+	public String toString() {
+		return "This is the concrete component factory";
+	}
 }
 
 

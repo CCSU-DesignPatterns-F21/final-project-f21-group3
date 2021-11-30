@@ -3,8 +3,8 @@ package com.group3.racingbot.ComponentFactory;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import com.group3.racingbot.IClonable;
 
 /**
  * @author Jack Gola
@@ -23,6 +23,24 @@ public class EngineComponent extends Component {
 	public EngineComponent() {
 		this.setName("Engine");
 	}
+	/**
+	 * Alternate constructor, takes an existing object of the same type, for use with prototype.
+	 * @param ec EngineComponent object reference
+	 */
+	public EngineComponent(EngineComponent ec) {
+		this.setName(ec.getName());
+		this.setId(ec.getId());
+		this.setQuality(ec.getQuality());
+		this.setWeight(ec.getWeight());
+		this.setValue(ec.getValue());
+		this.setDurability(ec.getDurability());
+		this.setMaxDurability(ec.getMaxDurability());
+		this.setThumbnailURL(ec.getThumbnailURL());
+		
+		this.setSpeed(ec.getSpeed());
+		this.getRating();
+	}
+	
 	/**
 	 * @return the speed
 	 */
@@ -69,6 +87,16 @@ public class EngineComponent extends Component {
 	@Override
 	public String toString() {
 		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nSpeed: " + this.getSpeed() + "\n\n";
+	}
+
+	/**
+	 * Creates a clone of this exact object
+	 * @return a IClonable object, an exact copy.
+	 */
+	@Override
+	public IClonable clone() {
+		// TODO Auto-generated method stub
+		return new EngineComponent(this);
 	}
 	
 	

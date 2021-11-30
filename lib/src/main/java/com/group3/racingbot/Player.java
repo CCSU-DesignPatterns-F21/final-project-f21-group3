@@ -1,18 +1,12 @@
 package com.group3.racingbot;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.inventory.Inventory;
-import com.group3.racingbot.inventory.InventoryIterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.inventory.Unique;
-import com.group3.racingbot.inventory.filter.FilterManager;
-import com.group3.racingbot.inventory.filter.InventoryIteratorDecorator;
 
 /**
  * Defines the Player class. Player class is the main record in the DB, the records get parsed into this class.

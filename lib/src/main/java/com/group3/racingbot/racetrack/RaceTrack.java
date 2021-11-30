@@ -12,9 +12,7 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
-import com.group3.racingbot.Player;
 import com.group3.racingbot.exceptions.RaceTrackEndException;
 
 /**

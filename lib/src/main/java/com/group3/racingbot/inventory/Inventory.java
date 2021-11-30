@@ -10,8 +10,6 @@ import java.util.List;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.group3.racingbot.Driver;
-import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.inventory.filter.FilterManager;
 
 /**

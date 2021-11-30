@@ -1,17 +1,8 @@
 package com.group3.racingbot.driverstate;
 
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.group3.racingbot.Car;
-import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Driver;
 import com.group3.racingbot.RaceEvent;
-import com.group3.racingbot.shop.ChopShop;
-import com.group3.racingbot.shop.Dealership;
-import com.group3.racingbot.shop.Importer;
-import com.group3.racingbot.shop.Junkyard;
 import com.group3.racingbot.standings.DriverStanding;
 
 /**

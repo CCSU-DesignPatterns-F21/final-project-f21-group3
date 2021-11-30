@@ -27,10 +27,13 @@ import com.group3.racingbot.inventory.filter.Quality;
 @BsonDiscriminator
 
 
-public abstract class Component implements Unique, MaterialFilterable {
+
+public abstract class Component implements Unique, IClonable,MaterialFilterable {
 	private String id = "", 
 			name = "";
+
 	private Quality quality = Quality.LEMON;
+
 	private int weight = 0, value = 0, durability = 0, rating = 0;
 	private int maxDurability = 100;
 	private String thumbnailURL = "";
@@ -170,6 +173,7 @@ public abstract class Component implements Unique, MaterialFilterable {
 		this.thumbnailURL = thumbnailURL;
 	}
 
+	abstract public IClonable clone();
 	
 	/**
 	 * @param returns hashCode for component

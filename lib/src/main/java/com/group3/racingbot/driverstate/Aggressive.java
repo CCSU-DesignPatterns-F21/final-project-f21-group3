@@ -3,18 +3,7 @@ package com.group3.racingbot.driverstate;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
-
-import com.group3.racingbot.Car;
-import com.group3.racingbot.DBHandler;
-import com.group3.racingbot.Driver;
-import com.group3.racingbot.Player;
-import com.group3.racingbot.RaceEvent;
-import com.group3.racingbot.racetrack.CornerNode;
-import com.group3.racingbot.racetrack.RaceTrack;
-import com.group3.racingbot.racetrack.StraightNode;
-import com.group3.racingbot.racetrack.TrackNode;
 
 /**
  * A state where the driver is racing aggressively. This grants a bonus to how far the Driver travels, but increases chances of crashing.

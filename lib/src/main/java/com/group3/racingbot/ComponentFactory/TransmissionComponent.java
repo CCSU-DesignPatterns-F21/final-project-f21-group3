@@ -3,8 +3,8 @@ package com.group3.racingbot.ComponentFactory;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import com.group3.racingbot.IClonable;
 
 /**
  * @author Jack Gola
@@ -26,6 +26,25 @@ public class TransmissionComponent extends Component {
 	@BsonCreator
 	public TransmissionComponent() {
 		this.setName("Transmission");
+	}
+	
+	/**
+	 * Alternate constructor, takes an existing object of the same type, for use with prototype.
+	 * @param tc TransmissionComponent object reference
+	 */
+	public TransmissionComponent(TransmissionComponent tc)
+	{
+		this.setName(tc.getName());
+		this.setId(tc.getId());
+		this.setQuality(tc.getQuality());
+		this.setWeight(tc.getWeight());
+		this.setValue(tc.getValue());
+		this.setDurability(tc.getDurability());
+		this.setMaxDurability(tc.getMaxDurability());
+		this.setThumbnailURL(tc.getThumbnailURL());
+		
+		this.setAcceleration(tc.getAcceleration());
+		this.getRating();
 	}
 
 	/**
@@ -77,6 +96,16 @@ public class TransmissionComponent extends Component {
 	@Override
 	public String toString() {
 		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nAcceleration: " + this.getAcceleration() + "\n\n";
+	}
+	
+	/**
+	 * Creates a clone of this exact object
+	 * @return a IClonable object, an exact copy.
+	 */
+	@Override
+	public IClonable clone() {
+		// TODO Auto-generated method stub
+		return new TransmissionComponent(this);
 	}
 
 
