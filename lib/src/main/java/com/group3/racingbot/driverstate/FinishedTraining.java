@@ -13,7 +13,6 @@ import com.group3.racingbot.inventory.NotFoundException;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="FinishedTraining", key="_cls")
 public class FinishedTraining extends Completed {
 	private final Skill skill;
 	private final int reward;

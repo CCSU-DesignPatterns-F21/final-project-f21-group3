@@ -28,13 +28,6 @@ import com.group3.racingbot.standings.DriverStanding;
  * @author Nick Sabia
  *
  */
-//@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = Aggressive.class),
-//        @JsonSubTypes.Type(value = Normal.class),
-//        @JsonSubTypes.Type(value = Defensive.class),
-//		@JsonSubTypes.Type(value = Crashed.class)})
-//@BsonDiscriminator(value="Racing", key="_cls")
 public abstract class Racing implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
@@ -50,12 +43,16 @@ public abstract class Racing implements DriverState, Refreshable {
 	private String raceEventId;
 	private int straightDistance;
 	private int cornerDistance;
-	//private int position;
 	private int distanceTraveledThisStep; // How far the driver traveled this race step.
-	//private int totalDistanceTraveled; // Used to compare with other drivers to determine position.
-	//private TrackNode currentNode;
 	private double multiplier;
 
+	/**
+	 * The racing constructor. This represents a racing state in which the driver is currently participating in a race event and hasn't reached the end of the track.
+	 * @param playerId
+	 * @param driverId
+	 * @param carId
+	 * @param raceEventId
+	 */
 	@BsonCreator
 	public Racing(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId) {
 		this.player = null;
