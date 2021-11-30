@@ -1,4 +1,4 @@
-package com.group3.racingbot.exceptions;
+package com.group3.racingbot.racetrack;
 
 
 /** 

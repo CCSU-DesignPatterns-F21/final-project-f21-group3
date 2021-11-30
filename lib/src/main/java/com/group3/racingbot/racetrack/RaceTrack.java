@@ -13,7 +13,6 @@ import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import com.group3.racingbot.Driver;
-import com.group3.racingbot.exceptions.RaceTrackEndException;
 
 /**
  * A race track which Drivers can race and compete on.

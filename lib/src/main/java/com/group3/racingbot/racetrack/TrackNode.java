@@ -5,8 +5,6 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import com.group3.racingbot.exceptions.RaceTrackEndException;
-
 /**
  * A portion of a race track which can either be a corner or a straight.
  * @author Nick Sabia

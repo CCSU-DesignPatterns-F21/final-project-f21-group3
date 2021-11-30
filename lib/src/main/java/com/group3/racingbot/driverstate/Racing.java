@@ -16,10 +16,10 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.ComponentFactory.ComponentType;
-import com.group3.racingbot.exceptions.RaceTrackEndException;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.RaceTrackEndException;
 import com.group3.racingbot.racetrack.StraightNode;
 import com.group3.racingbot.standings.DriverStanding;
 

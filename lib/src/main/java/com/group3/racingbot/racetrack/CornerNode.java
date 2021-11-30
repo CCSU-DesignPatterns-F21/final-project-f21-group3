@@ -6,8 +6,6 @@ package com.group3.racingbot.racetrack;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
-import com.group3.racingbot.exceptions.RaceTrackEndException;
-
 /**
  * Corner section of a race track
  * @author Nick Sabia
