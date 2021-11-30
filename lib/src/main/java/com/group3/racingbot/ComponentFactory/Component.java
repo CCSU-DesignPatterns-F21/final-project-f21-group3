@@ -6,7 +6,6 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.group3.racingbot.Car;
 import com.group3.racingbot.IClonable;
 import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.inventory.filter.ComponentFilterable;
@@ -78,10 +77,10 @@ public abstract class Component implements Unique, IClonable, MaterialFilterable
 	}
 
 	/**
-	 * @param value the value to set
+	 * @param d the value to set
 	 */
-	public void setValue(int value) {
-		this.value = value;
+	public void setValue(int d) {
+		this.value = d;
 	}
 
 	/**

@@ -35,17 +35,15 @@ import com.group3.racingbot.inventory.filter.DurabilityFilter;
 import com.group3.racingbot.inventory.filter.FilterManager;
 import com.group3.racingbot.inventory.filter.FilterOperation;
 import com.group3.racingbot.inventory.filter.IteratorDecorator;
-
-import com.group3.racingbot.shop.Shop;
-import com.group3.racingbot.standings.DriverStanding;
-import com.group3.racingbot.standings.Standings;
-
 import com.group3.racingbot.inventory.filter.Quality;
 import com.group3.racingbot.inventory.filter.QualityFilter;
 import com.group3.racingbot.inventory.filter.RecoveryFilter;
 import com.group3.racingbot.inventory.filter.StraightsFilter;
 import com.group3.racingbot.inventory.filter.ValueFilter;
 import com.group3.racingbot.inventory.filter.WeightFilter;
+import com.group3.racingbot.shop.Shop;
+import com.group3.racingbot.standings.DriverStanding;
+import com.group3.racingbot.standings.Standings;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -1368,20 +1366,20 @@ public class Commands extends ListenerAdapter {
 				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
 				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
 				
-				Component engine = component.createComponent("engine", 5000);
-				Component suspension = component.createComponent("suspension", 2999);
-				Component wheel = component.createComponent("wheel", 700);
-				Component transmission = component.createComponent("transmission", 299);
-				Component chassis = component.createComponent("chassis", 99);
+				Component engine = component.createComponent("engine", 100);
+				Component suspension = component.createComponent("suspension", 250);
+				Component wheel = component.createComponent("wheel", 800);
+				Component transmission = component.createComponent("transmission", 499);
+				Component chassis = component.createComponent("chassis", 4500);
 				
 				CarBuilder car = new Car.CarBuilder();
 				
 				//suspension and transmission not added to car for testing
 				
 				car.addEngine(engine);
-				//car.addSuspension(suspension);
+				car.addSuspension(suspension);
 				car.addWheels(wheel);
-				//car.addTransmission(transmission);
+				car.addTransmission(transmission);
 				car.addChassis(chassis);
 				
 				car.build();
