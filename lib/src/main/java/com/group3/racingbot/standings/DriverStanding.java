@@ -17,7 +17,7 @@ import com.group3.racingbot.racetrack.RaceTrack;
 import com.group3.racingbot.racetrack.TrackNode;
 
 /**
- * Keep track of a driver's position within a race event.
+ * Holds information related to the driver's standing in the race event, such as pole position, distance traveled along the track, and the time it took to complete the event.
  * @author Nick Sabia
  */
 public class DriverStanding {
@@ -35,7 +35,7 @@ public class DriverStanding {
 	private int timeCompleted;
 	
 	/**
-	 * Constructs a driver standing. In other words, this holds the pole position as well as distance traveled of the Driver.
+	 * Constructs a driver standing. In other words, this holds the Driver's pole position as well as distance traveled and time completed.
 	 * @param playerId the player which owns the driver
 	 * @param driverId the driver who participated in the race
 	 * @param raceEventId the event which the driver participated in

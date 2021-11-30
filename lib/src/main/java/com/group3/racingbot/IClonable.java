@@ -5,5 +5,9 @@ package com.group3.racingbot;
  * @author Maciej Bregisz
  */
 public interface IClonable {
-	IClonable  clone();
+	/**
+	 * Creates a copy of the object
+	 * @return a clone of the object
+	 */
+	IClonable clone();
 }

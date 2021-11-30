@@ -25,6 +25,9 @@ public class RaceEvent implements Unique {
 	//private List<DriverStanding> standings;
 	private Standings standings;
 	
+	/**
+	 * Constructs a new race event. Race events do not start with an id, standings, or a race track for mongodb purposes. To generate and setup all of these things, call the initialize method.
+	 */
 	public RaceEvent() {
 		this.id = "";
 		this.raceTrack = null;
@@ -36,7 +39,7 @@ public class RaceEvent implements Unique {
 	}
 	
 	/**
-	 * Assigns a randomly generated id to the race event and uses that id to setup the race event. Generates a race track and sets up the standings so that drivers may register.
+	 * Assigns a randomly generated id to the race event and uses that id to setup the race event. Generates a race track, sets up the standings so that drivers may register, and sets the grand prize for winning the event.
 	 */
 	public void initialize() {
 		DBHandler dbh = DBHandler.getInstance();
@@ -48,6 +51,7 @@ public class RaceEvent implements Unique {
 	
 	/**
 	 * Generates a race track using the ID of the race event as a seed
+	 * @return the generated race track
 	 */
 	public RaceTrack generateRaceTrackFromId() {
 		return new RaceTrack(Long.parseLong(this.id, 36));
@@ -79,7 +83,7 @@ public class RaceEvent implements Unique {
 
 	/**
 	 * Retrieve the track which the Drivers will be competing on.
-	 * @return the track
+	 * @return the race track
 	 */
 	public RaceTrack getRaceTrack() {
 		return raceTrack;
@@ -87,27 +91,11 @@ public class RaceEvent implements Unique {
 
 	/**
 	 * Set the track which the Drivers will be competing on.
-	 * @param track the track to set
+	 * @param track the race track to set
 	 */
 	public void setRaceTrack(RaceTrack track) {
 		this.raceTrack = track;
 	}
-
-	/**
-	 * Retrieve an inventory of all drivers participating in the race event.
-	 * @return the drivers as a DriverInventory
-	 */
-	//public DriverInventory getDrivers() {
-	//	return drivers;
-	//}
-
-	/**
-	 * Adds a driver to the race event.
-	 * @param driver the driver to add
-	 */
-	//public void addDriver(Driver driver) {
-	//	this.drivers.add(driver);
-	//}
 
 	/**
 	 * Retrieve the current amount of time elapsed during the race.
@@ -159,6 +147,7 @@ public class RaceEvent implements Unique {
 
 	/**
 	 * Lets each driver perform a step on the race track to advance forward or run down an idle timer.
+	 * @return the progress as a string of all drivers who are still competing in the race
 	 */
 	public String stepAllDrivers() {
 		DBHandler dbh = DBHandler.getInstance();
@@ -206,7 +195,7 @@ public class RaceEvent implements Unique {
 	
 	/**
 	 * Indicate whether or not there are still Drivers racing on the track.
-	 * @return boolean
+	 * @return boolean indicating whether or not the race has finished.
 	 */
 	public boolean isFinished() {
 		// Loop through each driver and check their states. 

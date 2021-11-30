@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.entities.Activity;
  * @author Maciej Bregisz
  * @author Nick Sabia
  * @author Jack Gola
- * @author Kobe Onye
  *
  */
 public class RacingBot {
