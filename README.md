@@ -58,7 +58,7 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Install Open JDK 13, MongoDB (if self-hosted), Ecplise
+1. Install Open JDK 13, MongoDB (if self-hosted), Eclipse
 2. Make sure that Eclipse is assigned the correct Java version in it's .ini file located within Eclipse installation directory.
 3. Clone the repo
    ```sh
