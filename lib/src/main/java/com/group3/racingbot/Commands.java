@@ -151,7 +151,7 @@ public class Commands extends ListenerAdapter {
 	    		eb.clear();
 	    		//Embed example
 	    		eb.setColor(Color.red);
-	    		eb.setDescription("**RacingBot commands:** \n"
+	    		/*eb.setDescription("**RacingBot commands:** \n"
 	    				+ "**!iracer help or !r ?**\n"
 	    				+ "**!iracer register or !r r** | Register with the bot, should be done automaticaly.\n"
 	    				+ "**!iracer guess <number 1-50> or !r g <number 1-50** | Bet a certain amount of your Credits, if you win, you double your bet!\n"
@@ -159,7 +159,48 @@ public class Commands extends ListenerAdapter {
 	    				+ "**!iracer profile *<Optional @mention>* or !r p** | Display your profile or someone elses profile by using @ mentions \n"
 	    				+ "**!iracer shops** | Lists the items for sale of all stores. \n"
 	    				+ "**!iracer shop (chopshop, junkyard, dealership, importer) or !r s (c,j,d,i)** | Lists the items for sale of a specific store.\n"
-	    				+ "**!iracer race register or !r r r** | Register for the upcoming race");
+	    				+ "**!iracer event register or !r event r** | Register for the upcoming race");*/
+	    		eb.setDescription("**RacingBot commands:** \n"
+	    				+ "**!r help or !r ?**\n"
+	    				+ "**!r register or !r r** | Register with the bot, should be done automaticaly.\n"
+	    				+ "**!r guess <number 1-50> or !r g <number 1-50** | Bet a certain amount of your Credits, if you win, you double your bet!\n"
+	    				+ "**!r work or !r w** | Earn credits by performing work every hour! \n"
+	    				+ "**!r profile *<Optional @mention>* or !r p** | Display your profile or someone elses profile by using @ mentions \n"
+	    				+ "\n**Shops**\n"
+	    				+ "**!r shops** | Lists the items for sale of all stores. \n"
+	    				+ "**!r shop (chopshop, junkyard, dealership, importer) or !r s (c,j,d,i)** | Lists the items for sale of a specific store.\n"
+	    				+ "**!r shop (chopshop, junkyard, dealership, importer) buy [id]** | Buys the item by the id listed in the shop.\n"
+	    				+ "\n**Events**\n"
+	    				+ "**!r event register or !r event r** | Register for the upcoming race"
+	    				+ "**!r event generate** | Generate a new race event"
+	    				+ "**!r event view** | View the details of a race event, including the race track"
+	    				+ "**!r event begin** | Starts a race event"
+	    				+ "\n**Claim Rewards**\n"
+	    				+ "**!r claim** | If there is a reward for the user's active driver to claim, then collect that reward"
+	    				+ "\n**Withdraw From Event or Training**\n"
+	    				+ "**!r withdraw** | If your active driver is in the middle of something, this pulls them out of it. The only exception being that you cannot withdraw a driver from a race once they're already racing."
+	    				+ "\n**Driver**\n"
+	    				+ "**!r driver create [name]** | Create a new driver with the given name."
+	    				+ "**!r driver active** | View details about the current active driver"
+	    				+ "**!r driver active [driver name]** | Set the current active driver by supplying a driver's name"
+	    				+ "**!r driver view** | See all of the drivers which you own"
+	    				+ "**!r driver status** | See what your driver is currently up to"
+	    				+ "\n**Driver Filtering**\n"
+	    				+ "**!r driver filterBy (composure | awareness | drafting | straights | cornering | recovery) (= | != | > | <) (number | String) [(composure | awareness | drafting | straights | cornering | recovery) (= | != | > | <) (number | String)] ** | Retrieve drivers from your inventory which meet a specific criteria. Can use multiple filters at once."
+	    				+ "\n**Driver Training**\n"
+	    				+ "**!r driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)** | Have your driver work on a particular skill. This takes time! The more intense the workout, the longer the training session, but the better the rewards."
+	    				+ "\n**Cars**\n"
+	    				+ "**!r car blueprint** | For 2000 credits, lets you buy a new blank slate of a car. This car has nothing, it's up to you to build it up."
+	    				+ "**!r car disassemble [car id]** | Disassemble a car and store all of its components into your component inventory. WARNING: This will remove the car from your car inventory."
+	    				+ "**!r car equip [car id]** | Take a component from your inventory and install it onto your active car."
+	    				+ "**!r car unequip (engine | chassis | suspension | wheels | transmission)** | Removes a component from your active car and puts it into your component inventory."
+	    				+ "**!r car view** | Look at all the cars within your car inventory."
+	    				+ "**!r car active** | View details about your active car."
+	    				+ "**!r car filterBy (quality | durability | value | weight) (= | != | > | <) (number | String) [(quality | durability | value | weight) (= | != | > | <) (number | String)]** | Filter for certain cars which meet the given criteria."
+	    				+ "\n**Components**\n"
+	    				+ "**!r component view** | View all of the components you own."
+	    				+ "**!r component filterBy (quality | durability | value | weight) (= | != | > | <) (number | String) [(quality | durability | value | weight) (= | != | > | <) (number | String)]** | Filter for certain components which meet the given criteria."
+	    				);
 	    		eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
 	    		
 	    	event.getChannel().sendMessage(eb.build()).queue();
@@ -597,7 +638,7 @@ public class Commands extends ListenerAdapter {
     					
 	    		}
     		}
-	    	if(args[1].equalsIgnoreCase("event"))
+	    	if(args[1].equalsIgnoreCase("event") || args[1].equalsIgnoreCase("e"))
     		{
     			if(args[2].equalsIgnoreCase("generate"))
     			{
@@ -856,7 +897,7 @@ public class Commands extends ListenerAdapter {
     				event.getChannel().sendMessage("Driver created! " + capitalizedDriverName + " is now a part of your team.").queue();
     				//}
 	    		}
-    			if(args[2].equalsIgnoreCase("set"))
+    			if(args[2].equalsIgnoreCase("active"))
 	    		{
     				if (args.length > 3 && args[3] != null) {
     					// User enters name of the driver they wish to use.
@@ -881,7 +922,7 @@ public class Commands extends ListenerAdapter {
     					}
     				}
     				else {
-    					event.getChannel().sendMessage("No driver name specified! Set an active driver using the command: !iracer debug driver set [driver's name]").queue();
+    					event.getChannel().sendMessage(p.getActiveDriverId().toString()).queue();
     				}
 	    		}
     			if (args[2].equalsIgnoreCase("view")) {
@@ -939,10 +980,6 @@ public class Commands extends ListenerAdapter {
     					event.getChannel().sendMessage("No results for that filtered query.").queue();
     				}
     			}
-    			if(args[2].equalsIgnoreCase("active"))
-	    		{
-    				event.getChannel().sendMessage(p.getActiveDriverId().toString()).queue();
-	    		}
     			if(args[2].equalsIgnoreCase("status")) {
     				// Gets the current state of the active driver.
     				try {
@@ -955,7 +992,7 @@ public class Commands extends ListenerAdapter {
     				}
     			}
     			if (args[2].equalsIgnoreCase("train")) {
-    				String inputErrorHelpText = "Invalid input. The syntax for training is as follows:\n!r debug driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)\n!r debug driver train (a | cor | com | d | s | r) (l | m | i)";
+    				String inputErrorHelpText = "Invalid input. The syntax for training is as follows:\n!r driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)\n!r driver train (a | cor | com | d | s | r) (l | m | i)";
     				// Check to make sure there are enough args in the command. If not, print the instructions for how to properly use the command.
     				if (args.length <= 4) { 
     					event.getChannel().sendMessage(inputErrorHelpText).queue();
@@ -1071,6 +1108,21 @@ public class Commands extends ListenerAdapter {
     				dbh.updateUser(p);
     				event.getChannel().sendMessage("A free car (" + carId + ") was added to your garage.").queue();
 	    		}
+    			if (args[2].equalsIgnoreCase("blueprint")) {
+    				if (p.getCredits() >= 2000) {
+    					Inventory<Car> updatedCars = p.getOwnedCars();
+    					Car newCar = new Car();
+    					newCar.setId(dbh.generateId(6));
+    					updatedCars.add(newCar);
+    					p.setOwnedCars(updatedCars);
+    					p.setCredits(p.getCredits() - 2000);
+    					dbh.updateUser(p);
+    					event.getChannel().sendMessage("Car blueprint purchased for 2000 credits. You now have " + p.getCredits() + " credits.").queue();
+    				}
+    				else {
+    					event.getChannel().sendMessage("You don't have enough credits to purchase a car blueprint. A car blueprint costs 2000 credits, you have " + p.getCredits() + " credits.").queue();
+    				}
+    			}
     			if (args[2].equalsIgnoreCase("disassemble")) {
     				if(args.length > 3 && args[3] != null)
     				{
