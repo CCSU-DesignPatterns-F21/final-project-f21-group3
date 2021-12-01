@@ -211,6 +211,7 @@ public class Commands extends ListenerAdapter {
 						+ "**!r car unequip (engine | chassis | suspension | wheels | transmission)** | Removes a component from your active car and puts it into your component inventory.\n"
 						+ "**!r car view** | Look at all the cars within your car inventory.\n"
 						+ "**!r car active** | View details about your active car.\n"
+						+ "**!r car active detail** | View all the components your active car has.\n"
 						+ "\n**Car Filtering**\n"
 						+ "**!r car filterBy (quality | durability | value | weight) (= | != | > | <) (number | String) [(quality | durability | value | weight) (= | != | > | <) (number | String)]** | Filter for certain cars which meet the given criteria.\n"
 						+ "\n**Components**\n"
@@ -678,6 +679,13 @@ public class Commands extends ListenerAdapter {
     		}
 	    	if(args[1].equalsIgnoreCase("event") || args[1].equalsIgnoreCase("e"))
     		{
+	    		eb.clear();
+				eb.setColor(new Color(0x009EFF));
+				eb.setThumbnail("https://images.wsj.net/im-360984?width=700&size=1.7777777777777777");
+				eb.setTitle("Upcoming Event");
+				
+
+	    		
     			if(args[2].equalsIgnoreCase("generate"))
     			{
     				if(args.length > 3 && args[3] != null)
@@ -695,6 +703,11 @@ public class Commands extends ListenerAdapter {
 						this.raceEvent.setStandings(new Standings(customEventId));
 						this.raceEvent.setRaceTrack(this.raceEvent.generateRaceTrackFromId());
 						this.raceEvent.setGrandPrize(((this.raceEvent.getRaceTrack().calculateTrackLength() + 99) / 100) * 100); // Uses the distance of the track to calculate the grand prize. Rounds to nearest hundred.;
+						
+						//max 23 min 2 
+						
+						
+						
 						if (dbh.raceEventExists(customEventId)) {
     						// Overwrite the old event and insert the new one.
 							dbh.updateRaceEvent(this.raceEvent);
@@ -704,7 +717,25 @@ public class Commands extends ListenerAdapter {
 							dbh.insertRaceEvent(this.raceEvent);
 						}
 						
-						event.getChannel().sendMessage("New Event Created: " + customEventId + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength()).queue();
+						if(this.raceEvent.getRaceTrack().size() >= 2 && this.raceEvent.getRaceTrack().size() <= 6) {
+							eb.setImage("https://i.imgur.com/Vns5FAX.png");
+						} else if(this.raceEvent.getRaceTrack().size() >= 7 && this.raceEvent.getRaceTrack().size() <= 11) {
+							eb.setImage("https://i.imgur.com/7MWo238.png");
+						} else if(this.raceEvent.getRaceTrack().size() >= 12 && this.raceEvent.getRaceTrack().size() <= 18) {
+							eb.setImage("https://i.imgur.com/MbRdi6z.png");
+						} else if(this.raceEvent.getRaceTrack().size() >= 19 && this.raceEvent.getRaceTrack().size() <= 23) {
+							eb.setImage("https://i.imgur.com/NLTVWpL.png");
+						}
+						
+						eb.addField("Event ID", formatText("cb","" + this.raceEvent.getId()), true);
+						eb.addField("Total Nodes", formatText("cb","" + this.raceEvent.getRaceTrack().size()), true);
+						eb.addField("Distance", formatText("cb", "" + this.raceEvent.getRaceTrack().calculateTrackLength()),true);
+						eb.setFooter("Reward Potential");
+						eb.setDescription("New Event created successfully!");
+						//eb.setDescription("New Event Created: " + customEventId + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength());
+						
+						event.getChannel().sendMessage(eb.build()).queue();
+						//event.getChannel().sendMessage("New Event Created: " + customEventId + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength()).queue();
     				}
     				else {
     					// Create an event with a randomized id.
@@ -718,7 +749,26 @@ public class Commands extends ListenerAdapter {
 							// Insert new event.
 							dbh.insertRaceEvent(this.raceEvent);
 						}
-	    				event.getChannel().sendMessage("New Event Created: " + this.raceEvent.getId() + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength()).queue();
+	    				
+	    				if(this.raceEvent.getRaceTrack().size() >= 2 && this.raceEvent.getRaceTrack().size() <= 6) {
+							eb.setImage("https://i.imgur.com/Vns5FAX.png");
+						} else if(this.raceEvent.getRaceTrack().size() >= 7 && this.raceEvent.getRaceTrack().size() <= 11) {
+							eb.setImage("https://i.imgur.com/7MWo238.png");
+						} else if(this.raceEvent.getRaceTrack().size() >= 12 && this.raceEvent.getRaceTrack().size() <= 18) {
+							eb.setImage("https://i.imgur.com/MbRdi6z.png");
+						} else if(this.raceEvent.getRaceTrack().size() >= 19 && this.raceEvent.getRaceTrack().size() <= 23) {
+							eb.setImage("https://i.imgur.com/NLTVWpL.png");
+						}
+	    				
+	    				eb.addField("Event ID", formatText("cb","" + this.raceEvent.getId()), true);
+						eb.addField("Total Nodes", formatText("cb","" + this.raceEvent.getRaceTrack().size()), true);
+						eb.addField("Distance", formatText("cb", "" + this.raceEvent.getRaceTrack().calculateTrackLength()),true);
+						eb.setFooter("Reward Potential");
+						eb.setDescription("New Event created successfully!");
+	    				//eb.setDescription("New Event Created: " + this.raceEvent.getId() + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength());
+						event.getChannel().sendMessage(eb.build()).queue();
+
+	    				//event.getChannel().sendMessage("New Event Created: " + this.raceEvent.getId() + " | Total Nodes: " + this.raceEvent.getRaceTrack().size() + " | Total Distance: " + this.raceEvent.getRaceTrack().calculateTrackLength()).queue();
     				}
     				
     			}
@@ -824,8 +874,8 @@ public class Commands extends ListenerAdapter {
     				    public void run () {
     				    	if (!raceEvent.isFinished()) {
 	    						System.out.println("Race Step");
-	    						String stepResult = raceEvent.stepAllDrivers();
-	    						event.getChannel().sendMessage(stepResult.substring(1, stepResult.length()-1)).queue(); // We must trim the first and last character because brackets get added somewhere. Maybe because it's an ArrayList?
+	    						//String stepResult = raceEvent.stepAllDrivers();
+	    						event.getChannel().sendMessage(raceEvent.stepAllDrivers()).queue(); // We must trim the first and last character because brackets get added somewhere. Maybe because it's an ArrayList?
     				    	}
     				    	else {
     				    		event.getChannel().sendMessage(printRaceResults()).queue();
@@ -957,11 +1007,17 @@ public class Commands extends ListenerAdapter {
     						}
     					}
     					if (!driverFound) {
-    						event.getChannel().sendMessage("Could not find that driver. Did not set an active driver. Look at the drivers you own by the command: !iracer debug driver view").queue();
+    						event.getChannel().sendMessage("Could not find that driver. Did not set an active driver.**View drivers**\n!r driver view").queue();
     					}
     				}
     				else {
-    					event.getChannel().sendMessage(p.getActiveDriverId().toString()).queue();
+    					try {
+    						event.getChannel().sendMessage(p.getOwnedDrivers().getById(p.getActiveDriverId()).toString()).queue();
+    					}
+    					catch(NotFoundException e) {
+    						event.getChannel().sendMessage("Your active driver could not be found. Set a new active driver.**View Drivers**\n!r driver view**Set Active Driver**\n!r driver active [driver name]");
+    					}
+    					
     				}
 	    		}
     			if (args[2].equalsIgnoreCase("view")) {
@@ -1456,6 +1512,10 @@ public class Commands extends ListenerAdapter {
 				eb.setColor(Color.ORANGE);
 				eb.setThumbnail("https://cliply.co/wp-content/uploads/2021/03/372103860_CHECK_MARK_400px.gif");
 				eb.setTitle("Demonstration of Abstract Factory creating Components followed by CarBuilder creating the Car");
+				//eb.setDescription(car.toString());	
+				//event.getChannel().sendMessage(eb.build()).queue();
+
+
 				
 				Component engine = component.createComponent(ComponentType.ENGINE, 100);
 				Component suspension = component.createComponent(ComponentType.SUSPENSION, 250);

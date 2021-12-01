@@ -348,6 +348,14 @@ public abstract class Racing implements DriverState, Refreshable {
 		DriverStanding updatedDriverStanding = driverStanding;
 		RaceTrack raceTrack = updatedDriverStanding.getRaceTrack();
 		
+		if (updatedCar.getDurability() <= 0) {
+			// The car is wrecked, the driver is unable to continue.
+			updatedDriver.setState(new DNF(playerId, driverId));
+			updatedPlayer.getOwnedDrivers().update(updatedDriver);
+			dbh.updateUser(updatedPlayer);
+			return updatedDriverStanding;
+		}
+		
 		// Calculate the distances that the driver would travel on either type of track node.
 		// These will be used to calculate the actual distance traveled.
 		this.cornerDistance = this.rollCornerDistance(this.multiplier);
@@ -390,10 +398,6 @@ public abstract class Racing implements DriverState, Refreshable {
 					// Check if the driver crashed
 					if (rolledState instanceof Crashed) {
 						updatedCar = this.crash(updatedCar);
-						if (updatedCar.getDurability() <= 0) {
-							// The car is wrecked, the driver is unable to continue.
-							rolledState = new DNF(playerId, driverId);
-						}
 					}
 				}
 				else {
