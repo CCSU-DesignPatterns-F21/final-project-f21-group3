@@ -56,7 +56,7 @@ public class DriverStandingsQuickSort implements SortStandings {
 	private static int partitionByDistance(List<DriverStanding> list, int low, int high){
 	    int p = low, j;
 	    for(j=low+1; j <= high; j++) {
-	    	if (list.get(j).getDistanceTraveled() < list.get(low).getDistanceTraveled()) {
+	    	if (list.get(j).getDistanceTraveled() > list.get(low).getDistanceTraveled()) {
 	        	swap(list, ++p, j);
 	        }
 	    }

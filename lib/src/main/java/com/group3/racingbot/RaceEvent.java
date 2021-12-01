@@ -190,7 +190,7 @@ public class RaceEvent implements Unique {
 		
 		// Update the db with the details of the standings.
 		dbh.updateRaceEvent(this);
-		return this.standings.getStandings().toString();
+		return this.standings.toString();
 	}
 	
 	/**

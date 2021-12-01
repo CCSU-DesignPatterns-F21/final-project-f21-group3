@@ -211,6 +211,7 @@ public class Commands extends ListenerAdapter {
 						+ "**!r car unequip (engine | chassis | suspension | wheels | transmission)** | Removes a component from your active car and puts it into your component inventory.\n"
 						+ "**!r car view** | Look at all the cars within your car inventory.\n"
 						+ "**!r car active** | View details about your active car.\n"
+						+ "**!r car active detail** | View all the components your active car has.\n"
 						+ "\n**Car Filtering**\n"
 						+ "**!r car filterBy (quality | durability | value | weight) (= | != | > | <) (number | String) [(quality | durability | value | weight) (= | != | > | <) (number | String)]** | Filter for certain cars which meet the given criteria.\n"
 						+ "\n**Components**\n"
@@ -824,8 +825,8 @@ public class Commands extends ListenerAdapter {
     				    public void run () {
     				    	if (!raceEvent.isFinished()) {
 	    						System.out.println("Race Step");
-	    						String stepResult = raceEvent.stepAllDrivers();
-	    						event.getChannel().sendMessage(stepResult.substring(1, stepResult.length()-1)).queue(); // We must trim the first and last character because brackets get added somewhere. Maybe because it's an ArrayList?
+	    						//String stepResult = raceEvent.stepAllDrivers();
+	    						event.getChannel().sendMessage(raceEvent.stepAllDrivers()).queue(); // We must trim the first and last character because brackets get added somewhere. Maybe because it's an ArrayList?
     				    	}
     				    	else {
     				    		event.getChannel().sendMessage(printRaceResults()).queue();
@@ -957,11 +958,17 @@ public class Commands extends ListenerAdapter {
     						}
     					}
     					if (!driverFound) {
-    						event.getChannel().sendMessage("Could not find that driver. Did not set an active driver. Look at the drivers you own by the command: !iracer debug driver view").queue();
+    						event.getChannel().sendMessage("Could not find that driver. Did not set an active driver.**View drivers**\n!r driver view").queue();
     					}
     				}
     				else {
-    					event.getChannel().sendMessage(p.getActiveDriverId().toString()).queue();
+    					try {
+    						event.getChannel().sendMessage(p.getOwnedDrivers().getById(p.getActiveDriverId()).toString()).queue();
+    					}
+    					catch(NotFoundException e) {
+    						event.getChannel().sendMessage("Your active driver could not be found. Set a new active driver.**View Drivers**\n!r driver view**Set Active Driver**\n!r driver active [driver name]");
+    					}
+    					
     				}
 	    		}
     			if (args[2].equalsIgnoreCase("view")) {
