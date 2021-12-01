@@ -20,9 +20,11 @@ public class ConfigPropertiesHandler {
 	private static ConfigPropertiesHandler configPropertiesHandler = null;
 	private Properties prop; //No public getters and setter on purpose, for internal use only.
 	private AppConfig appConfig; 
+	private boolean isEncrypted;
 	
 	private ConfigPropertiesHandler() {
 		boolean production = false; // Production code is being used
+		isEncrypted = false;
 		try {
 			// Try to find the encrypted files
 			ConfigReaderFactory<AppConfig> secureAppConfigReaderFactory = new ConfigReaderFactory<AppConfig>();
@@ -34,7 +36,9 @@ public class ConfigPropertiesHandler {
 			appConfig = secureXmlAppConfigReader.GetConfig(AppConfig.class);
 			System.out.println("Production: Found secureConfig.txt and key.txt.");
 			production = true;
+			isEncrypted = true;
 		} catch (Exception e) {
+			isEncrypted = false;
 			// Try to find the config.properties
 			e.printStackTrace();
 			System.out.println("Production: Unable to locate secureConfig.txt or key.txt. Attempting to find config.properties");
@@ -48,11 +52,14 @@ public class ConfigPropertiesHandler {
 				} catch (IOException f) {
 					f.printStackTrace();
 				}
+				production = true;
 				
 			} catch (FileNotFoundException g) {
 				g.printStackTrace();
 				System.out.println("Production: Unable to find config.properties.");
 			}
+			
+			
 		}
 		
 		if (!production) {
@@ -65,8 +72,10 @@ public class ConfigPropertiesHandler {
 				ConfigReader<AppConfig> secureXmlAppConfigReader = secureAppConfigReaderFactory.createSecureReader(FileType.XML, secureConfigFile.toURI().toURL(), key);
 				appConfig = secureXmlAppConfigReader.GetConfig(AppConfig.class);
 				System.out.println("Development: Found secureConfig.txt and key.txt.");
+				isEncrypted = true;
 	
 			} catch (Exception e) {
+				isEncrypted = false;
 				e.printStackTrace();
 				prop =new Properties();
 				
@@ -117,6 +126,14 @@ public class ConfigPropertiesHandler {
 	public String getProperty(String propReq) {
 		return prop.getProperty(propReq);
 	}
+	
+	/**
+	 * @return whether or not config handler is using the encrypted files
+	 */
+	public boolean getEncrypted() {
+		return isEncrypted;
+	}
+	
 	
 	/** 
 	 * Returns status of the singleton.

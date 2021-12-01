@@ -189,7 +189,7 @@ public class Commands extends ListenerAdapter {
 	    				);
 	    		eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
 	    		
-	    	event.getChannel().sendMessage(eb.build()).queue();
+	    	event.getChannel().sendMessageEmbeds(eb.build()).queue();
 	    	eb.clear();
 	    	eb.setColor(Color.red);
 	    	eb.setDescription("\n**Driver**\n"
@@ -204,7 +204,7 @@ public class Commands extends ListenerAdapter {
 	    				+ "**!r driver train (awareness | cornering | composure | drafting | straights | recovery) (light | medium | intense)** | Have your driver work on a particular skill. This takes time! The more intense the workout, the longer the training session, but the better the rewards.\n"
     					);
 	    	eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
-	    	event.getChannel().sendMessage(eb.build()).queue();
+	    	event.getChannel().sendMessageEmbeds(eb.build()).queue();
 	    	
 	    	eb.clear();
 	    	eb.setColor(Color.red);
@@ -224,7 +224,7 @@ public class Commands extends ListenerAdapter {
 						+ "\nRepair\n"
 						+ "!r repair [component id or car id] | Repair the specified component or car for a price.\n");
 	    	eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
-	    	event.getChannel().sendMessage(eb.build()).queue();
+	    	event.getChannel().sendMessageEmbeds(eb.build()).queue();
 	    	/*
 	    	 * + "\n**Driver**\n"
 	    				+ "**!r driver create [name]** | Create a new driver with the given name."
