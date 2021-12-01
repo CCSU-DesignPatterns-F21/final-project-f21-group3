@@ -22,21 +22,27 @@ public class ConfigPropertiesHandler {
 	private AppConfig appConfig; 
 	
 	private ConfigPropertiesHandler() {
-		try {		
+		boolean production = false; // Production code is being used
+		try {
+			// Try to find the encrypted files
 			ConfigReaderFactory<AppConfig> secureAppConfigReaderFactory = new ConfigReaderFactory<AppConfig>();
-			File secureConfigFile = new File("src/main/resources/secureConfig.txt");
-			File keyFile = new File("src/main/resources/key.txt");
+			File secureConfigFile = new File("./secureConfig.txt");
+			File keyFile = new File("./key.txt");
 
 			byte[] key = Files.readAllBytes(keyFile.toPath());
 			ConfigReader<AppConfig> secureXmlAppConfigReader = secureAppConfigReaderFactory.createSecureReader(FileType.XML, secureConfigFile.toURI().toURL(), key);
 			appConfig = secureXmlAppConfigReader.GetConfig(AppConfig.class);
-
+			System.out.println("Production: Found secureConfig.txt and key.txt.");
+			production = true;
 		} catch (Exception e) {
+			// Try to find the config.properties
 			e.printStackTrace();
+			System.out.println("Production: Unable to locate secureConfig.txt or key.txt. Attempting to find config.properties");
 			prop =new Properties();
 			
 			try {
-				FileInputStream ip= new FileInputStream("./src/main/resources/config.properties");
+				FileInputStream ip= new FileInputStream("./config.properties");
+				System.out.println("Production: Found config.properties.");
 				try {
 					prop.load(ip);
 				} catch (IOException f) {
@@ -44,10 +50,43 @@ public class ConfigPropertiesHandler {
 				}
 				
 			} catch (FileNotFoundException g) {
-				
 				g.printStackTrace();
+				System.out.println("Production: Unable to find config.properties.");
 			}
 		}
+		
+		if (!production) {
+			try {		
+				ConfigReaderFactory<AppConfig> secureAppConfigReaderFactory = new ConfigReaderFactory<AppConfig>();
+				File secureConfigFile = new File("src/main/resources/secureConfig.txt");
+				File keyFile = new File("src/main/resources/key.txt");
+	
+				byte[] key = Files.readAllBytes(keyFile.toPath());
+				ConfigReader<AppConfig> secureXmlAppConfigReader = secureAppConfigReaderFactory.createSecureReader(FileType.XML, secureConfigFile.toURI().toURL(), key);
+				appConfig = secureXmlAppConfigReader.GetConfig(AppConfig.class);
+				System.out.println("Development: Found secureConfig.txt and key.txt.");
+	
+			} catch (Exception e) {
+				e.printStackTrace();
+				prop =new Properties();
+				
+				try {
+					FileInputStream ip= new FileInputStream("./src/main/resources/config.properties");
+					System.out.println("Development: Found config.properties.");
+					try {
+						prop.load(ip);
+					} catch (IOException f) {
+						f.printStackTrace();
+					}
+					
+				} catch (FileNotFoundException g) {
+					
+					//g.printStackTrace();
+					System.out.println("Development: Unable to find config.properties.");
+				}
+			}
+		}
+		
 	}
 	
 	/**
