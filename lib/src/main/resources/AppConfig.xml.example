@@ -1,6 +1,6 @@
 <appConfig>
-	<discordChannelToken>ODk4MDEzNzExMDcwMDAzMjcw.YWeCcQ.xh0dm3PiOmyfCOHhH3wKKEhuXK8</discordChannelToken>
-	<mongoDBUsername>RacingBotDBAdmin</mongoDBUsername>
-	<mongoDBPass>WYyLo1GTh9TprGvb</mongoDBPass>
-	<mongoDBDatabase>RacingBot</mongoDBDatabase>
+	<discordChannelToken></discordChannelToken>
+	<mongoDBUsername></mongoDBUsername>
+	<mongoDBPass></mongoDBPass>
+	<mongoDBDatabase></mongoDBDatabase>
 </appConfig>

@@ -1,4 +1,4 @@
 discordChannelToken=
 mongoDBUsername=
 mongoDBPass=
-mongoDBDatabase=RacingBot
+mongoDBDatabase=
