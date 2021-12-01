@@ -128,11 +128,11 @@ public class DBHandler {
 		    );
 		configProperties = ConfigPropertiesHandler.getInstance();
 
-		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getAppConfig().getMongoDBUsername() +":"+ configProperties.getAppConfig().getMongoDBPass() +"@racingbot.rjpmq.mongodb.net/"+configProperties.getAppConfig().getMongoDBDatabase()+"?retryWrites=true&w=majority");
 		//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
 				mongoClient = MongoClients.create(settings);
-				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
+				database = mongoClient.getDatabase(configProperties.getAppConfig().getMongoDBDatabase()).withCodecRegistry(codecRegistry);
 				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
 				shopCollection = database.getCollection("Shops",Shop.class).withCodecRegistry(codecRegistry);
 				raceEventCollection = database.getCollection("Events",RaceEvent.class).withCodecRegistry(codecRegistry);

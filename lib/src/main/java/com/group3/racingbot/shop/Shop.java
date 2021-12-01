@@ -30,10 +30,11 @@ public abstract class Shop implements CustomObserver{
 	private Inventory<Component> componentsForSale;
 	private ComponentFactory factory;
 
-	public abstract Component createComponent();
-
 	
 	@Override
+	/**
+	 * @return name and description of the store.
+	 */
 	public String toString() {
 		return getName() + " | " + getDescription();
 	} 
@@ -114,7 +115,8 @@ public abstract class Shop implements CustomObserver{
 	}
 
 	/**
-	 * Generate a hashCode for the object
+	 *  Calculates the Objects hash code
+	 * @return int object hash code
 	 */
 	@Override
 	public int hashCode() {
@@ -132,6 +134,7 @@ public abstract class Shop implements CustomObserver{
 	/**
 	 * Compare and determine whether or not the two objects are identical or the same object.
 	 * @param obj the Object being compared to
+	 * @return boolean whether or not objects are equal
 	 */
 	@Override
 	public boolean equals(Object obj) {

@@ -1,9 +1,5 @@
 package com.group3.racingbot;
 
-import com.github.ygimenez.exception.InvalidHandlerException;
-import com.github.ygimenez.method.Pages;
-import com.github.ygimenez.model.Paginator;
-import com.github.ygimenez.model.PaginatorBuilder;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.JDA;
@@ -42,17 +38,10 @@ public class RacingBot {
 		System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
 		configProperties = ConfigPropertiesHandler.getInstance();
 		
-		jda = JDABuilder.createDefault(configProperties.getProperty("discordChannelToken")).build();
+		jda = JDABuilder.createDefault(configProperties.getAppConfig().getDiscordChannelToken()).build();
 		jda.getPresence().setStatus(OnlineStatus.IDLE);
 		jda.getPresence().setActivity(Activity.watching("for participants!"));
-	
-		try {
-
-			Pages.activate(PaginatorBuilder.createSimplePaginator(jda));
-		} catch (InvalidHandlerException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
 		
 		db = DBHandler.getInstance();
 

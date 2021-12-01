@@ -7,10 +7,11 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.gameservice.GameplayHandler;
 import com.group3.racingbot.inventory.Inventory;
 
 /**
- * 
+ * Concrete class extending abstract class Shop. Sells high quality components.
  * @author Maciej Bregisz
  *
  */
@@ -25,13 +26,19 @@ public class Importer extends Shop  {
 		setName("Importer");
 		setDescription("Foreign cars and parts. Exotic, Overengineered, Expensive");
 	}
-
-	@Override
-	public Component createComponent() {
-		return null;
+	
+	public Importer(GameplayHandler gph) {
+		setCarsForSale(new Inventory<Car>());
+		setComponentsForSale(new Inventory<Component>());
+		setId(3);
+		setName("Importer");
+		setDescription("Foreign cars and parts. Exotic, Overengineered, Expensive");
 	}
 
-	@Override
+
+	/**
+	 * Generates new components and cars for sale using the abstract factory and builder.
+	 */
 	public void update() {
 		getComponentsForSale().getItems().clear();
 		System.out.println("Updating Importer Store");
@@ -41,6 +48,7 @@ public class Importer extends Shop  {
 		getComponentsForSale().add(getFactory().createComponent("chassis", ThreadLocalRandom.current().nextInt(751, 3500+1)));
 		getComponentsForSale().add(getFactory().createComponent("transmission", ThreadLocalRandom.current().nextInt(751, 3500+1)));
 		
+		getCarsForSale().getItems().clear();
 		CarBuilder cb = new CarBuilder();
 		cb.addEngine(getFactory().createComponent("engine", ThreadLocalRandom.current().nextInt(751, 3500+1)))
 		.addWheels(getFactory().createComponent("wheel", ThreadLocalRandom.current().nextInt(751, 3500+1)))
@@ -48,8 +56,12 @@ public class Importer extends Shop  {
 		.addChassis(getFactory().createComponent("chassis", ThreadLocalRandom.current().nextInt(751, 3500+1)))
 		.addTransmission(getFactory().createComponent("transmission", ThreadLocalRandom.current().nextInt(751, 3500+1)));
 		getCarsForSale().add(cb.build());
+		
 	}
-
+	/**
+	 *  Calculates the Objects hash code
+	 * @return int object hash code
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();

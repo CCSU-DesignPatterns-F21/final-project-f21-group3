@@ -5,8 +5,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
 import com.group3.racingbot.Car;
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.gameservice.GameplayHandler;
 import com.group3.racingbot.inventory.Inventory;
 
 /**
@@ -17,6 +19,10 @@ import com.group3.racingbot.inventory.Inventory;
 
 public class ChopShop extends Shop  {
 	
+	
+	/**
+	 * ChopShop shop Constructor
+	 */
 	@BsonCreator
 	public ChopShop() {
 		setId(0);
@@ -25,13 +31,25 @@ public class ChopShop extends Shop  {
 		setName("Chop Shop");
 		setDescription("You never know what you will find at the Chop Shop, stolen catalytic converters, wheels, rims and more! No questions asked, no refunds!");
 	}
-
-	@Override
-	public Component createComponent() {
-		return null;
+	
+	/**
+	 * ChopShop store constructor with GameplayHandler parameter
+	 * @param gh Reference to the GameplayHandler
+	 */
+	public ChopShop(GameplayHandler gph) {
+		setId(0);
+		setCarsForSale(new Inventory<Car>());
+		setComponentsForSale(new Inventory<Component>());
+		setName("Chop Shop");
+		setDescription("You never know what you will find at the Chop Shop, stolen catalytic converters, wheels, rims and more! No questions asked, no refunds!");
+		gph.subscribe(this);
 	}
 
-	@Override
+	
+	
+	/**
+	 * Generates new components and cars for sale using the abstract factory and builder.
+	 */
 	public void update() {
 		System.out.println("Updating ChopShop Store");
 		getComponentsForSale().getItems().clear();
@@ -41,6 +59,8 @@ public class ChopShop extends Shop  {
 		getComponentsForSale().add(getFactory().createComponent("chassis", ThreadLocalRandom.current().nextInt(50, 150 + 1)));
 		getComponentsForSale().add(getFactory().createComponent("transmission", ThreadLocalRandom.current().nextInt(50, 150 + 1)));
 		
+		
+		getCarsForSale().getItems().clear();
 		CarBuilder cb = new CarBuilder();
 		cb.addChassis(getFactory().createComponent("chassis", ThreadLocalRandom.current().nextInt(50, 150 + 1)))
 		.addEngine(getFactory().createComponent("engine", ThreadLocalRandom.current().nextInt(50, 150 + 1)))
@@ -50,6 +70,10 @@ public class ChopShop extends Shop  {
 		getCarsForSale().add(cb.build());
 	}
 
+	/**
+	 * Calculates the Objects hash code
+	 * @return int object hash code
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();
@@ -57,6 +81,7 @@ public class ChopShop extends Shop  {
 	/**
 	 * Compare and determine whether or not the two objects are identical or the same object.
 	 * @param obj the Object being compared to
+	 * @return boolean whether or not objects are equal
 	 */
 	@Override
 	public boolean equals(Object obj) {

@@ -1,7 +1,5 @@
 package com.group3.racingbot;
 
-import java.util.Objects;
-
 import com.group3.racingbot.ComponentFactory.ChassisComponent;
 import com.group3.racingbot.ComponentFactory.Component;
 import com.group3.racingbot.ComponentFactory.EngineComponent;
@@ -31,7 +29,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	 * Creates a car which can be equipped with different components.
 	 */
 	public Car() {
-		this.id = "";
+		this.id = DBHandler.getInstance().generateId(3);;
 		this.chassis = null;
 		this.engine = null;
 		this.suspension = null;
@@ -40,7 +38,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 	
 	private Car(CarBuilder builder) {
-		this.id = "";
+		this.id = DBHandler.getInstance().generateId(3);;
 		this.chassis = builder.chassis;
 		this.engine = builder.engine;
 		this.suspension = builder.suspension;
@@ -417,7 +415,6 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	 */
 	@Override
 	public IClonable clone() {
-		// TODO Auto-generated method stub
 		return new Car(this);
 	}
 }

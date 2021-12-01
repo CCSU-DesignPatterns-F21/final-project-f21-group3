@@ -99,7 +99,6 @@ public class WheelComponent extends Component {
 	 */
 	@Override
 	public IClonable clone() {
-		// TODO Auto-generated method stub
 		return new WheelComponent(this);
 	}
 

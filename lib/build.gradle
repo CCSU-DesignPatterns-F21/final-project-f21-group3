@@ -22,6 +22,7 @@ shadowJar {
 }
 
 repositories {
+
   mavenCentral()
   maven { // on kotlin dsl use `maven("https://m2.dv8tion.net/releases")` instead
       url "https://m2.dv8tion.net/releases"
@@ -33,11 +34,22 @@ repositories {
 dependencies {
   compile "org.slf4j:slf4j-simple:1.7.9" 
   compile 'org.mongodb:mongodb-driver-sync:4.3.3'
-  //compile 'com.jagrosh:jda-utilities:JDA-UTILITIES-VERSION'
+
+  //compile fileTree(dir: 'libs', include: '*.jar')
+  
+
+  //implementation 'jakarta.activation:jakarta.activation-api:2.0.1'
+  //implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+  //implementation 'org.glassfish.jaxb:jaxb-core:3.0.1'
+  //implementation 'javax.xml:jaxb-impl:2.1'
+  //implementation 'org.eclipse.persistence:org.eclipse.persistence.moxy:3.0.1'
+  implementation (files('libs/DesignPatterns.Utils-1.0.0-jar-with-dependencies.jar'))
   
   implementation("net.dv8tion:JDA:4.3.0_277")
   implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
   implementation group: 'com.github.ygimenez', name: 'Pagination-Utils', version: '3.0.4'
+  
+   
   
 }
 

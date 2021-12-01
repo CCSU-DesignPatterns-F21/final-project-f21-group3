@@ -10,29 +10,20 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.github.ygimenez.method.Pages;
-import com.github.ygimenez.model.InteractPage;
-import com.github.ygimenez.model.Page;
 import com.group3.racingbot.DBHandler;
-import com.group3.racingbot.Driver;
-import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
-import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.shop.ChopShop;
 import com.group3.racingbot.shop.CustomObserver;
 import com.group3.racingbot.shop.Dealership;
 import com.group3.racingbot.shop.Importer;
 import com.group3.racingbot.shop.Junkyard;
 import com.group3.racingbot.shop.Shop;
-import com.group3.racingbot.standings.DriverStanding;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 
 /**
  * Repsponsible for handling the game simulation itself and any underlying
@@ -46,23 +37,20 @@ public class GameplayHandler {
 	private JDA jda;
 	private DBHandler db;
 
-	// TODO: Might need to be changed into generic?
 	private List<CustomObserver> listeners = new ArrayList<CustomObserver>();
 	private ComponentFactory componentFactory;
 	private RaceEvent raceEvent;
 
+	/**
+	 * GamaplayHandler object constructor
+	 * @param j reference to the JDA object
+	 * @param dbh reference to the DBHandler object
+	 */
 	public GameplayHandler(JDA j, DBHandler dbh) {
 		db = dbh;
 		jda = j;
 		componentFactory = new ConcreteComponentFactory();
 		Shop junkyard, chopshop, dealership, importer;
-
-		// System.out.println(dbh.getShop(0));
-
-//			for(int i =0; i<shops.size(); i++) {
-//				subscribe(shops.get(i));
-//				shops.get(i).toString();
-//			}
 
 		raceEvent = new RaceEvent();
 		raceEvent.initialize();
@@ -76,11 +64,11 @@ public class GameplayHandler {
 			// System.out.println(chopshop);
 			this.subscribe(chopshop);
 		} else {
-			chopshop = new ChopShop();
+			chopshop = new ChopShop(this);
 			chopshop.setFactory(componentFactory);
 			chopshop.update();
 			dbh.insertShop(chopshop);
-			this.subscribe(chopshop);
+			//this.subscribe(chopshop);
 		}
 
 		if (dbh.getShop(1) != null) {
@@ -88,7 +76,7 @@ public class GameplayHandler {
 			junkyard.setFactory(componentFactory);
 			this.subscribe(junkyard);
 		} else {
-			junkyard = new Junkyard();
+			junkyard = new Junkyard(this);
 			junkyard.setFactory(componentFactory);
 			junkyard.update();
 			dbh.insertShop(junkyard);
@@ -100,7 +88,7 @@ public class GameplayHandler {
 			dealership.setFactory(componentFactory);
 			this.subscribe(dealership);
 		} else {
-			dealership = new Dealership();
+			dealership = new Dealership(this);
 			dealership.setFactory(componentFactory);
 			dealership.update();
 			dbh.insertShop(dealership);
@@ -112,7 +100,7 @@ public class GameplayHandler {
 			importer.setFactory(componentFactory);
 			this.subscribe(importer);
 		} else {
-			importer = new Importer();
+			importer = new Importer(this);
 			importer.setFactory(componentFactory);
 			importer.update();
 			dbh.insertShop(importer);
@@ -126,50 +114,12 @@ public class GameplayHandler {
 
 		TimerTask hourlyTask = new TimerTask() {
 
-			EmbedBuilder eb = new EmbedBuilder();
+			
 
 			@Override
 			public void run() {
 				System.out.println("Running Hourly scheduled task...");
 
-				Iterator<DriverStanding> driverIterator = raceEvent.getStandings().iterator();
-				boolean raceCanBegin = true;
-				Player p = null;
-				while (driverIterator.hasNext()) {
-					Driver currentDriver = driverIterator.next().getDriver();
-					p = dbh.getPlayer(currentDriver.getPlayerId());
-					currentDriver.beginRace();
-					if (p.getOwnedDrivers().update(currentDriver)) {
-						dbh.updateUser(p);
-					} else {
-						raceCanBegin = false;
-						// raceEvent.getChannel().sendMessage("Unable to update driver with id: " +
-						// currentDriver.getId() +". Unable to begin race.").queue();
-					}
-
-				}
-
-				Timer raceTimer = new Timer();
-
-				ArrayList<Page> raceTrackNodes = new ArrayList<>();
-				raceTrackNodes.clear();
-				while (!raceEvent.isFinished()) {
-					System.out.println("Race Step");
-					Field trackNode = new Field("Race Event History", raceEvent.stepAllDrivers().toString(), false);
-					eb.addField(trackNode);
-					raceTrackNodes.add(new InteractPage(eb.build()));
-					// event.getChannel().sendMessage(raceEvent.stepAllDrivers()).queue();
-				}
-				List<Guild> guilds = jda.getGuilds();
-				for (int i = 0; i < guilds.size(); i++) {
-					Guild guild = guilds.get(i);
-					guild.getSystemChannel().sendMessageEmbeds((MessageEmbed) raceTrackNodes.get(0).getContent())
-							.queue(success -> {
-								Pages.paginate(success, raceTrackNodes, /* Use buttons? */ true);
-							});
-				}
-
-				
 
 				// Create an event with a randomized id.
 				raceEvent = new RaceEvent();
@@ -185,26 +135,20 @@ public class GameplayHandler {
 				eb.setColor(Color.red);
 
 				eb.addField("Store Update", "New Components and Cars for sale at the Stores!", false);
-				eb.addField("Race Track Update", "New race event available!", false);
-				eb.addField("Race Results available",
-						"If you registered for a race, you can now check the race results!", false);
+				//eb.addField("Race Track Update", "New race event available!", false);
+				//eb.addField("Race Results available",	"If you registered for a race, you can now check the race results!", false);
 				sendEmbedChannelMessage(eb);
 			}
 		};
 
 		LocalDateTime timeNow = LocalDateTime.now();
 		System.out.println("Time Now: " + timeNow);
-		//LocalDateTime nextHour = timeNow.plusHours(1).truncatedTo(ChronoUnit.HOURS);
-		LocalDateTime nextHour = timeNow.plusMinutes(1).truncatedTo(ChronoUnit.MINUTES);
+		LocalDateTime nextHour = timeNow.plusHours(1).truncatedTo(ChronoUnit.HOURS);
 		System.out.println("Next Hour: " + nextHour);
 		Date firstScheduledTask = Date.from(nextHour.atZone(ZoneId.systemDefault()).toInstant());
 		System.out.println("Next Hour (Date Converted): " + firstScheduledTask);
 
-		timer.schedule(hourlyTask, firstScheduledTask, 1000 * 60 );
-	}
-
-	public void debug() {
-		notifyObservers();
+		timer.schedule(hourlyTask, firstScheduledTask, 1000 * 60 *60);
 	}
 
 	/**
@@ -277,11 +221,6 @@ public class GameplayHandler {
 			guild.getSystemChannel().sendMessageEmbeds(eb.build()).queue();
 
 		}
-	}
-
-	private String printRaceResults() {
-		return "RaceEvent " + this.raceEvent.getId() + " is complete!\n_____\n"
-				+ this.raceEvent.getStandings().toString();
 	}
 
 	/**

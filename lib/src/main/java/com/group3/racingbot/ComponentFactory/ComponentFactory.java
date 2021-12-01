@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * Does not serve purpose now but will once "shop" is implemented
  */
 
-//TODO: edit javadoc once shop is implemented
 @JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ConcreteComponentFactory.class)})

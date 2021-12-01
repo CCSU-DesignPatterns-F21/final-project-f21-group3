@@ -138,7 +138,6 @@ public abstract class Completed implements DriverState{
 
 	@Override
 	public String completedRace(Driver driver) {
-		// TODO Auto-generated method stub
 		return driverStatus(driver);
 	}
 

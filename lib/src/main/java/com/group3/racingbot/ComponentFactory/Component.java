@@ -6,7 +6,7 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.group3.racingbot.Car;
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.IClonable;
 import com.group3.racingbot.inventory.Unique;
 import com.group3.racingbot.inventory.filter.ComponentFilterable;
@@ -29,7 +29,7 @@ import com.group3.racingbot.inventory.filter.Quality;
 @BsonDiscriminator
 
 public abstract class Component implements Unique, IClonable, MaterialFilterable, ComponentFilterable {
-	private String id = "";
+	private String id = DBHandler.getInstance().generateId(3);
 	private ComponentType componentType = null;
 	private Quality quality = Quality.LEMON;
 

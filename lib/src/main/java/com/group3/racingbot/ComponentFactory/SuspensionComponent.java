@@ -99,7 +99,6 @@ public class SuspensionComponent extends Component {
 	 */
 	@Override
 	public IClonable clone() {
-		// TODO Auto-generated method stub
 		return new SuspensionComponent(this);
 	}
 }
