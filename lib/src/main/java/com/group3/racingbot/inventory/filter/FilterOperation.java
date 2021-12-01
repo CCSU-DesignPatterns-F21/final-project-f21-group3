@@ -25,10 +25,10 @@ public enum FilterOperation {
 		return this.operation;
 	}
 	
-	@Override
 	/**
 	 * Display the textual representation of the enumeration
 	 */
+	@Override
 	public String toString() {
 		switch (this.operation) {
 			case 2:

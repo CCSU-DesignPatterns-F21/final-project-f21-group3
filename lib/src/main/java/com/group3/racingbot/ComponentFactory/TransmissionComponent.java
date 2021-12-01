@@ -48,6 +48,7 @@ public class TransmissionComponent extends Component {
 	}
 
 	/**
+	 * Retrieve the acceleration which this transmission is capable of performing
 	 * @return the acceleration
 	 */
 	public float getAcceleration() {
@@ -55,6 +56,7 @@ public class TransmissionComponent extends Component {
 	}
 
 	/**
+	 * Set the acceleration which this transmission is capable of performing
 	 * @param acceleration the acceleration to set
 	 */
 	public void setAcceleration(float acceleration) {
@@ -95,7 +97,7 @@ public class TransmissionComponent extends Component {
 	
 	@Override
 	public String toString() {
-		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nAcceleration: " + this.getAcceleration() + "\n\n";
+		return super.toString() + " | Acceleration: " + this.getAcceleration();
 	}
 	
 	/**

@@ -18,13 +18,7 @@ import com.group3.racingbot.standings.DriverStanding;
  * @author Nick Sabia
  *
  */
-//@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = DNF.class),
-//        @JsonSubTypes.Type(value = FinishedRace.class),
-//		@JsonSubTypes.Type(value = FinishedTraining.class)})
-//@BsonDiscriminator(value="Completed", key="_cls")
-public abstract class Completed implements DriverState{
+public abstract class Completed implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
 	private String playerId;
@@ -43,7 +37,6 @@ public abstract class Completed implements DriverState{
 		this.playerId = playerId;
 		this.driver = null;
 		this.driverId = driverId;
-		//this.raceEventId = raceEventId;
 	}
 	
 	/**
@@ -112,7 +105,7 @@ public abstract class Completed implements DriverState{
 
 	@Override
 	public String rest(Driver driver) {
-		return driver.getName() + "(" + driver.getId() + ") still has rewards to claim. May not rest until the reward has been claimed.\n**Claim a Reward**\n!r debug claim";
+		return driver.getName() + "(" + driver.getId() + ") still has rewards to claim. May not rest until the reward has been claimed.\n**Claim a Reward**\n!r claim";
 	}
 
 	@Override

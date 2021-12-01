@@ -10,7 +10,6 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="Crashed", key="_cls")
 public class Crashed extends Racing {
 	/**
 	 * Construct a crashed racing state.

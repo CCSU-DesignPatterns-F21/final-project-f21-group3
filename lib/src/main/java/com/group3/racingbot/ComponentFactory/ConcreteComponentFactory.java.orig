@@ -41,6 +41,25 @@ public class ConcreteComponentFactory extends ComponentFactory {
 
 		if (type == ComponentType.ENGINE && (cost >= 0 && cost <= 150)) {
 			createdComponent = new EngineComponent();
+<<<<<<< HEAD
+			((EngineComponent)createdComponent).setQuality(Quality.LEMON);
+			((EngineComponent)createdComponent).setValue(cost);
+			((EngineComponent)createdComponent).setWeight(800);
+			((EngineComponent)createdComponent).setSpeed(25);
+			((EngineComponent)createdComponent).setMaxDurability(50);
+			((EngineComponent)createdComponent).setDurability(50);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/05MDTfJ.gif");
+		}
+		else if(type == "engine" && (cost >= 151 && cost <= 300)) {
+			createdComponent = new EngineComponent();
+			((EngineComponent)createdComponent).setQuality((Quality.JUNKYARD));
+			((EngineComponent)createdComponent).setValue(cost);
+			((EngineComponent)createdComponent).setWeight(600);
+			((EngineComponent)createdComponent).setSpeed(50);
+			((EngineComponent)createdComponent).setMaxDurability(75);
+			((EngineComponent)createdComponent).setDurability(75);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/MvTEeFx.gif");
+=======
 			((EngineComponent) createdComponent).setQuality(Quality.LEMON);
 			((EngineComponent) createdComponent).setValue(0 + (int) (Math.random() * ((100 - 0) + 1)));
 			((EngineComponent) createdComponent).setWeight(800 + (int) (Math.random() * ((1000 - 800) + 1)));
@@ -59,10 +78,20 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((EngineComponent) createdComponent).setDurability(50 + (int) (Math.random() * ((75 - 50) + 1)));
 
 			((EngineComponent) createdComponent).setThumbnailURL("https://i.imgur.com/MvTEeFx.gif");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		}
 
 		else if (type == ComponentType.ENGINE && (cost >= 301 && cost <= 750)) {
 			createdComponent = new EngineComponent();
+<<<<<<< HEAD
+			((EngineComponent)createdComponent).setQuality(Quality.OEM);
+			((EngineComponent)createdComponent).setValue(cost);
+			((EngineComponent)createdComponent).setWeight(400);
+			((EngineComponent)createdComponent).setSpeed(100);
+			((EngineComponent)createdComponent).setMaxDurability(100);
+			((EngineComponent)createdComponent).setDurability(100);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/icdEzy8.gif");
+=======
 			((EngineComponent) createdComponent).setQuality(Quality.OEM);
 			((EngineComponent) createdComponent).setValue(250 + (int) (Math.random() * ((500 - 250) + 1)));
 			((EngineComponent) createdComponent).setWeight(400 + (int) (Math.random() * ((600 - 400) + 1)));
@@ -71,10 +100,30 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((EngineComponent) createdComponent).setDurability(75 + (int) (Math.random() * ((100 - 75) + 1)));
 
 			((EngineComponent) createdComponent).setThumbnailURL("https://i.imgur.com/icdEzy8.gif");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		}
 
 		else if (type == ComponentType.ENGINE && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new EngineComponent();
+<<<<<<< HEAD
+			((EngineComponent)createdComponent).setQuality(Quality.SPORTS);
+			((EngineComponent)createdComponent).setValue(cost);
+			((EngineComponent)createdComponent).setWeight(300);
+			((EngineComponent)createdComponent).setSpeed(150);
+			((EngineComponent)createdComponent).setMaxDurability(150);
+			((EngineComponent)createdComponent).setDurability(150);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/2ReaUsE.gif");
+		}
+		else if(type == "engine" && cost >= 3001) {
+			createdComponent = new EngineComponent();
+			((EngineComponent)createdComponent).setQuality(Quality.RACING);
+			((EngineComponent)createdComponent).setValue(cost);
+			((EngineComponent)createdComponent).setWeight(200);
+			((EngineComponent)createdComponent).setSpeed(250);
+			((EngineComponent)createdComponent).setMaxDurability(200);
+			((EngineComponent)createdComponent).setDurability(200);
+			((EngineComponent)createdComponent).setThumbnailURL("https://i.imgur.com/RvNggMb.gif");
+=======
 			((EngineComponent) createdComponent).setQuality(Quality.SPORTS);
 			((EngineComponent) createdComponent).setValue(500 + (int) (Math.random() * ((1000 - 500) + 1)));
 			((EngineComponent) createdComponent).setWeight(300 + (int) (Math.random() * ((400 - 300) + 1)));
@@ -93,6 +142,7 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((EngineComponent) createdComponent).setDurability(150 + (int) (Math.random() * ((250 - 150) + 1)));
 
 			((EngineComponent) createdComponent).setThumbnailURL("https://i.imgur.com/RvNggMb.gif");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		}
 
 		// returns Wheel with random stats depending on cost
@@ -100,6 +150,25 @@ public class ConcreteComponentFactory extends ComponentFactory {
 
 		if (type == ComponentType.WHEELS && (cost >= 0 && cost <= 150)) {
 			createdComponent = new WheelComponent();
+<<<<<<< HEAD
+			((WheelComponent)createdComponent).setQuality(Quality.LEMON);
+			((WheelComponent)createdComponent).setValue(cost);
+			((WheelComponent)createdComponent).setWeight(800);
+			((WheelComponent)createdComponent).setBraking(25);
+			((WheelComponent)createdComponent).setMaxDurability(50);
+			((WheelComponent)createdComponent).setDurability(50);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/EUfjaRO.gif");
+		}
+		else if(type == "wheel" && (cost >= 151 && cost <= 300)) {
+			createdComponent = new WheelComponent();
+			((WheelComponent)createdComponent).setQuality(Quality.JUNKYARD);
+			((WheelComponent)createdComponent).setValue(cost);
+			((WheelComponent)createdComponent).setWeight(600);
+			((WheelComponent)createdComponent).setBraking(50);
+			((WheelComponent)createdComponent).setMaxDurability(75);
+			((WheelComponent)createdComponent).setDurability(75);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/Cj4uzaG.gif");
+=======
 			((WheelComponent) createdComponent).setQuality(Quality.LEMON);
 			((WheelComponent) createdComponent).setValue(50 + (int) (Math.random() * ((100 - 50) + 1)));
 			((WheelComponent) createdComponent).setWeight(800 + (int) (Math.random() * ((1000 - 800) + 1)));
@@ -118,10 +187,20 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((WheelComponent) createdComponent).setDurability(50 + (int) (Math.random() * ((75 - 50) + 1)));
 
 			((WheelComponent) createdComponent).setThumbnailURL("https://i.imgur.com/Cj4uzaG.gif");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		}
 
 		else if (type == ComponentType.WHEELS && (cost >= 301 && cost <= 750)) {
 			createdComponent = new WheelComponent();
+<<<<<<< HEAD
+			((WheelComponent)createdComponent).setQuality(Quality.OEM);
+			((WheelComponent)createdComponent).setValue(cost);
+			((WheelComponent)createdComponent).setWeight(400);
+			((WheelComponent)createdComponent).setBraking(100);
+			((WheelComponent)createdComponent).setMaxDurability(100);
+			((WheelComponent)createdComponent).setDurability(100);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/CL9YO3r.gif");
+=======
 			((WheelComponent) createdComponent).setQuality(Quality.OEM);
 			((WheelComponent) createdComponent).setValue(250 + (int) (Math.random() * ((500 - 250) + 1)));
 			((WheelComponent) createdComponent).setWeight(400 + (int) (Math.random() * ((600 - 400) + 1)));
@@ -130,10 +209,30 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((WheelComponent) createdComponent).setDurability(75 + (int) (Math.random() * ((100 - 75) + 1)));
 
 			((WheelComponent) createdComponent).setThumbnailURL("https://i.imgur.com/CL9YO3r.gif");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		}
 
 		else if (type == ComponentType.WHEELS && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new WheelComponent();
+<<<<<<< HEAD
+			((WheelComponent)createdComponent).setQuality(Quality.SPORTS);
+			((WheelComponent)createdComponent).setValue(cost);
+			((WheelComponent)createdComponent).setWeight(300);
+			((WheelComponent)createdComponent).setBraking(150);
+			((WheelComponent)createdComponent).setMaxDurability(150);
+			((WheelComponent)createdComponent).setDurability(150);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/vf8TLae.gif");
+		}
+		else if(type == "wheel" && cost >= 3001) {
+			createdComponent = new WheelComponent();
+			((WheelComponent)createdComponent).setQuality(Quality.RACING);
+			((WheelComponent)createdComponent).setValue(cost);
+			((WheelComponent)createdComponent).setWeight(200);
+			((WheelComponent)createdComponent).setBraking(250);
+			((WheelComponent)createdComponent).setMaxDurability(200);
+			((WheelComponent)createdComponent).setDurability(200);
+			((WheelComponent)createdComponent).setThumbnailURL("https://i.imgur.com/PXNATz9.gif");
+=======
 			((WheelComponent) createdComponent).setQuality(Quality.SPORTS);
 			((WheelComponent) createdComponent).setValue(500 + (int) (Math.random() * ((1000 - 500) + 1)));
 			((WheelComponent) createdComponent).setWeight(300 + (int) (Math.random() * ((400 - 300) + 1)));
@@ -152,6 +251,7 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((WheelComponent) createdComponent).setDurability(150 + (int) (Math.random() * ((200 - 150) + 1)));
 
 			((WheelComponent) createdComponent).setThumbnailURL("https://i.imgur.com/PXNATz9.gif");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		}
 
 		// returns Suspension with random stats depending on cost
@@ -159,6 +259,129 @@ public class ConcreteComponentFactory extends ComponentFactory {
 
 		if (type == ComponentType.SUSPENSION && (cost >= 0 && cost <= 150)) {
 			createdComponent = new SuspensionComponent();
+<<<<<<< HEAD
+			((SuspensionComponent)createdComponent).setQuality(Quality.LEMON);
+			((SuspensionComponent)createdComponent).setValue(cost);
+			((SuspensionComponent)createdComponent).setWeight(800);
+			((SuspensionComponent)createdComponent).setHandling(25);
+			((SuspensionComponent)createdComponent).setMaxDurability(50);
+			((SuspensionComponent)createdComponent).setDurability(50);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/8CcL7lZ.gif");
+		}
+		else if(type == "suspension" && (cost >= 151 && cost <= 300)) {
+			createdComponent = new SuspensionComponent();
+			((SuspensionComponent)createdComponent).setQuality(Quality.JUNKYARD);
+			((SuspensionComponent)createdComponent).setValue(cost);
+			((SuspensionComponent)createdComponent).setWeight(600);
+			((SuspensionComponent)createdComponent).setHandling(50);
+			((SuspensionComponent)createdComponent).setMaxDurability(75);
+			((SuspensionComponent)createdComponent).setDurability(75);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/7fPDxsL.gif");
+		}
+		else if(type == "suspension" && (cost >= 301 && cost <= 750)) {
+			createdComponent = new SuspensionComponent();
+			((SuspensionComponent)createdComponent).setQuality(Quality.OEM);
+			((SuspensionComponent)createdComponent).setValue(cost);
+			((SuspensionComponent)createdComponent).setWeight(400);
+			((SuspensionComponent)createdComponent).setHandling(100);
+			((SuspensionComponent)createdComponent).setMaxDurability(100);
+			((SuspensionComponent)createdComponent).setDurability(100);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/raznbJH.gif");
+		}
+		else if(type == "suspension" && (cost >= 751 && cost <= 3000)) {
+			createdComponent = new SuspensionComponent();
+			((SuspensionComponent)createdComponent).setQuality(Quality.SPORTS);
+			((SuspensionComponent)createdComponent).setValue(cost);
+			((SuspensionComponent)createdComponent).setWeight(300);
+			((SuspensionComponent)createdComponent).setHandling(150);
+			((SuspensionComponent)createdComponent).setMaxDurability(150);
+			((SuspensionComponent)createdComponent).setDurability(150);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/4cM3ye9.gif");
+		}
+		else if(type == "suspension" && cost >= 3001) {
+			createdComponent = new SuspensionComponent();
+			((SuspensionComponent)createdComponent).setQuality(Quality.RACING);
+			((SuspensionComponent)createdComponent).setValue(cost);
+			((SuspensionComponent)createdComponent).setWeight(200);
+			((SuspensionComponent)createdComponent).setHandling(250);
+			((SuspensionComponent)createdComponent).setMaxDurability(200);
+			((SuspensionComponent)createdComponent).setDurability(200);
+			((SuspensionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/trs3NPs.gif");
+		}
+		
+		//returns Chassis with placeholder stats depending on cost
+		//quality, value, durability, popularity, accelerationModifier, speedModifier, handlingModifier, brakingModifier
+		
+		if(type == "chassis" && (cost >= 0 && cost <= 150)) {
+			createdComponent = new ChassisComponent();
+			((ChassisComponent)createdComponent).setQuality(Quality.LEMON);
+			((ChassisComponent)createdComponent).setValue(cost);
+			((ChassisComponent)createdComponent).setWeight(800);
+			((ChassisComponent)createdComponent).setDurability(50);
+			((ChassisComponent)createdComponent).setMaxDurability(50);
+			((ChassisComponent)createdComponent).setAccelerationModifier(1.0);
+			((ChassisComponent)createdComponent).setBrakingModifier(1.0);
+			((ChassisComponent)createdComponent).setHandlingModifier(1.0);
+			((ChassisComponent)createdComponent).setPopularityModifier(1.0);
+			((ChassisComponent)createdComponent).setSpeedModifier(1.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/zzj97p0.gif");
+		}
+		else if(type == "chassis" && (cost >= 151 && cost <= 300)) {
+			createdComponent = new ChassisComponent();
+			((ChassisComponent)createdComponent).setQuality(Quality.JUNKYARD);
+			((ChassisComponent)createdComponent).setValue(cost);
+			((ChassisComponent)createdComponent).setWeight(600);
+			((ChassisComponent)createdComponent).setDurability(75);
+			((ChassisComponent)createdComponent).setMaxDurability(75);
+			((ChassisComponent)createdComponent).setAccelerationModifier(2.0);
+			((ChassisComponent)createdComponent).setBrakingModifier(2.0);
+			((ChassisComponent)createdComponent).setHandlingModifier(2.0);
+			((ChassisComponent)createdComponent).setPopularityModifier(2.0);
+			((ChassisComponent)createdComponent).setSpeedModifier(2.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/aXBH7lN.gif");
+		}
+		else if(type == "chassis" && (cost >= 301 && cost <= 750)) {
+			createdComponent = new ChassisComponent();
+			((ChassisComponent)createdComponent).setQuality(Quality.OEM);
+			((ChassisComponent)createdComponent).setValue(cost);
+			((ChassisComponent)createdComponent).setWeight(400);
+			((ChassisComponent)createdComponent).setDurability(100);
+			((ChassisComponent)createdComponent).setMaxDurability(100);
+			((ChassisComponent)createdComponent).setAccelerationModifier(3.0);
+			((ChassisComponent)createdComponent).setBrakingModifier(3.0);
+			((ChassisComponent)createdComponent).setHandlingModifier(3.0);
+			((ChassisComponent)createdComponent).setPopularityModifier(3.0);
+			((ChassisComponent)createdComponent).setSpeedModifier(3.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/xdX3WUG.gif");
+		}
+		else if(type == "chassis" && (cost >= 751 && cost <= 3000)) {
+			createdComponent = new ChassisComponent();
+			((ChassisComponent)createdComponent).setQuality(Quality.SPORTS);
+			((ChassisComponent)createdComponent).setValue(cost);
+			((ChassisComponent)createdComponent).setWeight(300);
+			((ChassisComponent)createdComponent).setDurability(150);
+			((ChassisComponent)createdComponent).setMaxDurability(150);
+			((ChassisComponent)createdComponent).setAccelerationModifier(4.0);
+			((ChassisComponent)createdComponent).setBrakingModifier(4.0);
+			((ChassisComponent)createdComponent).setHandlingModifier(4.0);
+			((ChassisComponent)createdComponent).setPopularityModifier(4.0);
+			((ChassisComponent)createdComponent).setSpeedModifier(4.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/DSEcXJL.gif");
+		}
+		else if(type == "chassis" && cost >= 3001) {
+			createdComponent = new ChassisComponent();
+			((ChassisComponent)createdComponent).setQuality(Quality.RACING);
+			((ChassisComponent)createdComponent).setValue(cost);
+			((ChassisComponent)createdComponent).setWeight(200);
+			((ChassisComponent)createdComponent).setDurability(200);
+			((ChassisComponent)createdComponent).setMaxDurability(200);
+			((ChassisComponent)createdComponent).setAccelerationModifier(5.0);
+			((ChassisComponent)createdComponent).setBrakingModifier(5.0);
+			((ChassisComponent)createdComponent).setHandlingModifier(5.0);
+			((ChassisComponent)createdComponent).setPopularityModifier(5.0);
+			((ChassisComponent)createdComponent).setSpeedModifier(5.0);
+			((ChassisComponent)createdComponent).setThumbnailURL("https://i.imgur.com/LDCvKV2.gif");
+=======
 			((SuspensionComponent) createdComponent).setQuality(Quality.LEMON);
 			((SuspensionComponent) createdComponent).setValue(50 + (int) (Math.random() * ((100 - 50) + 1)));
 			((SuspensionComponent) createdComponent).setWeight(800 + (int) (Math.random() * ((1000 - 800) + 1)));
@@ -207,6 +430,7 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((SuspensionComponent) createdComponent).setDurability(150 + (int) (Math.random() * ((200 - 150) + 1)));
 
 			((SuspensionComponent) createdComponent).setThumbnailURL("https://i.imgur.com/trs3NPs.gif");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		}
 
 		// returns Transmission with random stats depending on cost
@@ -214,6 +438,27 @@ public class ConcreteComponentFactory extends ComponentFactory {
 
 		if (type == ComponentType.TRANSMISSION && (cost >= 0 && cost <= 150)) {
 			createdComponent = new TransmissionComponent();
+<<<<<<< HEAD
+			((TransmissionComponent)createdComponent).setQuality(Quality.LEMON);
+			((TransmissionComponent)createdComponent).setValue(cost);
+			((TransmissionComponent)createdComponent).setWeight(800);
+			((TransmissionComponent)createdComponent).setAcceleration(25);
+			((TransmissionComponent)createdComponent).setDurability(50);
+			((TransmissionComponent)createdComponent).setMaxDurability(50);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/8CcL7lZ.gif");
+		}
+		else if(type == "transmission" && (cost >= 151 && cost <= 300)) {
+			createdComponent = new TransmissionComponent();
+			((TransmissionComponent)createdComponent).setQuality(Quality.JUNKYARD);
+			((TransmissionComponent)createdComponent).setValue(cost);
+			((TransmissionComponent)createdComponent).setWeight(600);
+			((TransmissionComponent)createdComponent).setAcceleration(50);
+			((TransmissionComponent)createdComponent).setDurability(75);
+			((TransmissionComponent)createdComponent).setMaxDurability(75);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/7fPDxsL.gif");
+		}
+		else if(type == "transmission" && (cost >= 301 && cost <= 750)) {
+=======
 			((TransmissionComponent) createdComponent).setQuality(Quality.LEMON);
 			((TransmissionComponent) createdComponent).setValue(50 + (int) (Math.random() * ((100 - 50) + 1)));
 			((TransmissionComponent) createdComponent).setWeight(800 + (int) (Math.random() * ((1000 - 800) + 1)));
@@ -233,6 +478,7 @@ public class ConcreteComponentFactory extends ComponentFactory {
 
 			((TransmissionComponent) createdComponent).setThumbnailURL("https://i.imgur.com/7fPDxsL.gif");
 		} else if (type == ComponentType.TRANSMISSION && (cost >= 301 && cost <= 750)) {
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 			createdComponent = new TransmissionComponent();
 			((TransmissionComponent) createdComponent).setQuality(Quality.OEM);
 			((TransmissionComponent) createdComponent).setValue(250 + (int) (Math.random() * ((500 - 250) + 1)));
@@ -244,6 +490,25 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((TransmissionComponent) createdComponent).setThumbnailURL("https://i.imgur.com/raznbJH.gif");
 		} else if (type == ComponentType.TRANSMISSION && (cost >= 751 && cost <= 3000)) {
 			createdComponent = new TransmissionComponent();
+<<<<<<< HEAD
+			((TransmissionComponent)createdComponent).setQuality(Quality.SPORTS);
+			((TransmissionComponent)createdComponent).setValue(cost);
+			((TransmissionComponent)createdComponent).setWeight(300);
+			((TransmissionComponent)createdComponent).setAcceleration(150);
+			((TransmissionComponent)createdComponent).setDurability(150);
+			((TransmissionComponent)createdComponent).setMaxDurability(150);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/4cM3ye9.gif");
+		}
+		else if(type == "transmission" && cost >= 3001) {
+			createdComponent = new TransmissionComponent();
+			((TransmissionComponent)createdComponent).setQuality(Quality.RACING);
+			((TransmissionComponent)createdComponent).setValue(cost);
+			((TransmissionComponent)createdComponent).setWeight(200);
+			((TransmissionComponent)createdComponent).setAcceleration(250);
+			((TransmissionComponent)createdComponent).setDurability(200);
+			((TransmissionComponent)createdComponent).setMaxDurability(200);
+			((TransmissionComponent)createdComponent).setThumbnailURL("https://i.imgur.com/trs3NPs.gif");
+=======
 			((TransmissionComponent) createdComponent).setQuality(Quality.SPORTS);
 			((TransmissionComponent) createdComponent).setValue(500 + (int) (Math.random() * ((1000 - 500) + 1)));
 			((TransmissionComponent) createdComponent).setWeight(300 + (int) (Math.random() * ((400 - 300) + 1)));
@@ -343,6 +608,7 @@ public class ConcreteComponentFactory extends ComponentFactory {
 			((ChassisComponent) createdComponent).setSpeedModifier(2.5 + (Math.random() * ((4.0 - 2.5) + 1)));
 
 			((ChassisComponent) createdComponent).setThumbnailURL("https://i.imgur.com/LDCvKV2.gif");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		}
 
 		createdComponent.setId(dbh.generateId(6)); // Give the component a random id.

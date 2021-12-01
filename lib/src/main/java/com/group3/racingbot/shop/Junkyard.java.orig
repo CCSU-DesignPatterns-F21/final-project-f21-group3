@@ -7,8 +7,11 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.Component;
-import com.group3.racingbot.ComponentFactory.ComponentType;
+<<<<<<< HEAD
 import com.group3.racingbot.gameservice.GameplayHandler;
+=======
+import com.group3.racingbot.ComponentFactory.ComponentType;
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 import com.group3.racingbot.inventory.Inventory;
 
 /**
@@ -50,19 +53,20 @@ public class Junkyard extends Shop {
 	public void update() {
 		System.out.println("Updating Junkyard Store");
 		getComponentsForSale().getItems().clear();
-		getComponentsForSale().add(getFactory().createComponent(ComponentType.ENGINE, 100));
-		getComponentsForSale().add(getFactory().createComponent(ComponentType.WHEELS, ThreadLocalRandom.current().nextInt(151, 300 + 1)));
-		getComponentsForSale().add(getFactory().createComponent(ComponentType.SUSPENSION, ThreadLocalRandom.current().nextInt(151, 300 + 1)));
-		getComponentsForSale().add(getFactory().createComponent(ComponentType.CHASSIS, ThreadLocalRandom.current().nextInt(151, 300 + 1)));
-		getComponentsForSale().add(getFactory().createComponent(ComponentType.TRANSMISSION, ThreadLocalRandom.current().nextInt(151, 300 + 1)));
+<<<<<<< HEAD
+		getComponentsForSale().add(getFactory().createComponent("engine", ThreadLocalRandom.current().nextInt(151, 300 + 1)));
+		getComponentsForSale().add(getFactory().createComponent("wheel", ThreadLocalRandom.current().nextInt(151, 300 + 1)));
+		getComponentsForSale().add(getFactory().createComponent("suspension", ThreadLocalRandom.current().nextInt(151, 300 + 1)));
+		getComponentsForSale().add(getFactory().createComponent("chassis", ThreadLocalRandom.current().nextInt(151, 300 + 1)));
+		getComponentsForSale().add(getFactory().createComponent("transmission", ThreadLocalRandom.current().nextInt(151, 300 + 1)));
 		
 		getCarsForSale().getItems().clear();
 		CarBuilder cb = new CarBuilder();
-		cb.addEngine(getFactory().createComponent(ComponentType.ENGINE, ThreadLocalRandom.current().nextInt(151, 300 + 1)))
-		.addWheels(getFactory().createComponent(ComponentType.WHEELS, ThreadLocalRandom.current().nextInt(151, 300 + 1)))
-		.addSuspension(getFactory().createComponent(ComponentType.SUSPENSION, ThreadLocalRandom.current().nextInt(151, 300 + 1)))
-		.addChassis(getFactory().createComponent(ComponentType.CHASSIS, ThreadLocalRandom.current().nextInt(151, 300 + 1)))
-		.addTransmission(getFactory().createComponent(ComponentType.TRANSMISSION, ThreadLocalRandom.current().nextInt(151, 300 + 1)));
+		cb.addEngine(getFactory().createComponent("engine", ThreadLocalRandom.current().nextInt(151, 300 + 1)))
+		.addWheels(getFactory().createComponent("wheel", ThreadLocalRandom.current().nextInt(151, 300 + 1)))
+		.addSuspension(getFactory().createComponent("suspension", ThreadLocalRandom.current().nextInt(151, 300 + 1)))
+		.addChassis(getFactory().createComponent("chassis", ThreadLocalRandom.current().nextInt(151, 300 + 1)))
+		.addTransmission(getFactory().createComponent("transmission", ThreadLocalRandom.current().nextInt(151, 300 + 1)));
 		getCarsForSale().add(cb.build());
 		
 		
@@ -89,5 +93,8 @@ public class Junkyard extends Shop {
 		if (getClass() != obj.getClass())
 			return false;
 		return true;
+=======
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.ENGINE, 100));
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 	}
 }

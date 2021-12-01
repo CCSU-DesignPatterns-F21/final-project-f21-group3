@@ -7,6 +7,7 @@ import org.bson.codecs.pojo.annotations.BsonCreator;
 import com.group3.racingbot.Car;
 import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.ComponentFactory.ComponentType;
 import com.group3.racingbot.gameservice.GameplayHandler;
 import com.group3.racingbot.inventory.Inventory;
 
@@ -42,19 +43,19 @@ public class Importer extends Shop  {
 	public void update() {
 		getComponentsForSale().getItems().clear();
 		System.out.println("Updating Importer Store");
-		getComponentsForSale().add(getFactory().createComponent("engine", ThreadLocalRandom.current().nextInt(751, 3500+1)));
-		getComponentsForSale().add(getFactory().createComponent("wheel", ThreadLocalRandom.current().nextInt(751, 3500+1)));
-		getComponentsForSale().add(getFactory().createComponent("suspension", ThreadLocalRandom.current().nextInt(751, 3500+1)));
-		getComponentsForSale().add(getFactory().createComponent("chassis", ThreadLocalRandom.current().nextInt(751, 3500+1)));
-		getComponentsForSale().add(getFactory().createComponent("transmission", ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.ENGINE, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.WHEELS, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.SUSPENSION, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.CHASSIS, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.TRANSMISSION, ThreadLocalRandom.current().nextInt(751, 3500+1)));
 		
 		getCarsForSale().getItems().clear();
 		CarBuilder cb = new CarBuilder();
-		cb.addEngine(getFactory().createComponent("engine", ThreadLocalRandom.current().nextInt(751, 3500+1)))
-		.addWheels(getFactory().createComponent("wheel", ThreadLocalRandom.current().nextInt(751, 3500+1)))
-		.addSuspension(getFactory().createComponent("suspension", ThreadLocalRandom.current().nextInt(751, 3500+1)))
-		.addChassis(getFactory().createComponent("chassis", ThreadLocalRandom.current().nextInt(751, 3500+1)))
-		.addTransmission(getFactory().createComponent("transmission", ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		cb.addEngine(getFactory().createComponent(ComponentType.ENGINE, ThreadLocalRandom.current().nextInt(751, 3500+1)))
+		.addWheels(getFactory().createComponent(ComponentType.WHEELS, ThreadLocalRandom.current().nextInt(751, 3500+1)))
+		.addSuspension(getFactory().createComponent(ComponentType.SUSPENSION, ThreadLocalRandom.current().nextInt(751, 3500+1)))
+		.addChassis(getFactory().createComponent(ComponentType.CHASSIS, ThreadLocalRandom.current().nextInt(751, 3500+1)))
+		.addTransmission(getFactory().createComponent(ComponentType.TRANSMISSION, ThreadLocalRandom.current().nextInt(751, 3500+1)));
 		getCarsForSale().add(cb.build());
 		
 	}

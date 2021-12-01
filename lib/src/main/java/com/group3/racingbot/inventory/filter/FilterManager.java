@@ -8,29 +8,30 @@ import java.util.ArrayList;
 import com.group3.racingbot.inventory.Iterator;
 
 /**
- * Used to store and use filters on inventories.
+ * Used to store and chain iterator decorators which act as filters together to generate an output.
  * @author Nick Sabia
  */
 public class FilterManager<T> {
-	//private ArrayList<InventoryIteratorDecorator<T>> materialFilters;
-	//private ArrayList<InventoryIteratorDecorator<T>> skillFilters;
 	private ArrayList<IteratorDecorator<T>> filters;
 	
+	/**
+	 * Constructs a filter manager. This creates an empty list of filters.
+	 */
 	public FilterManager() {
-		//this.materialFilters = new ArrayList<InventoryIteratorDecorator<T>>();
-		//this.skillFilters = new ArrayList<InventoryIteratorDecorator<T>>();
 		this.filters = new ArrayList<IteratorDecorator<T>>();
 	}
 
 	/**
-	 * @return the filters
+	 * Retrieve the list of filters (decorators) which the filter manager has.
+	 * @return the list of filters
 	 */
 	public ArrayList<IteratorDecorator<T>> getFilters() {
 		return filters;
 	}
 
 	/**
-	 * @param filters the filters to set
+	 * Set the list of filters (decorators) which the filter manager has.
+	 * @param filters the list of filters to set
 	 */
 	public void setFilters(ArrayList<IteratorDecorator<T>> filters) {
 		this.filters = filters;
@@ -40,12 +41,7 @@ public class FilterManager<T> {
 	 * Add a filter to the list.
 	 * @param filter filter to add
 	 */
-	//@SuppressWarnings("unchecked")
 	public void add(IteratorDecorator<T> filter) {
-		//if (filter.getInventoryIterator().getClass().isAssignableFrom(MaterialFilterable.class)) {
-			//this.materialFilters.add((InventoryIteratorDecorator<MaterialFilterable>) filter);
-		//}
-		//else if (filter.getInventoryIterator().getClass().isAssignableFrom(MaterialFilterable.class))
 		this.filters.add(filter);
 	}
 	
@@ -79,7 +75,7 @@ public class FilterManager<T> {
 	}
 	
 	/**
-	 * Apply filters to a filterable iterator.
+	 * Apply filters to a filterable iterator. In other words, this chains together all decorators/filters within the filter list and returns the final decorated iterator in that chain.
 	 * @param originalIterator the unaltered iterator.
 	 * @return string containing the results of the filter.
 	 */

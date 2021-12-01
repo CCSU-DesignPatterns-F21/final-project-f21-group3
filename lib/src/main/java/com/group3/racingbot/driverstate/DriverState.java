@@ -10,14 +10,6 @@ import com.group3.racingbot.standings.DriverStanding;
  * @author Nick Sabia
  *
  */
-//@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = Resting.class),
-//        @JsonSubTypes.Type(value = Training.class),
-//        @JsonSubTypes.Type(value = Racing.class),
-//        @JsonSubTypes.Type(value = RacePending.class),
-//		@JsonSubTypes.Type(value = Completed.class)})
-//@BsonDiscriminator(value="DriverState", key="_cls")
 public interface DriverState {
 	/**
 	 * Puts the Driver into a Resting state.
@@ -28,24 +20,24 @@ public interface DriverState {
 	
 	/**
 	 * The driver begins the race they've signed up for.
-	 * @param driver
+	 * @param driver the driver to participate in the race.
 	 */
 	String beginRace(Driver driver);
 	
 	/**
 	 * Puts the Driver into a training state to improve a skill.
-	 * @param driver
-	 * @param skillToTrain
-	 * @param intensity
+	 * @param driver the driver to train
+	 * @param skillToTrain the skill of the driver to improve
+	 * @param intensity governs how long the training session will last and how large the training reward will be
 	 * @return String containing contextual info about beginning training.
 	 */
 	String beginTraining(Driver driver, Skill skillToTrain, Intensity intensity);
 	
 	/**
 	 * Registers this driver and their car for a racing event.
-	 * @param driver
-	 * @param car
-	 * @param raceEvent
+	 * @param driver the driver to sign up for the race
+	 * @param car the car which the driver will use in the race
+	 * @param raceEvent the event which the driver is signed up for
 	 * @return String containing contextual info about signing up for a race.
 	 */
 	String signUpForRace(Driver driver, Car car, RaceEvent raceEvent);
@@ -57,15 +49,15 @@ public interface DriverState {
 	
 	/**
 	 * Allow the Driver to perform their turn to move on the track during a race.
-	 * @param driver
-	 * @param driverStanding
+	 * @param driver the driver to advance forward in the race.
+	 * @param driverStanding the driver standing, containing info about how they stack up compared to other racers in the event.
 	 * @return the updated driver standing.
 	 */
 	DriverStanding raceStep(Driver driver, DriverStanding driverStanding);
 	
 	/**
 	 * Move to the finished race state upon race completion.
-	 * @param driver
+	 * @param driver the driver which reached the end of the race track
 	 * @return String containing contextual info about completing a race.
 	 */
 	String completedRace(Driver driver);
@@ -76,12 +68,6 @@ public interface DriverState {
 	 * @return String indicating that the user can now claim a reward.
 	 */
 	String completedTraining(Driver driver);
-	
-	/**
-	 * In the event that this driver is in this state when the server shuts down, this will grab all necessary data from the database in order to get back up and running.
-	 * @return whether or not all missing objects were successfully obtained from the database.
-	 */
-	boolean refreshFromDB();
 	
 	/**
 	 * Gives helpful information about the current state of the driver.

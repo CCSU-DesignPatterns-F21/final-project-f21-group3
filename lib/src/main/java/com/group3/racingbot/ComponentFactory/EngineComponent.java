@@ -42,6 +42,7 @@ public class EngineComponent extends Component {
 	}
 	
 	/**
+	 * Retrieve the speed which this engine is capable of performing.
 	 * @return the speed
 	 */
 	public float getSpeed() {
@@ -49,6 +50,7 @@ public class EngineComponent extends Component {
 	}
 
 	/**
+	 * Set the speed which this engine is capable of performing.
 	 * @param speed the speed to set
 	 */
 	public void setSpeed(float speed) {
@@ -86,7 +88,7 @@ public class EngineComponent extends Component {
 
 	@Override
 	public String toString() {
-		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nSpeed: " + this.getSpeed() + "\n\n";
+		return super.toString() + " | Speed: " + this.getSpeed();
 	}
 
 	/**

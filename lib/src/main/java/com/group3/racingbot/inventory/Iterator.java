@@ -9,6 +9,7 @@ package com.group3.racingbot.inventory;
 public interface Iterator<T> {
 	/**
 	 * Verifies that there is another item ahead of the current one.
+	 * @return whether or not there is another item ahead of the current one.
 	 */
 	public boolean hasNext();
 	

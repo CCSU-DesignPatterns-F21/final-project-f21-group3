@@ -129,8 +129,13 @@ public class DBHandler {
 		    );
 		configProperties = ConfigPropertiesHandler.getInstance();
 
+<<<<<<< HEAD
 		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getAppConfig().getMongoDBUsername() +":"+ configProperties.getAppConfig().getMongoDBPass() +"@racingbot.rjpmq.mongodb.net/"+configProperties.getAppConfig().getMongoDBDatabase()+"?retryWrites=true&w=majority");
 		//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
+=======
+		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+		connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
+>>>>>>> 1232705b58c1c6e8f08bbfaefe172fc6a360d38a
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
 				mongoClient = MongoClients.create(settings);
 				database = mongoClient.getDatabase(configProperties.getAppConfig().getMongoDBDatabase()).withCodecRegistry(codecRegistry);

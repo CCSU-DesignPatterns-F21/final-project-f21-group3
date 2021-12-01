@@ -26,7 +26,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	private WheelComponent wheels;
 	
 	/**
-	 * Creates a car which can be equipped with different components.
+	 * Creates a car which can be equipped with different components. This car is constructed with no parts.
 	 */
 	public Car() {
 		this.id = DBHandler.getInstance().generateId(3);;
@@ -46,6 +46,10 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 		this.wheels = builder.wheels;
 	}
 	
+	/**
+	 * Constructs a copy of an already existing car.
+	 * @param car the car to copy
+	 */
 	public Car(Car car) {
 		this.id = car.getId();
 		this.chassis = car.getChassis();
@@ -61,7 +65,6 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	 * 
 	 * @author Jack Gola
 	 */
-	
 	public static class CarBuilder{
 		
 		private ChassisComponent chassis = null;
@@ -133,6 +136,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 	
 	/**
+	 * Retrieve the id of the car
 	 * @return the id
 	 */
 	public String getId() {
@@ -140,6 +144,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Set the id of the car
 	 * @param id the id to set
 	 */
 	public void setId(String id) {
@@ -147,6 +152,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Retrieve the chassis that this car has equipped.
 	 * @return the chassis
 	 */
 	public ChassisComponent getChassis() {
@@ -154,6 +160,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Retrieve the engine that this car has equipped.
 	 * @return the engine
 	 */
 	public EngineComponent getEngine() {
@@ -161,6 +168,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Retrieve the suspension that this car has equipped.
 	 * @return the suspension
 	 */
 	public SuspensionComponent getSuspension() {
@@ -168,6 +176,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Retrieve the transmission that this car has equipped.
 	 * @return the transmission
 	 */
 	public TransmissionComponent getTransmission() {
@@ -175,6 +184,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Retrieve the wheels that this car has equipped.
 	 * @return the wheels
 	 */
 	public WheelComponent getWheels() {
@@ -182,6 +192,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Set the chassis for this car to have equipped.
 	 * @param chassis the chassis to set
 	 */
 	public void setChassis(ChassisComponent chassis) {
@@ -189,6 +200,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Set the engine for this car to have equipped.
 	 * @param engine the engine to set
 	 */
 	public void setEngine(EngineComponent engine) {
@@ -196,6 +208,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Set the suspension for this car to have equipped.
 	 * @param suspension the suspension to set
 	 */
 	public void setSuspension(SuspensionComponent suspension) {
@@ -203,6 +216,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Set the transmission for this car to have equipped.
 	 * @param transmission the transmission to set
 	 */
 	public void setTransmission(TransmissionComponent transmission) {
@@ -210,6 +224,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
+	 * Set the wheels for this car to have equipped.
 	 * @param wheels the wheels to set
 	 */
 	public void setWheels(WheelComponent wheels) {
@@ -217,7 +232,7 @@ public class Car implements MaterialFilterable, Unique, IClonable {
 	}
 
 	/**
-	 * 
+	 * Performs a check to see if the car has all of its parts.
 	 * @return boolean based on if the car contains all parts.
 	 */
 	public boolean hasAllComponents() {

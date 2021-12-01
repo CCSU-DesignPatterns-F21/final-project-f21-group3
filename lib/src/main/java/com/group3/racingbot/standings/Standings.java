@@ -17,15 +17,22 @@ import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.inventory.Iterator;
 //import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
+import com.group3.racingbot.sorting.DriverStandingsHeapSort;
+import com.group3.racingbot.sorting.DriverStandingsQuickSort;
+import com.group3.racingbot.sorting.SortStandings;
 
 /**
- * Keeps track of which drivers are winning within a race event.
+ * Keeps track of the pole positions of all drivers within a race event.
  * @author Nick Sabia
  */
 public class Standings {
 	private List<DriverStanding> standings;
 	private String raceEventId;
 	
+	/**
+	 * Construct the Standings. Holds all drivers which are participating in the race event whose id is supplied.
+	 * @param raceEventId the race event id of the race event which the standings are for
+	 */
 	@BsonCreator
 	public Standings(@BsonProperty("raceEventId") String raceEventId) {
 		this.standings = new ArrayList<DriverStanding>();
@@ -41,6 +48,8 @@ public class Standings {
 		List<DriverStanding> racing = new ArrayList<DriverStanding>(); // This list holds all drivers who are currently racing.
 		List<DriverStanding> dnf = new ArrayList<DriverStanding>(); // This list holds all drivers who couldn't complete the race.
 		List<DriverStanding> result = new ArrayList<DriverStanding>(); // This list holds all drivers in the order which they stand within the race event.
+		// Defines the sorting algorithm to use
+		SortStandings sortAlgorithm = new DriverStandingsQuickSort();
 		
 		// Separate driver standings into different lists based on their states.
 		Iterator<DriverStanding> iterator = this.iterator();
@@ -58,9 +67,8 @@ public class Standings {
 		}
 		
 		// Sort the racers who have finished by timeCompleted, then if there's a tie randomly pick one.
-		TimeCompletedComparator timeCompletedComparator = new TimeCompletedComparator();
 		if (finished.size() > 0) {
-			Collections.sort(finished, timeCompletedComparator);
+			sortAlgorithm.sortByTimeCompleted(finished);
 			for (int i = 0, len = finished.size(); i < len; i++) {
 				if (i > 0) {
 					boolean isTied = finished.get(i-1).getTimeCompleted() == finished.get(i).getTimeCompleted();
@@ -71,17 +79,14 @@ public class Standings {
 						}
 					}
 				}
-				//finished.get(i).setPosition(i+1); // Set the driver's position in the race
 			}
-			//finished.get(finished.size()-1).setPosition(finished.size()); // Set last place
 		}
 		
 		// Sort the racers who are still currently racing.
-		DistanceTraveledComparator distanceTraveledComparator = new DistanceTraveledComparator();
-		Collections.sort(racing, distanceTraveledComparator);
+		sortAlgorithm.sortByDistanceTraveled(racing);
 		
 		// Sort the racers who couldn't complete the race
-		Collections.sort(dnf, timeCompletedComparator);
+		sortAlgorithm.sortByTimeCompleted(dnf);
 		Collections.reverse(dnf);
 		
 		// Add each list together into the result list
@@ -98,13 +103,15 @@ public class Standings {
 	}
 
 	/**
-	 * @return the raceEventId
+	 * Retrieve the race event id of the race event which these standings apply to.
+	 * @return the raceEventId of the race event which these standings are associated with
 	 */
 	public String getRaceEventId() {
 		return raceEventId;
 	}
 
 	/**
+	 * Set the race event id of the race event which these standings apply to.
 	 * @param raceEventId the raceEventId to set
 	 */
 	public void setRaceEventId(String raceEventId) {
@@ -112,13 +119,15 @@ public class Standings {
 	}
 
 	/**
-	 * @return the standings
+	 * Retrieve the list of all driver standings for the race event.
+	 * @return the standings containing all drivers participating in the event
 	 */
 	public List<DriverStanding> getStandings() {
 		return standings;
 	}
 
 	/**
+	 * Set the list of all driver standings for the race event.
 	 * @param standings the standings to set
 	 */
 	public void setStandings(List<DriverStanding> standings) {
@@ -127,12 +136,10 @@ public class Standings {
 
 	/**
 	 * Adds a driver to the race event.
-	 * @param playerId
-	 * @param driverId
+	 * @param playerId the id of the player whose driver is going to be participating in the race event.
+	 * @param driverId the driver who will join the race event
 	 */
 	public void addDriver(String playerId, String driverId) {
-		//Predicate<DriverStanding> condition = driverPosition -> driverPosition.getDriverId().equals(driver.getId());
-		
 		for (int i = 0, len = this.standings.size()-1; i < len; i++) {
 			if (this.standings.get(i).getDriverId().equals(driverId)) {
 				System.out.println("Standings; addDriver method: Unable to add driver. Driver " + driverId + " already exists in the event.");
@@ -200,9 +207,9 @@ public class Standings {
 	
 	/**
 	 * Retrieve the DriverStanding from the race event's standings based on driver id.
-	 * @param driverId
-	 * @return the DriverStanding
-	 * @throws NotFoundException 
+	 * @param driverId the driver id of the driver to find within the standings
+	 * @return the DriverStanding the driver standing of the driver (if found)
+	 * @throws NotFoundException the driver standing could not be found
 	 */
 	public DriverStanding getDriverStandingById(String driverId) throws NotFoundException {
 		Iterator<DriverStanding> iterator = this.iterator();
@@ -217,6 +224,7 @@ public class Standings {
 	
 	/**
 	 * Creates an instance of an iterator which can be used to traverse the standings of this event.
+	 * @return iterator which iterates through all driver standings
 	 */
 	public Iterator<DriverStanding> iterator() {
 		return new StandingsIterator();
@@ -225,7 +233,6 @@ public class Standings {
 	/**
 	 * Provides a way to traverse the driver standings of a race event.
 	 * @author Nick Sabia
-	 *
 	 */
 	private class StandingsIterator implements Iterator<DriverStanding> {
 		private int current;
@@ -303,7 +310,7 @@ public class Standings {
 		Iterator<DriverStanding> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			DriverStanding currentDriverStanding = iterator.next();
-			results += currentDriverStanding + "\n";
+			results += currentDriverStanding.toString() + "\n";
 		}
 		return results;
 	}

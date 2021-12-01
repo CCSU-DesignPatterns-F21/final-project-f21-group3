@@ -48,6 +48,7 @@ public class SuspensionComponent extends Component {
 	
 	
 	/**
+	 * Retrieve the handling which this suspension is capable of performing
 	 * @return the handling
 	 */
 	public float getHandling() {
@@ -55,6 +56,7 @@ public class SuspensionComponent extends Component {
 	}
 
 	/**
+	 * Set the handling which this suspension is capable of performing
 	 * @param handling the handling to set
 	 */
 	public void setHandling(float handling) {
@@ -90,7 +92,7 @@ public class SuspensionComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nHandling: " + this.getHandling() + "\n\n";
+		return super.toString() + " | Handling: " + this.getHandling();
 	}
 	
 	/**

@@ -20,7 +20,7 @@ public abstract class IteratorDecorator<T> implements Iterator<T> {
 	
 	/**
 	 * Set the iterator which will be decorated/filtered.
-	 * @param iterator
+	 * @param iterator the iterator which will be decorated
 	 */
 	public IteratorDecorator(Iterator<T> iterator) {
 		this.iterator = iterator;

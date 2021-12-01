@@ -48,6 +48,7 @@ public class WheelComponent extends Component {
 	}
 	
 	/**
+	 * Retrieve the braking which this transmission is capable of performing
 	 * @return the braking
 	 */
 	public float getBraking() {
@@ -55,6 +56,7 @@ public class WheelComponent extends Component {
 	}
 
 	/**
+	 * Set the braking which this transmission is capable of performing
 	 * @param braking the braking to set
 	 */
 	public void setBraking(float braking) {
@@ -90,7 +92,7 @@ public class WheelComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nBraking: " + this.getBraking() + "\n\n";
+		return super.toString() + " | Braking: " + this.getBraking();
 	}
 	
 	/**

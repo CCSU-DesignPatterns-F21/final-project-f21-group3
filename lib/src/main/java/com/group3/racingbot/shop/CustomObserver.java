@@ -8,6 +8,9 @@ package com.group3.racingbot.shop;
  */
 public interface CustomObserver {
 	
+	/**
+	 * Update all listeners of the observer
+	 */
 	public void update();
 
 }

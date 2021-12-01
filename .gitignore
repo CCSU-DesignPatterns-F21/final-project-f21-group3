@@ -2,7 +2,8 @@
 config.properties
 
 #Don't include config file, here be API keys and Passwords! Make sure you make your own!
-/lib/src/main/resources
+/lib/src/main/resources/*.properties
+/lib/src/main/resources/*.xml
 /lib/bin
 *.class
 
