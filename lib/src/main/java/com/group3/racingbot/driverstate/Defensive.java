@@ -13,7 +13,6 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="Defensive", key="_cls")
 public class Defensive extends Racing {
 	/**
 	 * Construct a defensive racing state.

@@ -25,7 +25,7 @@ public class WheelComponent extends Component {
 	 */
 	@BsonCreator
 	public WheelComponent() {
-		this.setName("Wheel");
+		this.setComponentType(ComponentType.WHEELS);
 	}
 	
 	/**
@@ -34,7 +34,7 @@ public class WheelComponent extends Component {
 	 */
 	public WheelComponent(WheelComponent wc)
 	{
-		this.setName(wc.getName());
+		this.setComponentType(ComponentType.WHEELS);
 		this.setId(wc.getId());
 		this.setQuality(wc.getQuality());
 		this.setWeight(wc.getWeight());
@@ -48,6 +48,7 @@ public class WheelComponent extends Component {
 	}
 	
 	/**
+	 * Retrieve the braking which this transmission is capable of performing
 	 * @return the braking
 	 */
 	public float getBraking() {
@@ -55,6 +56,7 @@ public class WheelComponent extends Component {
 	}
 
 	/**
+	 * Set the braking which this transmission is capable of performing
 	 * @param braking the braking to set
 	 */
 	public void setBraking(float braking) {
@@ -90,7 +92,7 @@ public class WheelComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nBraking: " + this.getBraking() + "\n\n";
+		return super.toString() + " | Braking: " + this.getBraking();
 	}
 	
 	/**
@@ -99,7 +101,6 @@ public class WheelComponent extends Component {
 	 */
 	@Override
 	public IClonable clone() {
-		// TODO Auto-generated method stub
 		return new WheelComponent(this);
 	}
 

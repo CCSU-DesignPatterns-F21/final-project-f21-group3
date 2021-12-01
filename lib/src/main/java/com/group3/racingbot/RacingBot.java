@@ -1,5 +1,8 @@
 package com.group3.racingbot;
 
+import com.github.ygimenez.exception.InvalidHandlerException;
+import com.github.ygimenez.method.Pages;
+import com.github.ygimenez.model.PaginatorBuilder;
 import com.group3.racingbot.gameservice.GameplayHandler;
 
 import net.dv8tion.jda.api.JDA;
@@ -12,12 +15,9 @@ import net.dv8tion.jda.api.entities.Activity;
  * @author Maciej Bregisz
  * @author Nick Sabia
  * @author Jack Gola
- * @author Kobe Onye
  *
  */
-
 public class RacingBot {
-	
 	
 	/**
 	 * Reference to the command prefix.
@@ -34,14 +34,35 @@ public class RacingBot {
 	private static ConfigPropertiesHandler configProperties;
 	private static DBHandler db;
 	
-	public static void main(String[] args) throws Exception{
+	/**
+	 * Initializes and runs the discord racing bot.
+	 * @param args
+	 * @throws Exception 
+	 */
+	public static void main(String[] args) throws Exception {
 		System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
 		configProperties = ConfigPropertiesHandler.getInstance();
 		
-		jda = JDABuilder.createDefault(configProperties.getProperty("discordChannelToken")).build();
-		jda.getPresence().setStatus(OnlineStatus.IDLE);
+		if(configProperties.getEncrypted())
+		{
+			jda = JDABuilder.createDefault(configProperties.getAppConfig().getDiscordChannelToken()).build();
+		}
+		else {
+			jda = JDABuilder.createDefault(configProperties.getProperty("discordChannelToken")).build();
+		}
+		
+		
+		jda.getPresence().setStatus(OnlineStatus.ONLINE);
 		jda.getPresence().setActivity(Activity.watching("for participants!"));
-	
+		
+		try {
+
+			Pages.activate(PaginatorBuilder.createSimplePaginator(jda));
+		} catch (InvalidHandlerException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		db = DBHandler.getInstance();
 
 		Commands commandHandler = new Commands(db);

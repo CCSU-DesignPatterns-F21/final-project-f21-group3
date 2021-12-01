@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.group3.racingbot.DBHandler;
+import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.ComponentFactory.ComponentFactory;
 import com.group3.racingbot.ComponentFactory.ConcreteComponentFactory;
 import com.group3.racingbot.shop.ChopShop;
@@ -25,7 +26,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 
 /**
- *  Repsponsible for handling the game simulation itself and any underlying features. Keeps track of the Store, Car and Component creation.
+ *  Responsible for handling the game simulation itself and any underlying features. Keeps track of the Store, Car and Component creation.
  * @author Maciej Bregisz
  *
  */
@@ -33,138 +34,150 @@ public class GameplayHandler {
 
 	private JDA jda;
 	private DBHandler db;
-	
-	//TODO: Might need to be changed into generic?
+
 	private List<CustomObserver> listeners = new ArrayList<CustomObserver>();
 	private ComponentFactory componentFactory;
+	private RaceEvent raceEvent;
 	
+	/**
+	 * Construct the gameplay handler.
+	 * @param j instance of JDA with the discord bot's token setup
+	 * @param dbh allows for updated shops to be inserted into the database.
+	 */
 	public GameplayHandler(JDA j, DBHandler dbh) {
 		db = dbh;
+		jda = j;
 		componentFactory = new ConcreteComponentFactory();
-		Shop junkyard,chopshop,dealership,importer;
-		
-			//System.out.println(dbh.getShop(0));
-			
-//			for(int i =0; i<shops.size(); i++) {
-//				subscribe(shops.get(i));
-//				shops.get(i).toString();
-//			}
-		
-		//Check if shop is in DB, if not create, store and subscribe it to the listeners list.
-		
-		
-		if(dbh.getShop(0) != null) {
+		Shop junkyard, chopshop, dealership, importer;
+
+		raceEvent = new RaceEvent();
+		raceEvent.initialize();
+		dbh.insertRaceEvent(raceEvent);
+
+		// Check if shop is in DB, if not create, store and subscribe it to the
+		// listeners list.
+		if (dbh.getShop(0) != null) {
 			chopshop = dbh.getShop(0);
-//			chopshop.setFactory(componentFactory);
-			//System.out.println(chopshop);
+			// chopshop.setFactory(componentFactory);
+			// System.out.println(chopshop);
 			this.subscribe(chopshop);
-		}else {
-			chopshop = new ChopShop();
+		} else {
+			chopshop = new ChopShop(this);
 			chopshop.setFactory(componentFactory);
 			chopshop.update();
 			dbh.insertShop(chopshop);
-			this.subscribe(chopshop);
+			//this.subscribe(chopshop);
 		}
-		
-		if(dbh.getShop(1) != null) {
+
+		if (dbh.getShop(1) != null) {
 			junkyard = dbh.getShop(1);
 			junkyard.setFactory(componentFactory);
 			this.subscribe(junkyard);
-		}else {
-			 junkyard = new Junkyard();
-			 junkyard.setFactory(componentFactory);
-			 junkyard.update();
-			 dbh.insertShop(junkyard);
-			 this.subscribe(junkyard);
+		} else {
+			junkyard = new Junkyard(this);
+			junkyard.setFactory(componentFactory);
+			junkyard.update();
+			dbh.insertShop(junkyard);
+			this.subscribe(junkyard);
 		}
-		
-		if(dbh.getShop(2) != null) {
+
+		if (dbh.getShop(2) != null) {
 			dealership = dbh.getShop(2);
 			dealership.setFactory(componentFactory);
 			this.subscribe(dealership);
-		}else {
-			dealership = new Dealership();
+		} else {
+			dealership = new Dealership(this);
 			dealership.setFactory(componentFactory);
 			dealership.update();
 			dbh.insertShop(dealership);
 			this.subscribe(dealership);
 		}
-		
-		if(dbh.getShop(3) != null) {
+
+		if (dbh.getShop(3) != null) {
 			importer = dbh.getShop(3);
 			importer.setFactory(componentFactory);
 			this.subscribe(importer);
-		}else {
-			importer = new Importer();
+		} else {
+			importer = new Importer(this);
 			importer.setFactory(componentFactory);
 			importer.update();
 			dbh.insertShop(importer);
 			this.subscribe(importer);
 		}
 
-		//Instantiate the stores, racetrack generator, etc. This is responsible for handling gameplay related tasks.
-		jda = j;
-		Timer timer = new Timer ();
-		
-		TimerTask hourlyTask = new TimerTask () {
-		    @Override
-		    public void run () {
-		        System.out.println("Running Hourly scheduled task...");
-		        notifyObservers();
-		        EmbedBuilder eb = new EmbedBuilder();
+		// Instantiate the stores, racetrack generator, etc. This is responsible for
+		// handling gameplay related tasks.
+
+		Timer timer = new Timer();
+
+		TimerTask hourlyTask = new TimerTask() {
+
+			
+
+			@Override
+			public void run() {
+				System.out.println("Running Hourly scheduled task...");
+
+
+				// Create an event with a randomized id.
+				raceEvent = new RaceEvent();
+				raceEvent.initialize();
+
+				dbh.insertRaceEvent(raceEvent);
+
+
+				notifyObservers();
+				EmbedBuilder eb = new EmbedBuilder();
 				eb.clear();
 				eb.setTitle("Hourly Update!");
 				eb.setColor(Color.red);
-				
+
 				eb.addField("Store Update", "New Components and Cars for sale at the Stores!", false);
-				eb.addField("Race Track Update", "New race event available!", false);
-				eb.addField("Race Results available", "If you registered for a race, you can now check the race results!", false);
+				//eb.addField("Race Track Update", "New race event available!", false);
+				//eb.addField("Race Results available",	"If you registered for a race, you can now check the race results!", false);
 				sendEmbedChannelMessage(eb);
-		    }
+			}
 		};
-		
+
 		LocalDateTime timeNow = LocalDateTime.now();
-		System.out.println("Time Now: "+timeNow);
+		System.out.println("Time Now: " + timeNow);
 		LocalDateTime nextHour = timeNow.plusHours(1).truncatedTo(ChronoUnit.HOURS);
-		System.out.println("Next Hour: "+nextHour);
+		System.out.println("Next Hour: " + nextHour);
 		Date firstScheduledTask = Date.from(nextHour.atZone(ZoneId.systemDefault()).toInstant());
-		System.out.println("Next Hour (Date Converted): "+firstScheduledTask);
-		
-		timer.schedule(hourlyTask, firstScheduledTask, 1000*60*60);
+		System.out.println("Next Hour (Date Converted): " + firstScheduledTask);
+
+		timer.schedule(hourlyTask, firstScheduledTask, 1000 * 60 *60);
 	}
-	
-	public void debug()
-	{
-		notifyObservers();
-	}
-	
+
 	/**
-	 * Adds observer to a list which will be notified when specified event takes place.
+	 * Adds observer to a list which will be notified when specified event takes
+	 * place.
+	 * 
 	 * @param o observer which is subscribing.
 	 */
 	public void subscribe(CustomObserver o) {
-		//System.out.println(o);
+		// System.out.println(o);
 		listeners.add(o);
-		
+
 	}
+
 	/**
 	 * Removes observer from the list of subscribers.
+	 * 
 	 * @param o observer which is being ubsubscribed.
 	 */
 	public void unsubscribe(CustomObserver observer) {
 		listeners.remove(observer);
 	}
-	
+
 	/**
 	 * Loops through each subscribed observer and call it's update function.
 	 */
 	public void notifyObservers() {
 		System.out.println("Notifying observers...");
-		
-		if(listeners.size() != 0)
-		{
-			for(int i = 0; i < listeners.size(); i++)
-			{
+
+		if (listeners.size() != 0) {
+			for (int i = 0; i < listeners.size(); i++) {
 				listeners.get(i).update();
 				db.updateShop((Shop) listeners.get(i));
 			}
@@ -172,29 +185,44 @@ public class GameplayHandler {
 	}
 	
 	/**
-	 * Returns the list of CustomObservers
-	 * @return
+	 * Retrieve the list of listeners which have subscribed to the gameplay handler
+	 * @return list of CustomObservers
 	 */
-	public List<CustomObserver> getObservers(){
+	public List<CustomObserver> getObservers() {
 		return listeners;
 	}
-	
+
+	/**
+	 * @return the raceEvent
+	 */
+	public RaceEvent getRaceEvent() {
+		return raceEvent;
+	}
+
+	/**
+	 * @param raceEvent the raceEvent to set
+	 */
+	public void setRaceEvent(RaceEvent raceEvent) {
+		this.raceEvent = raceEvent;
+	}
+
 	/**
 	 * Sends an embed message to every discord channel.
+	 * 
 	 * @param eb Embed Builder reference.
 	 */
 	public void sendEmbedChannelMessage(EmbedBuilder eb) {
 		List<Guild> guilds = jda.getGuilds();
-		for(int i =0; i<guilds.size();i++)
-		{
+		for (int i = 0; i < guilds.size(); i++) {
 			Guild guild = guilds.get(i);
-			guild.getSystemChannel().sendMessage(eb.build()).queue();
-			
+			guild.getSystemChannel().sendMessageEmbeds(eb.build()).queue();
+
 		}
 	}
 
 	/**
 	 * Custom hashCode method for GameplayHandler object
+	 * 
 	 * @return calculated hashcode
 	 */
 	@Override
@@ -204,10 +232,11 @@ public class GameplayHandler {
 		result = prime * result + ((jda == null) ? 0 : jda.hashCode());
 		return result;
 	}
-	
+
 	/**
 	 * Custom equals method for DBHandler
-	 * @return whether or not 
+	 * 
+	 * @return whether or not
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -224,5 +253,10 @@ public class GameplayHandler {
 		} else if (!jda.equals(other.jda))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "Gameplay handler.";
 	}
 }

@@ -6,8 +6,11 @@ import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.group3.racingbot.Car;
+import com.group3.racingbot.DBHandler;
 import com.group3.racingbot.IClonable;
 import com.group3.racingbot.inventory.Unique;
+import com.group3.racingbot.inventory.filter.ComponentFilterable;
 import com.group3.racingbot.inventory.filter.MaterialFilterable;
 import com.group3.racingbot.inventory.filter.Quality;
 
@@ -26,12 +29,9 @@ import com.group3.racingbot.inventory.filter.Quality;
         @JsonSubTypes.Type(value = WheelComponent.class)})
 @BsonDiscriminator
 
-
-
-public abstract class Component implements Unique, IClonable,MaterialFilterable {
-	private String id = "", 
-			name = "";
-
+public abstract class Component implements Unique, IClonable, MaterialFilterable, ComponentFilterable {
+	private String id = DBHandler.getInstance().generateId(3);
+	private ComponentType componentType = null;
 	private Quality quality = Quality.LEMON;
 
 	private int weight = 0, value = 0, durability = 0, rating = 0;
@@ -48,27 +48,25 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	}
 
 	/**
+	 * Retrieve the rating of the component. The rating governs what to classify the component as. Classifications include LEMON, JUNKYARD, OEM, SPORTS, and RACING.
 	 * @return the rating
 	 */
 	public int getRating() {
 		return rating;
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
+	@Override
+	public ComponentType getComponentType() {
+		return componentType;
+	}
+	
+	@Override
+	public void setComponentType(ComponentType componentType) {
+		this.componentType = componentType;
 	}
 
 	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
+	 * Set the quality classification of the component. Classifications include LEMON, JUNKYARD, OEM, SPORTS, and RACING.
 	 * @param quality the quality to set
 	 */
 	public void setQuality(Quality quality) {
@@ -76,6 +74,7 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	}
 
 	/**
+	 * Set the weight of the component.
 	 * @param weight the weight to set
 	 */
 	public void setWeight(int weight) {
@@ -83,13 +82,15 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	}
 
 	/**
-	 * @param value the value to set
+	 * Set how much this component is worth.
+	 * @param d the value to set
 	 */
-	public void setValue(int value) {
-		this.value = value;
+	public void setValue(int d) {
+		this.value = d;
 	}
 
 	/**
+	 * Set how durable this component is.
 	 * @param durability the durability to set
 	 */
 	public void setDurability(int durability) {
@@ -97,56 +98,56 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	}
 
 	/**
-	 * @param maxDurability the maxDurability to set
+	 * Reset the durability of this component to the max durability.
 	 */
 	public void repair() {
-		durability = 100;
+		durability = maxDurability;
 	}
 	
 	/**
+	 * Set how durable this component can possibly be.
 	 * @param sets maxDurability
 	 */
-	
 	public void setMaxDurability(int maxDurability) {
 		this.maxDurability = maxDurability;
 	}
 	
 	/**
+	 * Retrieve the quality classification of the component. Classifications include LEMON, JUNKYARD, OEM, SPORTS, and RACING.
 	 * @param returns Quality
 	 */
-	
 	public Quality getQuality() {
 		return quality;
 	}
 	
 	/**
+	 * Retrieve the weight of the component.
 	 * @param returns weight
 	 */
-	
 	public int getWeight() {
 		return weight;
 	}
 	
 	/**
+	 * Retrieve how much this component is worth.
 	 * @param returns value
 	 */
-	
 	public int getValue() {
 		return value;
 	}
 	
 	/**
+	 * Retrieve how durable this component is.
 	 * @param returns durability
 	 */
-	
 	public int getDurability() {
 		return durability;
 	}
 	
 	/**
+	 * Retrieve how durable this component can possibly be.
 	 * @param returns max durability
 	 */
-	
 	public int getMaxDurability() {
 		return maxDurability;
 	}
@@ -160,6 +161,7 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	}
 	
 	/**
+	 * Retrieve the url to the image which displays when viewing this component
 	 * @return the thumbnailURL
 	 */
 	public String getThumbnailURL() {
@@ -167,12 +169,14 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	}
 
 	/**
+	 * Set the url to the image which displays when viewing this component
 	 * @param thumbnailURL the thumbnailURL to set
 	 */
 	public void setThumbnailURL(String thumbnailURL) {
 		this.thumbnailURL = thumbnailURL;
 	}
 
+	@Override
 	abstract public IClonable clone();
 	
 	/**
@@ -181,25 +185,31 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(durability, maxDurability, name, quality, value, weight);
+		return Objects.hash(durability, maxDurability, componentType.toString(), quality, value, weight);
 	}
 	
-	/**
-	 * @param returns boolean for component
-	 */
-
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object other) {
+		if (other == null) { return false; }
+		if (this == other) { return true; } // Same instance 
+		else if (other instanceof Component) {
+			Component otherObj = (Component) other;
+			
+			if (this.getDurability() != otherObj.getDurability())
+				return false;
+			if (this.getValue() != otherObj.getValue())
+				return false;
+			if (this.getRating() != otherObj.getRating())
+				return false;
+			if (this.getWeight() != otherObj.getWeight())
+				return false;
+			if (this.getComponentType().getComponentType() != otherObj.getComponentType().getComponentType()) {
+				return false;
+			}
+			
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Component other = (Component) obj;
-		return durability == other.durability && maxDurability == other.maxDurability
-				&& Objects.equals(name, other.name) && Objects.equals(quality, other.quality)
-				&& value == other.value && weight == other.weight;
+		}
+		return false;
 	}
 	
 	/**
@@ -209,8 +219,8 @@ public abstract class Component implements Unique, IClonable,MaterialFilterable 
 	@Override
 	public String toString() {
 
-		return "Component [id=" + id + "quality=" + quality + ", name=" + name + ", weight=" + weight + ", value=" + value
-				+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
-
+		//return "Component [id=" + id + "quality=" + quality + ", type=" + componentType + ", weight=" + weight + ", value=" + value
+		//		+ ", durability=" + durability + ", rating=" + rating + ", maxDurability=" + maxDurability + "]";
+		return "id: " + this.id + " | " + this.componentType.toString() + " | Quality: " + this.quality + " | Value: " + this.value + " | Durability: " + this.durability + "/" + this.maxDurability + " | Weight: " + this.weight;
 	}
 }

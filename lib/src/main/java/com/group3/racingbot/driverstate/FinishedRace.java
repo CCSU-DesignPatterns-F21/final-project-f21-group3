@@ -17,7 +17,6 @@ import com.group3.racingbot.inventory.NotFoundException;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="FinishedRace", key="_cls")
 public class FinishedRace extends Completed {
 	private RaceEvent raceEvent;
 	private String raceEventId;
@@ -84,13 +83,6 @@ public class FinishedRace extends Completed {
 	public void setPosition(int position) {
 		this.position = position;
 	}
-
-	/**
-	 * @return the id of the race event which the driver completed.
-	 */
-	//public String getRaceEventId() {
-	//	return this.raceEventId;
-	//}
 
 	@Override
 	public String collectReward() {
@@ -207,7 +199,7 @@ public class FinishedRace extends Completed {
 		else if ((this.position % 10) == 3) {
 			positionPostfix = "rd";
 		}
-		return driver.getName() + " (" + driver.getId() + ") has completed the race event " + this.raceEventId + ", finishing in " + this.position + positionPostfix + " place. You can now claim your winnings.\n**Claim a reward**\n!r debug claim";
+		return driver.getName() + " (" + driver.getId() + ") has completed the race event " + this.raceEventId + ", finishing in " + this.position + positionPostfix + " place. You can now claim your winnings.\n**Claim a reward**\n!r claim";
 	}
 
 	@Override

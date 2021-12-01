@@ -27,8 +27,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="Training", key="_cls")
-public class Training implements DriverState {
+public class Training implements DriverState, Refreshable {
 	private String playerId;
 	private String driverId;
 	@BsonIgnore
@@ -191,7 +190,8 @@ public class Training implements DriverState {
 	}
 	
 	/**
-	 * Triggers the start of the training task.
+	 * Triggers the start of the training task. Notifies the user when the training is complete via discord message.
+	 * @param event allows for a message to be sent to the discord channel one the timer for training has run out.
 	 */
 	public void activateTimer(GuildMessageReceivedEvent event) {
 		// This timer will go off once the user has waited long enough for the training session to be done.
@@ -311,7 +311,7 @@ public class Training implements DriverState {
 
 		if (dbh.updateDriverStateInDB(this.playerId, this.driverId, new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()))) {
 			this.driver.setState(new FinishedTraining(this.playerId, this.driverId, this.getTrainingReward(), this.getSkillToTrain()));
-			return "Driver " + this.driverId + " has completed training for " + getSkillToTrain().toString() + ". The reward for completing this training session can now be claimed.\n**Claim a reward**\n!r debug claim";
+			return "Driver " + this.driverId + " has completed training for " + getSkillToTrain().toString() + ". The reward for completing this training session can now be claimed.\n**Claim a reward**\n!r claim";
 		}
 		else {
 			return "Unable to set the state of Driver " + this.driverId + ". Unable to offer a training reward.";
@@ -357,7 +357,7 @@ public class Training implements DriverState {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		return driver.getName() + " (" + driver.getId() + ") is currently performing a " + this.intensity.toString().toLowerCase() + " training session to improve their " + this.skillToTrain.toString().toLowerCase() + " skill. Training will be completed in " + this.printTimeRemaining() + ". You may cancel their training session, but " + driver.getName() + " will not earn a skill reward as a result.\n**Cancel**\n!r debug driver train withdraw";
+		return driver.getName() + " (" + driver.getId() + ") is currently performing a " + this.intensity.toString().toLowerCase() + " training session to improve their " + this.skillToTrain.toString().toLowerCase() + " skill. Training will be completed in " + this.printTimeRemaining() + ". You may cancel their training session, but " + driver.getName() + " will not earn a skill reward as a result.\n**Cancel**\n!r withdraw";
 	}
 
 	@Override

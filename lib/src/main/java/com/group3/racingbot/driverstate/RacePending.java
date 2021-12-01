@@ -17,8 +17,7 @@ import com.group3.racingbot.standings.DriverStanding;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="RacePending", key="_cls")
-public class RacePending implements DriverState {
+public class RacePending implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
 	private String playerId;
@@ -34,9 +33,9 @@ public class RacePending implements DriverState {
 	
 	/**
 	 * Commit a driver to a race that will start sometime soon.
-	 * @param driverId
-	 * @param carId
-	 * @param raceEventId
+	 * @param driverId the driver id of the driver which is signing up for the race
+	 * @param carId the car id of the car which the driver will use in this race
+	 * @param raceEventId the race event id of the race event which the driver will participate in
 	 */
 	@BsonCreator
 	public RacePending(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId) {
@@ -230,14 +229,12 @@ public class RacePending implements DriverState {
 
 	@Override
 	public DriverStanding raceStep(Driver driver, DriverStanding driverStanding) {
-		// TODO Auto-generated method stub
 		// Do nothing
 		return null;
 	}
 
 	@Override
 	public String completedRace(Driver driver) {
-		// TODO Auto-generated method stub
 		return this.driverStatus(driver);
 	}
 
@@ -341,7 +338,7 @@ public class RacePending implements DriverState {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		return driver.getName() + "(" + driver.getId() + ") is currently awaiting the start of race event " + this.raceEventId + ". You may withdraw " + driver.getName() + " from the race before the race starts.\n**Withdraw**\n!r debug driver withdraw";
+		return driver.getName() + "(" + driver.getId() + ") is currently awaiting the start of race event " + this.raceEventId + ". You may withdraw " + driver.getName() + " from the race before the race starts.\n**Withdraw**\n!r withdraw";
 	}
 
 	@Override

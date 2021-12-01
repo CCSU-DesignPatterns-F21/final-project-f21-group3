@@ -13,7 +13,6 @@ import com.group3.racingbot.inventory.Unique;
  * @author Maciej Bregisz
  *
  */
-
 public class Player implements Unique {
     @BsonProperty("_id")
 	private String id;
@@ -41,7 +40,8 @@ public class Player implements Unique {
 	private String activeCarId;
 	
 	/**
-	 * Player class constructor.
+	 * Player class constructor. Creates all inventories and a default driver for the player to use.
+	 * Note: Player does not start with an id, or a username. This must be set after it's created in order for it to persist in the database.
 	 */
 	@BsonCreator
 	public Player() {
@@ -57,27 +57,6 @@ public class Player implements Unique {
 		setActiveDriverId(getOwnedDrivers().getItems().get(0).getId());
 		//this.filters = new ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>>();
 	}
-	
-	/**
-	 * @return the filters
-	 */
-	//public ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>> getFilters() {
-	//	return filters;
-	//}
-
-	/**
-	 * @param filters the filters to set
-	 */
-	//public void setFilters(ArrayList<InventoryIterator<? extends InventoryIteratorDecorator<?>>> filters) {
-	//	this.filters = filters;
-	//}
-	
-	
-	//public void addFilter(InventoryIterator<? extends InventoryIteratorDecorator<?>> filter) {
-	//	this.filters.add(filter);
-	//}
-	
-	
 
 	@Override
 	public String getId() {
@@ -90,6 +69,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Retrieve the player's discord username
 	 * @return the username
 	 */
 	public String getUsername() {
@@ -97,6 +77,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the player's discord username
 	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
@@ -104,6 +85,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Retrieve the player's total credits
 	 * @return the credits
 	 */
 	public int getCredits() {
@@ -111,6 +93,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the player's total credits
 	 * @param credits the credits to set
 	 */
 	public void setCredits(int credits) {
@@ -118,6 +101,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Retrieve the player's fame points.
 	 * @return the famepoints
 	 */
 	public int getFamepoints() {
@@ -125,6 +109,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the player's fame points.
 	 * @param famepoints the famepoints to set
 	 */
 	public void setFamepoints(int famepoints) {
@@ -132,6 +117,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Retrieve the player's total wins
 	 * @return the totalWins
 	 */
 	public int getTotalWins() {
@@ -139,6 +125,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the player's total wins
 	 * @param totalWins the totalWins to set
 	 */
 	public void setTotalWins(int totalWins) {
@@ -146,6 +133,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Retrieve the player's total losses
 	 * @return the totalLosses
 	 */
 	public int getTotalLosses() {
@@ -153,6 +141,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the player's total losses
 	 * @param totalLosses the totalLosses to set
 	 */
 	public void setTotalLosses(int totalLosses) {
@@ -161,6 +150,7 @@ public class Player implements Unique {
 	
 
 	/**
+	 * Retrieve the timestamp of when the player last called the work command.
 	 * @return the lastWorked
 	 */
 	public long getLastWorked() {
@@ -168,6 +158,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the timestamp of when the player last called the work command.
 	 * @param lastWorked the lastWorked to set
 	 */
 	public void setLastWorked(long lastWorked) {
@@ -175,6 +166,7 @@ public class Player implements Unique {
 	}
 	
 	/**
+	 * Retrieve the inventory of cars which the player owns.
 	 * @return the ownedCars
 	 */
 	public Inventory<Car> getOwnedCars() {
@@ -182,6 +174,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the inventory of cars which the player owns.
 	 * @param ownedCars the ownedCars to set
 	 */
 	public void setOwnedCars(Inventory<Car> ownedCars) {
@@ -189,6 +182,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Retrieve the inventory of components which the player owns.
 	 * @return the ownedComponents
 	 */
 	public Inventory<Component> getOwnedComponents() {
@@ -196,6 +190,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the inventory of components which the player owns.
 	 * @param ownedComponents the ownedComponents to set
 	 */
 	public void setOwnedComponents(Inventory<Component> ownedComponents) {
@@ -203,6 +198,7 @@ public class Player implements Unique {
 	}
 	
 	/**
+	 * Retrieve the inventory of drivers which the player owns.
 	 * @return the ownedDrivers
 	 */
 	public Inventory<Driver> getOwnedDrivers() {
@@ -210,6 +206,7 @@ public class Player implements Unique {
 	}
 
 	/**
+	 * Set the inventory of components which the player owns.
 	 * @param ownedDrivers the ownedDrivers to set
 	 */
 	public void setOwnedDrivers(Inventory<Driver> ownedDrivers) {

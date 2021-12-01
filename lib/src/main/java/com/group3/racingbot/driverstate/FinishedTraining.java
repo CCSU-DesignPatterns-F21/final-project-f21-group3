@@ -13,7 +13,6 @@ import com.group3.racingbot.inventory.NotFoundException;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="FinishedTraining", key="_cls")
 public class FinishedTraining extends Completed {
 	private final Skill skill;
 	private final int reward;
@@ -130,7 +129,7 @@ public class FinishedTraining extends Completed {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		return driver.getName() + " (" + driver.getId() + ") has completed training for " + this.skill.toString().toLowerCase() + ". You can now claim the skill reward. \n**Claim a reward**\n!r debug claim";
+		return driver.getName() + " (" + driver.getId() + ") has completed training for " + this.skill.toString().toLowerCase() + ". You can now claim the skill reward. \n**Claim a reward**\n!r claim";
 	}
 
 	@Override

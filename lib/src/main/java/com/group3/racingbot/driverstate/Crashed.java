@@ -10,7 +10,6 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="Crashed", key="_cls")
 public class Crashed extends Racing {
 	/**
 	 * Construct a crashed racing state.
@@ -27,7 +26,6 @@ public class Crashed extends Racing {
 
 	@Override
 	public DriverState rollDriverState() {
-		// TODO Auto-generated method stub
 		int lowerBound = (int) Math.floor(this.getDriver().getRecovery()/5);
 		int recoveryRoll = ThreadLocalRandom.current().nextInt(lowerBound, 100);
 		if (recoveryRoll > 75) {

@@ -11,12 +11,16 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * Does not serve purpose now but will once "shop" is implemented
  */
 
-//TODO: edit javadoc once shop is implemented
 @JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ConcreteComponentFactory.class)})
 @BsonDiscriminator
 public abstract class ComponentFactory{
-	public abstract Component createComponent(String type, int cost); 
-		
+	/**
+	 * Creates a new component with the given parameters.
+	 * @param type the type of component to construct
+	 * @param cost the price of the component being constructed.
+	 * @return the component
+	 */
+	public abstract Component createComponent(ComponentType type, int cost); 
 }

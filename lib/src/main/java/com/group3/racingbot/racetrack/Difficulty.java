@@ -20,7 +20,7 @@ public enum Difficulty {
 	
 	/**
 	 * Returns the integer representation of the difficulty
-	 * @return int
+	 * @return integer representation of the difficulty
 	 */
 	public int getDifficulty() {
 		return this.difficulty;
