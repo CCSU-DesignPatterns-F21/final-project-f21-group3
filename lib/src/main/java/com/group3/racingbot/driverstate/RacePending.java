@@ -229,14 +229,12 @@ public class RacePending implements DriverState, Refreshable {
 
 	@Override
 	public DriverStanding raceStep(Driver driver, DriverStanding driverStanding) {
-		// TODO Auto-generated method stub
 		// Do nothing
 		return null;
 	}
 
 	@Override
 	public String completedRace(Driver driver) {
-		// TODO Auto-generated method stub
 		return this.driverStatus(driver);
 	}
 

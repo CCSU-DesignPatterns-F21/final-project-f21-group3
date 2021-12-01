@@ -40,10 +40,11 @@ public class RacingBot {
 		System.setProperty("jdk.tls.client.protocols", "TLSv1.2");
 		configProperties = ConfigPropertiesHandler.getInstance();
 		
-		jda = JDABuilder.createDefault(configProperties.getProperty("discordChannelToken")).build();
+		jda = JDABuilder.createDefault(configProperties.getAppConfig().getDiscordChannelToken()).build();
 		jda.getPresence().setStatus(OnlineStatus.IDLE);
 		jda.getPresence().setActivity(Activity.watching("for participants!"));
-	
+		
+		
 		db = DBHandler.getInstance();
 
 		Commands commandHandler = new Commands(db);

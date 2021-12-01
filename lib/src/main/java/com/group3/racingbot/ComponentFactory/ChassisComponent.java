@@ -202,7 +202,6 @@ public class ChassisComponent extends Component {
 	 */
 	@Override
 	public IClonable clone() {
-		// TODO Auto-generated method stub
 		return new ChassisComponent(this);
 	}
 	

@@ -106,7 +106,6 @@ public class TransmissionComponent extends Component {
 	 */
 	@Override
 	public IClonable clone() {
-		// TODO Auto-generated method stub
 		return new TransmissionComponent(this);
 	}
 

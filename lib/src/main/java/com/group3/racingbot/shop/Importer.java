@@ -1,13 +1,18 @@
 package com.group3.racingbot.shop;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.bson.codecs.pojo.annotations.BsonCreator;
 
 import com.group3.racingbot.Car;
+import com.group3.racingbot.Car.CarBuilder;
 import com.group3.racingbot.ComponentFactory.Component;
+import com.group3.racingbot.ComponentFactory.ComponentType;
+import com.group3.racingbot.gameservice.GameplayHandler;
 import com.group3.racingbot.inventory.Inventory;
 
 /**
- * 
+ * Concrete class extending abstract class Shop. Sells high quality components.
  * @author Maciej Bregisz
  *
  */
@@ -22,20 +27,42 @@ public class Importer extends Shop  {
 		setName("Importer");
 		setDescription("Foreign cars and parts. Exotic, Overengineered, Expensive");
 	}
-
-	@Override
-	public Component createComponent() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public Importer(GameplayHandler gph) {
+		setCarsForSale(new Inventory<Car>());
+		setComponentsForSale(new Inventory<Component>());
+		setId(3);
+		setName("Importer");
+		setDescription("Foreign cars and parts. Exotic, Overengineered, Expensive");
 	}
 
-	@Override
+
+	/**
+	 * Generates new components and cars for sale using the abstract factory and builder.
+	 */
 	public void update() {
 		getComponentsForSale().getItems().clear();
 		System.out.println("Updating Importer Store");
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.ENGINE, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.WHEELS, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.SUSPENSION, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.CHASSIS, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getComponentsForSale().add(getFactory().createComponent(ComponentType.TRANSMISSION, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		
+		getCarsForSale().getItems().clear();
+		CarBuilder cb = new CarBuilder();
+		cb.addEngine(getFactory().createComponent(ComponentType.ENGINE, ThreadLocalRandom.current().nextInt(751, 3500+1)))
+		.addWheels(getFactory().createComponent(ComponentType.WHEELS, ThreadLocalRandom.current().nextInt(751, 3500+1)))
+		.addSuspension(getFactory().createComponent(ComponentType.SUSPENSION, ThreadLocalRandom.current().nextInt(751, 3500+1)))
+		.addChassis(getFactory().createComponent(ComponentType.CHASSIS, ThreadLocalRandom.current().nextInt(751, 3500+1)))
+		.addTransmission(getFactory().createComponent(ComponentType.TRANSMISSION, ThreadLocalRandom.current().nextInt(751, 3500+1)));
+		getCarsForSale().add(cb.build());
 		
 	}
-
+	/**
+	 *  Calculates the Objects hash code
+	 * @return int object hash code
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();
@@ -54,6 +81,5 @@ public class Importer extends Shop  {
 			return false;
 		return true;
 	}
-	//TODO: add a toString with just a quick description
 
 }
