@@ -154,35 +154,15 @@ public class RaceEvent implements Unique {
 		
 		this.timeElapsed++; // Advance time
 		Iterator<DriverStanding> driverIterator = standings.iterator();
-		//String stepResult = "";
 		Driver currentDriver = null;
 		DriverStanding currentDriverStanding = null;
-		//TrackNode currentNode = null;
 		while (driverIterator.hasNext()) {
 			currentDriverStanding = driverIterator.next();
 			currentDriver = currentDriverStanding.getDriver();
 			if (currentDriver.getState() instanceof Racing) {
 				// Allow the driver to make their move on the track
-				
-				//stepResult += currentDriver.raceStep() + "\n";
 				currentDriverStanding = currentDriver.raceStep(currentDriverStanding);
 				this.standings.update(currentDriverStanding);
-				
-				//currentNode = currentDriverStanding.getCurrentNode();
-				//stepResult += "Driver: " + currentDriver.getName() + " | " + currentNode.getOrder() + " of " + this.raceTrack.size() + " | Distance: " + (currentNode.getNodeLength() - currentNode.getDistanceRemaining()) + " / " + currentNode.getNodeLength() + " | Current state: " + currentDriver.getState().toString() + "\n";
-				// Update the total distance traveled to later find out the position of this driver in the race.
-				//currentRacingState = (Racing) currentDriver.getState();
-				//currentNode = currentRacingState.getCurrentNode();
-				//currentDriverStanding.setDistanceTraveled(currentRacingState.getTotalDistanceTraveled()); 
-				//this.standings.update(currentDriverStanding, currentDriverStanding.getPosition() - 1);
-				//this.setStandings()
-				
-				//currentStandings
-				
-				// Update the driver within the Player object to reflect state changes.
-				//currentPlayer = currentDriver.getPlayer();
-				//currentPlayer.getOwnedDrivers().update(currentDriver);
-				//dbh.updateUser(currentPlayer);
 			}
 		}
 		// Sort the standings to reflect updated driver positions.
