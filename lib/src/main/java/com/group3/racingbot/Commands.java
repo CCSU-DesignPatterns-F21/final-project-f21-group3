@@ -221,7 +221,8 @@ public class Commands extends ListenerAdapter {
 						+ "\n**Components**\n"
 						+ "**!r component view** | View all of the components you own.\n"
 						+ "**!r component filterBy (quality | durability | value | weight) (= | != | > | <) (number | String) [(quality | durability | value | weight) (= | != | > | <) (number | String)]** | Filter for certain components which meet the given criteria.\n"
-						);
+						+ "\nRepair\n"
+						+ "!r repair [component id or car id] | Repair the specified component or car for a price.\n");
 	    	eb.setFooter("Text", "https://github.com/zekroTJA/DiscordBot/blob/master/.websrc/zekroBot_Logo_-_round_small.png?raw=true");
 	    	event.getChannel().sendMessage(eb.build()).queue();
 	    	/*
@@ -767,6 +768,103 @@ public class Commands extends ListenerAdapter {
     				event.getChannel().sendMessage("Unable to retrieve Driver " + p.getActiveDriverId() + ". Cannot claim a reward.").queue();
 				}
 			}
+	    	if (args[1].equalsIgnoreCase("repair")) {
+	    		Player p = dbh.getPlayer(user.getId());
+    			if(args.length > 2 && args[2] != null)
+				{
+    				String idOfItemToRepair = args[2];
+    				try {
+    					// Check to see if the user is trying to repair a car.
+    					Car updatedCar = p.getOwnedCars().getById(idOfItemToRepair);
+    					
+    					// Get the total price of the repair
+    					int price = 0;
+    					if (updatedCar.getEngine() != null && updatedCar.getEngine().getDurability() != updatedCar.getEngine().getMaxDurability()) {
+    						price += updatedCar.getEngine().getValue();
+    					}
+    					if (updatedCar.getTransmission() != null && updatedCar.getTransmission().getDurability() != updatedCar.getTransmission().getMaxDurability()) {
+    						price += updatedCar.getTransmission().getValue();
+    					}
+    					if (updatedCar.getSuspension() != null && updatedCar.getSuspension().getDurability() != updatedCar.getSuspension().getMaxDurability()) {
+    						price += updatedCar.getSuspension().getValue();
+    					}
+    					if (updatedCar.getChassis() != null && updatedCar.getChassis().getDurability() != updatedCar.getChassis().getMaxDurability()) {
+    						price += updatedCar.getChassis().getValue();
+    					}
+    					if (updatedCar.getWheels() != null && updatedCar.getWheels().getDurability() != updatedCar.getWheels().getMaxDurability()) {
+    						price += updatedCar.getWheels().getValue();
+    					}
+    					
+    					if (price == 0) {
+    						event.getChannel().sendMessage("Nothing to fix, the car is in mint condition.").queue();
+    						return;
+    					}
+    					else if (p.getCredits() < price) {
+    						event.getChannel().sendMessage("Cannot afford to repair this car. You have " + p.getCredits() + " credits while the repair job costs " + price + " credits.").queue();
+    						return;
+    					}
+    					
+    					if (updatedCar.getEngine() != null && updatedCar.getEngine().getDurability() != updatedCar.getEngine().getMaxDurability()) {
+    						updatedCar.getEngine().repair();
+    					}
+    					if (updatedCar.getTransmission() != null && updatedCar.getTransmission().getDurability() != updatedCar.getTransmission().getMaxDurability()) {
+    						updatedCar.getTransmission().repair();
+    					}
+    					if (updatedCar.getSuspension() != null && updatedCar.getSuspension().getDurability() != updatedCar.getSuspension().getMaxDurability()) {
+    						updatedCar.getSuspension().repair();
+    					}
+    					if (updatedCar.getChassis() != null && updatedCar.getChassis().getDurability() != updatedCar.getChassis().getMaxDurability()) {
+    						updatedCar.getChassis().repair();
+    					}
+    					if (updatedCar.getWheels() != null && updatedCar.getWheels().getDurability() != updatedCar.getWheels().getMaxDurability()) {
+    						updatedCar.getWheels().repair();
+    					}
+    					
+    					event.getChannel().sendMessage("Car " + updatedCar.getId() + " is now fully repaired for a total of " + price + " credits.").queue();
+    					
+    					// Deduct the cost of the repairs from the player's account
+    					p.setCredits(p.getCredits() - price);
+    					p.getOwnedCars().update(updatedCar);
+    					dbh.updateUser(p);
+    				}
+    				catch(NotFoundException e) {
+    					// The user didn't supply a car id, so try to search the components inventory
+    					try {
+    						// Check to see if the user is trying to repair a car.
+        					Component updatedComponent = p.getOwnedComponents().getById(idOfItemToRepair);
+        					
+        					// Get the total price of the repair
+        					int price = 0;
+        					if (updatedComponent.getDurability() != updatedComponent.getMaxDurability()) {
+        						price += updatedComponent.getValue();
+        					}
+        					
+        					if (price == 0) {
+        						event.getChannel().sendMessage("Nothing to fix, the component is in mint condition.").queue();
+        						return;
+        					}
+        					else if (p.getCredits() < price) {
+        						event.getChannel().sendMessage("Cannot afford to repair this car. You have " + p.getCredits() + " credits while the repair job costs " + price + " credits.").queue();
+        						return;
+        					}
+        					
+        					updatedComponent.repair();
+        					event.getChannel().sendMessage("Component " + updatedComponent.getId() + " is now fully repaired for a total of " + price + " credits.").queue();
+        					
+        					// Deduct the cost of the repairs from the player's account
+        					p.setCredits(p.getCredits() - price);
+        					p.getOwnedComponents().update(updatedComponent);
+        					dbh.updateUser(p);
+    					}
+    					catch (NotFoundException e2) {
+    						event.getChannel().sendMessage("Given id does not match an id of any car or component that you own. Nothing was repaired.").queue();
+    					}
+    				}
+				}
+    			else {
+    				event.getChannel().sendMessage("Invalid syntax. This command allows you to repair a component or an entire car.**Repair**\n!r [component or car id]").queue();
+    			}
+    		}
 			if (args[1].equalsIgnoreCase("component") || args[1].equalsIgnoreCase("components")) {
 				Player p = dbh.getPlayer(user.getId());
 				if (args[2].equalsIgnoreCase("view")) {
