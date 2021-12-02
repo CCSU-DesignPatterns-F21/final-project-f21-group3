@@ -592,6 +592,7 @@ public class Commands extends ListenerAdapter {
 							eb.setImage("https://i.imgur.com/NLTVWpL.png");
 						}
 						
+						eb.setColor(new Color(0x0097FF));
 						eb.addField("Event ID", formatText("cb","" + this.raceEvent.getId()), true);
 						eb.addField("Total Nodes", formatText("cb","" + this.raceEvent.getRaceTrack().size()), true);
 						eb.addField("Distance", formatText("cb", "" + this.raceEvent.getRaceTrack().calculateTrackLength()),true);
@@ -630,6 +631,7 @@ public class Commands extends ListenerAdapter {
 							eb.setImage("https://i.imgur.com/NLTVWpL.png");
 						}
 	    				
+	    				eb.setColor(new Color(0x0097FF));
 	    				eb.addField("Event ID", formatText("cb","" + this.raceEvent.getId()), true);
 						eb.addField("Total Nodes", formatText("cb","" + this.raceEvent.getRaceTrack().size()), true);
 						eb.addField("Distance", formatText("cb", "" + this.raceEvent.getRaceTrack().calculateTrackLength()),true);
