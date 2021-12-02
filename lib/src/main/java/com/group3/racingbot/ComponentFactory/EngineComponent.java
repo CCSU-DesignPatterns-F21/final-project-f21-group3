@@ -21,14 +21,14 @@ public class EngineComponent extends Component {
 	 */
 	@BsonCreator
 	public EngineComponent() {
-		this.setName("Engine");
+		this.setComponentType(ComponentType.ENGINE);
 	}
 	/**
 	 * Alternate constructor, takes an existing object of the same type, for use with prototype.
 	 * @param ec EngineComponent object reference
 	 */
 	public EngineComponent(EngineComponent ec) {
-		this.setName(ec.getName());
+		this.setComponentType(ComponentType.ENGINE);
 		this.setId(ec.getId());
 		this.setQuality(ec.getQuality());
 		this.setWeight(ec.getWeight());
@@ -42,6 +42,7 @@ public class EngineComponent extends Component {
 	}
 	
 	/**
+	 * Retrieve the speed which this engine is capable of performing.
 	 * @return the speed
 	 */
 	public float getSpeed() {
@@ -49,6 +50,7 @@ public class EngineComponent extends Component {
 	}
 
 	/**
+	 * Set the speed which this engine is capable of performing.
 	 * @param speed the speed to set
 	 */
 	public void setSpeed(float speed) {
@@ -86,7 +88,7 @@ public class EngineComponent extends Component {
 
 	@Override
 	public String toString() {
-		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nSpeed: " + this.getSpeed() + "\n\n";
+		return super.toString() + " | Speed: " + this.getSpeed();
 	}
 
 	/**
@@ -95,7 +97,6 @@ public class EngineComponent extends Component {
 	 */
 	@Override
 	public IClonable clone() {
-		// TODO Auto-generated method stub
 		return new EngineComponent(this);
 	}
 	

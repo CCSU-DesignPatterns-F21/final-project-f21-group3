@@ -11,19 +11,12 @@ import com.group3.racingbot.IClonable;
  * Specialized class of Component abstract class
  * defines specialized variables for chassis component
  */
-//@BsonDiscriminator(value="ChassisComponent", key="_cls")
 public class ChassisComponent extends Component {
-	//@BsonProperty("popularity")
 	private int popularity = 0;
-	//@BsonProperty("popularityModifier")
 	private double popularityModifier = 1.0;
-	//@BsonProperty("accelerationModifier")
 	private double accelerationModifier = 1.0;
-	//@BsonProperty("speedModifier")
 	private double speedModifier = 1.0;
-	//@BsonProperty("handlingModifier")
 	private double handlingModifier = 1.0;
-	//@BsonProperty("brakingModifier")
 	private double brakingModifier = 1.0;
 	
 	/**
@@ -31,7 +24,7 @@ public class ChassisComponent extends Component {
 	 */
 	@BsonCreator
 	public ChassisComponent() {
-		this.setName("Chassis");
+		this.setComponentType(ComponentType.CHASSIS);
 	}
 	
 	/**
@@ -40,7 +33,7 @@ public class ChassisComponent extends Component {
 	 */
 	public ChassisComponent(ChassisComponent cc)
 	{
-		this.setName(cc.getName());
+		this.setComponentType(ComponentType.CHASSIS);
 		this.setId(cc.getId());
 		this.setQuality(cc.getQuality());
 		this.setWeight(cc.getWeight());
@@ -61,6 +54,7 @@ public class ChassisComponent extends Component {
 	
 
 	/**
+	 * Retrieve the braking modifier. This modifier/multiplier affects the braking capability of the car.
 	 * @return the brakingModifier
 	 */
 	public double getBrakingModifier() {
@@ -68,6 +62,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Set the braking modifier. This modifier/multiplier affects the braking capability of the car.
 	 * @param brakingModifier the brakingModifier to set
 	 */
 	public void setBrakingModifier(double brakingModifier) {
@@ -75,6 +70,7 @@ public class ChassisComponent extends Component {
 	}
 	
 	/**
+	 * Retrieve the popularity value for this chassis.
 	 * @return base popularity value
 	 */
 	public int getPopularity() {
@@ -82,6 +78,7 @@ public class ChassisComponent extends Component {
 	}
 	
 	/**
+	 * Set the popularity value for this chassis.
 	 * @param popularity the popularity value to set
 	 */
 	public void setPopularity(int popularity) {
@@ -89,6 +86,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Retrieve the popularity modifier. This modifier/multiplier affects the popularity of the car.
 	 * @return the popularityModifier
 	 */
 	public double getPopularityModifier() {
@@ -96,6 +94,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Set the popularity modifier. This modifier/multiplier affects the popularity of the car.
 	 * @param popularityModifier the popularityModifier to set
 	 */
 	public void setPopularityModifier(double popularityModifier) {
@@ -103,6 +102,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Retrieve the acceleration modifier. This modifier/multiplier affects the acceleration capability of the car.
 	 * @return the accelerationModifier
 	 */
 	public double getAccelerationModifier() {
@@ -110,6 +110,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Set the acceleration modifier. This modifier/multiplier affects the acceleration capability of the car.
 	 * @param accelerationModifier the accelerationModifier to set
 	 */
 	public void setAccelerationModifier(double accelerationModifier) {
@@ -117,6 +118,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Retrieve the speed modifier. This modifier/multiplier affects the speed capability of the car.
 	 * @return the speedModifier
 	 */
 	public double getSpeedModifier() {
@@ -124,6 +126,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Set the speed modifier. This modifier/multiplier affects the speed capability of the car.
 	 * @param speedModifier the speedModifier to set
 	 */
 	public void setSpeedModifier(double speedModifier) {
@@ -131,6 +134,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Retrieve the handling modifier. This modifier/multiplier affects the handling capability of the car.
 	 * @return the handlingModifier
 	 */
 	public double getHandlingModifier() {
@@ -138,6 +142,7 @@ public class ChassisComponent extends Component {
 	}
 
 	/**
+	 * Set the handling modifier. This modifier/multiplier affects the handling capability of the car.
 	 * @param handlingModifier the handlingModifier to set
 	 */
 	public void setHandlingModifier(double handlingModifier) {
@@ -186,8 +191,9 @@ public class ChassisComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return this.getName() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nPopularity: " + this.getPopularityModifier()
-		+ "\nAcceleration Modifier: " + getAccelerationModifier() + "\nSpeed Modifier: " + getSpeedModifier() + "\nHandling Modifier: " + getHandlingModifier() + "\nBraking Modifier: " + getBrakingModifier() + "\n\n";
+		//return this.getComponentType().toString() + "\nQuality: " + this.getQuality() + "\nValue: " + this.getValue() + "\nDurability: " + this.getDurability() + "\nWeight: " + this.getWeight() + "\nPopularity: " + this.getPopularityModifier()
+		//+ "\nAcceleration Modifier: " + getAccelerationModifier() + "\nSpeed Modifier: " + getSpeedModifier() + "\nHandling Modifier: " + getHandlingModifier() + "\nBraking Modifier: " + getBrakingModifier() + "\n\n";
+		return super.toString() + " | Popularity Modifier: " + this.getPopularityModifier() + " | Acceleration Modifier: " + getAccelerationModifier() + " | Speed Modifier: " + getSpeedModifier() + " | Handling Modifier: " + getHandlingModifier() + " | Braking Modifier: " + getBrakingModifier();
 	}
 	
 	/**
@@ -196,7 +202,6 @@ public class ChassisComponent extends Component {
 	 */
 	@Override
 	public IClonable clone() {
-		// TODO Auto-generated method stub
 		return new ChassisComponent(this);
 	}
 	

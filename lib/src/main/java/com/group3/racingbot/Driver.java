@@ -30,10 +30,9 @@ public class Driver implements Unique, SkillFilterable {
 	private int cornering;
 	private int recovery;
 	private float payPercentage; // Percentage of money deducted from each event's cash prize.
-	//private long cooldown; // If training or racing is performed, then this is the time to wait until you can use this Driver again.
 	
 	/**
-	 * Creates a Driver. Base stats all start off at 10 and the pay percentage starts at 0.15.
+	 * Constructs a new Driver. Base stats all start off at 10, the pay percentage starts at 0.15, and the driver's state is set to resting.
 	 * @param name the name of the Driver
 	 */
 	@BsonCreator
@@ -204,7 +203,7 @@ public class Driver implements Unique, SkillFilterable {
 	/**
 	 * Retrieve the Driver's recovery skill.
 	 * 
-	 * The recovery skill decreases time lost during a race due to crashing.
+	 * The recovery skill increases the odds of breaking out of the crashed state.
 	 * @return the recovery
 	 */
 	public int getRecovery() {
@@ -214,7 +213,7 @@ public class Driver implements Unique, SkillFilterable {
 	/**
 	 * Set the Driver's recovery skill.
 	 * 
-	 * The recovery skill decreases time lost during a race due to crashing.
+	 * The recovery skill increases the odds of breaking out of the crashed state.
 	 * @param recovery the recovery to set
 	 */
 	public void setRecovery(int recovery) {
@@ -283,8 +282,8 @@ public class Driver implements Unique, SkillFilterable {
 	
 	/**
 	 * Puts the Driver into a training state to improve a skill.
-	 * @param skillToTrain
-	 * @param intensity
+	 * @param skillToTrain this is the skill which will be improved by the end of the training session.
+	 * @param intensity governs how long the training will take and how large the reward for training will be.
 	 * @return String containing contextual info about beginning training.
 	 */
 	public String beginTraining(Skill skillToTrain, Intensity intensity) {
@@ -299,7 +298,9 @@ public class Driver implements Unique, SkillFilterable {
 	}
 	
 	/**
-	 * Switch to the RacePending state.
+	 * Switch to the RacePending state. This is signing up the driver for an event.
+	 * @param car the car the driver will use for the event.
+	 * @param raceEvent the race event which the driver will participate in.
 	 */
 	public void signUpForRace(Car car, RaceEvent raceEvent) {
 		System.out.println(this);
@@ -315,7 +316,7 @@ public class Driver implements Unique, SkillFilterable {
 	
 	/**
 	 * Allows the Driver to progress through the track.
-	 * @param driverStanding
+	 * @param driverStanding holds info related to the driver's standing in the race event, such as pole position and distance traveled along the track.
 	 * @return an updated driver standing which holds the current node the driver is in on the track.
 	 */
 	public DriverStanding raceStep(DriverStanding driverStanding) {

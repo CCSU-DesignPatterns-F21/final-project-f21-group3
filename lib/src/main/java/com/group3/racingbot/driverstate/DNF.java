@@ -18,7 +18,6 @@ import com.group3.racingbot.inventory.NotFoundException;
  * @author Nick Sabia
  *
  */
-//@BsonDiscriminator(value="DNF", key="_cls")
 public class DNF extends Completed {
 	@BsonIgnore
 	private RaceEvent raceEvent;
@@ -57,6 +56,7 @@ public class DNF extends Completed {
 	}
 	
 	/**
+	 * Retrieve the race event which the driver participated in.
 	 * @return the raceEvent
 	 */
 	public RaceEvent getRaceEvent() {
@@ -64,6 +64,7 @@ public class DNF extends Completed {
 	}
 
 	/**
+	 * Set the race event which the driver participated in.
 	 * @param raceEvent the raceEvent to set
 	 */
 	public void setRaceEvent(RaceEvent raceEvent) {
@@ -71,6 +72,7 @@ public class DNF extends Completed {
 	}
 
 	/**
+	 * Retrieve the race event id of the race event which the driver participated in.
 	 * @return the raceEventId
 	 */
 	public String getRaceEventId() {
@@ -78,6 +80,7 @@ public class DNF extends Completed {
 	}
 
 	/**
+	 * Set the race event id of the race event which the driver participated in.
 	 * @param raceEventId the raceEventId to set
 	 */
 	public void setRaceEventId(String raceEventId) {
@@ -150,7 +153,7 @@ public class DNF extends Completed {
 	
 	@Override
 	public String driverStatus(Driver driver) {
-		return driver.getName() + " (" + driver.getId() + ") was unable to complete the race event " + this.raceEventId + ". You can now claim your participation reward.\n**Claim a reward**\n!r debug claim";
+		return driver.getName() + " (" + driver.getId() + ") was unable to complete the race event " + this.raceEventId + ". You can now claim your participation reward.\n**Claim a reward**\n!r claim";
 	}
 
 	@Override

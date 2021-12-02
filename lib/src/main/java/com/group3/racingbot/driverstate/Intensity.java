@@ -18,7 +18,7 @@ public enum Intensity {
 	
 	/**
 	 * Returns the integer representation of intensity 
-	 * @return int
+	 * @return int the intensity represented as an integer
 	 */
 	public int getIntensity() {
 		return this.intensity;

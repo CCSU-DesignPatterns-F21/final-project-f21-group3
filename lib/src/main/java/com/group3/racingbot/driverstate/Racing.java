@@ -16,26 +16,19 @@ import com.group3.racingbot.Driver;
 import com.group3.racingbot.Player;
 import com.group3.racingbot.RaceEvent;
 import com.group3.racingbot.ComponentFactory.ComponentType;
-import com.group3.racingbot.exceptions.RaceTrackEndException;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
+import com.group3.racingbot.racetrack.RaceTrackEndException;
 import com.group3.racingbot.racetrack.StraightNode;
 import com.group3.racingbot.standings.DriverStanding;
 
 /**
- * A state where the Driver is currently racing. A Driver may leave this state once they finish the race.
+ * Represents a racing state in which the driver is currently participating in a race event and hasn't reached the end of the track. A Driver may leave this state once they finish the race.
  * @author Nick Sabia
  *
  */
-//@JsonTypeInfo(include=JsonTypeInfo.As.WRAPPER_OBJECT, use=JsonTypeInfo.Id.NAME)
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = Aggressive.class),
-//        @JsonSubTypes.Type(value = Normal.class),
-//        @JsonSubTypes.Type(value = Defensive.class),
-//		@JsonSubTypes.Type(value = Crashed.class)})
-//@BsonDiscriminator(value="Racing", key="_cls")
-public abstract class Racing implements DriverState {
+public abstract class Racing implements DriverState, Refreshable {
 	@BsonIgnore
 	private Player player;
 	private String playerId;
@@ -50,12 +43,16 @@ public abstract class Racing implements DriverState {
 	private String raceEventId;
 	private int straightDistance;
 	private int cornerDistance;
-	//private int position;
 	private int distanceTraveledThisStep; // How far the driver traveled this race step.
-	//private int totalDistanceTraveled; // Used to compare with other drivers to determine position.
-	//private TrackNode currentNode;
 	private double multiplier;
 
+	/**
+	 * The racing constructor. 
+	 * @param playerId the player id of the player who owns the driver which is participating in the race event.
+	 * @param driverId the driver id of the driver who is participating in the race event.
+	 * @param carId the car id of the car being used in the race event.
+	 * @param raceEventId the race event id of the race event which the driver is participating in.
+	 */
 	@BsonCreator
 	public Racing(@BsonProperty("playerId") String playerId, @BsonProperty("driverId") String driverId, @BsonProperty("carId") String carId, @BsonProperty("raceEventId") String raceEventId) {
 		this.player = null;
@@ -64,13 +61,10 @@ public abstract class Racing implements DriverState {
 		this.driverId = driverId;
 		this.car = null;
 		this.carId = carId;
-		//this.raceTrack = raceTrack;
 		this.raceEventId = raceEventId;
 		this.straightDistance = 0;
 		this.cornerDistance = 0;
 		this.distanceTraveledThisStep = 0;
-		//this.totalDistanceTraveled = 0;
-		//this.currentNode = null;
 		this.multiplier = 1;
 	}
 	
@@ -187,22 +181,6 @@ public abstract class Racing implements DriverState {
 	}
 
 	/**
-	 * Retrieve the race track which is currently being raced on.
-	 * @return the raceTrack
-	 */
-	//public RaceTrack getRaceTrack() {
-	//	return raceTrack;
-	//}
-
-	/**
-	 * Set the race track which is currently being raced on.
-	 * @param raceTrack the raceTrack to set
-	 */
-	//public void setRaceTrack(RaceTrack raceTrack) {
-	//	this.raceTrack = raceTrack;
-	//}
-
-	/**
 	 * Retrieve the driver who is currently racing.
 	 * @return the driver
 	 */
@@ -235,6 +213,7 @@ public abstract class Racing implements DriverState {
 	}
 	
 	/**
+	 * Retrieve the race event id of the race event which the driver is participating in.
 	 * @return the raceEventId
 	 */
 	public String getRaceEventId() {
@@ -242,42 +221,13 @@ public abstract class Racing implements DriverState {
 	}
 
 	/**
+	 * Set the race event id of the race event which the driver is participating in.
 	 * @param raceEventId the raceEventId to set
 	 */
 	public void setRaceEventId(String raceEventId) {
 		this.raceEventId = raceEventId;
 	}
-
-	/**
-	 * @return the totalDistanceTraveled
-	 */
-	//public int getTotalDistanceTraveled() {
-	//	return totalDistanceTraveled;
-	//}
-
-	/**
-	 * @param totalDistanceTraveled the totalDistanceTraveled to set
-	 */
-	//public void setTotalDistanceTraveled(int totalDistanceTraveled) {
-	//	this.totalDistanceTraveled = totalDistanceTraveled;
-	//}
-
-	/**
-	 * Retrieve the race event.
-	 * @return the raceEvent
-	 */
-	//public RaceEvent getRaceEvent() {
-	//	return raceEvent;
-	//}
-
-	/**
-	 * Set the race event.
-	 * @param raceEvent the raceEvent to set
-	 */
-	//public void setRaceEvent(RaceEvent raceEvent) {
-	//	this.raceEvent = raceEvent;
-	//}
-
+	
 	/**
 	 * Retrieve the distance this Driver is able to travel on straight track nodes this turn.
 	 * @return the straightDistance
@@ -311,23 +261,7 @@ public abstract class Racing implements DriverState {
 	}
 
 	/**
-	 * Retrieve the node which the Driver is currently on.
-	 * @return the currentNode
-	 */
-	//public TrackNode getCurrentNode() {
-	//	return currentNode;
-	//}
-
-	/**
-	 * Set the node which the Driver is currently on.
-	 * @param currentNode the currentNode to set
-	 */
-	//public void setCurrentNode(TrackNode currentNode) {
-	//	this.currentNode = currentNode;
-	//}
-
-	/**
-	 * Return a randomly rolled driver state. The likelihood of rolling a certain racing state depends on the racing state the driver is in. Has a chance to return a DNF state if the driver cannot finish the race.
+	 * Return a randomly chosen driver state. The likelihood of rolling a certain racing state depends on the racing state the driver is in. In other words, the randomization is weighted. There is a chance to return a DNF state if the driver cannot finish the race.
 	 * @return a racing state
 	 */
 	abstract public DriverState rollDriverState();
@@ -414,6 +348,14 @@ public abstract class Racing implements DriverState {
 		DriverStanding updatedDriverStanding = driverStanding;
 		RaceTrack raceTrack = updatedDriverStanding.getRaceTrack();
 		
+		if (updatedCar.getDurability() <= 0) {
+			// The car is wrecked, the driver is unable to continue.
+			updatedDriver.setState(new DNF(playerId, driverId));
+			updatedPlayer.getOwnedDrivers().update(updatedDriver);
+			dbh.updateUser(updatedPlayer);
+			return updatedDriverStanding;
+		}
+		
 		// Calculate the distances that the driver would travel on either type of track node.
 		// These will be used to calculate the actual distance traveled.
 		this.cornerDistance = this.rollCornerDistance(this.multiplier);
@@ -456,10 +398,6 @@ public abstract class Racing implements DriverState {
 					// Check if the driver crashed
 					if (rolledState instanceof Crashed) {
 						updatedCar = this.crash(updatedCar);
-						if (updatedCar.getDurability() <= 0) {
-							// The car is wrecked, the driver is unable to continue.
-							rolledState = new DNF(playerId, driverId);
-						}
 					}
 				}
 				else {

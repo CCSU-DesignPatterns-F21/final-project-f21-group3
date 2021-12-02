@@ -32,6 +32,7 @@ public class Inventory<T extends Unique> {
 	}
 
 	/**
+	 * Retrieve the filter manager. The filter manager is responsible for chaining decorated iterators together in order to create the final filtered result.
 	 * @return the filterManager
 	 */
 	public FilterManager<T> getFilterManager() {
@@ -39,6 +40,7 @@ public class Inventory<T extends Unique> {
 	}
 
 	/**
+	 * Set the filter manager. The filter manager is responsible for chaining decorated iterators together in order to create the final filtered result.
 	 * @param filterManager the filterManager to set
 	 */
 	public void setFilterManager(FilterManager<T> filterManager) {
@@ -48,12 +50,13 @@ public class Inventory<T extends Unique> {
 	/**
 	 * Creates an instance of an iterator which can be used to traverse the inventory of drivers.
 	 */
-	public InventoryIterator<T> iterator() {
+	public Iterator<T> iterator() {
 		return new ConcreteIterator();
 	}
 	
 	/**
 	 * Add an item to the inventory.
+	 * @param item the item to add to the inventory
 	 */
 	public void add(T item) {
 		this.items.add(item);
@@ -61,6 +64,8 @@ public class Inventory<T extends Unique> {
 	
 	/**
 	 * Remove an item from the inventory.
+	 * @param item the item to add to the inventory.
+	 * @return whether or not the item removal was successful or not.
 	 */
 	public boolean remove(T item) {
 		if (this.items.remove(item)) 
@@ -74,7 +79,7 @@ public class Inventory<T extends Unique> {
 	 * @return whether or not the update was successful
 	 */
 	public boolean update(T item) {
-		InventoryIterator<T> iterator = this.iterator();
+		Iterator<T> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			int currentIndex = iterator.getCurrentIndex();
 			T currentItem = iterator.next();
@@ -113,11 +118,11 @@ public class Inventory<T extends Unique> {
 	/**
 	 * Get an item from the inventory based on its id.
 	 * @param id the id of the item
-	 * @return an item
+	 * @return an item from the inventory which matches the supplied id
 	 * @throws NotFoundException 
 	 */
 	public T getById(String id) throws NotFoundException {
-		InventoryIterator<T> iterator = this.iterator();
+		Iterator<T> iterator = this.iterator();
 		while (iterator.hasNext()) {
 			T currentItem = iterator.next();
 			if (currentItem.getId().equals(id)) {
@@ -161,8 +166,8 @@ public class Inventory<T extends Unique> {
 		else if (this.getClass().isInstance(other)) {
 			@SuppressWarnings("unchecked")
 			Inventory<T> otherObj = (Inventory<T>) other;
-			InventoryIterator<T> thisIterator = this.iterator();
-			InventoryIterator<T> otherObjIterator = otherObj.iterator();
+			Iterator<T> thisIterator = this.iterator();
+			Iterator<T> otherObjIterator = otherObj.iterator();
 			
 			// Compare each item for equality.
 			while (thisIterator.hasNext() && otherObjIterator.hasNext()) {
@@ -193,7 +198,7 @@ public class Inventory<T extends Unique> {
 	 * @author Nick Sabia
 	 *
 	 */
-	private class ConcreteIterator implements InventoryIterator<T> {
+	private class ConcreteIterator implements Iterator<T> {
 		private int current;
 		
 		private ConcreteIterator() {
@@ -224,18 +229,6 @@ public class Inventory<T extends Unique> {
 				System.out.println("End of the list has been reached.");
 			}
 			return item;
-		}
-		
-		@Override
-		public void printInventory() {
-			int tempCurrent = this.current;
-			this.current = 0;
-			// Iterate through the inventory and print each item.
-			while (this.hasNext()) {
-				T item = this.next();
-				System.out.println(item);
-			}
-			this.current = tempCurrent;
 		}
 	}
 }

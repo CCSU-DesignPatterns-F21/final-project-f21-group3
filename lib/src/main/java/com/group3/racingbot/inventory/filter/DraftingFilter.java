@@ -1,6 +1,6 @@
 package com.group3.racingbot.inventory.filter;
 
-import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.Iterator;
 
 /**
  * Returns results which match the given drafting attribute criteria.
@@ -8,41 +8,25 @@ import com.group3.racingbot.inventory.InventoryIterator;
  *
  * @param <T>
  */
-public class DraftingFilter<T extends SkillFilterable> extends InventoryIteratorDecorator<T> {
+public class DraftingFilter<T extends SkillFilterable> extends IteratorDecorator<T> {
 	private int drafting;
 	private FilterOperation operation;
-	private int current;
 	
 	/**
 	 * Applies the drafting filter to whatever inventory iterator is passed into it.
-	 * @param iterator
-	 * @param op
-	 * @param drafting
+	 * @param iterator the iterator which is to be decorated
+	 * @param op the logical operator
+	 * @param drafting the drafting skill to filter by
 	 */
-	public DraftingFilter(InventoryIterator<T> iterator, FilterOperation op, int drafting) {
+	public DraftingFilter(Iterator<T> iterator, FilterOperation op, int drafting) {
 		super(iterator);
 		this.drafting = drafting;
 		this.operation = op;
-		this.current = 0;
 	}
 	
 	@Override
-	public int getCurrentIndex() {
-		return this.current;
-	}
-	
-	/**
-	 * Verifies that there is another item ahead of the current one.
-	 */
-	public boolean hasNext() {
-		return this.inventoryIterator.hasNext();
-	}
-	
-	/**
-	 * Grab the next item in the list. This will filter out items which don't match the criteria for the specified drafting skill.
-	 */
 	public T next() {
-		T item = this.inventoryIterator.next();
+		T item = super.getIterator().next();
 		boolean itemMatchesContraints = false;
 		switch (this.operation) {
 			case IS_GREATER_THAN:
@@ -53,9 +37,16 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 				itemMatchesContraints = item != null 
 					&& item.getDrafting() < this.drafting;
 				break;
-			case IS_EQUAL: default:
+			case IS_EQUAL:
 				itemMatchesContraints = item != null 
 					&& item.getDrafting() == this.drafting;
+				break;
+			case IS_NOT_EQUAL:
+				itemMatchesContraints = item != null 
+					&& item.getDrafting() != this.drafting;
+				break;
+			default:
+				System.out.println("DraftingFilter: Invalid operator supplied.");
 				break;
 		}
 		if (!itemMatchesContraints) {
@@ -66,10 +57,7 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 		return item;
 	}
 	
-	/**
-	 * Returns what this filter is filtering for.
-	 * @return String
-	 */
+	@Override
 	public String getCriteria() {
 		return this.operation.toString().toLowerCase() + " " + this.drafting;
 	}
@@ -98,12 +86,5 @@ public class DraftingFilter<T extends SkillFilterable> extends InventoryIterator
 	@Override
 	public String toString() {
 		return "DraftingFilter which filters for items that are " + this.getCriteria();
-	}
-	
-	/**
-	 * Print the entire inventory regardless of filter.
-	 */
-	public void printInventory() {
-		
 	}
 }

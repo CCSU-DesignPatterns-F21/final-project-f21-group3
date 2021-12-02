@@ -30,7 +30,7 @@ import com.group3.racingbot.driverstate.RacePending;
 import com.group3.racingbot.driverstate.Racing;
 import com.group3.racingbot.driverstate.Resting;
 import com.group3.racingbot.driverstate.Training;
-import com.group3.racingbot.inventory.InventoryIterator;
+import com.group3.racingbot.inventory.Iterator;
 import com.group3.racingbot.inventory.NotFoundException;
 import com.group3.racingbot.racetrack.CornerNode;
 import com.group3.racingbot.racetrack.RaceTrack;
@@ -49,7 +49,8 @@ import com.mongodb.client.MongoDatabase;
 
 /**
  * Handles the requests and connections to the database.
- * @author Maciej Bregisz, Nick Sabia
+ * @author Maciej Bregisz
+ * @author Nick Sabia
  *
  */
 public class DBHandler {
@@ -64,7 +65,7 @@ public class DBHandler {
 	private MongoCollection<RaceEvent> raceEventCollection;
 	
 	/**
-	 * Constructor initializes the necessary settings required for connecting to the MongoDB.
+	 * Constructor initializes the necessary settings required for connecting to the MongoDB. Only one instance of DBHandler should exist.
 	 */
 	private DBHandler() {
 		ClassModel<Shop> shopModel = ClassModel.builder(Shop.class).enableDiscriminator(true).build();
@@ -127,12 +128,28 @@ public class DBHandler {
 		            CodecRegistries.fromProviders(pojoCodecProvider)
 		    );
 		configProperties = ConfigPropertiesHandler.getInstance();
+		
+		if(configProperties.getEncrypted())
+		{
+			//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getAppConfig().getMongoDBUsername() +":"+ configProperties.getAppConfig().getMongoDBPass() +"@racingbot.rjpmq.mongodb.net/"+configProperties.getAppConfig().getMongoDBDatabase()+"?retryWrites=true&w=majority");
+			connectionString = new ConnectionString("mongodb://127.0.0.1:27017/" + configProperties.getAppConfig().getMongoDBDatabase());
+		}else {
+			//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername")+":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+			connectionString = new ConnectionString("mongodb://127.0.0.1:27017/" + configProperties.getProperty("mongoDBDatabase"));
+		}
 
-		connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername") +":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getAppConfig().getMongoDBUsername() +":"+ configProperties.getAppConfig().getMongoDBPass() +"@racingbot.rjpmq.mongodb.net/"+configProperties.getAppConfig().getMongoDBDatabase()+"?retryWrites=true&w=majority");
 		//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
 		settings = MongoClientSettings.builder().applyConnectionString(connectionString).retryWrites(true).build();
 				mongoClient = MongoClients.create(settings);
-				database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
+				
+				if(configProperties.getEncrypted())
+				{
+					database = mongoClient.getDatabase(configProperties.getAppConfig().getMongoDBDatabase()).withCodecRegistry(codecRegistry);
+				}else {
+					database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
+				}
+				
 				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);
 				shopCollection = database.getCollection("Shops",Shop.class).withCodecRegistry(codecRegistry);
 				raceEventCollection = database.getCollection("Events",RaceEvent.class).withCodecRegistry(codecRegistry);
@@ -140,8 +157,8 @@ public class DBHandler {
 	}
 	
 	/**
-	 * Returns an instance of DBHandler.
-	 * @return
+	 * Retrieve an instance of database handler. Ensures that only one instance of the database handler exists.
+	 * @return instance of DBHandler
 	 */
 	public static DBHandler getInstance() {
 		if (instance == null)
@@ -152,7 +169,8 @@ public class DBHandler {
 	
 	/**
 	 * Utility function for generating an id.
-	 * @return id
+	 * @param length the length of the id to generate
+	 * @return a randomly generated id containing numbers and lowercase letters.
 	 */
 	public String generateId(int length) {
 		String alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -288,6 +306,7 @@ public class DBHandler {
 	}
 	
 	/**
+	 * Retrieve the entire collection of race events stored within the database.
 	 * @return the raceEventCollection
 	 */
 	public MongoCollection<RaceEvent> getRaceEventCollection() {
@@ -295,6 +314,7 @@ public class DBHandler {
 	}
 
 	/**
+	 * Set the entire collection of race events stored within the database.
 	 * @param raceEventCollection the raceEventCollection to set
 	 */
 	public void setRaceEventCollection(MongoCollection<RaceEvent> raceEventCollection) {
@@ -336,15 +356,6 @@ public class DBHandler {
 	}
 	
 	/**
-	 * Update the active driver for a player.
-	 * @param playerId
-	 * @param driver
-	 */
-	//public void updateActiveDriver(String playerId, Driver driver) {
-		
-	//}
-	
-	/**
 	 * Returns a Player object from the Database based on the Discord ID.
 	 * @param id Discord User ID, used for identifying and retrieving of stored Player objects.
 	 * @return Parsed Player object from the database.
@@ -355,7 +366,7 @@ public class DBHandler {
 			// Add the player object to each item in the driver inventory.
 			// The player object isn't stored for every driver in the database, 
 			// so we must do it here to avoid the player attribute in each driver pointing to null.
-			InventoryIterator<Driver> driverIterator = player.getOwnedDrivers().iterator();
+			Iterator<Driver> driverIterator = player.getOwnedDrivers().iterator();
 			int i = 0;
 			Driver currentDriver = null;
 			while (driverIterator.hasNext()) {
@@ -370,6 +381,10 @@ public class DBHandler {
 		return player;
 	}
 	
+	/**
+	 * Inserts a new shop into the database if it doesn't already exist.
+	 * @param shop shop to add to the shops collection in the database
+	 */
 	public void insertShop(Shop shop)
 	{
 		Shop s = shopCollection.find(eq("_id",shop.getId())).first();
@@ -382,6 +397,11 @@ public class DBHandler {
 		
 	}
 	
+	/**
+	 * Retrieve a shop from the database based on a numeric id.
+	 * @param id the numeric id of the shop
+	 * @return the shop retrieved from the database.
+	 */
 	public Shop getShop(int id) {
 		return (Shop)shopCollection.find(eq("_id",id)).first();
 	}
@@ -395,6 +415,10 @@ public class DBHandler {
 		
 	}
 	
+	/**
+	 * Retrieve all shops within the shop collection as a list.
+	 * @return a list of all shops within the shop collection
+	 */
 	public List<Shop> getShops(){
 		//System.out.println(shopCollection.find().first());
 		List<Shop> iterablelist = shopCollection.find().into(new ArrayList<Shop>());
@@ -403,6 +427,7 @@ public class DBHandler {
 	}
 	
 	/**
+	 * Retrieve the instance of the Mongo database.
 	 * @return the database reference
 	 */
 	public MongoDatabase getDatabase() {
@@ -410,6 +435,7 @@ public class DBHandler {
 	}
 
 	/**
+	 * Set the instance of the Mongo database.
 	 * @param database the database to set for MongoClient to connect to
 	 */
 	public void setDatabase(MongoDatabase database) {
@@ -417,6 +443,7 @@ public class DBHandler {
 	}
 
 	/**
+	 * Retrieve the entire collection of players stored within the database.
 	 * @return the MongoDB UserCollection
 	 */
 	public MongoCollection<Player> getUserCollection() {
@@ -424,6 +451,7 @@ public class DBHandler {
 	}
 	
 	/**
+	 * Retrieve the entire collection of shops stored within the database.
 	 * @return the MongoDB ShopCollection
 	 */
 	public MongoCollection<Shop> getShopCollection() {
@@ -431,6 +459,7 @@ public class DBHandler {
 	}
 
 	/**
+	 * Set the entire collection of players stored within the database.
 	 * @param userCollection the userCollection to set
 	 */
 	public void setUserCollection(MongoCollection<Player> userCollection) {
@@ -438,6 +467,9 @@ public class DBHandler {
 	}
 
 	/**
+	 * Set the connection string which connects the database handler to the mongodb database.
+	 * Standard connection string syntax: mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]
+	 * https://docs.mongodb.com/manual/reference/connection-string/
 	 * @param connectionString the connectionString to set
 	 */
 	public static void setConnectionString(ConnectionString connectionString) {
@@ -445,14 +477,17 @@ public class DBHandler {
 	}
 	
 	/**
-	 * 
+	 * Retrieve the connection string which connects the database handler to the mongodb database.
+	 * Standard connection string syntax: mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]
+	 * https://docs.mongodb.com/manual/reference/connection-string/
 	 * @return returns the connection string of the server
 	 */
 	public static ConnectionString getConnectionString() {
 		return connectionString;
 	}
+	
 	/**
-	 * 
+	 * Retrieve the settings which control the behavior of a MongoClient.
 	 * @return the MongoDB client settings
 	 */
 	public static MongoClientSettings getSettings() {
@@ -460,21 +495,23 @@ public class DBHandler {
 	}
 	
 	/**
+	 * Set the settings which control the behavior of a MongoClient.
 	 * @param settings the settings to set
 	 */
 	public static void setSettings(MongoClientSettings settings) {
 		DBHandler.settings = settings;
 	}
+	
 	/**
-	 * 
+	 * Retrieve the mongo client which acts as a mongodb cluster.
 	 * @return the MongoDB Client
 	 */
 	public MongoClient getMongoClient() {
 		return mongoClient;
 	}
 
-
 	/**
+	 * Set the mongo client which acts as a mongodb cluster.
 	 * @param mongoClient the mongoClient to set
 	 */
 	public void setMongoClient(MongoClient mongoClient) {
@@ -483,6 +520,7 @@ public class DBHandler {
 	}
 
 	/**
+	 * Retrieve the config properties handler which is responsible for reading from the config.properties file.
 	 * @param configProperties the configProperties to set
 	 */
 	public static void setConfigProperties(ConfigPropertiesHandler configProperties) {
@@ -490,12 +528,13 @@ public class DBHandler {
 	}
 	
 	/**
-	 * 
+	 * Set the config properties handler which is responsible for reading from the config.properties file.
 	 * @return the ConfigPropertiesHandler instance.
 	 */
 	public static ConfigPropertiesHandler getConfigProperties() {
 		return configProperties;
 	}
+	
 	/**
 	 * @return Object parsed to string.
 	 */

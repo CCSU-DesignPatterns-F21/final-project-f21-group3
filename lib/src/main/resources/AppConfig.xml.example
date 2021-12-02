@@ -1,0 +1,6 @@
+<appConfig>
+	<discordChannelToken></discordChannelToken>
+	<mongoDBUsername></mongoDBUsername>
+	<mongoDBPass></mongoDBPass>
+	<mongoDBDatabase></mongoDBDatabase>
+</appConfig>
