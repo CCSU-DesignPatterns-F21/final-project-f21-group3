@@ -146,10 +146,8 @@ public class DBHandler {
 				if(configProperties.getEncrypted())
 				{
 					database = mongoClient.getDatabase(configProperties.getAppConfig().getMongoDBDatabase()).withCodecRegistry(codecRegistry);
-					//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
 				}else {
 					database = mongoClient.getDatabase(configProperties.getProperty("mongoDBDatabase")).withCodecRegistry(codecRegistry);
-					//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
 				}
 				
 				userCollection = database.getCollection("Users",Player.class).withCodecRegistry(codecRegistry);

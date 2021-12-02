@@ -557,6 +557,8 @@ public class Commands extends ListenerAdapter {
 			if (args[1].equalsIgnoreCase("event")) {
 				if (args[2].equalsIgnoreCase("generate")) {
 					if (args.length > 3 && args[3] != null) {
+						eb.clear();
+						
 						// Create an event using an id the user specifies.
 						String customEventId = args[3];
 						customEventId = customEventId.toLowerCase();
@@ -605,6 +607,8 @@ public class Commands extends ListenerAdapter {
 										+ this.raceEvent.getRaceTrack().calculateTrackLength())
 								.queue();
 					} else {
+						eb.clear();
+						
 						// Create an event with a randomized id.
 						this.raceEvent = new RaceEvent();
 						this.raceEvent.initialize();
