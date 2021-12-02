@@ -131,11 +131,11 @@ public class DBHandler {
 		
 		if(configProperties.getEncrypted())
 		{
-			connectionString = new ConnectionString("mongodb+srv://"+configProperties.getAppConfig().getMongoDBUsername() +":"+ configProperties.getAppConfig().getMongoDBPass() +"@racingbot.rjpmq.mongodb.net/"+configProperties.getAppConfig().getMongoDBDatabase()+"?retryWrites=true&w=majority");
-			//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
+			//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getAppConfig().getMongoDBUsername() +":"+ configProperties.getAppConfig().getMongoDBPass() +"@racingbot.rjpmq.mongodb.net/"+configProperties.getAppConfig().getMongoDBDatabase()+"?retryWrites=true&w=majority");
+			connectionString = new ConnectionString("mongodb://127.0.0.1:27017/" + configProperties.getAppConfig().getMongoDBDatabase());
 		}else {
-			connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername")+":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
-			//connectionString = new ConnectionString("mongodb://127.0.0.1:27017/RacingBot");
+			//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getProperty("mongoDBUsername")+":"+ configProperties.getProperty("mongoDBPass") +"@racingbot.rjpmq.mongodb.net/"+configProperties.getProperty("mongoDBDatabase")+"?retryWrites=true&w=majority");
+			connectionString = new ConnectionString("mongodb://127.0.0.1:27017/" + configProperties.getProperty("mongoDBDatabase"));
 		}
 
 		//connectionString = new ConnectionString("mongodb+srv://"+configProperties.getAppConfig().getMongoDBUsername() +":"+ configProperties.getAppConfig().getMongoDBPass() +"@racingbot.rjpmq.mongodb.net/"+configProperties.getAppConfig().getMongoDBDatabase()+"?retryWrites=true&w=majority");
